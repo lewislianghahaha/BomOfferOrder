@@ -3,6 +3,7 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using BomOfferOrder.DB;
 using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI
@@ -11,6 +12,11 @@ namespace BomOfferOrder.UI
     {
         TaskLogic task=new TaskLogic();
         Load load=new Load();
+        DbList dbList=new DbList();
+        DtlFrm dtlFrm=new DtlFrm();
+
+        //保存GridView内需要进行添加的临时表
+        private DataTable _adddt = new DataTable();
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
@@ -36,6 +42,8 @@ namespace BomOfferOrder.UI
             tmclose.Click += Tmclose_Click;
             btnsearch.Click += Btnsearch_Click;
             btngenerate.Click += Btngenerate_Click;
+            tmadd.Click += Tmadd_Click;
+            tmdel.Click += Tmdel_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -44,6 +52,9 @@ namespace BomOfferOrder.UI
             bnPositionItem.TextChanged += BnPositionItem_TextChanged;
             tmshowrows.DropDownClosed += Tmshowrows_DropDownClosed;
             panel2.Visible = false;
+
+            btngenerate.Enabled = false;
+            comtype.SelectedIndexChanged += Comtype_SelectedIndexChanged;
         }
 
         /// <summary>
@@ -51,7 +62,24 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void OnInitialize()
         {
-            
+            OnShowTypeList();
+        }
+
+        /// <summary>
+        /// 下拉列表改变时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Comtype_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                txtvalue.Text = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -59,12 +87,17 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Btnsearch_Click(object sender, System.EventArgs e)
+        private void Btnsearch_Click(object sender, EventArgs e)
         {
             try
             {
-                task.TaskId = 0;
+                //获取下拉列表所选值
+                var dvordertylelist = (DataRowView)comtype.Items[comtype.SelectedIndex];
+                var ordertypeId = Convert.ToInt32(dvordertylelist["Id"]);
 
+                task.TaskId = 0;
+                task.SearchId = ordertypeId;
+                task.SearchValue = txtvalue.Text;
 
                 new Thread(Start).Start();
                 load.StartPosition = FormStartPosition.CenterScreen;
@@ -88,7 +121,69 @@ namespace BomOfferOrder.UI
                     panel2.Visible = false;
                 }
                 //控制GridView单元格显示方式
-                ControlGridViewisShow();
+                ControlGridViewisShow(0);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 添加至明细记录(注:可多行选择)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmadd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(gvsearchdtl.RowCount==0)throw new Exception("没有查询结果,不能添加");
+
+                //获取临时表
+                var temp = dbList.Get_Searchdt();
+
+                foreach (DataGridViewRow row in gvsearchdtl.SelectedRows)
+                {
+                    var newrow = temp.NewRow();
+                    newrow[0] = row.Cells[0].Value;  //FMATERIALID
+                    newrow[1] = row.Cells[1].Value;  //物料编码
+                    newrow[2] = row.Cells[2].Value;  //物料名称
+                    newrow[3] = row.Cells[4].Value;  //规格型号
+                    newrow[4] = row.Cells[6].Value;  //密度(KG/L)
+                    temp.Rows.Add(newrow);
+                }
+                //若_adddt+temp.rowscount得出的总行数>10行时,即提示异常
+                if(_adddt.Rows.Count+temp.Rows.Count>10)throw new Exception("添加行数已超过10行,不能继续");
+                //判断若需要添加的记录,已在_adddt存在,即提示异常
+                if(!CheckRecord(temp))throw new Exception("已添加,不能再次进行添加");
+                //将要添加的记录添加至‘添加明细记录’GridView内
+                gvdtl.DataSource=AddsoucetoDt(temp);
+                //控制GridView单元格显示方式
+                ControlGridViewisShow(1);
+                //若成行添加,就将‘生成明细记录按钮’按钮设为‘启用’
+                btngenerate.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 删除记录(明细窗体使用)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmdel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(gvdtl.RowCount==0)throw new Exception("没有明细记录,不能作删除操作");
+                for (var i = gvdtl.SelectedRows.Count; i > 0; i--)
+                {
+                    gvdtl.Rows.RemoveAt(gvdtl.SelectedRows[i - 1].Index);
+                }
             }
             catch (Exception ex)
             {
@@ -101,11 +196,33 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Btngenerate_Click(object sender, System.EventArgs e)
+        private void Btngenerate_Click(object sender, EventArgs e)
         {
             try
             {
+                if(gvdtl.RowCount==0)throw new Exception("没有明细记录,不能执行运算");
 
+                task.TaskId = 1;
+                task.Data = (DataTable) gvdtl.DataSource;
+
+                new Thread(Start).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
+
+                if(!task.ResultMark)throw new Exception("生成出现异常,请联系管理员");
+                else
+                {
+                    //弹出对应窗体相关设置
+                    //dtlFrm.OnInitialize();                //初始化信息
+                    dtlFrm.StartPosition = FormStartPosition.CenterParent;
+                    dtlFrm.ShowDialog();
+                }
+                //若返回父窗体后将各控件清空
+                gvdtl.Rows.Clear();
+                gvdtl.Columns.Clear();
+                gvsearchdtl.Rows.Clear();
+                gvsearchdtl.Columns.Clear();
+                txtvalue.Text = "";
             }
             catch (Exception ex)
             {
@@ -118,7 +235,7 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Tmclose_Click(object sender, System.EventArgs e)
+        private void Tmclose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
@@ -370,10 +487,18 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 控制GridView单元格显示方式
         /// </summary>
-        private void ControlGridViewisShow()
+        private void ControlGridViewisShow(int id)
         {
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
-            gvsearchdtl.Columns[0].Visible = false;
+            if (id == 0)
+            {
+                gvsearchdtl.Columns[0].Visible = false;
+            }
+            else
+            {
+                if (gvdtl.RowCount > 0)
+                    gvdtl.Columns[0].Visible = false;
+            } 
         }
 
         /// <summary>
@@ -388,6 +513,117 @@ namespace BomOfferOrder.UI
             {
                 load.Close();
             }));
+        }
+
+        /// <summary>
+        /// 产品系列下拉列表
+        /// </summary>
+        private void OnShowTypeList()
+        {
+            var dt = new DataTable();
+
+            //创建表头
+            for (var i = 0; i < 2; i++)
+            {
+                var dc = new DataColumn();
+                switch (i)
+                {
+                    case 0:
+                        dc.ColumnName = "Id";
+                        break;
+                    case 1:
+                        dc.ColumnName = "Name";
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+
+            //创建行内容
+            for (var j = 0; j < 2; j++)
+            {
+                var dr = dt.NewRow();
+
+                switch (j)
+                {
+                    case 0:
+                        dr[0] = "1";
+                        dr[1] = "物料名称";
+                        break;
+                    case 1:
+                        dr[0] = "2";
+                        dr[1] = "物料编码";
+                        break;
+                }
+                dt.Rows.Add(dr);
+            }
+
+            comtype.DataSource = dt;
+            comtype.DisplayMember = "Name"; //设置显示值
+            comtype.ValueMember = "Id";    //设置默认值内码
+        }
+
+        /// <summary>
+        /// 将查询明细的记录添加至‘明细记录’GridView内
+        /// </summary>
+        /// <returns></returns>
+        private DataTable AddsoucetoDt(DataTable sourcedt)
+        {
+            try
+            {
+                //判断若reslut为空,即直接插入,反之作更新操作
+                if (_adddt.Rows.Count == 0)
+                {
+                    _adddt = sourcedt.Copy();
+                }
+                else
+                {
+                    foreach (DataRow row in sourcedt.Rows)
+                    {
+                        var newrow = _adddt.NewRow();
+                        for (var i = 0; i < _adddt.Columns.Count; i++)
+                        {
+                            newrow[i] = row[i];
+                        }
+                        _adddt.Rows.Add(newrow);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                _adddt.Columns.Clear();
+                _adddt.Rows.Clear();
+            }
+            return _adddt;
+        }
+
+        /// <summary>
+        /// 判断若需要添加的记录,已在_adddt存在,即提示异常
+        /// </summary>
+        /// <param name="sourcedt"></param>
+        /// <returns></returns>
+        private bool CheckRecord(DataTable sourcedt)
+        {
+            var result = true;
+            try
+            {
+                //判断若‘添加’的记录是否在_adddt,若存在返回FALSE
+                for (var i = 0; i < sourcedt.Rows.Count; i++)
+                {
+                    for (var j = 0; j < _adddt.Rows.Count; j++)
+                    {
+                        if (Convert.ToInt32(sourcedt.Rows[i][0]) == Convert.ToInt32(_adddt.Rows[j][0]))
+                        {
+                            result = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
         }
     }
 }

@@ -39,8 +39,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btngenerate = new System.Windows.Forms.Button();
             this.btnsearch = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.txtvalue = new System.Windows.Forms.TextBox();
+            this.comtype = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.gvsearchdtl = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -61,8 +61,12 @@
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
+            this.tmadd = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmdel = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
+            this.DelMenu.SuspendLayout();
+            this.AddMenu.SuspendLayout();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -99,13 +103,17 @@
             // 
             // DelMenu
             // 
+            this.DelMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmdel});
             this.DelMenu.Name = "DelMenu";
-            this.DelMenu.Size = new System.Drawing.Size(61, 4);
+            this.DelMenu.Size = new System.Drawing.Size(125, 26);
             // 
             // AddMenu
             // 
+            this.AddMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmadd});
             this.AddMenu.Name = "AddMenu";
-            this.AddMenu.Size = new System.Drawing.Size(61, 4);
+            this.AddMenu.Size = new System.Drawing.Size(161, 26);
             // 
             // MainMenu
             // 
@@ -129,8 +137,8 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.btngenerate);
             this.panel1.Controls.Add(this.btnsearch);
-            this.panel1.Controls.Add(this.textBox1);
-            this.panel1.Controls.Add(this.comboBox1);
+            this.panel1.Controls.Add(this.txtvalue);
+            this.panel1.Controls.Add(this.comtype);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
@@ -155,21 +163,21 @@
             this.btnsearch.Text = "查询";
             this.btnsearch.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // txtvalue
             // 
-            this.textBox1.Location = new System.Drawing.Point(139, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(291, 21);
-            this.textBox1.TabIndex = 1;
+            this.txtvalue.Location = new System.Drawing.Point(139, 3);
+            this.txtvalue.Name = "txtvalue";
+            this.txtvalue.Size = new System.Drawing.Size(291, 21);
+            this.txtvalue.TabIndex = 1;
             // 
-            // comboBox1
+            // comtype
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(11, 3);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 20);
-            this.comboBox1.TabIndex = 0;
+            this.comtype.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comtype.FormattingEnabled = true;
+            this.comtype.Location = new System.Drawing.Point(11, 3);
+            this.comtype.Name = "comtype";
+            this.comtype.Size = new System.Drawing.Size(121, 20);
+            this.comtype.TabIndex = 0;
             // 
             // groupBox1
             // 
@@ -232,14 +240,14 @@
             this.toolStripLabel5,
             this.tstotalrow});
             this.bindingNavigator1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.bindingNavigator1.Location = new System.Drawing.Point(404, 0);
+            this.bindingNavigator1.Location = new System.Drawing.Point(435, 0);
             this.bindingNavigator1.MoveFirstItem = this.bnMoveFirstItem;
             this.bindingNavigator1.MoveLastItem = this.bnMoveLastItem;
             this.bindingNavigator1.MoveNextItem = this.bnMoveNextItem;
             this.bindingNavigator1.MovePreviousItem = this.bnMovePreviousItem;
             this.bindingNavigator1.Name = "bindingNavigator1";
             this.bindingNavigator1.PositionItem = this.bnPositionItem;
-            this.bindingNavigator1.Size = new System.Drawing.Size(517, 24);
+            this.bindingNavigator1.Size = new System.Drawing.Size(486, 24);
             this.bindingNavigator1.TabIndex = 0;
             this.bindingNavigator1.Text = "bindingNavigator1";
             // 
@@ -357,6 +365,18 @@
             this.tstotalrow.Size = new System.Drawing.Size(55, 21);
             this.tstotalrow.Text = "共 {0} 行";
             // 
+            // tmadd
+            // 
+            this.tmadd.Name = "tmadd";
+            this.tmadd.Size = new System.Drawing.Size(160, 22);
+            this.tmadd.Text = "添加至明细记录";
+            // 
+            // tmdel
+            // 
+            this.tmdel.Name = "tmdel";
+            this.tmdel.Size = new System.Drawing.Size(124, 22);
+            this.tmdel.Text = "删除记录";
+            // 
             // Main
             // 
             this.AcceptButton = this.btnsearch;
@@ -373,6 +393,8 @@
             this.Text = "成本BOM-报价单相关修改";
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
+            this.DelMenu.ResumeLayout(false);
+            this.AddMenu.ResumeLayout(false);
             this.MainMenu.ResumeLayout(false);
             this.MainMenu.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -399,8 +421,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btngenerate;
         private System.Windows.Forms.Button btnsearch;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox txtvalue;
+        private System.Windows.Forms.ComboBox comtype;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.BindingNavigator bindingNavigator1;
@@ -421,6 +443,8 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
         private System.Windows.Forms.ToolStripLabel toolStripLabel5;
         private System.Windows.Forms.ToolStripLabel tstotalrow;
+        private System.Windows.Forms.ToolStripMenuItem tmdel;
+        private System.Windows.Forms.ToolStripMenuItem tmadd;
     }
 }
 
