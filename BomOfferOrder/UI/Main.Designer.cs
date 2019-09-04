@@ -33,7 +33,9 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.gvdtl = new System.Windows.Forms.DataGridView();
             this.DelMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmdel = new System.Windows.Forms.ToolStripMenuItem();
             this.AddMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmadd = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.tmclose = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -44,7 +46,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.gvsearchdtl = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
+            this.bngat = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItem = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.bnPositionItem = new System.Windows.Forms.ToolStripTextBox();
@@ -61,8 +63,6 @@
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
-            this.tmadd = new System.Windows.Forms.ToolStripMenuItem();
-            this.tmdel = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
             this.DelMenu.SuspendLayout();
@@ -72,8 +72,8 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvsearchdtl)).BeginInit();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
-            this.bindingNavigator1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
+            this.bngat.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -108,12 +108,24 @@
             this.DelMenu.Name = "DelMenu";
             this.DelMenu.Size = new System.Drawing.Size(125, 26);
             // 
+            // tmdel
+            // 
+            this.tmdel.Name = "tmdel";
+            this.tmdel.Size = new System.Drawing.Size(124, 22);
+            this.tmdel.Text = "删除记录";
+            // 
             // AddMenu
             // 
             this.AddMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tmadd});
             this.AddMenu.Name = "AddMenu";
             this.AddMenu.Size = new System.Drawing.Size(161, 26);
+            // 
+            // tmadd
+            // 
+            this.tmadd.Name = "tmadd";
+            this.tmadd.Size = new System.Drawing.Size(160, 22);
+            this.tmadd.Text = "添加至明细记录";
             // 
             // MainMenu
             // 
@@ -208,21 +220,21 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.bindingNavigator1);
+            this.panel2.Controls.Add(this.bngat);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(3, 223);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(923, 26);
             this.panel2.TabIndex = 0;
             // 
-            // bindingNavigator1
+            // bngat
             // 
-            this.bindingNavigator1.AddNewItem = null;
-            this.bindingNavigator1.CountItem = this.bnCountItem;
-            this.bindingNavigator1.CountItemFormat = "/ {0} 页";
-            this.bindingNavigator1.DeleteItem = null;
-            this.bindingNavigator1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.bindingNavigator1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bngat.AddNewItem = null;
+            this.bngat.CountItem = this.bnCountItem;
+            this.bngat.CountItemFormat = "/ {0} 页";
+            this.bngat.DeleteItem = null;
+            this.bngat.Dock = System.Windows.Forms.DockStyle.Right;
+            this.bngat.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1,
             this.bnPositionItem,
             this.toolStripLabel2,
@@ -239,17 +251,17 @@
             this.toolStripLabel4,
             this.toolStripLabel5,
             this.tstotalrow});
-            this.bindingNavigator1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.bindingNavigator1.Location = new System.Drawing.Point(435, 0);
-            this.bindingNavigator1.MoveFirstItem = this.bnMoveFirstItem;
-            this.bindingNavigator1.MoveLastItem = this.bnMoveLastItem;
-            this.bindingNavigator1.MoveNextItem = this.bnMoveNextItem;
-            this.bindingNavigator1.MovePreviousItem = this.bnMovePreviousItem;
-            this.bindingNavigator1.Name = "bindingNavigator1";
-            this.bindingNavigator1.PositionItem = this.bnPositionItem;
-            this.bindingNavigator1.Size = new System.Drawing.Size(486, 24);
-            this.bindingNavigator1.TabIndex = 0;
-            this.bindingNavigator1.Text = "bindingNavigator1";
+            this.bngat.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this.bngat.Location = new System.Drawing.Point(404, 0);
+            this.bngat.MoveFirstItem = this.bnMoveFirstItem;
+            this.bngat.MoveLastItem = this.bnMoveLastItem;
+            this.bngat.MoveNextItem = this.bnMoveNextItem;
+            this.bngat.MovePreviousItem = this.bnMovePreviousItem;
+            this.bngat.Name = "bngat";
+            this.bngat.PositionItem = this.bnPositionItem;
+            this.bngat.Size = new System.Drawing.Size(517, 24);
+            this.bngat.TabIndex = 0;
+            this.bngat.Text = "bindingNavigator1";
             // 
             // bnCountItem
             // 
@@ -365,18 +377,6 @@
             this.tstotalrow.Size = new System.Drawing.Size(55, 21);
             this.tstotalrow.Text = "共 {0} 行";
             // 
-            // tmadd
-            // 
-            this.tmadd.Name = "tmadd";
-            this.tmadd.Size = new System.Drawing.Size(160, 22);
-            this.tmadd.Text = "添加至明细记录";
-            // 
-            // tmdel
-            // 
-            this.tmdel.Name = "tmdel";
-            this.tmdel.Size = new System.Drawing.Size(124, 22);
-            this.tmdel.Text = "删除记录";
-            // 
             // Main
             // 
             this.AcceptButton = this.btnsearch;
@@ -403,9 +403,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvsearchdtl)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
-            this.bindingNavigator1.ResumeLayout(false);
-            this.bindingNavigator1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bngat)).EndInit();
+            this.bngat.ResumeLayout(false);
+            this.bngat.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -425,7 +425,7 @@
         private System.Windows.Forms.ComboBox comtype;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.BindingNavigator bindingNavigator1;
+        private System.Windows.Forms.BindingNavigator bngat;
         private System.Windows.Forms.ToolStripLabel bnCountItem;
         private System.Windows.Forms.ToolStripButton bnMoveFirstItem;
         private System.Windows.Forms.ToolStripButton bnMovePreviousItem;

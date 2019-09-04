@@ -202,27 +202,33 @@ namespace BomOfferOrder.UI
             {
                 if(gvdtl.RowCount==0)throw new Exception("没有明细记录,不能执行运算");
 
-                task.TaskId = 1;
-                task.Data = (DataTable) gvdtl.DataSource;
+                var clickMessage = $"您所选择进行生成的物料有:'{gvdtl.RowCount}'行记录 \n 是否生成? \n 注:若物料没有对应的BOM记录,也不会生成明细 \n 请留意.";
 
-                new Thread(Start).Start();
-                load.StartPosition = FormStartPosition.CenterScreen;
-                load.ShowDialog();
-
-                if(!task.ResultMark)throw new Exception("生成出现异常,请联系管理员");
-                else
+                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
-                    //弹出对应窗体相关设置
-                    //dtlFrm.OnInitialize();                //初始化信息
-                    dtlFrm.StartPosition = FormStartPosition.CenterParent;
-                    dtlFrm.ShowDialog();
+                    task.TaskId = 1;
+                    task.Data = (DataTable)gvdtl.DataSource;
+
+                    new Thread(Start).Start();
+                    load.StartPosition = FormStartPosition.CenterScreen;
+                    load.ShowDialog();
+
+                    if (!task.ResultMark) throw new Exception("生成出现异常,请联系管理员");
+                    else
+                    {
+                        //弹出对应窗体相关设置
+
+                        dtlFrm.OnInitialize();                //初始化信息
+                        dtlFrm.StartPosition = FormStartPosition.CenterParent;
+                        dtlFrm.ShowDialog();
+                    }
+                    //若返回父窗体后将各控件清空
+                    gvdtl.Rows.Clear();
+                    gvdtl.Columns.Clear();
+                    gvsearchdtl.Rows.Clear();
+                    gvsearchdtl.Columns.Clear();
+                    txtvalue.Text = "";
                 }
-                //若返回父窗体后将各控件清空
-                gvdtl.Rows.Clear();
-                gvdtl.Columns.Clear();
-                gvsearchdtl.Rows.Clear();
-                gvsearchdtl.Columns.Clear();
-                txtvalue.Text = "";
             }
             catch (Exception ex)
             {
