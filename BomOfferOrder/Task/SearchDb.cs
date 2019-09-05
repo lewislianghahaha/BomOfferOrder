@@ -41,5 +41,28 @@ namespace BomOfferOrder.Task
             }
             return resultdt;
         }
+
+        /// <summary>
+        /// 查询BOM明细记录信息(生成时使用)
+        /// </summary>
+        /// <param name="valuelist"></param>
+        /// <returns></returns>
+        public DataTable SearchMaterialDtl(string valuelist)
+        {
+            var resultdt = new DataTable();
+            try
+            {
+                var sqlscript = sqlList.Get_Materialdtl(valuelist);
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetConn());
+                sqlDataAdapter.Fill(resultdt);
+            }
+            catch (Exception)
+            {
+                resultdt.Rows.Clear();
+                resultdt.Columns.Clear();
+            }
+            return resultdt;
+        }
+
     }
 }

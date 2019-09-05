@@ -12,6 +12,7 @@ namespace BomOfferOrder.Task
             private int _searchid;           //记录查询列表ID值(查询时使用)
             private string _searchvalue;     //查询值(查询时使用)
             private DataTable _dt;           //保存需要进行生成明细记录的DT
+            private string _valuelist;       //保存Fmaterialid列表(如:'426464','738199')
 
             private DataTable _resultTable;  //返回DT类型
             private bool _resultMark;        //返回是否成功标记
@@ -37,13 +38,18 @@ namespace BomOfferOrder.Task
             /// 保存需要进行生成明细记录的DT
             /// </summary>
             public DataTable Data { set { _dt = value; } }
+
+            /// <summary>
+            /// 保存Fmaterialid列表(如:'426464','738199')
+            /// </summary>
+            public string Valuelist { set { _valuelist = value; } }
         #endregion
 
         #region Get
-            /// <summary>
-            ///返回DataTable至主窗体
-            /// </summary>
-            public DataTable ResultTable => _resultTable;
+        /// <summary>
+        ///返回DataTable至主窗体
+        /// </summary>
+        public DataTable ResultTable => _resultTable;
 
             /// <summary>
             /// 返回结果标记
@@ -61,7 +67,7 @@ namespace BomOfferOrder.Task
                     break;
                 //运算
                 case 1:
-                    Generatedt(_dt);
+                    Generatedt(_valuelist,_dt);
                     break;
             }
         }
@@ -79,10 +85,11 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 运算
         /// </summary>
+        /// <param name="valuelist">FMATERIALID列表ID</param>
         /// <param name="sourcedt"></param>
-        private void Generatedt(DataTable sourcedt)
+        private void Generatedt(string valuelist,DataTable sourcedt)
         {
-            _resultTable = generateDb.Generatedt(sourcedt);
+            _resultTable = generateDb.Generatedt(valuelist,sourcedt);
             _resultMark = _resultTable.Rows.Count > 0;
         }
     }

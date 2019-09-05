@@ -57,29 +57,35 @@ namespace BomOfferOrder.DB
 
                 switch (i)
                 {
+                    ////累加值ID(保存一共有多少个产成品COUNT)
+                    //case 0:
+                    //    dc.ColumnName = "CountId";
+                    //    dc.DataType = Type.GetType("System.Int32");
+                    //    break;
+                    //产品ID
                     case 0:
-                        dc.ColumnName = "CountId";
-                        dc.DataType = Type.GetType("System.Int32");
-                        break;
-                    case 1:
                         dc.ColumnName = "Id";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 2:
+                    case 1:
                         dc.ColumnName = "产品名称";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 3:
+                    case 2:
                         dc.ColumnName = "BOM编号";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 4:
+                    case 3:
                         dc.ColumnName = "包装规格";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 5:
+                    case 4:
                         dc.ColumnName = "产品密度";
                         dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    case 5:
+                        dc.ColumnName = "物料编码ID";
+                        dc.DataType = Type.GetType("System.Int32");
                         break;
                     case 6:
                         dc.ColumnName = "物料编码";
@@ -102,7 +108,7 @@ namespace BomOfferOrder.DB
         public DataTable MakeDtlTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 19; i++)
+            for (var i = 0; i < 20; i++)
             {
                 var dc = new DataColumn();
 
@@ -179,30 +185,78 @@ namespace BomOfferOrder.DB
                         dc.DataType = Type.GetType("System.String");
                         break;
 
-                    //物料编码
+                    //物料编码ID
                     case 14:
+                        dc.ColumnName = "MaterialID";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //物料编码
+                    case 15:
                         dc.ColumnName = "MaterialCode";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //物料名称
-                    case 15:
+                    case 16:
                         dc.ColumnName = "MaterialName";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //配方用量
-                    case 16:
+                    case 17:
                         dc.ColumnName = "PeiQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //物料单价(含税)
-                    case 17:
+                    case 18:
                         dc.ColumnName = "MaterialPrice";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //物料成本(含税)
-                    case 18:
+                    case 19:
                         dc.ColumnName = "MaterialAmount";
                         dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// ShowDetailFrm中的Gridview窗体使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable MakeGridViewTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 6; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    case 0:
+                        dc.ColumnName = "物料编码ID";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 1:
+                        dc.ColumnName = "物料编码";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 2:
+                        dc.ColumnName = "物料名称";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 3:
+                        dc.ColumnName = "配方用量";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 4:
+                        dc.ColumnName = "物料单价(含税)";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 5:
+                        dc.ColumnName = "物料成本(含税)";
+                        dc.DataType = Type.GetType("System.String");
                         break;
                 }
                 dt.Columns.Add(dc);

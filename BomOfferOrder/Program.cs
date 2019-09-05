@@ -17,7 +17,7 @@ namespace BomOfferOrder
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DtlFrm());
+            Application.Run(new Main());
         }
     }
 }
