@@ -15,6 +15,9 @@ namespace BomOfferOrder.UI
         DbList dbList=new DbList();
         DtlFrm dtlFrm=new DtlFrm();
 
+        //保存BOM明细DT(生成时使用;注:当打开录入界面时初始化执行)
+        private DataTable _bomdt = new DataTable();
+
         //保存GridView内需要进行添加的临时表
         private DataTable _adddt = new DataTable();
 
@@ -62,7 +65,10 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void OnInitialize()
         {
+            //下拉列表使用
             OnShowTypeList();
+            //初始化BOM明细DT
+            OnInitializeBomdt();
         }
 
         /// <summary>
@@ -95,7 +101,7 @@ namespace BomOfferOrder.UI
                 var dvordertylelist = (DataRowView)comtype.Items[comtype.SelectedIndex];
                 var ordertypeId = Convert.ToInt32(dvordertylelist["Id"]);
 
-                task.TaskId = 0;
+                task.TaskId = "0";
                 task.SearchId = ordertypeId;
                 task.SearchValue = txtvalue.Text;
 
@@ -205,9 +211,10 @@ namespace BomOfferOrder.UI
 
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
-                    task.TaskId = 1;
+                    task.TaskId = "1";
                     task.Data = (DataTable)gvdtl.DataSource;
-                    task.Valuelist = Get_ValueList((DataTable)gvdtl.DataSource); //将Fmaterialid整合至List型式
+                    task.Valuelist = Get_ValueList((DataTable)gvdtl.DataSource); //将Fmaterialid整合至List形式
+                    task.Bomdt = _bomdt;                                         //获取初始化的BOM明细DT
 
                     new Thread(Start).Start();
                     load.StartPosition = FormStartPosition.CenterScreen;
@@ -653,6 +660,17 @@ namespace BomOfferOrder.UI
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// 初始化BOM明细DT
+        /// </summary>
+        /// <returns></returns>
+        private void OnInitializeBomdt()
+        {
+            task.TaskId = "0.1";
+            task.StartTask();
+            _bomdt=task.Resultbomdt;
         }
     }
 }

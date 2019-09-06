@@ -45,14 +45,13 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 查询BOM明细记录信息(生成时使用)
         /// </summary>
-        /// <param name="valuelist"></param>
         /// <returns></returns>
-        public DataTable SearchMaterialDtl(string valuelist)
+        public DataTable SearchMaterialDtl()
         {
             var resultdt = new DataTable();
             try
             {
-                var sqlscript = sqlList.Get_Materialdtl(valuelist);
+                var sqlscript = sqlList.Get_Materialdtl();
                 var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetConn());
                 sqlDataAdapter.Fill(resultdt);
             }
