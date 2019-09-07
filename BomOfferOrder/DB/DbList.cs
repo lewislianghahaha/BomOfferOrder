@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Data;
 
 namespace BomOfferOrder.DB
@@ -51,7 +52,7 @@ namespace BomOfferOrder.DB
         public DataTable MakeTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 9; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var dc = new DataColumn();
 
@@ -79,62 +80,23 @@ namespace BomOfferOrder.DB
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     case 5:
-                        dc.ColumnName = "Bom等级";
-                        dc.DataType = Type.GetType("System.String");
-                        break;
-                    case 6:
                         dc.ColumnName = "物料编码ID";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
-                    case 7:
+                    case 6:
                         dc.ColumnName = "物料编码";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 7:
+                        dc.ColumnName = "物料名称";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     case 8:
-                        dc.ColumnName = "物料名称";
-                        dc.DataType = Type.GetType("System.String");
+                        dc.ColumnName = "配方用量";
+                        dc.DataType = Type.GetType("System.Decimal"); 
                         break;
-                }
-                dt.Columns.Add(dc);
-            }
-            return dt;
-        }
-
-        /// <summary>
-        /// 用于生成时记录最新BOM明细记录(运算时使用)
-        /// </summary>
-        /// <returns></returns>
-        public DataTable GetBomTemp()
-        {
-            var dt = new DataTable();
-            for (var i = 0; i < 6; i++)
-            {
-                var dc = new DataColumn();
-
-                switch (i)
-                {
-                    case 0:
-                        dc.ColumnName = "BOM编号";
-                        dc.DataType = Type.GetType("System.String");
-                        break;
-                    case 1:
-                        dc.ColumnName = "表头物料ID";
-                        dc.DataType = Type.GetType("System.Int32");
-                        break;
-                    case 2:
-                        dc.ColumnName = "表体物料ID";
-                        dc.DataType = Type.GetType("System.Int32");
-                        break;
-                    case 3:
-                        dc.ColumnName = "物料编码";
-                        dc.DataType = Type.GetType("System.String");
-                        break;
-                    case 4:
-                        dc.ColumnName = "物料名称";
-                        dc.DataType = Type.GetType("System.String");
-                        break;
-                    case 5:
-                        dc.ColumnName = "物料属性";
+                    case 9:
+                        dc.ColumnName = "明细行BOM编号";
                         dc.DataType = Type.GetType("System.String");
                         break;
                 }

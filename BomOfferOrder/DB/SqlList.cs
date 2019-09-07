@@ -58,8 +58,8 @@
                                 INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                                 INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                                WHERE c.FDATAVALUE IN('产成品','原漆半成品')
-                                AND a.FDOCUMENTSTATUS='C'
+                                WHERE /*c.FDATAVALUE IN('产成品','原漆半成品')
+                                AND*/ a.FDOCUMENTSTATUS='C'
                                 AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
                                 AND g.FLOCALEID=2052
@@ -134,9 +134,11 @@
             #endregion
 
             _result = $@"
-                            SELECT A.FMATERIALID 表头物料ID,A.FNUMBER 'BOM编号',a.FMODIFYDATE '修改日期',--CONVERT(varchar(100), a.FMODIFYDATE, 23) '修改日期',
+                            SELECT A.FMATERIALID 表头物料ID,A.FNUMBER 'BOM编号',--a.FMODIFYDATE '修改日期',CONVERT(varchar(100), a.FMODIFYDATE, 23) '修改日期',
 	                               b.FMATERIALID 表体物料ID,c.FNUMBER 物料编码,d.FNAME 物料名称,
-                                   CASE E.FERPCLSID WHEN 1 THEN '外购' WHEN 2 THEN '自制' ELSE '其它' END 物料属性
+                                   CASE E.FERPCLSID WHEN 1 THEN '外购' WHEN 2 THEN '自制' ELSE '其它' END 物料属性,
+                                   cast(b.FNUMERATOR/b.FDENOMINATOR*(1+b.FSCRAPRATE/100) as nvarchar(250)) 用量,
+                                   b.FNUMERATOR 分子,b.FDENOMINATOR 分母,b.FSCRAPRATE 变动损耗率
 
                             FROM T_ENG_BOM A
                             INNER JOIN dbo.T_ENG_BOMCHILD b ON a.FID=b.FID
@@ -150,9 +152,14 @@
                             AND C.FDOCUMENTSTATUS='C' --物料审核状态:已审核
                             AND C.FFORBIDSTATUS='A'   --物料禁用状态:否
                             AND D.FLOCALEID='2052'
+                            AND CONVERT(varchar(100), a.FMODIFYDATE, 20)= (
+												                            SELECT CONVERT(varchar(100), MAX(A1.FMODIFYDATE), 20)
+												                            FROM T_ENG_BOM A1
+												                            WHERE A1.FMATERIALID=A.FMATERIALID
+											                               )  --获取最大的‘修改日期’记录
                             --AND A.FMATERIALID='136357'
                             --AND A.FNUMBER='QQ-G5-0001_V1.7'
-                            ORDER BY a.FMATERIALID,e.FERPCLSID,a.FMODIFYDATE DESC
+                            ORDER BY a.FMATERIALID,e.FERPCLSID--,a.FMODIFYDATE DESC
                         ";
 
             return _result;
