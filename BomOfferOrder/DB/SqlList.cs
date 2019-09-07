@@ -58,8 +58,8 @@
                                 INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                                 INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                                WHERE /*c.FDATAVALUE IN('产成品','原漆半成品')
-                                AND*/ a.FDOCUMENTSTATUS='C'
+                                WHERE c.FDATAVALUE IN('产成品','原漆半成品')
+                                AND a.FDOCUMENTSTATUS='C'
                                 AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
                                 AND g.FLOCALEID=2052

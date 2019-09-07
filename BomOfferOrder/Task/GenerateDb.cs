@@ -38,7 +38,7 @@ namespace BomOfferOrder.Task
                     //获取产品密度
                     var productmi = Convert.ToString(row[4]);
 
-                    //当得出最新的BOM明细记录后,获取BOM编号
+                    //获取BOM编号
                     var dtlrows = bomdt.Select("表头物料ID='" + Convert.ToInt32(row[0]) + "'");
                     var bomnum = Convert.ToString(dtlrows[0][1]);
 

@@ -79,19 +79,19 @@ namespace BomOfferOrder.UI
                         foreach (DataRow t in dtlrows)
                         {
                             var newrow = dt.NewRow();
-                            newrow[1] = t[1];  //产品名称
-                            newrow[2] = t[2];  //BOM编号 
-                            newrow[3] = t[3];  //包装规格 
-                            newrow[4] = t[4];  //产品密度 
-                            newrow[5] = t[5];  //物料编码ID 
-                            newrow[6] = t[6];  //物料编码
-                            newrow[7] = t[7];  //物料名称
+                            newrow[1] = t[1];           //产品名称
+                            newrow[2] = t[2];           //BOM编号 
+                            newrow[3] = t[3];           //包装规格 
+                            newrow[4] = t[4];           //产品密度 
+                            newrow[5] = t[5];           //物料编码ID 
+                            newrow[6] = t[6];           //物料编码
+                            newrow[7] = t[7];           //物料名称
+                            newrow[8] =t[8];            //配方用量
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
                         CreateDeatilFrm(tabname,dt);
                         //当生成完成后将dt清空内容,待下一次使用
-                        //dt.Columns.Clear();
                         dt.Rows.Clear();
                     }
                 }

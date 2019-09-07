@@ -145,6 +145,7 @@ namespace BomOfferOrder.UI
                         newrow[0] = rows[5];   //物料编码ID
                         newrow[1] = rows[6];   //物料编码
                         newrow[2] = rows[7];   //物料名称
+                        newrow[3] = rows[8];   //配方用量
                         resultdt.Rows.Add(newrow);
                     }
                 }
