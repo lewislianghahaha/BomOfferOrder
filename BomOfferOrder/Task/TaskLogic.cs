@@ -115,6 +115,12 @@ namespace BomOfferOrder.Task
         /// <param name="bomdt">BOM明细记录DT</param>
         private void Generatedt(string valuelist,DataTable sourcedt,DataTable bomdt)
         {
+            //若_resultTable有值,即先将其清空,再进行赋值
+            if (_resultTable.Rows.Count > 0)
+            {
+                _resultTable.Rows.Clear();
+                _resultTable.Columns.Clear();
+            }
             _resultTable = generateDb.Generatedt(valuelist,sourcedt,bomdt);
             _resultMark = _resultTable.Rows.Count > 0;
         }

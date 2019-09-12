@@ -82,6 +82,12 @@
     <Compile Include="UI\ShowDetailFrm.Designer.cs">
       <DependentUpon>ShowDetailFrm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ShowMaterialDetailFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ShowMaterialDetailFrm.Designer.cs">
+      <DependentUpon>ShowMaterialDetailFrm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="UI\DtlFrm.resx">
       <DependentUpon>DtlFrm.cs</DependentUpon>
     </EmbeddedResource>

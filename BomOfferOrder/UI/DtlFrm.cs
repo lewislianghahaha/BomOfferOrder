@@ -74,7 +74,7 @@ namespace BomOfferOrder.UI
                     if (dtlrows.Length > 0)
                     {
                         //获取‘产品名称’作为Tab Page名称
-                        tabname = Convert.ToString(dtlrows[i][1]); //BUG 当出现10条时 i=9时出现
+                        tabname = Convert.ToString(dtlrows[0][1]);
 
                         foreach (DataRow t in dtlrows)
                         {
@@ -86,7 +86,7 @@ namespace BomOfferOrder.UI
                             newrow[5] = t[5];           //物料编码ID 
                             newrow[6] = t[6];           //物料编码
                             newrow[7] = t[7];           //物料名称
-                            newrow[8] =t[8];            //配方用量
+                            newrow[8] = t[8];           //配方用量
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
@@ -139,6 +139,11 @@ namespace BomOfferOrder.UI
             tctotalpage.SelectedIndex = 0;          //必须要指定当前页是首页或某一页
         }
 
+        /// <summary>
+        /// 保存
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Tmsave_Click(object sender, EventArgs e)
         {
             //这里表示获取第一个选项卡中的第一个控件集合(注:要访问Form的内部成员,其内部的控件中的
@@ -165,6 +170,12 @@ namespace BomOfferOrder.UI
         {
             var clickMessage = $"提示:没保存的记录退出后将会消失,是否确定退出?";
             e.Cancel = MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes;
+            //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
+            for (var i = tctotalpage.TabCount-1; i >=0 ; i--)
+            {
+                tctotalpage.TabPages.RemoveAt(i);
+            }
+            
         }
 
     }

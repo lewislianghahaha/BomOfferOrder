@@ -85,7 +85,6 @@
             // 
             this.tctotalpage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tctotalpage.Location = new System.Drawing.Point(0, 54);
-            this.tctotalpage.Multiline = true;
             this.tctotalpage.Name = "tctotalpage";
             this.tctotalpage.SelectedIndex = 0;
             this.tctotalpage.Size = new System.Drawing.Size(854, 497);
