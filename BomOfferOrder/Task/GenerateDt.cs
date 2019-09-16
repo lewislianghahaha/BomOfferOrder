@@ -4,7 +4,7 @@ using BomOfferOrder.DB;
 
 namespace BomOfferOrder.Task
 {
-    public class GenerateDb
+    public class GenerateDt
     {
         DbList dbList=new DbList();
 

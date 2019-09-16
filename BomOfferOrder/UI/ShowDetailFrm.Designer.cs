@@ -77,12 +77,17 @@
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.gvdtl = new System.Windows.Forms.DataGridView();
+            this.Menu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmReplace = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
             this.bngat.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
+            this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -507,12 +512,39 @@
             // gvdtl
             // 
             this.gvdtl.ColumnHeadersHeight = 20;
+            this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.RowTemplate.Height = 23;
             this.gvdtl.Size = new System.Drawing.Size(736, 318);
             this.gvdtl.TabIndex = 0;
+            // 
+            // Menu
+            // 
+            this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmReplace,
+            this.toolStripSeparator1,
+            this.tmAdd});
+            this.Menu.Name = "Menu";
+            this.Menu.Size = new System.Drawing.Size(153, 76);
+            // 
+            // tmReplace
+            // 
+            this.tmReplace.Name = "tmReplace";
+            this.tmReplace.Size = new System.Drawing.Size(152, 22);
+            this.tmReplace.Text = "替换此行记录";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // tmAdd
+            // 
+            this.tmAdd.Name = "tmAdd";
+            this.tmAdd.Size = new System.Drawing.Size(152, 22);
+            this.tmAdd.Text = "新增记录";
             // 
             // ShowDetailFrm
             // 
@@ -532,6 +564,7 @@
             this.bngat.PerformLayout();
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
+            this.Menu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -585,5 +618,9 @@
         public System.Windows.Forms.TextBox txt50;
         public System.Windows.Forms.TextBox txtremark;
         public System.Windows.Forms.DataGridView gvdtl;
+        private System.Windows.Forms.ContextMenuStrip Menu;
+        private System.Windows.Forms.ToolStripMenuItem tmReplace;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tmAdd;
     }
 }

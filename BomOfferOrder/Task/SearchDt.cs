@@ -5,7 +5,7 @@ using BomOfferOrder.DB;
 
 namespace BomOfferOrder.Task
 {
-    public class SearchDb
+    public class SearchDt
     {
         SqlList sqlList=new SqlList();
 
@@ -46,12 +46,35 @@ namespace BomOfferOrder.Task
         /// 查询BOM明细记录信息(生成时使用)
         /// </summary>
         /// <returns></returns>
-        public DataTable SearchMaterialDtl()
+        public DataTable SearchBomDtl()
         {
             var resultdt = new DataTable();
             try
             {
-                var sqlscript = sqlList.Get_Materialdtl();
+                var sqlscript = sqlList.Get_Bomdtl();
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetConn());
+                sqlDataAdapter.Fill(resultdt);
+            }
+            catch (Exception)
+            {
+                resultdt.Rows.Clear();
+                resultdt.Columns.Clear();
+            }
+            return resultdt;
+        }
+
+        /// <summary>
+        /// 查询物料明细(物料明细添加时使用)
+        /// </summary>
+        /// <param name="searchid"></param>
+        /// <param name="searchvalue"></param>
+        /// <returns></returns>
+        public DataTable SearchMaterialDtl(int searchid, string searchvalue)
+        {
+            var resultdt=new DataTable();
+            try
+            {
+                var sqlscript = sqlList.Get_MaterialDtl(searchid,searchvalue);
                 var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetConn());
                 sqlDataAdapter.Fill(resultdt);
             }

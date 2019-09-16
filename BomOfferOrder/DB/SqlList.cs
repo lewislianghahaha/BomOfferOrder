@@ -78,7 +78,7 @@
         /// 获取BOM明细记录信息(生成时使用) 注:获取目前K3-CLOUD BOM相关明细的所有记录;在初始化时获取
         /// </summary>
         /// <returns></returns>
-        public string Get_Materialdtl()
+        public string Get_Bomdtl()
         {
             #region Hide
             //_result = $@"
@@ -161,6 +161,92 @@
                             --AND A.FNUMBER='QQ-G5-0001_V1.7'
                             ORDER BY a.FMATERIALID,e.FERPCLSID--,a.FMODIFYDATE DESC
                         ";
+
+            return _result;
+        }
+
+        /// <summary>
+        /// 获取原材料物料记录(Bom明细调用新物料时使用)
+        /// </summary>
+        /// <param name="searchid">0:全部查询</param>
+        /// <param name="searchvalue">查询值</param>
+        /// <returns></returns>
+        public string Get_MaterialDtl(int searchid, string searchvalue)
+        {
+            //全部查询
+            if (searchid == 0)
+            {
+                _result = $@"
+                            SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,c.FDATAVALUE 物料分组,
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位'
+
+                            FROM dbo.T_BD_MATERIAL a
+                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
+                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L c ON b.FENTRYID=c.FENTRYID
+                            INNER JOIN dbo.T_BD_MATERIAL_L d ON a.FMATERIALID=d.FMATERIALID
+
+                            INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
+                            INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
+                            INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
+
+                            WHERE c.FDATAVALUE ='原材料'
+                            AND a.FDOCUMENTSTATUS='C'
+                            AND a.FFORBIDSTATUS='A' --物料禁用状态:否
+                            AND d.FLOCALEID=2052
+                            AND g.FLOCALEID=2052
+                        ";
+            }
+            else
+            {
+                //按照‘物料名称’进行查询
+                if (searchid == 1)
+                {
+                    _result = $@"
+                            SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,c.FDATAVALUE 物料分组,
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位'
+
+                            FROM dbo.T_BD_MATERIAL a
+                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
+                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L c ON b.FENTRYID=c.FENTRYID
+                            INNER JOIN dbo.T_BD_MATERIAL_L d ON a.FMATERIALID=d.FMATERIALID
+
+                            INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
+                            INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
+                            INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
+
+                            WHERE c.FDATAVALUE ='原材料'
+                            AND D.FNAME LIKE '%{searchvalue}%'
+                            AND a.FDOCUMENTSTATUS='C'
+                            AND a.FFORBIDSTATUS='A' --物料禁用状态:否
+                            AND d.FLOCALEID=2052
+                            AND g.FLOCALEID=2052
+                        ";
+                }
+                //按照'物料编码'进行查询
+                else
+                {
+                    _result = $@"
+                            SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,c.FDATAVALUE 物料分组,
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位'
+
+                            FROM dbo.T_BD_MATERIAL a
+                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
+                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L c ON b.FENTRYID=c.FENTRYID
+                            INNER JOIN dbo.T_BD_MATERIAL_L d ON a.FMATERIALID=d.FMATERIALID
+
+                            INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
+                            INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
+                            INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
+
+                            WHERE c.FDATAVALUE ='原材料'
+                            AND a.FNUMBER LIKE '%{searchvalue}%'
+                            AND a.FDOCUMENTSTATUS='C'
+                            AND a.FFORBIDSTATUS='A' --物料禁用状态:否
+                            AND d.FLOCALEID=2052
+                            AND g.FLOCALEID=2052
+                        ";
+                }
+            }
 
             return _result;
         }

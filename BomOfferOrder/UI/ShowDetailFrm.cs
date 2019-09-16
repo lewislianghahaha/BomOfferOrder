@@ -9,6 +9,7 @@ namespace BomOfferOrder.UI
     public partial class ShowDetailFrm : Form
     {
         DbList dbList=new DbList();
+        ShowMaterialDetailFrm showMaterial=new ShowMaterialDetailFrm();
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
@@ -30,7 +31,8 @@ namespace BomOfferOrder.UI
 
         private void OnRegisterEvents()
         {
-
+            tmAdd.Click += TmAdd_Click;
+            tmReplace.Click += TmReplace_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -65,6 +67,45 @@ namespace BomOfferOrder.UI
             }
             //控制GridView单元格显示方式
             ControlGridViewisShow();
+        }
+
+        /// <summary>
+        /// 新增记录
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmAdd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                showMaterial.StartPosition = FormStartPosition.CenterScreen;
+                showMaterial.ShowDialog();
+
+                //返回相关记录回本窗体相关处理
+                //判断若返回的DT为空的话,就不需要任何效果
+                //if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 替换此行数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmReplace_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -418,6 +459,8 @@ namespace BomOfferOrder.UI
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
     }
 }

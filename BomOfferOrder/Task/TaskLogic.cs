@@ -4,8 +4,8 @@ namespace BomOfferOrder.Task
 {
     public class TaskLogic
     {
-        SearchDb searchDb=new SearchDb();
-        GenerateDb generateDb=new GenerateDb();
+        SearchDt searchDb=new SearchDt();
+        GenerateDt generateDb=new GenerateDt();
 
         #region 变量定义
             private string _taskid;             //记录中转ID
@@ -82,6 +82,10 @@ namespace BomOfferOrder.Task
                 case "0.1":
                     Searchbomdt();
                     break;
+                //查询:调用物料明细窗体时使用
+                case "0.2":
+                    SearchMaterialdt(_searchid,_searchvalue);
+                    break;
                 //运算
                 case "1":
                     Generatedt(_valuelist,_dt,_bomdt);
@@ -104,7 +108,15 @@ namespace BomOfferOrder.Task
         /// </summary>
         private void Searchbomdt()
         {
-            _resultbomdt=searchDb.SearchMaterialDtl();
+            _resultbomdt=searchDb.SearchBomDtl();
+        }
+
+        /// <summary>
+        /// 初始化物料信息(添加物料明细信息时使用)
+        /// </summary>
+        private void SearchMaterialdt(int searchid, string searchvalue)
+        {
+            _resultTable = searchDb.SearchMaterialDtl(searchid,searchvalue);
         }
 
         /// <summary>
@@ -124,5 +136,7 @@ namespace BomOfferOrder.Task
             _resultTable = generateDb.Generatedt(valuelist,sourcedt,bomdt);
             _resultMark = _resultTable.Rows.Count > 0;
         }
+
+
     }
 }

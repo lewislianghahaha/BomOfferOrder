@@ -149,7 +149,7 @@ namespace BomOfferOrder.UI
             //这里表示获取第一个选项卡中的第一个控件集合(注:要访问Form的内部成员,其内部的控件中的
             //Modifiers需设置为Public才可以访问)
             //var currentpage = tctotalpage.SelectedIndex;
-            string b = string.Empty;
+            //string b = string.Empty;
             //for (int i = 0; i < 11; i++)
             //{
             //    var a = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
@@ -175,7 +175,6 @@ namespace BomOfferOrder.UI
             {
                 tctotalpage.TabPages.RemoveAt(i);
             }
-            
         }
 
     }

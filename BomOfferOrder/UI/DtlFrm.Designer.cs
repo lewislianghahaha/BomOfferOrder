@@ -34,6 +34,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
+            this.tmUpload = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -42,7 +43,8 @@
             // 
             this.MainMenu.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmsave});
+            this.tmsave,
+            this.tmUpload});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Size = new System.Drawing.Size(854, 25);
@@ -52,7 +54,7 @@
             // 
             this.tmsave.Name = "tmsave";
             this.tmsave.Size = new System.Drawing.Size(44, 21);
-            this.tmsave.Text = "保存";
+            this.tmsave.Text = "审核";
             // 
             // panel1
             // 
@@ -90,6 +92,12 @@
             this.tctotalpage.Size = new System.Drawing.Size(854, 497);
             this.tctotalpage.TabIndex = 2;
             // 
+            // tmUpload
+            // 
+            this.tmUpload.Name = "tmUpload";
+            this.tmUpload.Size = new System.Drawing.Size(44, 21);
+            this.tmUpload.Text = "提交";
+            // 
             // DtlFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -118,5 +126,6 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabControl tctotalpage;
+        private System.Windows.Forms.ToolStripMenuItem tmUpload;
     }
 }
