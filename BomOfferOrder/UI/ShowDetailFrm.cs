@@ -78,12 +78,16 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                showMaterial.Id = 0;
                 showMaterial.StartPosition = FormStartPosition.CenterScreen;
                 showMaterial.ShowDialog();
 
-                //返回相关记录回本窗体相关处理
+                //以下为返回相关记录回本窗体相关处理
                 //判断若返回的DT为空的话,就不需要任何效果
-                //if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
+                if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
+                //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行插入效果)
+                if (showMaterial.ResultTable != null || showMaterial.ResultTable.Rows.Count > 0)
+                    InsertDtToGridView(showMaterial.ResultTable);
             }
             catch (Exception ex)
             {
@@ -100,7 +104,20 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                if(gvdtl.SelectedRows.Count==0) throw new Exception("请选择任意一行,再继续");
+                //获取GridView内的主键ID
+                var id = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
 
+                showMaterial.Id = id;
+                showMaterial.StartPosition=FormStartPosition.CenterScreen;
+                showMaterial.ShowDialog();
+
+                //以下为返回相关记录回本窗体相关处理
+                //判断若返回的DT为空的话,就不需要任何效果
+                if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
+                //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
+                if (showMaterial.ResultTable != null || showMaterial.ResultTable.Rows.Count > 0)
+                    UpdateDtToGridView(id,showMaterial.ResultTable);
             }
             catch (Exception ex)
             {
@@ -174,6 +191,8 @@ namespace BomOfferOrder.UI
         /// <returns></returns>
         private DataTable GetGridViewdt(string funState,DataTable sourcedt,DataTable resultdt)
         {
+            var entryid = 1;
+
             try
             {
                 //‘创建’状态
@@ -183,11 +202,13 @@ namespace BomOfferOrder.UI
                     foreach (DataRow rows in sourcedt.Rows)
                     {
                         var newrow = resultdt.NewRow();
-                        newrow[0] = rows[5];   //物料编码ID
-                        newrow[1] = rows[6];   //物料编码
-                        newrow[2] = rows[7];   //物料名称
-                        newrow[3] = rows[8];   //配方用量
+                        newrow[0] = entryid;   //EntryId
+                        newrow[1] = rows[5];   //物料编码ID
+                        newrow[2] = rows[6];   //物料编码
+                        newrow[3] = rows[7];   //物料名称
+                        newrow[4] = rows[8];   //配方用量
                         resultdt.Rows.Add(newrow);
+                        entryid++;
                     }
                 }
                 //‘读取’状态
@@ -211,10 +232,8 @@ namespace BomOfferOrder.UI
         private void ControlGridViewisShow()
         {
             gvdtl.Columns[0].Visible = false;
+            gvdtl.Columns[1].Visible = false;
         }
-
-
-
 
         /// <summary>
         /// 首页按钮(GridView页面跳转时使用)
@@ -460,7 +479,53 @@ namespace BomOfferOrder.UI
             }
         }
 
+        /// <summary>
+        /// 将获取的数据插入至GridView内(注:可多行使用)
+        /// </summary>
+        /// <param name="sourcedt"></param>
+        private void InsertDtToGridView(DataTable sourcedt)
+        {
+            //将GridView内的内容赋值到DT
+            var gridViewdt = (DataTable) gvdtl.DataSource;
+            //循环将获取过来的值插入至GridView内
+            foreach (DataRow rows in sourcedt.Rows)
+            {
+                var newrow = gridViewdt.NewRow();
+                newrow[1] = rows[1];      //物料编码ID
+                newrow[2] = rows[2];     //物料编码
+                newrow[3] = rows[3];    //物料名称
+                //
+                gridViewdt.Rows.Add(newrow);
+            }
+            //操作完成后进行刷新
+            OnInitialize(gridViewdt);
+        }
 
+        /// <summary>
+        /// 将获取的值更新至指定的GridView行内(注:只能一行使用)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="sourcedt"></param>
+        private void UpdateDtToGridView(int id,DataTable sourcedt)
+        {
+            //循环GridView内的值,当发现ID与条件ID相同,即进入行更新
+            //将GridView内的内容赋值到DT
+            var gridViewdt = (DataTable)gvdtl.DataSource;
+            foreach (DataRow rows in gridViewdt.Rows)
+            {
+                //判断若ID相同,就执行更新操作
+                if(Convert.ToInt32(rows[0])!=id) continue;
+                gridViewdt.BeginInit();
+                rows[1] = sourcedt.Rows[0][1];  //物料编码ID
+                rows[2] = sourcedt.Rows[0][2];  //物料编码
+                rows[3] = sourcedt.Rows[0][3];  //物料名称
+                rows[4] = DBNull.Value;         //用量(清空)
+                //
+                gridViewdt.EndInit();
+            }
+            //操作完成后进行刷新
+            OnInitialize(gridViewdt);
+        }
 
     }
 }

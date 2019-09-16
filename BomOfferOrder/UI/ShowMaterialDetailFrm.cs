@@ -3,6 +3,7 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using BomOfferOrder.DB;
 using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI
@@ -11,7 +12,10 @@ namespace BomOfferOrder.UI
     {
         TaskLogic task=new TaskLogic();
         Load load=new Load();
+        DbList dbList = new DbList();
 
+        //获取ID值,(替换时使用)
+        private int _id;
         //返回DT类型
         private DataTable _resultTable;
 
@@ -24,12 +28,19 @@ namespace BomOfferOrder.UI
         //记录初始化标记(GridView页面跳转 初始化时使用)
         private bool _pageChange;
 
+        #region Set
+            /// <summary>
+            /// 获取ID值,(替换时使用)
+            /// </summary>
+            public int Id { set { _id = value; } }
+        #endregion
+
         #region Get
 
-            /// <summary>
-            /// 返回DT
-            /// </summary>
-            public DataTable ResultTable => _resultTable;
+        /// <summary>
+        /// 返回DT
+        /// </summary>
+        public DataTable ResultTable => _resultTable;
 
         #endregion
 
@@ -45,6 +56,7 @@ namespace BomOfferOrder.UI
             tmGet.Click += TmGet_Click;
             tmclose.Click += Tmclose_Click;
             btnsearch.Click += Btnsearch_Click;
+            comtype.SelectedIndexChanged += Comtype_SelectedIndexChanged;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -69,6 +81,16 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 下拉列表改变时发生
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Comtype_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtvalue.Text = "";
+        }
+
+        /// <summary>
         /// 获取
         /// </summary>
         /// <param name="sender"></param>
@@ -77,7 +99,35 @@ namespace BomOfferOrder.UI
         {
             try
             {
-
+                //区分:当_id=0时,表示‘新增’记录,可多行选择; 反之,为‘替换’使用,只能选择一行
+                if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
+                //获取GridView临时表
+                _resultTable = dbList.MakeGridViewTemp();
+                //当为‘新增’操作时
+                if (_id == 0)
+                {
+                    //循环所选择的行数
+                    foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                    {
+                        var newrow = _resultTable.NewRow();
+                        newrow[1] = row.Cells[0].Value;     //物料编码ID
+                        newrow[2] = row.Cells[1].Value;     //物料编码
+                        newrow[3] = row.Cells[2].Value;     //物料名称
+                        _resultTable.Rows.Add(newrow);
+                    }
+                }
+                //当为‘替换’操作时
+                else
+                {
+                    if(gvdtl.SelectedRows.Count>1) throw new Exception("只能选择一行记录进行替换,请重新选择");
+                    var newrow = _resultTable.NewRow();
+                    newrow[1] = gvdtl.SelectedRows[0].Cells[0].Value; //物料编码ID
+                    newrow[2] = gvdtl.SelectedRows[0].Cells[1].Value; //物料编码
+                    newrow[3] = gvdtl.SelectedRows[0].Cells[2].Value; //物料名称
+                    _resultTable.Rows.Add(newrow);
+                }
+                //完成后关闭该窗体
+                this.Close();
             }
             catch (Exception ex)
             {
@@ -94,8 +144,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                if(txtvalue.Text=="")throw new Exception("请输入查询值,再继续进行查询");
-
                 //获取下拉列表所选值
                 var dvordertylelist = (DataRowView)comtype.Items[comtype.SelectedIndex];
                 var ordertypeId = Convert.ToInt32(dvordertylelist["Id"]);

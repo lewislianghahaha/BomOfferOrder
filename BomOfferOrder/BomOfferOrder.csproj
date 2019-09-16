@@ -119,6 +119,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\SearchFrm.resx">
+      <DependentUpon>SearchFrm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\ShowDetailFrm.resx">
       <DependentUpon>ShowDetailFrm.cs</DependentUpon>
     </EmbeddedResource>

@@ -174,7 +174,7 @@
         public string Get_MaterialDtl(int searchid, string searchvalue)
         {
             //全部查询
-            if (searchid == 0)
+            if (searchid == 0 || searchvalue=="")
             {
                 _result = $@"
                             SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,c.FDATAVALUE 物料分组,

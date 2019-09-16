@@ -231,33 +231,38 @@ namespace BomOfferOrder.DB
         public DataTable MakeGridViewTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < 7; i++)
             {
                 var dc = new DataColumn();
 
                 switch (i)
                 {
+                    //记录每行的行ID
                     case 0:
-                        dc.ColumnName = "物料编码ID";
+                        dc.ColumnName = "Entryid";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
                     case 1:
+                        dc.ColumnName = "物料编码ID";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 2:
                         dc.ColumnName = "物料编码";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 2:
+                    case 3:
                         dc.ColumnName = "物料名称";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 3:
+                    case 4:
                         dc.ColumnName = "配方用量";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 4:
+                    case 5:
                         dc.ColumnName = "物料单价(含税)";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 5:
+                    case 6:
                         dc.ColumnName = "物料成本(含税)";
                         dc.DataType = Type.GetType("System.String");
                         break;
