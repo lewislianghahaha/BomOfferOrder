@@ -138,7 +138,7 @@
 	                               b.FMATERIALID 表体物料ID,c.FNUMBER 物料编码,d.FNAME 物料名称,
                                    CASE E.FERPCLSID WHEN 1 THEN '外购' WHEN 2 THEN '自制' ELSE '其它' END 物料属性,
                                    cast(b.FNUMERATOR/b.FDENOMINATOR*(1+b.FSCRAPRATE/100) as nvarchar(250)) 用量,
-                                   b.FNUMERATOR 分子,b.FDENOMINATOR 分母,b.FSCRAPRATE 变动损耗率
+                                   b.FNUMERATOR 分子,b.FDENOMINATOR 分母,b.FSCRAPRATE 变动损耗率,c.F_YTC_DECIMAL8 最新采购价格
 
                             FROM T_ENG_BOM A
                             INNER JOIN dbo.T_ENG_BOMCHILD b ON a.FID=b.FID
@@ -178,7 +178,7 @@
             {
                 _result = $@"
                             SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,c.FDATAVALUE 物料分组,
-                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位'
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格
 
                             FROM dbo.T_BD_MATERIAL a
                             INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -203,7 +203,7 @@
                 {
                     _result = $@"
                             SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,c.FDATAVALUE 物料分组,
-                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位'
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格
 
                             FROM dbo.T_BD_MATERIAL a
                             INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -227,7 +227,7 @@
                 {
                     _result = $@"
                             SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,c.FDATAVALUE 物料分组,
-                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位'
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格
 
                             FROM dbo.T_BD_MATERIAL a
                             INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID

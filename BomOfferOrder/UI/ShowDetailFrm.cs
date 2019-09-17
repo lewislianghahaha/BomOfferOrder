@@ -11,17 +11,22 @@ namespace BomOfferOrder.UI
         DbList dbList=new DbList();
         ShowMaterialDetailFrm showMaterial=new ShowMaterialDetailFrm();
 
-        //保存查询出来的GridView记录
-        private DataTable _dtl;
-        //保存查询出来的角色权限记录
-        private DataTable _userdt;
+        #region 变量参数
+            //获取‘原材料’DT
+            private DataTable _materialdt;
 
-        //记录当前页数(GridView页面跳转使用)
-        private int _pageCurrent = 1;
-        //记录计算出来的总页数(GridView页面跳转使用)
-        private int _totalpagecount;
-        //记录初始化标记(GridView页面跳转 初始化时使用)
-        private bool _pageChange;
+            //保存查询出来的GridView记录
+            private DataTable _dtl;
+            //保存查询出来的角色权限记录
+            private DataTable _userdt;
+
+            //记录当前页数(GridView页面跳转使用)
+            private int _pageCurrent = 1;
+            //记录计算出来的总页数(GridView页面跳转使用)
+            private int _totalpagecount;
+            //记录初始化标记(GridView页面跳转 初始化时使用)
+            private bool _pageChange;
+        #endregion
 
         public ShowDetailFrm()
         {
@@ -33,6 +38,7 @@ namespace BomOfferOrder.UI
         {
             tmAdd.Click += TmAdd_Click;
             tmReplace.Click += TmReplace_Click;
+            gvdtl.CellValueChanged += Gvdtl_CellValueChanged;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -79,6 +85,8 @@ namespace BomOfferOrder.UI
             try
             {
                 showMaterial.Id = 0;
+                //初始化GridView
+                showMaterial.OnInitializeGridView(_materialdt);
                 showMaterial.StartPosition = FormStartPosition.CenterScreen;
                 showMaterial.ShowDialog();
 
@@ -109,6 +117,8 @@ namespace BomOfferOrder.UI
                 var id = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
 
                 showMaterial.Id = id;
+                //初始化GridView
+                showMaterial.OnInitializeGridView(_materialdt);
                 showMaterial.StartPosition=FormStartPosition.CenterScreen;
                 showMaterial.ShowDialog();
 
@@ -130,13 +140,16 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="funState"></param>
         /// <param name="dt"></param>
-        public void AddDbToFrm(string funState,DataTable dt)
+        /// <param name="materialdt">原材料DT</param>
+        public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt)
         {
             try
             {
                 //单据状态:创建 C
                 if (funState == "C")
                 {
+                    //将‘原材料’DT赋值至变量内
+                    _materialdt = materialdt;
                     FunStateCUse(funState,dt);
                 }
                 //单据状态:读取 R
@@ -185,7 +198,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 生成GridView需要的DT
         /// </summary>
-        /// <param name="funState"></param>
+        /// <param name="funState">状态:C:创建 R:读取</param>
         /// <param name="sourcedt">数据源DT</param>
         /// <param name="resultdt">根据‘创建’或‘读取’生成的临时表</param>
         /// <returns></returns>
@@ -207,6 +220,7 @@ namespace BomOfferOrder.UI
                         newrow[2] = rows[6];   //物料编码
                         newrow[3] = rows[7];   //物料名称
                         newrow[4] = rows[8];   //配方用量
+                        newrow[5] = rows[10];  //物料单价(含税)
                         resultdt.Rows.Add(newrow);
                         entryid++;
                     }
@@ -231,8 +245,10 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void ControlGridViewisShow()
         {
-            gvdtl.Columns[0].Visible = false;
-            gvdtl.Columns[1].Visible = false;
+            gvdtl.Columns[0].Visible = false;  //EntryID
+            gvdtl.Columns[1].Visible = false;  //物料ID
+            gvdtl.Columns[2].ReadOnly = true; //物料编码
+            gvdtl.Columns[3].ReadOnly = true; //物料名称
         }
 
         /// <summary>
@@ -481,50 +497,95 @@ namespace BomOfferOrder.UI
 
         /// <summary>
         /// 将获取的数据插入至GridView内(注:可多行使用)
+        /// 判断若sourcedt内的物料ID已经在GridView内已存在,即跳过不作添加
         /// </summary>
         /// <param name="sourcedt"></param>
         private void InsertDtToGridView(DataTable sourcedt)
         {
-            //将GridView内的内容赋值到DT
-            var gridViewdt = (DataTable) gvdtl.DataSource;
-            //循环将获取过来的值插入至GridView内
-            foreach (DataRow rows in sourcedt.Rows)
+            try
             {
-                var newrow = gridViewdt.NewRow();
-                newrow[1] = rows[1];      //物料编码ID
-                newrow[2] = rows[2];     //物料编码
-                newrow[3] = rows[3];    //物料名称
-                //
-                gridViewdt.Rows.Add(newrow);
+                //将GridView内的内容赋值到DT
+                var gridViewdt = (DataTable)gvdtl.DataSource;
+                //获取及计算当前GridView的最大行数(后面累加entryid使用)
+                var entryid = gridViewdt.Rows.Count+1;
+
+                //循环将获取过来的值插入至GridView内
+                foreach (DataRow rows in sourcedt.Rows)
+                {
+                    //判断若获取过来的物料ID已在GridView内存在,即跳过不作添加
+                    if(gridViewdt.Select("物料编码ID='" + rows[1] + "'").Length>0) continue;
+
+                    var newrow = gridViewdt.NewRow();
+                    newrow[0] = entryid;        //EntryId
+                    newrow[1] = rows[1];        //物料编码ID
+                    newrow[2] = rows[2];        //物料编码
+                    newrow[3] = rows[3];        //物料名称
+                    newrow[5] = rows[5];        //物料单价
+                    gridViewdt.Rows.Add(newrow);
+                    entryid++;
+                }
+                //操作完成后进行刷新
+                OnInitialize(gridViewdt);
             }
-            //操作完成后进行刷新
-            OnInitialize(gridViewdt);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
         /// 将获取的值更新至指定的GridView行内(注:只能一行使用)
+        /// 判断若sourcedt内的物料ID已在GridView内存在,即跳出异常不能继续替换操作
         /// </summary>
         /// <param name="id"></param>
         /// <param name="sourcedt"></param>
         private void UpdateDtToGridView(int id,DataTable sourcedt)
         {
-            //循环GridView内的值,当发现ID与条件ID相同,即进入行更新
-            //将GridView内的内容赋值到DT
-            var gridViewdt = (DataTable)gvdtl.DataSource;
-            foreach (DataRow rows in gridViewdt.Rows)
+            try
             {
-                //判断若ID相同,就执行更新操作
-                if(Convert.ToInt32(rows[0])!=id) continue;
-                gridViewdt.BeginInit();
-                rows[1] = sourcedt.Rows[0][1];  //物料编码ID
-                rows[2] = sourcedt.Rows[0][2];  //物料编码
-                rows[3] = sourcedt.Rows[0][3];  //物料名称
-                rows[4] = DBNull.Value;         //用量(清空)
-                //
-                gridViewdt.EndInit();
+                //循环GridView内的值,当发现ID与条件ID相同,即进入行更新
+                //将GridView内的内容赋值到DT
+                var gridViewdt = (DataTable)gvdtl.DataSource;
+                //判断若sourcedt内的物料ID已在GridView内存在,即跳出异常不能继续替换操作
+                if(gridViewdt.Select("物料编码ID='"+ sourcedt.Rows[0][1] +"'").Length>0)
+                    throw new Exception($"获取物料'{sourcedt.Rows[0][2]}'已存在,故不能进行替换,请重新选择其它物料");
+
+                foreach (DataRow rows in gridViewdt.Rows)
+                {
+                    //判断若ID相同,就执行更新操作
+                    if (Convert.ToInt32(rows[0]) != id) continue;
+                    gridViewdt.BeginInit();
+                    rows[1] = sourcedt.Rows[0][1];  //物料编码ID
+                    rows[2] = sourcedt.Rows[0][2];  //物料编码
+                    rows[3] = sourcedt.Rows[0][3];  //物料名称
+                    rows[4] = DBNull.Value;         //用量(清空)
+                    rows[5] = sourcedt.Rows[0][5];  //物料单价
+                    gridViewdt.EndInit();
+                }
+                //操作完成后进行刷新
+                OnInitialize(gridViewdt);
             }
-            //操作完成后进行刷新
-            OnInitialize(gridViewdt);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 当GridView单元格值发生变化时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Gvdtl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
     }

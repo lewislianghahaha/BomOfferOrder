@@ -14,19 +14,21 @@ namespace BomOfferOrder.UI
         Load load=new Load();
         DbList dbList = new DbList();
 
-        //获取ID值,(替换时使用)
-        private int _id;
-        //返回DT类型
-        private DataTable _resultTable;
+        #region 变量参数
+            //获取ID值(替换时使用)
+            private int _id;
+            //返回DT类型
+            private DataTable _resultTable;
 
-        //保存查询出来的GridView记录（GridView页面跳转时使用）
-        private DataTable _dtl;
-        //记录当前页数(GridView页面跳转使用)
-        private int _pageCurrent = 1;
-        //记录计算出来的总页数(GridView页面跳转使用)
-        private int _totalpagecount;
-        //记录初始化标记(GridView页面跳转 初始化时使用)
-        private bool _pageChange;
+            //保存查询出来的GridView记录（GridView页面跳转时使用）
+            private DataTable _dtl;
+            //记录当前页数(GridView页面跳转使用)
+            private int _pageCurrent = 1;
+            //记录计算出来的总页数(GridView页面跳转使用)
+            private int _totalpagecount;
+            //记录初始化标记(GridView页面跳转 初始化时使用)
+            private bool _pageChange;
+        #endregion
 
         #region Set
             /// <summary>
@@ -74,8 +76,14 @@ namespace BomOfferOrder.UI
         {
             //初始化下拉列表
             OnShowTypeList();
-            //初始化GridView
-            OnInitializeGridView();
+        }
+
+        /// <summary>
+        /// 初始化GridView信息
+        /// </summary>
+        public void OnInitializeGridView(DataTable materialdt)
+        {
+            LinkGridViewPageChange(materialdt);
             //设置GridView是否显示某些列
             ControlGridViewisShow();
         }
@@ -113,6 +121,7 @@ namespace BomOfferOrder.UI
                         newrow[1] = row.Cells[0].Value;     //物料编码ID
                         newrow[2] = row.Cells[1].Value;     //物料编码
                         newrow[3] = row.Cells[2].Value;     //物料名称
+                        newrow[5] = row.Cells[6].Value;     //物料单价
                         _resultTable.Rows.Add(newrow);
                     }
                 }
@@ -124,6 +133,7 @@ namespace BomOfferOrder.UI
                     newrow[1] = gvdtl.SelectedRows[0].Cells[0].Value; //物料编码ID
                     newrow[2] = gvdtl.SelectedRows[0].Cells[1].Value; //物料编码
                     newrow[3] = gvdtl.SelectedRows[0].Cells[2].Value; //物料名称
+                    newrow[5] = gvdtl.SelectedRows[0].Cells[6].Value; //物料单价
                     _resultTable.Rows.Add(newrow);
                 }
                 //完成后关闭该窗体
@@ -518,17 +528,6 @@ namespace BomOfferOrder.UI
             {
                 load.Close();
             }));
-        }
-
-        /// <summary>
-        /// 初始化GridView信息
-        /// </summary>
-        private void OnInitializeGridView()
-        {
-            task.TaskId = "0.2";
-            task.SearchId = 0;
-            task.StartTask();
-            LinkGridViewPageChange(task.ResultTable);
         }
 
         /// <summary>

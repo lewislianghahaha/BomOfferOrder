@@ -3,12 +3,14 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using BomOfferOrder.DB;
+using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI
 {
     public partial class DtlFrm : Form
     {
         DbList dbList=new DbList();
+        TaskLogic task=new TaskLogic();
 
         #region 参数定义
 
@@ -34,6 +36,7 @@ namespace BomOfferOrder.UI
 
         private void OnRegisterEvents()
         {
+            tmConfirm.Click += TmConfirm_Click;
             tmsave.Click += Tmsave_Click;
             this.FormClosing += DtlFrm_FormClosing;
         }
@@ -41,24 +44,27 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 初始化记录
         /// </summary>
-        public void OnInitialize(DataTable materialdt)
+        public void OnInitialize(DataTable bomdt)
         {
+            //初始化获取‘原材料’物料明细信息(注:添加物料明细窗体使用)
+            var materialdt = OnInitializeMaterialDt();
+
             //单据状态:创建 C
             if (_funState=="C")
             {
-                CreateDetail(materialdt);
+                CreateDetail(bomdt, materialdt);
             }
             //单据状态:读取 R
             else
             {
-                ReadDetail(materialdt);
+                ReadDetail(bomdt, materialdt);
             }
         }
 
         /// <summary>
         /// 创建时使用
         /// </summary>
-        void CreateDetail(DataTable sourcedt)
+        void CreateDetail(DataTable sourcedt,DataTable materialdt)
         {
             //获取临时表
             var dt = dbList.MakeTemp();
@@ -87,10 +93,11 @@ namespace BomOfferOrder.UI
                             newrow[6] = t[6];           //物料编码
                             newrow[7] = t[7];           //物料名称
                             newrow[8] = t[8];           //配方用量
+                            newrow[10] = t[10];         //物料单价
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                        CreateDeatilFrm(tabname,dt);
+                        CreateDetailFrm(tabname,dt,materialdt);
                         //当生成完成后将dt清空内容,待下一次使用
                         dt.Rows.Clear();
                     }
@@ -105,7 +112,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 读取记录时使用
         /// </summary>
-        void ReadDetail(DataTable sourcedt)
+        void ReadDetail(DataTable sourcedt, DataTable materialdt)
         {
             try
             {
@@ -120,7 +127,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 生成Tab page及对应的ShowDetailFrm
         /// </summary>
-        void CreateDeatilFrm(string tabname,DataTable dt)
+        void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt)
         {
             var newpage = new TabPage {Text = $"{tabname}"};
 
@@ -132,7 +139,7 @@ namespace BomOfferOrder.UI
                 FormBorderStyle = FormBorderStyle.None
             };
             //对ShowDetailFrm赋值
-            showDetailFrm.AddDbToFrm(_funState,dt);
+            showDetailFrm.AddDbToFrm(_funState,dt,materialdt);
             showDetailFrm.Show();                   //只能使用Show()
             newpage.Controls.Add(showDetailFrm);    //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);      //将新创建的Tab Page添加至TabControl控件内
@@ -140,7 +147,24 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 保存
+        /// 审核
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmConfirm_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 提交
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -161,6 +185,8 @@ namespace BomOfferOrder.UI
             //MessageBox.Show(b, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+
+
         /// <summary>
         /// 关闭窗体
         /// </summary>
@@ -175,6 +201,18 @@ namespace BomOfferOrder.UI
             {
                 tctotalpage.TabPages.RemoveAt(i);
             }
+        }
+
+        /// <summary>
+        /// 初始化原材料物料DT
+        /// </summary>
+        /// <returns></returns>
+        private DataTable OnInitializeMaterialDt()
+        {
+            task.TaskId = "0.2";
+            task.SearchId = 0;
+            task.StartTask();
+            return task.ResultTable;
         }
 
     }

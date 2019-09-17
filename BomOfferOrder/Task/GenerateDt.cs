@@ -42,7 +42,7 @@ namespace BomOfferOrder.Task
                     var dtlrows = bomdt.Select("表头物料ID='" + Convert.ToInt32(row[0]) + "'");
                     var bomnum = Convert.ToString(dtlrows[0][1]);
 
-                    //执行插入相关信息至临时表
+                    //执行插入相关信息至临时表(使用递归)
                     result.Merge(GetdtltoDt(id,fmaterialid,productname,bao,productmi,bomnum,bomdt,result,0));
                 }
             }
@@ -82,25 +82,25 @@ namespace BomOfferOrder.Task
                 if (Convert.ToString(dtlrows[i][5]) == "外购")
                 {
                     //判断进入的物料ID是否需要更新或是插入记录
-                    //检查获取过来的‘物料编码ID’是否在第一层级的BOM明细行内存在,若存在,即不用创建新行插入,只需根据‘用量’即可
+                    //检查获取过来的‘物料编码ID’是否在第一层级的BOM明细行内存在,若存在,即不用创建新行插入,只需累加‘用量’即可
                     var resultrows = resultdt.Select("产品名称='" + productname + "' and 明细行BOM编号='" + bomnum + "' and 物料编码ID='"+ dtlrows[i][2] + "'");  
  
                     if (resultrows.Length > 0)
                     {
                         foreach (DataRow row in resultdt.Rows)
                         {
-                            //使用‘产品名称’ ‘明细行BOM编号’ ‘表体物料ID’放到resultdt内存在;若存在,就更新,不用插入新行至resultdt
-                            if (row[1].ToString() == productname && row[10].ToString() == bomnum 
-                                && Convert.ToInt32(row[5]) == Convert.ToInt32(dtlrows[i][2]))
+                            //使用‘产品名称’ ‘明细行BOM编号’ ‘表体物料ID’放到resultdt内判断是否存在;若存在,就更新,不用插入新行至resultdt
+                            if (row[1].ToString() == productname && row[9].ToString() == bomnum  && Convert.ToInt32(row[5]) == Convert.ToInt32(dtlrows[i][2]))
                             {
                                 //当检查到物料在resultdt存在的话,就进行更新
                                 resultdt.BeginInit();
                                 //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
                                 qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) : 
                                     decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
-
-                                row[9] = Convert.ToDecimal(row[9]) + qtytemp;
+                                //累加‘用量’
+                                row[8] = Convert.ToDecimal(row[8]) + qtytemp;
                                 resultdt.EndInit();
+                                //当修改完成后,跳出该循环
                                 break;
                             }
                         }
@@ -120,8 +120,9 @@ namespace BomOfferOrder.Task
                         newrow[5] = dtlrows[i][2];        //物料编码ID
                         newrow[6] = dtlrows[i][3];        //物料编码
                         newrow[7] = dtlrows[i][4];        //物料名称
-                        newrow[8] = qtytemp;              //用量
+                        newrow[8] = qtytemp;              //配方用量
                         newrow[9] = dtlrows[i][1];        //明细行BOM编号
+                        newrow[10] = dtlrows[i][10];      //物料单价
                         resultdt.Rows.Add(newrow);
                     }
                 }

@@ -4,11 +4,29 @@ namespace BomOfferOrder
 {
     public class Conn
     {
-        public string GetConnectionString()
+        /// <summary>
+        /// 获取连接字符串
+        /// </summary>
+        /// <param name="connid">0:读取K3-Cloud正式库,当为1:读取BomOffer库</param>
+        /// <returns></returns>
+        public string GetConnectionString(int connid)
         {
-            //读取App.Config配置文件中的Connstring节点    
-            var pubs = ConfigurationManager.ConnectionStrings["Connstring"];
-            var strcon = pubs.ConnectionString;
+            var strcon = string.Empty;
+
+            if (connid == 0)
+            {
+                //读取App.Config配置文件中的Connstring节点    
+                var pubs = ConfigurationManager.ConnectionStrings["Connstring"];
+                strcon = pubs.ConnectionString;
+            }
+            else
+            {
+                //读取App.Config配置文件中的Connstring节点    
+                var pubs = ConfigurationManager.ConnectionStrings["ConnstringBom"];
+                strcon = pubs.ConnectionString;
+            }
+
+            #region Hide
             //var consplit = pubs.ConnectionString.Split(';');
 
             //var strcon = string.Format(consplit[0], "192.168.1.250") + ";" + string.Format(consplit[1], "RD") + ";" +
@@ -17,6 +35,8 @@ namespace BomOfferOrder
 
             //var conn = new SqlConnection(strcon);
             //return conn;
+            #endregion
+
             return strcon;
         }
     }

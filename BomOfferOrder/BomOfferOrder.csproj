@@ -151,6 +151,7 @@
     <Content Include="obj\Debug\BomOfferOrder.csproj.FileListAbsolute.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="bin\Debug\PIC\" />
     <Folder Include="bin\Release\" />
     <Folder Include="DLL\" />
     <Folder Include="obj\Debug\TempPE\" />

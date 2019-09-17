@@ -16,7 +16,7 @@ namespace BomOfferOrder.Task
         public SqlConnection GetConn()
         {
             var conn = new Conn();
-            var sqlcon = new SqlConnection(conn.GetConnectionString());
+            var sqlcon = new SqlConnection(conn.GetConnectionString(0));
             return sqlcon;
         }
 

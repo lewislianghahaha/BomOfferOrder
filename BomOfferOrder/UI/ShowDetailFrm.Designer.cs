@@ -311,7 +311,7 @@
             this.txtbom.Enabled = false;
             this.txtbom.Location = new System.Drawing.Point(381, 7);
             this.txtbom.Name = "txtbom";
-            this.txtbom.Size = new System.Drawing.Size(254, 21);
+            this.txtbom.Size = new System.Drawing.Size(250, 21);
             this.txtbom.TabIndex = 3;
             // 
             // label2
@@ -527,23 +527,23 @@
             this.toolStripSeparator1,
             this.tmAdd});
             this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(153, 76);
+            this.Menu.Size = new System.Drawing.Size(149, 54);
             // 
             // tmReplace
             // 
             this.tmReplace.Name = "tmReplace";
-            this.tmReplace.Size = new System.Drawing.Size(152, 22);
+            this.tmReplace.Size = new System.Drawing.Size(148, 22);
             this.tmReplace.Text = "替换此行记录";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
             // 
             // tmAdd
             // 
             this.tmAdd.Name = "tmAdd";
-            this.tmAdd.Size = new System.Drawing.Size(152, 22);
+            this.tmAdd.Size = new System.Drawing.Size(148, 22);
             this.tmAdd.Text = "新增记录";
             // 
             // ShowDetailFrm

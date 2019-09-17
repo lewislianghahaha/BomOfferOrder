@@ -108,7 +108,7 @@ namespace BomOfferOrder.Task
         /// </summary>
         private void Searchbomdt()
         {
-            _resultbomdt=searchDb.SearchBomDtl();
+            _resultbomdt = searchDb.SearchBomDtl();
         }
 
         /// <summary>

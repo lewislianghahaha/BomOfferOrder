@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.MainMenu = new System.Windows.Forms.MenuStrip();
+            this.tmConfirm = new System.Windows.Forms.ToolStripMenuItem();
             this.tmsave = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
-            this.tmUpload = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -43,18 +43,24 @@
             // 
             this.MainMenu.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmsave,
-            this.tmUpload});
+            this.tmConfirm,
+            this.tmsave});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Size = new System.Drawing.Size(854, 25);
             this.MainMenu.TabIndex = 0;
             // 
+            // tmConfirm
+            // 
+            this.tmConfirm.Name = "tmConfirm";
+            this.tmConfirm.Size = new System.Drawing.Size(44, 21);
+            this.tmConfirm.Text = "审核";
+            // 
             // tmsave
             // 
             this.tmsave.Name = "tmsave";
             this.tmsave.Size = new System.Drawing.Size(44, 21);
-            this.tmsave.Text = "审核";
+            this.tmsave.Text = "提交";
             // 
             // panel1
             // 
@@ -92,12 +98,6 @@
             this.tctotalpage.Size = new System.Drawing.Size(854, 497);
             this.tctotalpage.TabIndex = 2;
             // 
-            // tmUpload
-            // 
-            this.tmUpload.Name = "tmUpload";
-            this.tmUpload.Size = new System.Drawing.Size(44, 21);
-            this.tmUpload.Text = "提交";
-            // 
             // DtlFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -121,11 +121,11 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip MainMenu;
-        private System.Windows.Forms.ToolStripMenuItem tmsave;
+        private System.Windows.Forms.ToolStripMenuItem tmConfirm;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabControl tctotalpage;
-        private System.Windows.Forms.ToolStripMenuItem tmUpload;
+        private System.Windows.Forms.ToolStripMenuItem tmsave;
     }
 }
