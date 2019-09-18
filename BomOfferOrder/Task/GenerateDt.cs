@@ -123,6 +123,7 @@ namespace BomOfferOrder.Task
                         newrow[8] = qtytemp;              //配方用量
                         newrow[9] = dtlrows[i][1];        //明细行BOM编号
                         newrow[10] = dtlrows[i][10];      //物料单价
+                        newrow[11] = dtlrows[i][11];      //表头物料单价
                         resultdt.Rows.Add(newrow);
                     }
                 }

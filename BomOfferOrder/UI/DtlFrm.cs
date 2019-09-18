@@ -94,6 +94,7 @@ namespace BomOfferOrder.UI
                             newrow[7] = t[7];           //物料名称
                             newrow[8] = t[8];           //配方用量
                             newrow[10] = t[10];         //物料单价
+                            newrow[11] = t[11];         //表头物料单价
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm

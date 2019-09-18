@@ -12,8 +12,14 @@ namespace BomOfferOrder.UI
         ShowMaterialDetailFrm showMaterial=new ShowMaterialDetailFrm();
 
         #region 变量参数
+            //定义单据状态(C:创建 R:读取)
+            private string _funState;
             //获取‘原材料’DT
             private DataTable _materialdt;
+            //保存需要进行删除的行记录(提交时使用) 注:状态为R读取时才适用
+            private DataTable _deldt;
+            //记录能否删除ID(删除权限使用)
+            private bool _candel;
 
             //保存查询出来的GridView记录
             private DataTable _dtl;
@@ -28,6 +34,13 @@ namespace BomOfferOrder.UI
             private bool _pageChange;
         #endregion
 
+        #region Set
+            /// <summary>
+            /// 记录能否删除ID(删除权限使用)
+            /// </summary>
+            public bool Candel { set { _candel = value; } }
+        #endregion
+
         public ShowDetailFrm()
         {
             InitializeComponent();
@@ -39,6 +52,8 @@ namespace BomOfferOrder.UI
             tmAdd.Click += TmAdd_Click;
             tmReplace.Click += TmReplace_Click;
             gvdtl.CellValueChanged += Gvdtl_CellValueChanged;
+            txtren.TextChanged += Txtren_TextChanged;
+            tmdel.Click += Tmdel_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -73,6 +88,26 @@ namespace BomOfferOrder.UI
             }
             //控制GridView单元格显示方式
             ControlGridViewisShow();
+        }
+
+        /// <summary>
+        /// ‘人工制造及费用’文本框修改时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Txtren_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                //检测所输入的数字必须为数字
+                if(!Regex.IsMatch(txtren.Text, @"^\d+$")) throw new Exception("请输入数字再继续");
+                //根据指定值将相关项进行改变指定文本框内的值
+                CheckValue();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -136,6 +171,51 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 删除明细行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmdel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //权限控制 TODO:预留
+                
+                if(gvdtl.SelectedRows.Count==0)throw new Exception("没有选择行,不能继续");
+
+                var clickMessage = $"您所选择需删除的行数为:{gvdtl.SelectedRows.Count}行 \n 是否继续?";
+                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    //注:执行方式:当判断到_funState变量为R时,将要进行删除的行保存至_deldt内,(供保存时使用),完成后再删除GridView指定行;反之,只需将GridView进行指定行删除即可
+                    if (_funState == "R")
+                    {
+                        //将相关行保存至_deldt内,供保存时使用
+                        _deldt = dbList.MakeGridViewTemp();
+                        foreach (DataGridViewRow rows in gvdtl.SelectedRows)
+                        {
+                            var newrow = _deldt.NewRow();
+                            for (var i = 0; i < _deldt.Columns.Count; i++)
+                            {
+                                newrow[i] = rows.Cells[i].Value;
+                            }
+                            _deldt.Rows.Add(newrow);
+                        }
+                    }
+
+                    //完成后将GridView内的指定行进行删除
+                    for (var i = gvdtl.SelectedRows.Count; i > 0; i--)
+                    {
+                        gvdtl.Rows.RemoveAt(gvdtl.SelectedRows[i - 1].Index);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
         /// 将相关值根据获取过来的DT填充至对应的项内
         /// </summary>
         /// <param name="funState"></param>
@@ -150,11 +230,16 @@ namespace BomOfferOrder.UI
                 {
                     //将‘原材料’DT赋值至变量内
                     _materialdt = materialdt;
+                    //将单据状态获取至_funState变量内
+                    _funState = funState;//将单据状态获取至_funState变量内
+                    _funState = funState;
                     FunStateCUse(funState,dt);
                 }
                 //单据状态:读取 R
                 else
                 {
+                    //将单据状态获取至_funState变量内
+                    _funState = funState;
                     FunStateRUse(funState,dt);
                 }
             }
@@ -173,13 +258,23 @@ namespace BomOfferOrder.UI
         {
             //获取临时表(GridView控件时使用) 注:‘创建’及‘读取’也会使用到
             var resultdt = dbList.MakeGridViewTemp();
+
             //将相关值赋值给对应的文本框及GridView控件内
             txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);   //产品名称
             txtbom.Text = Convert.ToString(sourcedt.Rows[0][2]);    //BOM编号
             txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);    //包装规格
             txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);     //产品密度
-            //刷新GridView
+            txtprice.Text = Convert.ToString(sourcedt.Rows[0][11]); //表头物料单价
+            //设置及刷新GridView
             OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
+
+            //包装成本 公式:表头物料单价/包装规格/1.13
+            txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtprice.Text) / 
+                                                    GetNumberInt(Convert.ToString(sourcedt.Rows[0][3])) / Convert.ToDecimal(1.13),2));
+            //人工制造费用(自填)  
+            txtren.Text = "0";
+            //根据指定值将相关项进行改变指定文本框内的值
+            CheckValue();
         }
 
         /// <summary>
@@ -221,6 +316,7 @@ namespace BomOfferOrder.UI
                         newrow[3] = rows[7];   //物料名称
                         newrow[4] = rows[8];   //配方用量
                         newrow[5] = rows[10];  //物料单价(含税)
+                        newrow[6] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) / 100 , 4);//物料成本(含税) 公式:物料单价*配方用量/100
                         resultdt.Rows.Add(newrow);
                         entryid++;
                     }
@@ -247,8 +343,9 @@ namespace BomOfferOrder.UI
         {
             gvdtl.Columns[0].Visible = false;  //EntryID
             gvdtl.Columns[1].Visible = false;  //物料ID
-            gvdtl.Columns[2].ReadOnly = true; //物料编码
-            gvdtl.Columns[3].ReadOnly = true; //物料名称
+            gvdtl.Columns[2].ReadOnly = true;  //物料编码
+            gvdtl.Columns[3].ReadOnly = true;  //物料名称
+            gvdtl.Columns[6].ReadOnly = true;  //物料成本(含税)
         }
 
         /// <summary>
@@ -521,6 +618,7 @@ namespace BomOfferOrder.UI
                     newrow[2] = rows[2];        //物料编码
                     newrow[3] = rows[3];        //物料名称
                     newrow[5] = rows[5];        //物料单价
+                    newrow[6] = 0;              //物料成本(设置为0)
                     gridViewdt.Rows.Add(newrow);
                     entryid++;
                 }
@@ -554,12 +652,14 @@ namespace BomOfferOrder.UI
                 {
                     //判断若ID相同,就执行更新操作
                     if (Convert.ToInt32(rows[0]) != id) continue;
+
                     gridViewdt.BeginInit();
                     rows[1] = sourcedt.Rows[0][1];  //物料编码ID
                     rows[2] = sourcedt.Rows[0][2];  //物料编码
                     rows[3] = sourcedt.Rows[0][3];  //物料名称
                     rows[4] = DBNull.Value;         //用量(清空)
                     rows[5] = sourcedt.Rows[0][5];  //物料单价
+                    rows[6] = 0;                    //物料成本(设置为0)
                     gridViewdt.EndInit();
                 }
                 //操作完成后进行刷新
@@ -578,14 +678,93 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void Gvdtl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            var colindex = 00;
             try
             {
+                colindex = e.ColumnIndex;
+                //判断若所选中的行中的Entryid没有值,即不能执行运算
+                if(gvdtl.Rows[e.RowIndex].Cells[0].Value !="") throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除该行并通过右键菜单进行添加新物料");
 
+                //当修改的列是‘配方用量’或‘物料单价(含税)’时,将以下关联的值作出改变
+                if (colindex == 4 || colindex == 5)
+                {
+                    //获取当前行的物料单价
+                    var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value);
+                    //获取当前行的配方用量
+                    var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[5].Value);
+                    //计算‘物料成本(含税)’项 公式:物料单价*配方用量/100
+                    gvdtl.Rows[e.RowIndex].Cells[6].Value = decimal.Round(materialprice * peiqty / 100 , 4);
+                    //根据指定值将相关项进行改变指定文本框内的值
+                    CheckValue();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// 计算‘物料成本(含税)’之和
+        /// </summary>
+        /// <returns></returns>
+        private decimal GernerateSumQty()
+        {
+            decimal result = 0;
+            //将GridView内的内容赋值到DT
+            var gridViewdt = (DataTable)gvdtl.DataSource;
+
+            foreach (DataRow rows in gridViewdt.Rows)
+            {
+                if(rows[6]==DBNull.Value) continue;
+                //累加‘物料成本’
+                result += Convert.ToDecimal(rows[6]);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取字符串中的数字
+        /// </summary>
+        /// <param name="str">字符串</param>
+        /// <returns>数字</returns>
+        public decimal GetNumberInt(string str)
+        {
+            var result = 0;
+            if (!string.IsNullOrEmpty(str))
+            {
+                // 正则表达式剔除非数字字符（不包含小数点.）
+                str = Regex.Replace(str, @"[^\d.\d]", "");
+                // 如果是数字，则转换为decimal类型
+                if (Regex.IsMatch(str, @"^[+-]?\d*[.]?\d*$"))
+                {
+                    result = int.Parse(str);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 根据指定值将相关文本框进行改变
+        /// </summary>
+        private void CheckValue()
+        {
+            //获取累加的‘物料成本(含税)’之和
+            var materialsumqty = GernerateSumQty();
+
+            //材料成本(不含税) 公式:物料成本之和/1.13
+            txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
+            //成本(元/KG) 公式:材料成本+包装成本+人工制造费用
+            txtkg.Text = Convert.ToString(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text));
+
+            //成本(元/L) 公式:成本(元/KG)*产品密度
+            txtl.Text = Convert.ToString(Convert.ToDecimal(txtkg.Text) * Convert.ToDecimal(txtmi.Text));
+            //50%报价   公式:成本(元/KG)/(1-50/100)
+            txt50.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.5), 4));
+            //45%报价   公式:成本(元/KG)/(1-45/100)     
+            txt45.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.55), 4));
+            //40%报价   公式:成本(元/KG)/(1-40/100)       
+            txt40.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.6), 4));
         }
 
     }

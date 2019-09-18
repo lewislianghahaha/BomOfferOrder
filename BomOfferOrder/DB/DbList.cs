@@ -51,7 +51,7 @@ namespace BomOfferOrder.DB
         public DataTable MakeTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 11; i++)
+            for (var i = 0; i < 12; i++)
             {
                 var dc = new DataColumn();
 
@@ -100,6 +100,10 @@ namespace BomOfferOrder.DB
                         break;
                     case 10:
                         dc.ColumnName = "物料单价";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    case 11:
+                        dc.ColumnName = "表头物料单价";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                 }
