@@ -10,13 +10,24 @@ namespace BomOfferOrder.Task
         SqlList sqlList=new SqlList();
 
         /// <summary>
-        /// 获取连接
+        /// 获取K3-Cloud连接
         /// </summary>
         /// <returns></returns>
-        public SqlConnection GetConn()
+        public SqlConnection GetCloudConn()
         {
             var conn = new Conn();
             var sqlcon = new SqlConnection(conn.GetConnectionString(0));
+            return sqlcon;
+        }
+
+        /// <summary>
+        /// 获取BomOffer库连接
+        /// </summary>
+        /// <returns></returns>
+        public SqlConnection GetBomOfferConn()
+        {
+            var conn = new Conn();
+            var sqlcon = new SqlConnection(conn.GetConnectionString(1));
             return sqlcon;
         }
 
@@ -31,7 +42,7 @@ namespace BomOfferOrder.Task
             try
             {
                 var sqlscript = sqlList.Get_Search(searchid, searchvalue);
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetConn());
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetCloudConn());
                 sqlDataAdapter.Fill(resultdt);
             }
             catch (Exception)
@@ -52,7 +63,7 @@ namespace BomOfferOrder.Task
             try
             {
                 var sqlscript = sqlList.Get_Bomdtl();
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetConn());
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetCloudConn());
                 sqlDataAdapter.Fill(resultdt);
             }
             catch (Exception)
@@ -75,7 +86,7 @@ namespace BomOfferOrder.Task
             try
             {
                 var sqlscript = sqlList.Get_MaterialDtl(searchid,searchvalue);
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetConn());
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetCloudConn());
                 sqlDataAdapter.Fill(resultdt);
             }
             catch (Exception)
@@ -85,6 +96,8 @@ namespace BomOfferOrder.Task
             }
             return resultdt;
         }
+
+
 
     }
 }

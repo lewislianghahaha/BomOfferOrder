@@ -32,7 +32,7 @@
             this.tmConfirm = new System.Windows.Forms.ToolStripMenuItem();
             this.tmsave = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtbom = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
             this.MainMenu.SuspendLayout();
@@ -65,7 +65,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.txtbom);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 25);
@@ -73,12 +73,12 @@
             this.panel1.Size = new System.Drawing.Size(854, 29);
             this.panel1.TabIndex = 1;
             // 
-            // textBox1
+            // txtbom
             // 
-            this.textBox1.Location = new System.Drawing.Point(76, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(248, 21);
-            this.textBox1.TabIndex = 1;
+            this.txtbom.Location = new System.Drawing.Point(76, 3);
+            this.txtbom.Name = "txtbom";
+            this.txtbom.Size = new System.Drawing.Size(248, 21);
+            this.txtbom.TabIndex = 1;
             // 
             // label1
             // 
@@ -123,7 +123,7 @@
         private System.Windows.Forms.MenuStrip MainMenu;
         private System.Windows.Forms.ToolStripMenuItem tmConfirm;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtbom;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabControl tctotalpage;
         private System.Windows.Forms.ToolStripMenuItem tmsave;

@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowDetailFrm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtprice = new System.Windows.Forms.TextBox();
             this.txtremark = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.txt40 = new System.Windows.Forms.TextBox();
@@ -81,8 +83,6 @@
             this.tmReplace = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tmAdd = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtprice = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tmdel = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
@@ -131,6 +131,23 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(736, 164);
             this.panel1.TabIndex = 0;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(379, 34);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(59, 12);
+            this.label14.TabIndex = 27;
+            this.label14.Text = "物料单价:";
+            // 
+            // txtprice
+            // 
+            this.txtprice.Location = new System.Drawing.Point(439, 29);
+            this.txtprice.Name = "txtprice";
+            this.txtprice.ReadOnly = true;
+            this.txtprice.Size = new System.Drawing.Size(144, 21);
+            this.txtprice.TabIndex = 26;
             // 
             // txtremark
             // 
@@ -231,7 +248,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(77, 12);
             this.label8.TabIndex = 14;
-            this.label8.Text = "成本(元/kg):";
+            this.label8.Text = "成本(元/KG):";
             // 
             // txtren
             // 
@@ -559,23 +576,6 @@
             this.tmAdd.Size = new System.Drawing.Size(148, 22);
             this.tmAdd.Text = "新增记录";
             // 
-            // txtprice
-            // 
-            this.txtprice.Location = new System.Drawing.Point(439, 29);
-            this.txtprice.Name = "txtprice";
-            this.txtprice.ReadOnly = true;
-            this.txtprice.Size = new System.Drawing.Size(144, 21);
-            this.txtprice.TabIndex = 26;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(379, 34);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(59, 12);
-            this.label14.TabIndex = 27;
-            this.label14.Text = "物料单价:";
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -664,8 +664,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem tmAdd;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox txtprice;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem tmdel;
+        public System.Windows.Forms.TextBox txtprice;
     }
 }

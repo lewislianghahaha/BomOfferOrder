@@ -1,6 +1,6 @@
 ﻿namespace BomOfferOrder.UI
 {
-    partial class Main
+    partial class CreateFrm
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateFrm));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.gvdtl = new System.Windows.Forms.DataGridView();
             this.DelMenu = new System.Windows.Forms.ContextMenuStrip(this.components);

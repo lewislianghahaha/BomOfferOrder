@@ -8,7 +8,7 @@ using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI
 {
-    public partial class Main : Form
+    public partial class CreateFrm : Form
     {
         TaskLogic task=new TaskLogic();
         Load load=new Load();
@@ -33,7 +33,7 @@ namespace BomOfferOrder.UI
         //记录初始化标记(GridView页面跳转 初始化时使用)
         private bool _pageChange;
 
-        public Main()
+        public CreateFrm()
         {
             InitializeComponent();
             OnRegisterEvents();

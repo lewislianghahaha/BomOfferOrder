@@ -52,7 +52,7 @@ namespace BomOfferOrder.UI
             tmAdd.Click += TmAdd_Click;
             tmReplace.Click += TmReplace_Click;
             gvdtl.CellValueChanged += Gvdtl_CellValueChanged;
-            txtren.TextChanged += Txtren_TextChanged;
+            txtren.Leave += Txtren_Leave;
             tmdel.Click += Tmdel_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
@@ -91,18 +91,22 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// ‘人工制造及费用’文本框修改时执行
+        /// ‘人工及制造费用’文本框修改时执行
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Txtren_TextChanged(object sender, EventArgs e)
+        private void Txtren_Leave(object sender, EventArgs e)
         {
             try
             {
-                //检测所输入的数字必须为数字
-                if(!Regex.IsMatch(txtren.Text, @"^\d+$")) throw new Exception("请输入数字再继续");
+                //检测所输入的数字必须为数字(包括小数)
+                if (!Regex.IsMatch(txtren.Text, @"^-?\d+$|^(-?\d+)(\.\d+)?$"))
+                {
+                    txtren.Text = "";
+                    throw new Exception("不能输入非数字外的值,请输入数字后再继续");
+                }
                 //根据指定值将相关项进行改变指定文本框内的值
-                CheckValue();
+                GenerateValue();
             }
             catch (Exception ex)
             {
@@ -231,7 +235,6 @@ namespace BomOfferOrder.UI
                     //将‘原材料’DT赋值至变量内
                     _materialdt = materialdt;
                     //将单据状态获取至_funState变量内
-                    _funState = funState;//将单据状态获取至_funState变量内
                     _funState = funState;
                     FunStateCUse(funState,dt);
                 }
@@ -270,11 +273,11 @@ namespace BomOfferOrder.UI
 
             //包装成本 公式:表头物料单价/包装规格/1.13
             txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtprice.Text) / 
-                                                    GetNumberInt(Convert.ToString(sourcedt.Rows[0][3])) / Convert.ToDecimal(1.13),2));
+                                                    GetNumberInt(Convert.ToString(sourcedt.Rows[0][3])) / Convert.ToDecimal(1.13),4));
             //人工制造费用(自填)  
             txtren.Text = "0";
             //根据指定值将相关项进行改变指定文本框内的值
-            CheckValue();
+            GenerateValue();
         }
 
         /// <summary>
@@ -683,8 +686,11 @@ namespace BomOfferOrder.UI
             {
                 colindex = e.ColumnIndex;
                 //判断若所选中的行中的Entryid没有值,即不能执行运算
-                if(gvdtl.Rows[e.RowIndex].Cells[0].Value !="") throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除该行并通过右键菜单进行添加新物料");
-
+                if (gvdtl.Rows[e.RowIndex].Cells[0].Value != "")
+                {
+                    CheckValue();
+                    throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除并通过右键菜单进行添加新物料");
+                }
                 //当修改的列是‘配方用量’或‘物料单价(含税)’时,将以下关联的值作出改变
                 if (colindex == 4 || colindex == 5)
                 {
@@ -693,13 +699,15 @@ namespace BomOfferOrder.UI
                     //获取当前行的配方用量
                     var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[5].Value);
                     //计算‘物料成本(含税)’项 公式:物料单价*配方用量/100
-                    gvdtl.Rows[e.RowIndex].Cells[6].Value = decimal.Round(materialprice * peiqty / 100 , 4);
+                    gvdtl.Rows[e.RowIndex].Cells[6].Value = decimal.Round(materialprice * peiqty / 100, 4);
                     //根据指定值将相关项进行改变指定文本框内的值
-                    CheckValue();
+                    GenerateValue();
                 }
             }
             catch (Exception ex)
             {
+                //异常出现将该行清空
+                //gvdtl.Rows[e.RowIndex].Cells[colindex].Value = "";
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -716,7 +724,7 @@ namespace BomOfferOrder.UI
 
             foreach (DataRow rows in gridViewdt.Rows)
             {
-                if(rows[6]==DBNull.Value) continue;
+                if(rows[6] == DBNull.Value) continue;
                 //累加‘物料成本’
                 result += Convert.ToDecimal(rows[6]);
             }
@@ -747,16 +755,16 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 根据指定值将相关文本框进行改变
         /// </summary>
-        private void CheckValue()
+        private void GenerateValue()
         {
             //获取累加的‘物料成本(含税)’之和
             var materialsumqty = GernerateSumQty();
 
             //材料成本(不含税) 公式:物料成本之和/1.13
             txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
+
             //成本(元/KG) 公式:材料成本+包装成本+人工制造费用
             txtkg.Text = Convert.ToString(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text));
-
             //成本(元/L) 公式:成本(元/KG)*产品密度
             txtl.Text = Convert.ToString(Convert.ToDecimal(txtkg.Text) * Convert.ToDecimal(txtmi.Text));
             //50%报价   公式:成本(元/KG)/(1-50/100)
@@ -765,6 +773,11 @@ namespace BomOfferOrder.UI
             txt45.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.55), 4));
             //40%报价   公式:成本(元/KG)/(1-40/100)       
             txt40.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.6), 4));
+        }
+
+        private void CheckValue()
+        {
+            var dt = (DataTable) gvdtl.DataSource;
         }
 
     }
