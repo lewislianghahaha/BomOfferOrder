@@ -154,10 +154,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\BomOfferOrder.vshost.exe" />
+    <Content Include="bin\Debug\PIC\1.png" />
     <Content Include="obj\Debug\BomOfferOrder.csproj.FileListAbsolute.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Debug\PIC\" />
     <Folder Include="bin\Release\" />
     <Folder Include="DLL\" />
     <Folder Include="obj\Debug\TempPE\" />

@@ -254,5 +254,19 @@
             return _result;
         }
 
+        /// <summary>
+        /// 检测OA流水号是否存在
+        /// </summary>
+        /// <param name="orderno"></param>
+        /// <returns></returns>
+        public string SearchOaOrderInclud(string orderno)
+        {
+            _result = $@"
+                           SELECT COUNT(*) FROM dbo.T_OfferOrder a
+                           WHERE a.OAorderno='{orderno}' 
+                        ";
+            return _result;
+        }
+
     }
 }

@@ -6,6 +6,7 @@ namespace BomOfferOrder.Task
     {
         SearchDt searchDb=new SearchDt();
         GenerateDt generateDb=new GenerateDt();
+        ImportDt importDt=new ImportDt();
 
         #region 变量定义
             private string _taskid;             //记录中转ID
@@ -14,6 +15,9 @@ namespace BomOfferOrder.Task
             private DataTable _dt;              //保存需要进行生成明细记录的DT
             private string _valuelist;          //保存Fmaterialid列表(如:'426464','738199')
             private DataTable _bomdt;           //保存BOM明细DT(生成时使用)
+            private string _oaorder;            //获取OA流水号
+            private DataTable _Importdt;        //获取准备提交的DT(提交时使用)
+            private string _funState;           //记录单据状态(C:创建 R:读取) 
 
             private DataTable _resultTable;     //返回DT类型
             private DataTable _resultbomdt;     //返回BOM DT
@@ -51,13 +55,28 @@ namespace BomOfferOrder.Task
             /// </summary>
             public DataTable Bomdt { set { _bomdt = value; } }
 
+            /// <summary>
+            /// 获取OA流水号
+            /// </summary>
+            public string Oaorder { set { _oaorder = value; } }
+
+            /// <summary>
+            /// 获取准备提交的DT(提交时使用)
+            /// </summary>
+            public DataTable Importdt { set { _Importdt = value; } }
+
+            /// <summary>
+            /// 记录单据状态(C:创建 R:读取) 
+            /// </summary>
+            public string FunState { set { _funState = value; } }
+
         #endregion
 
         #region Get
-            /// <summary>
-            ///返回DataTable至主窗体
-            /// </summary>
-            public DataTable ResultTable => _resultTable;
+        /// <summary>
+        ///返回DataTable至主窗体
+        /// </summary>
+        public DataTable ResultTable => _resultTable;
 
             /// <summary>
             /// 返回结果标记
@@ -86,9 +105,17 @@ namespace BomOfferOrder.Task
                 case "0.2":
                     SearchMaterialdt(_searchid,_searchvalue);
                     break;
+                //查询:OA流水号是否存在
+                case "0.3":
+                    SearchOaOrder(_oaorder);
+                    break;
                 //运算
                 case "1":
                     Generatedt(_valuelist,_dt,_bomdt);
+                    break;
+                //提交
+                case "2":
+                    importDt()
                     break;
             }
         }
@@ -120,6 +147,15 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
+        /// 检测OA流水号是否存在
+        /// </summary>
+        /// <param name="orderno"></param>
+        private void SearchOaOrder(string orderno)
+        {
+            _resultMark = searchDb.SearchOaOrderInclud(orderno);
+        }
+
+        /// <summary>
         /// 运算
         /// </summary>
         /// <param name="valuelist">FMATERIALID列表ID</param>
@@ -136,7 +172,16 @@ namespace BomOfferOrder.Task
             _resultTable = generateDb.Generatedt(valuelist,sourcedt,bomdt);
             _resultMark = _resultTable.Rows.Count > 0;
         }
-
+        
+        /// <summary>
+        /// 提交
+        /// </summary>
+        /// <param name="funState"></param>
+        /// <param name="souredt"></param>
+        private void ImportDt(string funState,DataTable souredt)
+        {
+            _resultMark = importDt.ImportDtToDb(funState,souredt);
+        }
 
     }
 }

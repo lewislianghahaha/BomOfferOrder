@@ -184,7 +184,7 @@ namespace BomOfferOrder.UI
             try
             {
                 //权限控制 TODO:预留
-                
+
                 if(gvdtl.SelectedRows.Count==0)throw new Exception("没有选择行,不能继续");
 
                 var clickMessage = $"您所选择需删除的行数为:{gvdtl.SelectedRows.Count}行 \n 是否继续?";
@@ -686,9 +686,10 @@ namespace BomOfferOrder.UI
             {
                 colindex = e.ColumnIndex;
                 //判断若所选中的行中的Entryid没有值,即不能执行运算
-                if (gvdtl.Rows[e.RowIndex].Cells[0].Value != "")
+                if (gvdtl.Rows[e.RowIndex].Cells[0].Value == DBNull.Value)
                 {
-                    CheckValue();
+                    //需将不合法的行删除
+                    gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);
                     throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除并通过右键菜单进行添加新物料");
                 }
                 //当修改的列是‘配方用量’或‘物料单价(含税)’时,将以下关联的值作出改变
@@ -706,8 +707,6 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                //异常出现将该行清空
-                //gvdtl.Rows[e.RowIndex].Cells[colindex].Value = "";
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -773,11 +772,6 @@ namespace BomOfferOrder.UI
             txt45.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.55), 4));
             //40%报价   公式:成本(元/KG)/(1-40/100)       
             txt40.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.6), 4));
-        }
-
-        private void CheckValue()
-        {
-            var dt = (DataTable) gvdtl.DataSource;
         }
 
     }

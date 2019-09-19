@@ -97,7 +97,21 @@ namespace BomOfferOrder.Task
             return resultdt;
         }
 
-
+        /// <summary>
+        /// 检测OA流水号是否存在
+        /// </summary>
+        /// <param name="orderno"></param>
+        /// <returns></returns>
+        public bool SearchOaOrderInclud(string orderno)
+        {
+            var resultdt=new DataTable();
+            var sqlscript = sqlList.SearchOaOrderInclud(orderno);
+            var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetBomOfferConn());
+            sqlDataAdapter.Fill(resultdt);
+            //若不存在为FALSE 存在为TRUE
+            var result = Convert.ToInt32(resultdt.Rows[0][0]) != 0;
+            return result;
+        }
 
     }
 }
