@@ -163,7 +163,7 @@ namespace BomOfferOrder.Task
             var sqlscript = sqlList.GetNewHeadidValue();
             var sqlDataAdapter = new SqlDataAdapter(sqlscript, searchDt.GetBomOfferConn());
             sqlDataAdapter.Fill(resultdt);
-            var id = Convert.ToInt32(resultdt.Rows[0]);
+            var id = Convert.ToInt32(resultdt.Rows[0][0]);
             return id;
         }
 
@@ -177,7 +177,7 @@ namespace BomOfferOrder.Task
             var sqlscript = sqlList.GetNewEntryidValue();
             var sqlDataAdapter = new SqlDataAdapter(sqlscript, searchDt.GetBomOfferConn());
             sqlDataAdapter.Fill(resultdt);
-            var id = Convert.ToInt32(resultdt.Rows[0]);
+            var id = Convert.ToInt32(resultdt.Rows[0][0]);
             return id;
         }
 

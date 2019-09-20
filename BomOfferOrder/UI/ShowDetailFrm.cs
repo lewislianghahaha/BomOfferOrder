@@ -136,7 +136,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                showMaterial.Id = 0;
+                showMaterial.Remark = "A";
                 //初始化GridView
                 showMaterial.OnInitializeGridView(_materialdt);
                 showMaterial.StartPosition = FormStartPosition.CenterScreen;
@@ -165,11 +165,11 @@ namespace BomOfferOrder.UI
             try
             {
                 if(gvdtl.SelectedRows.Count==0) throw new Exception("请选择任意一行,再继续");
-                if(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value == DBNull.Value)throw new Exception("空行不能进行替换,请再次选择");
-                //获取GridView内的主键ID
-                var id = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
+                if(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value == DBNull.Value)throw new Exception("空行不能进行替换,请再次选择");
+                //获取GridView内的物料编码ID
+                var materialId = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
 
-                showMaterial.Id = id;
+                showMaterial.Remark = "U";
                 //初始化GridView
                 showMaterial.OnInitializeGridView(_materialdt);
                 showMaterial.StartPosition=FormStartPosition.CenterScreen;
@@ -180,7 +180,7 @@ namespace BomOfferOrder.UI
                 if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
                 //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
                 if (showMaterial.ResultTable != null || showMaterial.ResultTable.Rows.Count > 0)
-                    UpdateDtToGridView(id,showMaterial.ResultTable);
+                    UpdateDtToGridView(materialId, showMaterial.ResultTable);
             }
             catch (Exception ex)
             {
@@ -205,12 +205,17 @@ namespace BomOfferOrder.UI
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     //注:执行方式:当判断到_funState变量为R时,将要进行删除的行保存至_deldt内,(供保存时使用),完成后再删除GridView指定行;反之,只需将GridView进行指定行删除即可
+                    //注:在R状态下,需判断Entryid是否为空,若不为空,才进行插入至_deldt内
+
                     if (_funState == "R")
                     {
                         //将相关行保存至_deldt内,供保存时使用
                         _deldt = dbList.MakeGridViewTemp();
                         foreach (DataGridViewRow rows in gvdtl.SelectedRows)
                         {
+                            //判断若Entryid不为空,才执行插入
+                            if(rows.Cells[0].Value == DBNull.Value)continue;
+
                             var newrow = _deldt.NewRow();
                             for (var i = 0; i < _deldt.Columns.Count; i++)
                             {
@@ -318,8 +323,6 @@ namespace BomOfferOrder.UI
         /// <returns></returns>
         private DataTable GetGridViewdt(string funState,DataTable sourcedt,DataTable resultdt)
         {
-            var entryid = 1;
-
             try
             {
                 //‘创建’状态
@@ -329,7 +332,7 @@ namespace BomOfferOrder.UI
                     foreach (DataRow rows in sourcedt.Rows)
                     {
                         var newrow = resultdt.NewRow();
-                        newrow[0] = entryid;   //EntryId
+                        newrow[0] = DBNull.Value;   //EntryId
                         newrow[1] = rows[5];   //物料编码ID
                         newrow[2] = rows[6];   //物料编码
                         newrow[3] = rows[7];   //物料名称
@@ -337,7 +340,6 @@ namespace BomOfferOrder.UI
                         newrow[5] = rows[10];  //物料单价(含税)
                         newrow[6] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) / 100 , 4);//物料成本(含税) 公式:物料单价*配方用量/100
                         resultdt.Rows.Add(newrow);
-                        entryid++;
                     }
                 }
                 //‘读取’状态
@@ -622,8 +624,6 @@ namespace BomOfferOrder.UI
             {
                 //将GridView内的内容赋值到DT
                 var gridViewdt = (DataTable)gvdtl.DataSource;
-                //获取及计算当前GridView的最大行数(后面累加entryid使用)
-                var entryid = gridViewdt.Rows.Count+1;
 
                 //循环将获取过来的值插入至GridView内
                 foreach (DataRow rows in sourcedt.Rows)
@@ -632,14 +632,12 @@ namespace BomOfferOrder.UI
                     if(gridViewdt.Select("物料编码ID='" + rows[1] + "'").Length>0) continue;
 
                     var newrow = gridViewdt.NewRow();
-                    newrow[0] = entryid;        //EntryId
                     newrow[1] = rows[1];        //物料编码ID
                     newrow[2] = rows[2];        //物料编码
                     newrow[3] = rows[3];        //物料名称
                     newrow[5] = rows[5];        //物料单价
                     newrow[6] = 0;              //物料成本(设置为0)
                     gridViewdt.Rows.Add(newrow);
-                    entryid++;
                 }
                 //操作完成后进行刷新
                 OnInitialize(gridViewdt);
@@ -654,12 +652,14 @@ namespace BomOfferOrder.UI
         /// 将获取的值更新至指定的GridView行内(注:只能一行使用)
         /// 判断若sourcedt内的物料ID已在GridView内存在,即跳出异常不能继续替换操作
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="materialId">物料编码ID</param>
         /// <param name="sourcedt"></param>
-        private void UpdateDtToGridView(int id,DataTable sourcedt)
+        private void UpdateDtToGridView(int materialId, DataTable sourcedt)
         {
             try
             {
+                //注:在同一个'产品名称'下,MaterialID都是唯一的!!!
+
                 //循环GridView内的值,当发现ID与条件ID相同,即进入行更新
                 //将GridView内的内容赋值到DT
                 var gridViewdt = (DataTable)gvdtl.DataSource;
@@ -669,8 +669,8 @@ namespace BomOfferOrder.UI
 
                 foreach (DataRow rows in gridViewdt.Rows)
                 {
-                    //判断若ID相同,就执行更新操作
-                    if (Convert.ToInt32(rows[0]) != id) continue;
+                    //判断若materialid相同,就执行更新操作
+                    if (Convert.ToInt32(rows[1]) != materialId) continue;
 
                     gridViewdt.BeginInit();
                     rows[1] = sourcedt.Rows[0][1];  //物料编码ID
@@ -701,8 +701,8 @@ namespace BomOfferOrder.UI
             try
             {
                 colindex = e.ColumnIndex;
-                //判断若所选中的行中的Entryid没有值,即不能执行运算
-                if (gvdtl.Rows[e.RowIndex].Cells[0].Value == DBNull.Value)
+                //判断若所选中的行中的Materialid没有值,即不能执行运算
+                if (gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value)
                 {
                     //需将不合法的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);

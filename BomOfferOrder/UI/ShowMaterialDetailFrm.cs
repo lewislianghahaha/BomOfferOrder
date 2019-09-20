@@ -15,8 +15,8 @@ namespace BomOfferOrder.UI
         DbList dbList = new DbList();
 
         #region 变量参数
-            //获取ID值(替换时使用)
-            private int _id;
+            //获取remark值(替换时使用 A:新增;U:替换)
+            private string _remark;
             //返回DT类型
             private DataTable _resultTable;
 
@@ -34,7 +34,7 @@ namespace BomOfferOrder.UI
             /// <summary>
             /// 获取ID值,(替换时使用)
             /// </summary>
-            public int Id { set { _id = value; } }
+            public string Remark { set { _remark = value; } }
         #endregion
 
         #region Get
@@ -112,7 +112,7 @@ namespace BomOfferOrder.UI
                 //获取GridView临时表
                 _resultTable = dbList.MakeGridViewTemp();
                 //当为‘新增’操作时
-                if (_id == 0)
+                if (_remark =="A")
                 {
                     //循环所选择的行数
                     foreach (DataGridViewRow row in gvdtl.SelectedRows)

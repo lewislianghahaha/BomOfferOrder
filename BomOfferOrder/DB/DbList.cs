@@ -395,7 +395,7 @@ namespace BomOfferOrder.DB
                         break;
                     //产品名称(物料名称)
                     case 2:
-                        dc.ColumnName = "MaterialName";
+                        dc.ColumnName = "ProductName";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //包装规格
@@ -528,7 +528,29 @@ namespace BomOfferOrder.DB
             return dt;
         }
 
+        /// <summary>
+        /// 创建产成品名称临时表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable CreateBomProductTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 1; i++)
+            {
+                var dc = new DataColumn();
 
+                switch (i)
+                {
+                    //产品名称(物料名称)
+                    case 0:
+                        dc.ColumnName = "ProductName"; ;
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
 
     }
 }

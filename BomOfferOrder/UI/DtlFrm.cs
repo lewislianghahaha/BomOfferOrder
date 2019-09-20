@@ -219,7 +219,7 @@ namespace BomOfferOrder.UI
                                 newrow[19] = showdetail.txtbom.Text;                            //对应BOM版本编号
                                 newrow[20] = Convert.ToDecimal(showdetail.txtprice.Text);       //物料单价
                                  
-                                newrow[21] = _funState == "C" ? 0 : rows[0];                    //Entryid
+                                newrow[21] = rows[0];                                           //Entryid
                                 newrow[22] = rows[1];                                           //物料编码ID
                                 newrow[23] = rows[2];                                           //物料编码
                                 newrow[24] = rows[3];                                           //物料名称
