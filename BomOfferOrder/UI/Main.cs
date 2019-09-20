@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace BomOfferOrder.UI
 {
-    public partial class SearchFrm : Form
+    public partial class Main : Form
     {
-        public SearchFrm()
+        public Main()
         {
             InitializeComponent();
         }

@@ -1,6 +1,6 @@
 ﻿namespace BomOfferOrder.UI
 {
-    partial class SearchFrm
+    partial class Main
     {
         /// <summary>
         /// Required designer variable.

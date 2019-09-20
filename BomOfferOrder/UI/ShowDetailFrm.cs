@@ -25,6 +25,8 @@ namespace BomOfferOrder.UI
             private DataTable _dtl;
             //保存查询出来的角色权限记录
             private DataTable _userdt;
+            //返回所记录的Headid
+            private int _headid;
 
             //记录当前页数(GridView页面跳转使用)
             private int _pageCurrent = 1;
@@ -39,6 +41,17 @@ namespace BomOfferOrder.UI
             /// 记录能否删除ID(删除权限使用)
             /// </summary>
             public bool Candel { set { _candel = value; } }
+        #endregion
+
+        #region Get
+        /// <summary>
+        /// 返回GridView中需要删除的DT记录
+        /// </summary>
+        public DataTable Deldt => _deldt;
+        /// <summary>
+        /// 返回所记录的Headid
+        /// </summary>
+        public int Headid=> _headid;
         #endregion
 
         public ShowDetailFrm()
@@ -152,6 +165,7 @@ namespace BomOfferOrder.UI
             try
             {
                 if(gvdtl.SelectedRows.Count==0) throw new Exception("请选择任意一行,再继续");
+                if(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value == DBNull.Value)throw new Exception("空行不能进行替换,请再次选择");
                 //获取GridView内的主键ID
                 var id = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
 
@@ -268,6 +282,7 @@ namespace BomOfferOrder.UI
             txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);    //包装规格
             txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);     //产品密度
             txtprice.Text = Convert.ToString(sourcedt.Rows[0][11]); //表头物料单价
+            
             //设置及刷新GridView
             OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
 
@@ -290,6 +305,7 @@ namespace BomOfferOrder.UI
             //获取临时表(GridView控件时使用) 注:‘创建’及‘读取’也会使用到
             var resultdt = dbList.MakeGridViewTemp();
             //将相关值赋值给对应的文本框及GridView控件内
+            //赋值至Headid变量(提交时使用) TODO 当读取时将Headid赋到此变量内 _headid
 
         }
 

@@ -89,11 +89,11 @@
     <Compile Include="UI\PermissionFrm.Designer.cs">
       <DependentUpon>PermissionFrm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SearchFrm.cs">
+    <Compile Include="UI\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\SearchFrm.Designer.cs">
-      <DependentUpon>SearchFrm.cs</DependentUpon>
+    <Compile Include="UI\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ShowDetailFrm.cs">
       <SubType>Form</SubType>
@@ -125,8 +125,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="UI\SearchFrm.resx">
-      <DependentUpon>SearchFrm.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ShowDetailFrm.resx">
       <DependentUpon>ShowDetailFrm.cs</DependentUpon>

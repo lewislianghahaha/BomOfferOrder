@@ -24,11 +24,11 @@ namespace BomOfferOrder.UI
 
             //收集TabControl内各Tab Pages的内容
             private DataTable _bomdt;
+            //收集TabContol内各Tab Pages内的GridView要删除的内容(注:单据状态为R时使用)
+            private DataTable _deldt;
 
             //记录读取过来的FID值
             private int _fid=0;
-            //记录读取过来的Headid值
-            private int _headid=0;
         #endregion
 
         #region Set
@@ -136,6 +136,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                //todo =>读取时将FID存放至_fid内
 
             }
             catch (Exception ex)
@@ -180,6 +181,9 @@ namespace BomOfferOrder.UI
                 {
                     //获取BOM报价单临时表
                     _bomdt = dbList.GetBomDtlTemp();
+                    //获取需要删除的DT临时表
+                    _deldt = dbList.MakeGridViewTemp();
+
                     //通过循环获取TagePages各页的值并最后整合到bomdt内
                     for (var i = 0; i < tctotalpage.TabCount; i++)
                     {
@@ -192,14 +196,14 @@ namespace BomOfferOrder.UI
                             foreach (DataRow rows in bomdtldt.Rows)
                             {
                                 var newrow = _bomdt.NewRow();
-                                newrow[0] = _fid;                                               //fid
+                                newrow[0] = _funState == "C" ? 0: _fid;                         //Fid
                                 newrow[1] = txtbom.Text;                                        //流水号
                                 newrow[2] = 0;                                                  //单据状态(0:已审核 1:反审核)
                                 newrow[3] = DateTime.Now.Date;                                  //创建日期
                                 newrow[4] = 0;                                                  //记录当前单据使用标记(0:正在使用 1:没有使用)
                                 newrow[5] = DateTime.Now.Date;                                  //记录当前单据使用者信息
 
-                                newrow[6] = _headid;                                            //Headid
+                                newrow[6] = _funState == "C" ? 0 : showdetail.Headid;           //Headid
                                 newrow[7] = showdetail.txtname.Text;                            //产品名称(物料名称)
                                 newrow[8] = showdetail.txtbao.Text;                             //包装规格
                                 newrow[9] = Convert.ToDecimal(showdetail.txtmi.Text);           //产品密度(KG/L)
@@ -214,8 +218,8 @@ namespace BomOfferOrder.UI
                                 newrow[18] = showdetail.txtremark.Text;                         //备注
                                 newrow[19] = showdetail.txtbom.Text;                            //对应BOM版本编号
                                 newrow[20] = Convert.ToDecimal(showdetail.txtprice.Text);       //物料单价
-
-                                newrow[21] = rows[0];                                           //Entryid
+                                 
+                                newrow[21] = _funState == "C" ? 0 : rows[0];                    //Entryid
                                 newrow[22] = rows[1];                                           //物料编码ID
                                 newrow[23] = rows[2];                                           //物料编码
                                 newrow[24] = rows[3];                                           //物料名称
@@ -223,6 +227,11 @@ namespace BomOfferOrder.UI
                                 newrow[26] = rows[5];                                           //物料单价(含税)
                                 newrow[27] = rows[6];                                           //物料成本(含税)
                                 _bomdt.Rows.Add(newrow);
+                            }
+                            //将各TabPages内GridView中的需要进行删除的记录合并整理
+                            if (_funState == "R" && showdetail.Deldt.Rows.Count>0)
+                            {
+                                _deldt.Merge(showdetail.Deldt);
                             }
                         }
                     }
@@ -261,6 +270,7 @@ namespace BomOfferOrder.UI
                 task.TaskId = "2";
                 task.Importdt = _bomdt;
                 task.FunState = _funState;
+                task.Deldt = _deldt;
 
                 new Thread(Start).Start();
                 load.StartPosition = FormStartPosition.CenterScreen;

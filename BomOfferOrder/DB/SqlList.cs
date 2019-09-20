@@ -268,5 +268,74 @@
             return _result;
         }
 
+        /// <summary>
+        /// 获取最新的FID值
+        /// </summary>
+        /// <returns></returns>
+        public string GetNewFidValue()
+        {
+            _result = @"
+                           DECLARE
+	                            @id INT;
+                            BEGIN
+	                            INSERT INTO dbo.T_OfferOrder_KEY( Column1 )
+	                            VALUES  (1)
+
+	                            SELECT @id=Id FROM dbo.T_OfferOrder_KEY
+
+	                            DELETE FROM dbo.T_OfferOrder_KEY
+
+	                            SELECT @id
+                            END
+                       ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 获取最新的Headid值
+        /// </summary>
+        /// <returns></returns>
+        public string GetNewHeadidValue()
+        {
+            _result = @"
+                            DECLARE
+	                            @id INT;
+                            BEGIN
+	                            INSERT INTO dbo.T_OfferOrderHead_KEY( Column1 )
+	                            VALUES  (1)
+
+	                            SELECT @id=Id FROM dbo.T_OfferOrderHead_KEY
+
+	                            DELETE FROM dbo.T_OfferOrderHead_KEY
+
+	                            SELECT @id
+                            END
+                       ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 获取最新的Entryid值
+        /// </summary>
+        /// <returns></returns>
+        public string GetNewEntryidValue()
+        {
+            _result = @"
+                            DECLARE
+	                            @id INT;
+                            BEGIN
+	                            INSERT INTO dbo.T_OfferOrderEntry_KEY( Column1 )
+	                            VALUES  (1)
+
+	                            SELECT @id=Id FROM dbo.T_OfferOrderEntry_KEY
+
+	                            DELETE FROM dbo.T_OfferOrderEntry_KEY
+
+	                            SELECT @id
+                            END
+                       ";
+            return _result;
+        }
+
     }
 }

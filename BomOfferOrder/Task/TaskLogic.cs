@@ -4,8 +4,8 @@ namespace BomOfferOrder.Task
 {
     public class TaskLogic
     {
-        SearchDt searchDb=new SearchDt();
-        GenerateDt generateDb=new GenerateDt();
+        SearchDt searchDt=new SearchDt();
+        GenerateDt generateDt=new GenerateDt();
         ImportDt importDt=new ImportDt();
 
         #region 变量定义
@@ -18,6 +18,7 @@ namespace BomOfferOrder.Task
             private string _oaorder;            //获取OA流水号
             private DataTable _Importdt;        //获取准备提交的DT(提交时使用)
             private string _funState;           //记录单据状态(C:创建 R:读取) 
+            private DataTable _deldt;           //记录从GridView内需要删除的DT记录(单据状态为R时使用)
 
             private DataTable _resultTable;     //返回DT类型
             private DataTable _resultbomdt;     //返回BOM DT
@@ -70,13 +71,18 @@ namespace BomOfferOrder.Task
             /// </summary>
             public string FunState { set { _funState = value; } }
 
+            /// <summary>
+            /// 记录从GridView内需要删除的DT记录(单据状态为R时使用)
+            /// </summary>
+            public DataTable Deldt { set { _deldt = value; } }
+
         #endregion
 
         #region Get
-        /// <summary>
-        ///返回DataTable至主窗体
-        /// </summary>
-        public DataTable ResultTable => _resultTable;
+            /// <summary>
+            ///返回DataTable至主窗体
+            /// </summary>
+            public DataTable ResultTable => _resultTable;
 
             /// <summary>
             /// 返回结果标记
@@ -115,7 +121,7 @@ namespace BomOfferOrder.Task
                     break;
                 //提交
                 case "2":
-                    importDt()
+                    ImportDt(_funState,_Importdt,_deldt);
                     break;
             }
         }
@@ -127,7 +133,7 @@ namespace BomOfferOrder.Task
         /// <param name="searchvalue"></param>
         private void Searchdt(int searchid, string searchvalue)
         {
-            _resultTable = searchDb.SearchValue(searchid, searchvalue);
+            _resultTable = searchDt.SearchValue(searchid, searchvalue);
         }
 
         /// <summary>
@@ -135,7 +141,7 @@ namespace BomOfferOrder.Task
         /// </summary>
         private void Searchbomdt()
         {
-            _resultbomdt = searchDb.SearchBomDtl();
+            _resultbomdt = searchDt.SearchBomDtl();
         }
 
         /// <summary>
@@ -143,7 +149,7 @@ namespace BomOfferOrder.Task
         /// </summary>
         private void SearchMaterialdt(int searchid, string searchvalue)
         {
-            _resultTable = searchDb.SearchMaterialDtl(searchid,searchvalue);
+            _resultTable = searchDt.SearchMaterialDtl(searchid,searchvalue);
         }
 
         /// <summary>
@@ -152,7 +158,7 @@ namespace BomOfferOrder.Task
         /// <param name="orderno"></param>
         private void SearchOaOrder(string orderno)
         {
-            _resultMark = searchDb.SearchOaOrderInclud(orderno);
+            _resultMark = searchDt.SearchOaOrderInclud(orderno);
         }
 
         /// <summary>
@@ -169,19 +175,22 @@ namespace BomOfferOrder.Task
                 _resultTable.Rows.Clear();
                 _resultTable.Columns.Clear();
             }
-            _resultTable = generateDb.Generatedt(valuelist,sourcedt,bomdt);
+            _resultTable = generateDt.Generatedt(valuelist,sourcedt,bomdt);
             _resultMark = _resultTable.Rows.Count > 0;
         }
-        
+
         /// <summary>
         /// 提交
         /// </summary>
-        /// <param name="funState"></param>
-        /// <param name="souredt"></param>
-        private void ImportDt(string funState,DataTable souredt)
+        /// <param name="funState">单据状态</param>
+        /// <param name="souredt">Tab Pages收集过来的DT</param>
+        /// <param name="deldt">需要删除的记录DT(单据状态为R时使用)</param>
+        private void ImportDt(string funState,DataTable souredt,DataTable deldt)
         {
-            _resultMark = importDt.ImportDtToDb(funState,souredt);
+            _resultMark = importDt.ImportDtToDb(funState,souredt,deldt);
         }
+
+
 
     }
 }

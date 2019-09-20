@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 using BomOfferOrder.DB;
 
 namespace BomOfferOrder.Task
@@ -7,6 +8,8 @@ namespace BomOfferOrder.Task
     public class GenerateDt
     {
         DbList dbList=new DbList();
+        SqlList sqlList=new SqlList();
+        SearchDt searchDt=new SearchDt();
 
         /// <summary>
         /// 运算-(将‘已添加’的物料记录生成其对应的BOM明细记录)
@@ -136,7 +139,47 @@ namespace BomOfferOrder.Task
             return resultdt;
         }
 
+        /// <summary>
+        /// 获取最新的FID值
+        /// </summary>
+        /// <returns></returns>
+        public int GetNewFidValue()
+        {
+            var resultdt = new DataTable();
+            var sqlscript = sqlList.GetNewFidValue();
+            var sqlDataAdapter = new SqlDataAdapter(sqlscript, searchDt.GetBomOfferConn());
+            sqlDataAdapter.Fill(resultdt);
+            var id = Convert.ToInt32(resultdt.Rows[0][0]);
+            return id;
+        }
 
+        ///// <summary>
+        ///// 获取最新的Headid值
+        ///// </summary>
+        ///// <returns></returns>
+        public int GetNewHeadidValue()
+        {
+            var resultdt = new DataTable();
+            var sqlscript = sqlList.GetNewHeadidValue();
+            var sqlDataAdapter = new SqlDataAdapter(sqlscript, searchDt.GetBomOfferConn());
+            sqlDataAdapter.Fill(resultdt);
+            var id = Convert.ToInt32(resultdt.Rows[0]);
+            return id;
+        }
+
+        /// <summary>
+        /// 获取最新的Entryid值
+        /// </summary>
+        /// <returns></returns>
+        public int GetNewEntryidValue()
+        {
+            var resultdt = new DataTable();
+            var sqlscript = sqlList.GetNewEntryidValue();
+            var sqlDataAdapter = new SqlDataAdapter(sqlscript, searchDt.GetBomOfferConn());
+            sqlDataAdapter.Fill(resultdt);
+            var id = Convert.ToInt32(resultdt.Rows[0]);
+            return id;
+        }
 
     }
 }

@@ -32,11 +32,11 @@
             this.tmConfirm = new System.Windows.Forms.ToolStripMenuItem();
             this.tmsave = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblmessage = new System.Windows.Forms.Label();
             this.pbimg = new System.Windows.Forms.PictureBox();
             this.txtbom = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
-            this.lblmessage = new System.Windows.Forms.Label();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
@@ -68,9 +68,9 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.lblmessage);
             this.panel1.Controls.Add(this.pbimg);
             this.panel1.Controls.Add(this.txtbom);
+            this.panel1.Controls.Add(this.lblmessage);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 25);
@@ -78,11 +78,19 @@
             this.panel1.Size = new System.Drawing.Size(854, 29);
             this.panel1.TabIndex = 1;
             // 
+            // lblmessage
+            // 
+            this.lblmessage.AutoSize = true;
+            this.lblmessage.Location = new System.Drawing.Point(331, 8);
+            this.lblmessage.Name = "lblmessage";
+            this.lblmessage.Size = new System.Drawing.Size(0, 12);
+            this.lblmessage.TabIndex = 14;
+            // 
             // pbimg
             // 
             this.pbimg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbimg.Location = new System.Drawing.Point(771, -26);
+            this.pbimg.Location = new System.Drawing.Point(770, -26);
             this.pbimg.Name = "pbimg";
             this.pbimg.Size = new System.Drawing.Size(74, 60);
             this.pbimg.TabIndex = 13;
@@ -112,14 +120,6 @@
             this.tctotalpage.SelectedIndex = 0;
             this.tctotalpage.Size = new System.Drawing.Size(854, 497);
             this.tctotalpage.TabIndex = 2;
-            // 
-            // lblmessage
-            // 
-            this.lblmessage.AutoSize = true;
-            this.lblmessage.Location = new System.Drawing.Point(335, 8);
-            this.lblmessage.Name = "lblmessage";
-            this.lblmessage.Size = new System.Drawing.Size(0, 12);
-            this.lblmessage.TabIndex = 14;
             // 
             // DtlFrm
             // 

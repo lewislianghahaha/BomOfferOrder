@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Data;
 
 namespace BomOfferOrder.DB
@@ -378,84 +377,89 @@ namespace BomOfferOrder.DB
         public DataTable GetOfferOrderHeadTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 15; i++)
+            for (var i = 0; i < 16; i++)
             {
                 var dc = new DataColumn();
 
                 switch (i)
                 {
-                    //Headid
+                    //fid
                     case 0:
+                        dc.ColumnName = "FId";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //Headid
+                    case 1:
                         dc.ColumnName = "Headid";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
                     //产品名称(物料名称)
-                    case 1:
+                    case 2:
                         dc.ColumnName = "MaterialName";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //包装规格
-                    case 2:
+                    case 3:
                         dc.ColumnName = "Bao";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //产品密度(KG/L)
-                    case 3:
+                    case 4:
                         dc.ColumnName = "ProductMi";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //材料成本(不含税)
-                    case 4:
+                    case 5:
                         dc.ColumnName = "MaterialQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //包装成本
-                    case 5:
+                    case 6:
                         dc.ColumnName = "BaoQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //人工及制造费用
-                    case 6:
+                    case 7:
                         dc.ColumnName = "RenQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //成本(元/KG)
-                    case 7:
+                    case 8:
                         dc.ColumnName = "KGQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //成本(元/L)
-                    case 8:
+                    case 9:
                         dc.ColumnName = "LQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //50%报价
-                    case 9:
+                    case 10:
                         dc.ColumnName = "FiveQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //45%报价
-                    case 10:
+                    case 11:
                         dc.ColumnName = "FourFiveQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //40%报价
-                    case 11:
+                    case 12:
                         dc.ColumnName = "FourQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //备注
-                    case 12:
+                    case 13:
                         dc.ColumnName = "Fremark";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //对应BOM版本编号
-                    case 13:
+                    case 14:
                         dc.ColumnName = "FBomOrder";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //物料单价
-                    case 14:
+                    case 15:
                         dc.ColumnName = "FPrice";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
@@ -466,50 +470,55 @@ namespace BomOfferOrder.DB
         }
 
         /// <summary>
-        /// 
+        /// 用于记录-BOM报价单返回的表体信息(提交时使用)
         /// </summary>
         /// <returns></returns>
         public DataTable GetOfferOrderEntryTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 7; i++)
+            for (var i = 0; i < 8; i++)
             {
                 var dc = new DataColumn();
 
                 switch (i)
                 {
-                    //Entryid
+                    //Headid
                     case 0:
+                        dc.ColumnName = "Headid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //Entryid
+                    case 1:
                         dc.ColumnName = "Entryid";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
                     //物料编码ID
-                    case 1:
+                    case 2:
                         dc.ColumnName = "MaterialID";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
                     //物料编码
-                    case 2:
+                    case 3:
                         dc.ColumnName = "MaterialCode";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //物料名称
-                    case 3:
+                    case 4:
                         dc.ColumnName = "MaterialName";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //配方用量
-                    case 4:
+                    case 5:
                         dc.ColumnName = "PeiQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //物料单价(含税)
-                    case 5:
+                    case 6:
                         dc.ColumnName = "MaterialPrice";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //物料成本(含税)
-                    case 6:
+                    case 7:
                         dc.ColumnName = "MaterialAmount";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
@@ -518,6 +527,8 @@ namespace BomOfferOrder.DB
             }
             return dt;
         }
+
+
 
     }
 }
