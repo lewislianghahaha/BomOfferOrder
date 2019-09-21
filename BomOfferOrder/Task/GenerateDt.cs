@@ -180,6 +180,5 @@ namespace BomOfferOrder.Task
             var id = Convert.ToInt32(resultdt.Rows[0][0]);
             return id;
         }
-
     }
 }

@@ -8,8 +8,10 @@ namespace BomOfferOrder.Task
     //提交
     public class ImportDt
     {
+        SqlList sqlList=new SqlList();
         DbList dbList=new DbList();
         GenerateDt generateDt=new GenerateDt();
+        SearchDt searchDt=new SearchDt();
 
         /// <summary>
         /// 提交数据至数据表
@@ -71,7 +73,7 @@ namespace BomOfferOrder.Task
                             break;
                         //1:T_OfferOrderHead
                         case 1:
-                            tableName = "T_OfferOrderEntry";
+                            tableName = "T_OfferOrderHead";
                             GetDtToDb(funState,tableName,offerOrderHeadDt);
                             break;
                         //2:T_OfferOrderEntry
@@ -81,9 +83,9 @@ namespace BomOfferOrder.Task
                             break;
                     }
                 }
-                //最后若_deldt有值的话都执行删除方法
+                //最后若deldt有值的话都执行删除方法
                 if(deldt.Rows.Count>0)
-                { }
+                    DeleteRecord(deldt);
             }
             catch (Exception)
             {
@@ -93,15 +95,72 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 根据指定的表名等相关信息,按情况执行插入或其它操作
+        /// 根据指定的表名等相关信息,按情况执行插入或更新操作(中转)
         /// </summary>
         /// <param name="funState">单据状态</param>
-        /// <param name="tabname">表名</param>
+        /// <param name="tablename">表名</param>
         /// <param name="tempdt">对应临时表</param>
-        private void GetDtToDb(string funState,string tabname,DataTable tempdt)
+        private void GetDtToDb(string funState,string tablename,DataTable tempdt)
         {
-            //
-            
+            //若tablename是T_OfferOrder 或 T_OfferOrderHead,其操作中心:若单据状态为C就插入,若为U就更新
+            if (tablename == "T_OfferOrder" || tablename == "T_OfferOrderHead")
+            {
+                //执行插入
+                if (funState == "C")
+                {
+                    ImportDtToDb(tablename, tempdt);
+                }
+                //执行更新
+                else
+                {
+                    UpdateDbFromDt(tablename,tempdt);
+                }
+            }
+            //若tablename是T_OfferOrderEntry,其操作中心:就需要使用Entryid进行判断,若为空,为插入,反之为更新
+            else
+            {
+                //思路:将tempdt拆开两个temp,分别以EntryId为空 EntryId不为空为条件
+                //创建用于存放EntryId为空的temp
+                var insertdtltemp = dbList.GetOfferOrderEntryTemp();
+                //创建用于存放EntryId不为空的temp
+                var updatedtltemp = dbList.GetOfferOrderEntryTemp();
+
+                //获取EntryId为空的记录
+                var dtlnullrows = tempdt.Select("Entryid is null");
+                foreach (DataRow t in dtlnullrows)
+                {
+                    var newrow = insertdtltemp.NewRow();
+                    newrow[0] = t[0];             //Headid
+                    newrow[1] = GetEntryidKey();  //Entryid
+                    newrow[2] = t[2];             //物料编码ID
+                    newrow[3] = t[3];             //物料编码
+                    newrow[4] = t[4];             //物料名称
+                    newrow[5] = t[5];             //配方用量
+                    newrow[6] = t[6];             //物料单价(含税)
+                    newrow[7] = t[7];             //物料成本(含税)
+                    insertdtltemp.Rows.Add(newrow);
+                }
+
+                //获取EntryId不为空的记录
+                var dtlnotnullrows = tempdt.Select("Entryid is not null");
+                foreach (DataRow t in dtlnotnullrows)
+                {
+                    var newrow = updatedtltemp.NewRow();
+                    newrow[0] = t[0];          //Headid
+                    newrow[1] = t[1];          //Entryid
+                    newrow[2] = t[2];          //物料编码ID
+                    newrow[3] = t[3];          //物料编码
+                    newrow[4] = t[4];          //物料名称
+                    newrow[5] = t[5];          //配方用量
+                    newrow[6] = t[6];          //物料单价(含税)
+                    newrow[7] = t[7];          //物料成本(含税)
+                    updatedtltemp.Rows.Add(newrow);
+                }
+
+                //最后将得出的结果进行插入或更新
+                ImportDtToDb(tablename, insertdtltemp);
+                UpdateDbFromDt(tablename,updatedtltemp);
+            }
         }
 
         /// <summary>
@@ -126,7 +185,107 @@ namespace BomOfferOrder.Task
             // sqlcon.Close();
         }
 
+        /// <summary>
+        /// 根据指定条件对数据表进行更新
+        /// </summary>
+        private void UpdateDbFromDt(string tablename,DataTable dt)
+        {
+            var sqladpter = new SqlDataAdapter();
+            var ds = new DataSet();
 
+            //根据表格名称获取对应的模板表记录
+            var searList = sqlList.SearchUpdateTable(tablename);
+
+            using (sqladpter.SelectCommand = new SqlCommand(searList, searchDt.GetBomOfferConn()))
+            {
+                //将查询的记录填充至ds(查询表记录;后面的更新作赋值使用)
+                sqladpter.Fill(ds);
+                //建立更新模板相关信息(包括更新语句 以及 变量参数)
+                sqladpter = GetUpdateAdapter(tablename, searchDt.GetBomOfferConn(), sqladpter);
+                //开始更新(注:通过对DataSet中存在的表进行循环赋值;并进行更新)
+                for (var i = 0; i < dt.Rows.Count; i++)
+                {
+                    for (var j = 0; j < dt.Columns.Count; j++)
+                    {
+                        ds.Tables[0].Rows[i].BeginEdit();
+                        ds.Tables[0].Rows[i][j] = dt.Rows[i][j];
+                        ds.Tables[0].Rows[i].EndEdit();
+                    }
+                    sqladpter.Update(ds.Tables[0]);
+                }
+                //完成更新后将相关内容清空
+                ds.Tables[0].Clear();
+                sqladpter.Dispose();
+                ds.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// 建立更新模板相关信息
+        /// </summary>
+        /// <param name="tablename"></param>
+        /// <param name="conn"></param>
+        /// <param name="da"></param>
+        /// <returns></returns>
+        private SqlDataAdapter GetUpdateAdapter(string tablename, SqlConnection conn, SqlDataAdapter da)
+        {
+            //根据tablename获取对应的更新语句
+            var sqlscript = sqlList.UpdateEntry(tablename);
+            da.UpdateCommand = new SqlCommand(sqlscript, conn);
+
+            //定义所需的变量参数
+            switch (tablename)
+            {
+                case "T_OfferOrder":
+                    da.UpdateCommand.Parameters.Add("@FId", SqlDbType.Int, 8, "FId");
+                    da.UpdateCommand.Parameters.Add("@OAorderno", SqlDbType.NVarChar,100, "OAorderno");
+                    da.UpdateCommand.Parameters.Add("@Fstatus", SqlDbType.Int, 8, "Fstatus");
+                    da.UpdateCommand.Parameters.Add("@CreateDt", SqlDbType.DateTime, 10, "CreateDt");
+                    da.UpdateCommand.Parameters.Add("@Useid", SqlDbType.Int, 8, "Useid");
+                    da.UpdateCommand.Parameters.Add("@UserName", SqlDbType.NVarChar, 200, "UserName");
+                    break;
+                case "T_OfferOrderHead":
+                    da.UpdateCommand.Parameters.Add("@Headid", SqlDbType.Int, 8, "Headid");
+                    da.UpdateCommand.Parameters.Add("@ProductName", SqlDbType.NVarChar, 200, "ProductName");
+                    da.UpdateCommand.Parameters.Add("@Bao", SqlDbType.NVarChar, 100, "Bao");
+                    da.UpdateCommand.Parameters.Add("@ProductMi", SqlDbType.Decimal, 4, "ProductMi");
+                    da.UpdateCommand.Parameters.Add("@MaterialQty", SqlDbType.Decimal, 4, "MaterialQty");
+                    da.UpdateCommand.Parameters.Add("@BaoQty", SqlDbType.Decimal, 4, "BaoQty");
+                    da.UpdateCommand.Parameters.Add("@RenQty", SqlDbType.Decimal, 4, "RenQty");
+                    da.UpdateCommand.Parameters.Add("@KGQty", SqlDbType.Decimal, 4, "KGQty");
+                    da.UpdateCommand.Parameters.Add("@LQty", SqlDbType.Decimal, 4, "LQty");
+                    da.UpdateCommand.Parameters.Add("@FiveQty", SqlDbType.Decimal, 4, "FiveQty");
+                    da.UpdateCommand.Parameters.Add("@FourFiveQty", SqlDbType.Decimal, 4, "FourFiveQty");
+                    da.UpdateCommand.Parameters.Add("@FourQty", SqlDbType.Decimal, 4, "FourQty");
+                    da.UpdateCommand.Parameters.Add("@Fremark", SqlDbType.NVarChar, 500, "Fremark");
+                    da.UpdateCommand.Parameters.Add("@FBomOrder", SqlDbType.NVarChar, 500, "FBomOrder");
+                    da.UpdateCommand.Parameters.Add("@FPrice", SqlDbType.Decimal, 4, "FPrice");
+                    break;
+                case "T_OfferOrderEntry":
+                    da.UpdateCommand.Parameters.Add("@Entryid", SqlDbType.Int, 8, "Entryid");
+                    da.UpdateCommand.Parameters.Add("@MaterialID", SqlDbType.Int, 8, "MaterialID");
+                    da.UpdateCommand.Parameters.Add("@MaterialCode", SqlDbType.NVarChar, 100, "MaterialCode");
+                    da.UpdateCommand.Parameters.Add("@MaterialName", SqlDbType.NVarChar, 200, "MaterialName");
+                    da.UpdateCommand.Parameters.Add("@PeiQty", SqlDbType.Decimal, 4, "PeiQty");
+                    da.UpdateCommand.Parameters.Add("@MaterialPrice", SqlDbType.Decimal, 4, "MaterialPrice");
+                    da.UpdateCommand.Parameters.Add("@MaterialAmount", SqlDbType.Decimal, 4, "MaterialAmount");
+                    break;
+            }
+            return da;
+        }
+
+        /// <summary>
+        /// 删除相关记录(主要针对T_OfferOrderEntry表)
+        /// </summary>
+        private void DeleteRecord(DataTable deldt)
+        {
+            //根据指定条件循环将记录行删除
+            foreach (DataRow rows in deldt.Rows)
+            {
+                var sqlscript = sqlList.DelEntry(Convert.ToInt32(rows[1]));
+                searchDt.Generdt(sqlscript);
+            }
+        }
 
 
         /// <summary>

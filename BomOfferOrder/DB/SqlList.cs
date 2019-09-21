@@ -337,5 +337,65 @@
             return _result;
         }
 
+        /// <summary>
+        /// 根据表名获取查询表体语句(更新时使用) 只显示TOP 1记录
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public string SearchUpdateTable(string tableName)
+        {
+            _result =$@"
+                          SELECT Top 1 a.*
+                          FROM {tableName} a
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 更新语句
+        /// </summary>
+        /// <param name="tablename"></param>
+        /// <returns></returns>
+        public string UpdateEntry(string tablename)
+        {
+            switch (tablename)
+            {
+                case "T_OfferOrder":
+                    _result = @"UPDATE dbo.T_OfferOrder SET OAorderno=@OAorderno,Fstatus=@Fstatus,CreateDt=@CreateDt,Useid=@Useid,UserName=@UserName
+                                WHERE FId=@FId";
+                    break;
+                case "T_OfferOrderHead":
+                    _result = @"UPDATE dbo.T_OfferOrderHead SET ProductName=@ProductName,Bao=@Bao,ProductMi=@ProductMi,MaterialQty=@MaterialQty,BaoQty=@BaoQty,RenQty=@RenQty,KGQty=@KGQty,
+                                                                LQty=@LQty,FiveQty=@FiveQty,FourFiveQty=@FourFiveQty,FourQty=@FourQty,Fremark=@Fremark,FBomOrder=@FBomOrder,FPrice=@FPrice
+                                WHERE Headid=@Headid
+                                ";
+                    break;
+                case "":
+                    _result = @"UPDATE dbo.T_OfferOrderEntry SET MaterialID=@MaterialID,MaterialCode=@MaterialCode,MaterialName=@MaterialName,
+                                                                 PeiQty=@PeiQty,MaterialPrice=@MaterialPrice,MaterialAmount=@MaterialAmount
+                                WHERE Entryid=@Entryid
+                               ";
+                    break;
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// 删除指定行记录(主要针对T_OfferOrderEntry表)
+        /// </summary>
+        /// <returns></returns>
+        public string DelEntry(int entryid)
+        {
+            _result = $@"
+                            DELETE FROM dbo.T_OfferOrderEntry WHERE Entryid='{entryid}'
+                       ";
+            return _result;
+        }
+
+
+        /////////////////////////////////////查询端使用//////////////////////////////////////////////////////
+        
+
+
     }
 }

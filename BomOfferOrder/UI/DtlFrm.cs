@@ -201,7 +201,7 @@ namespace BomOfferOrder.UI
                                 newrow[2] = 0;                                                  //单据状态(0:已审核 1:反审核)
                                 newrow[3] = DateTime.Now.Date;                                  //创建日期
                                 newrow[4] = 0;                                                  //记录当前单据使用标记(0:正在使用 1:没有使用)
-                                newrow[5] = DateTime.Now.Date;                                  //记录当前单据使用者信息
+                                newrow[5] = "";                                                 //记录当前单据使用者名称信息
 
                                 newrow[6] = _funState == "C" ? 0 : showdetail.Headid;           //Headid
                                 newrow[7] = showdetail.txtname.Text;                            //产品名称(物料名称)
@@ -280,6 +280,7 @@ namespace BomOfferOrder.UI
                 else
                 {
                     MessageBox.Show($"单据'{txtbom.Text}'提交成功,可关闭此单据", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tmsave.Enabled = false;
                 }
             }
             catch (Exception ex)

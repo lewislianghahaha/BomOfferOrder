@@ -113,5 +113,31 @@ namespace BomOfferOrder.Task
             return result;
         }
 
+        /// <summary>
+        /// 按照指定的SQL语句执行记录并返回执行结果（true 或 false）
+        /// </summary>
+        public bool Generdt(string sqlscript)
+        {
+            var result = true;
+
+            try
+            {
+                using (var sql = GetBomOfferConn())
+                {
+                    sql.Open();
+                    var sqlCommand = new SqlCommand(sqlscript, sql);
+                    sqlCommand.ExecuteNonQuery();
+                    sql.Close();
+                }
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
+        }
+
+
+
     }
 }
