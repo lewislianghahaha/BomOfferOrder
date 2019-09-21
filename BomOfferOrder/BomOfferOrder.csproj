@@ -50,6 +50,7 @@
     <Compile Include="Conn.cs" />
     <Compile Include="DB\DbList.cs" />
     <Compile Include="DB\SqlList.cs" />
+    <Compile Include="GlobalClasscs.cs" />
     <Compile Include="Task\GenerateDt.cs" />
     <Compile Include="Task\ImportDt.cs" />
     <Compile Include="Task\SearchDt.cs" />
@@ -95,6 +96,12 @@
     <Compile Include="UI\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SearchFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SearchFrm.Designer.cs">
+      <DependentUpon>SearchFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ShowDetailFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,8 +132,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SearchFrm.resx">
+      <DependentUpon>SearchFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ShowDetailFrm.resx">
       <DependentUpon>ShowDetailFrm.cs</DependentUpon>

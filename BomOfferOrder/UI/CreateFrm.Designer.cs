@@ -252,14 +252,14 @@
             this.toolStripLabel5,
             this.tstotalrow});
             this.bngat.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.bngat.Location = new System.Drawing.Point(404, 0);
+            this.bngat.Location = new System.Drawing.Point(435, 0);
             this.bngat.MoveFirstItem = this.bnMoveFirstItem;
             this.bngat.MoveLastItem = this.bnMoveLastItem;
             this.bngat.MoveNextItem = this.bnMoveNextItem;
             this.bngat.MovePreviousItem = this.bnMovePreviousItem;
             this.bngat.Name = "bngat";
             this.bngat.PositionItem = this.bnPositionItem;
-            this.bngat.Size = new System.Drawing.Size(517, 24);
+            this.bngat.Size = new System.Drawing.Size(486, 24);
             this.bngat.TabIndex = 0;
             this.bngat.Text = "bindingNavigator1";
             // 
@@ -377,7 +377,7 @@
             this.tstotalrow.Size = new System.Drawing.Size(55, 21);
             this.tstotalrow.Text = "共 {0} 行";
             // 
-            // Main
+            // CreateFrm
             // 
             this.AcceptButton = this.btnsearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -389,8 +389,8 @@
             this.Controls.Add(this.MainMenu);
             this.Controls.Add(this.groupBox2);
             this.MainMenuStrip = this.MainMenu;
-            this.Name = "Main";
-            this.Text = "成本BOM-报价单相关修改";
+            this.Name = "CreateFrm";
+            this.Text = "成本BOM报价单-创建";
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
             this.DelMenu.ResumeLayout(false);

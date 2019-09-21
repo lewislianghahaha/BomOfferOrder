@@ -30,13 +30,12 @@
         {
             this.SuspendLayout();
             // 
-            // SearchFrm
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(647, 405);
-            this.Name = "SearchFrm";
-            this.Text = "SearchFrm";
+            this.ClientSize = new System.Drawing.Size(903, 572);
+            this.Name = "Main";
             this.ResumeLayout(false);
 
         }

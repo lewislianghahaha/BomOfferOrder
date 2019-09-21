@@ -1,6 +1,6 @@
 ﻿namespace BomOfferOrder.UI
 {
-    partial class Login
+    partial class SearchFrm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,14 +30,13 @@
         {
             this.SuspendLayout();
             // 
-            // Login
+            // SearchFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(541, 292);
-            this.ControlBox = false;
-            this.Name = "Login";
-            this.Text = "Login";
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Name = "SearchFrm";
+            this.Text = "成本BOM报价单-查询";
             this.ResumeLayout(false);
 
         }
