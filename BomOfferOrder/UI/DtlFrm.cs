@@ -18,7 +18,7 @@ namespace BomOfferOrder.UI
             //单据状态标记(作用:记录打开此功能窗体时是 读取记录 还是 创建记录) C:创建 R:读取
             private string _funState;
             //记录审核状态(True:已审核;False:没审核)
-            private bool _confirmMarkId=false;
+            private bool _confirmMarkId = false;
             //记录单据是否占用情况 占用:true 末占用:false TODO:HOLD 
             private bool _useid = false;
 
@@ -296,14 +296,30 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void DtlFrm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var clickMessage = string.Empty;
+            var clickMessage = !_confirmMarkId ? $"提示:单据'{txtbom.Text}'没提交, \n 其记录退出后将会消失,是否确定退出?" : $"是否退出?";
 
-            clickMessage = !_confirmMarkId || _funState == "C" ? $"提示:没提交的记录退出后将会消失,是否确定退出?" : $"是否退出?";
-            e.Cancel = MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes;
-            //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
-            for (var i = tctotalpage.TabCount-1; i >=0 ; i--)
+            if (e.CloseReason != CloseReason.ApplicationExitCall)
             {
-                tctotalpage.TabPages.RemoveAt(i);
+                var result = MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo,MessageBoxIcon.Information);
+                //当点击"OK"按钮时执行以下操作
+                if (result == DialogResult.Yes)
+                {
+                    //TODO 预留:当退出时,清空useid等相关占用信息
+
+                    //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
+                    for (var i = tctotalpage.TabCount - 1; i >= 0; i--)
+                    {
+                        tctotalpage.TabPages.RemoveAt(i);
+                    }
+                    //允许窗体关闭
+                    e.Cancel = false;
+                    //Application.Exit();
+                }
+                else
+                {
+                    //将Cancel属性设置为 true 可以“阻止”窗体关闭
+                    e.Cancel = true;
+                }
             }
         }
 
@@ -320,7 +336,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 根据判断否合法(只在创建状态使用)
+        /// 根据判断数据是否合法(只在创建状态使用)
         /// </summary>
         /// <returns></returns>
         private bool CheckDetail()

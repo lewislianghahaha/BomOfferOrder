@@ -230,7 +230,6 @@ namespace BomOfferOrder.UI
                         dtlFrm.ShowDialog();
                     }
                     //若返回父窗体后将各控件清空
-
                     gvdtl.DataSource = null;
                     gvsearchdtl.DataSource = null;
                     _adddt.Rows.Clear();
