@@ -200,6 +200,7 @@ namespace BomOfferOrder.UI
                                 newrow[1] = txtbom.Text;                                        //流水号
                                 newrow[2] = 0;                                                  //单据状态(0:已审核 1:反审核)
                                 newrow[3] = DateTime.Now.Date;                                  //创建日期
+                                //创建人 TODO:需添加字段
                                 newrow[4] = 0;                                                  //记录当前单据使用标记(0:正在使用 1:没有使用)
                                 newrow[5] = "";                                                 //记录当前单据使用者名称信息
 
