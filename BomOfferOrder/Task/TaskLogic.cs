@@ -115,6 +115,15 @@ namespace BomOfferOrder.Task
                 case "0.3":
                     SearchOaOrder(_oaorder);
                     break;
+                //单据查询-主窗体使用
+                case "0.4":
+
+                    break;
+                //单据查询-查询页面使用
+                case "0.5":
+
+                    break;
+
                 //运算
                 case "1":
                     Generatedt(_valuelist,_dt,_bomdt);

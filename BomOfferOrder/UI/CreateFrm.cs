@@ -42,7 +42,6 @@ namespace BomOfferOrder.UI
 
         private void OnRegisterEvents()
         {
-            tmclose.Click += Tmclose_Click;
             btnsearch.Click += Btnsearch_Click;
             btngenerate.Click += Btngenerate_Click;
             tmadd.Click += Tmadd_Click;
@@ -240,16 +239,6 @@ namespace BomOfferOrder.UI
             {
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        /// <summary>
-        /// 关闭
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Tmclose_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
 
         /// <summary>

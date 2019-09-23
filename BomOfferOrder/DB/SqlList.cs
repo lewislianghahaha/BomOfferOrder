@@ -361,7 +361,8 @@
             switch (tablename)
             {
                 case "T_OfferOrder":
-                    _result = @"UPDATE dbo.T_OfferOrder SET OAorderno=@OAorderno,Fstatus=@Fstatus,CreateDt=@CreateDt,Useid=@Useid,UserName=@UserName
+                    _result = @"UPDATE dbo.T_OfferOrder SET OAorderno=@OAorderno,Fstatus=@Fstatus,ConfirmDt=@ConfirmDt,CreateDt=@CreateDt,
+                                                            CreateName=@CreateName,Useid=@Useid,UserName=@UserName
                                 WHERE FId=@FId";
                     break;
                 case "T_OfferOrderHead":

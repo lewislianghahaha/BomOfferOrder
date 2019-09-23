@@ -36,8 +36,6 @@
             this.tmdel = new System.Windows.Forms.ToolStripMenuItem();
             this.AddMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmadd = new System.Windows.Forms.ToolStripMenuItem();
-            this.MainMenu = new System.Windows.Forms.MenuStrip();
-            this.tmclose = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btngenerate = new System.Windows.Forms.Button();
             this.btnsearch = new System.Windows.Forms.Button();
@@ -67,7 +65,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
             this.DelMenu.SuspendLayout();
             this.AddMenu.SuspendLayout();
-            this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvsearchdtl)).BeginInit();
@@ -127,22 +124,6 @@
             this.tmadd.Size = new System.Drawing.Size(160, 22);
             this.tmadd.Text = "添加至明细记录";
             // 
-            // MainMenu
-            // 
-            this.MainMenu.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmclose});
-            this.MainMenu.Location = new System.Drawing.Point(0, 0);
-            this.MainMenu.Name = "MainMenu";
-            this.MainMenu.Size = new System.Drawing.Size(929, 25);
-            this.MainMenu.TabIndex = 6;
-            // 
-            // tmclose
-            // 
-            this.tmclose.Name = "tmclose";
-            this.tmclose.Size = new System.Drawing.Size(44, 21);
-            this.tmclose.Text = "关闭";
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -152,7 +133,7 @@
             this.panel1.Controls.Add(this.txtvalue);
             this.panel1.Controls.Add(this.comtype);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 25);
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(929, 28);
             this.panel1.TabIndex = 7;
@@ -196,9 +177,9 @@
             this.groupBox1.Controls.Add(this.gvsearchdtl);
             this.groupBox1.Controls.Add(this.panel2);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(0, 53);
+            this.groupBox1.Location = new System.Drawing.Point(0, 28);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(929, 252);
+            this.groupBox1.Size = new System.Drawing.Size(929, 277);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "查询明细记录";
@@ -214,7 +195,7 @@
             this.gvsearchdtl.Name = "gvsearchdtl";
             this.gvsearchdtl.ReadOnly = true;
             this.gvsearchdtl.RowTemplate.Height = 23;
-            this.gvsearchdtl.Size = new System.Drawing.Size(923, 206);
+            this.gvsearchdtl.Size = new System.Drawing.Size(923, 231);
             this.gvsearchdtl.TabIndex = 1;
             // 
             // panel2
@@ -222,7 +203,7 @@
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2.Controls.Add(this.bngat);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(3, 223);
+            this.panel2.Location = new System.Drawing.Point(3, 248);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(923, 26);
             this.panel2.TabIndex = 0;
@@ -386,17 +367,13 @@
             this.ControlBox = false;
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.MainMenu);
             this.Controls.Add(this.groupBox2);
-            this.MainMenuStrip = this.MainMenu;
             this.Name = "CreateFrm";
             this.Text = "成本BOM报价单-创建";
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
             this.DelMenu.ResumeLayout(false);
             this.AddMenu.ResumeLayout(false);
-            this.MainMenu.ResumeLayout(false);
-            this.MainMenu.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -407,7 +384,6 @@
             this.bngat.ResumeLayout(false);
             this.bngat.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -416,8 +392,6 @@
         private System.Windows.Forms.ContextMenuStrip AddMenu;
         private System.Windows.Forms.ContextMenuStrip DelMenu;
         private System.Windows.Forms.DataGridView gvdtl;
-        private System.Windows.Forms.MenuStrip MainMenu;
-        private System.Windows.Forms.ToolStripMenuItem tmclose;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btngenerate;
         private System.Windows.Forms.Button btnsearch;

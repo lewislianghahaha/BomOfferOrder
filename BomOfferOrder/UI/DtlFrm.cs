@@ -29,6 +29,10 @@ namespace BomOfferOrder.UI
 
             //记录读取过来的FID值
             private int _fid=0;
+            //记录读取过来的创建人信息
+            private string _creatname;
+            //记录读取过来的创建日期信息
+            private DateTime _createtime;
         #endregion
 
         #region Set
@@ -196,37 +200,38 @@ namespace BomOfferOrder.UI
                             foreach (DataRow rows in bomdtldt.Rows)
                             {
                                 var newrow = _bomdt.NewRow();
-                                newrow[0] = _funState == "C" ? 0: _fid;                         //Fid
-                                newrow[1] = txtbom.Text;                                        //流水号
-                                newrow[2] = 0;                                                  //单据状态(0:已审核 1:反审核)
-                                newrow[3] = DateTime.Now.Date;                                  //创建日期
-                                //创建人 TODO:需添加字段
-                                newrow[4] = 0;                                                  //记录当前单据使用标记(0:正在使用 1:没有使用)
-                                newrow[5] = "";                                                 //记录当前单据使用者名称信息
+                                newrow[0] = _funState == "C" ? 0: _fid;                                     //Fid
+                                newrow[1] = txtbom.Text;                                                    //流水号
+                                newrow[2] = 0;                                                              //单据状态(0:已审核 1:反审核)
+                                newrow[3] = DateTime.Now.Date;                                              //审核日期
+                                newrow[4] = _funState =="C" ? DateTime.Now.Date : _createtime;              //创建日期
+                                newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
+                                newrow[6] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
+                                newrow[7] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
 
-                                newrow[6] = _funState == "C" ? 0 : showdetail.Headid;           //Headid
-                                newrow[7] = showdetail.txtname.Text;                            //产品名称(物料名称)
-                                newrow[8] = showdetail.txtbao.Text;                             //包装规格
-                                newrow[9] = Convert.ToDecimal(showdetail.txtmi.Text);           //产品密度(KG/L)
-                                newrow[10] = Convert.ToDecimal(showdetail.txtmaterial.Text);    //材料成本(不含税)
-                                newrow[11] = Convert.ToDecimal(showdetail.txtbaochenben.Text);  //包装成本
-                                newrow[12] = Convert.ToDecimal(showdetail.txtren.Text);         //人工及制造费用
-                                newrow[13] = Convert.ToDecimal(showdetail.txtkg.Text);          //成本(元/KG)
-                                newrow[14] = Convert.ToDecimal(showdetail.txtl.Text);           //成本(元/L)
-                                newrow[15] = Convert.ToDecimal(showdetail.txt50.Text);          //50%报价
-                                newrow[16] = Convert.ToDecimal(showdetail.txt45.Text);          //45%报价
-                                newrow[17] = Convert.ToDecimal(showdetail.txt40.Text);          //40%报价
-                                newrow[18] = showdetail.txtremark.Text;                         //备注
-                                newrow[19] = showdetail.txtbom.Text;                            //对应BOM版本编号
-                                newrow[20] = Convert.ToDecimal(showdetail.txtprice.Text);       //物料单价
+                                newrow[8] = _funState == "C" ? 0 : showdetail.Headid;                       //Headid
+                                newrow[9] = showdetail.txtname.Text;                                        //产品名称(物料名称)
+                                newrow[10] = showdetail.txtbao.Text;                                        //包装规格
+                                newrow[11] = Convert.ToDecimal(showdetail.txtmi.Text);                      //产品密度(KG/L)
+                                newrow[12] = Convert.ToDecimal(showdetail.txtmaterial.Text);                //材料成本(不含税)
+                                newrow[13] = Convert.ToDecimal(showdetail.txtbaochenben.Text);              //包装成本
+                                newrow[14] = Convert.ToDecimal(showdetail.txtren.Text);                     //人工及制造费用
+                                newrow[15] = Convert.ToDecimal(showdetail.txtkg.Text);                      //成本(元/KG)
+                                newrow[16] = Convert.ToDecimal(showdetail.txtl.Text);                       //成本(元/L)
+                                newrow[17] = Convert.ToDecimal(showdetail.txt50.Text);                      //50%报价
+                                newrow[18] = Convert.ToDecimal(showdetail.txt45.Text);                      //45%报价
+                                newrow[19] = Convert.ToDecimal(showdetail.txt40.Text);                      //40%报价
+                                newrow[20] = showdetail.txtremark.Text;                                     //备注
+                                newrow[21] = showdetail.txtbom.Text;                                        //对应BOM版本编号
+                                newrow[22] = Convert.ToDecimal(showdetail.txtprice.Text);                   //物料单价
                                  
-                                newrow[21] = rows[0];                                           //Entryid
-                                newrow[22] = rows[1];                                           //物料编码ID
-                                newrow[23] = rows[2];                                           //物料编码
-                                newrow[24] = rows[3];                                           //物料名称
-                                newrow[25] = rows[4];                                           //配方用量
-                                newrow[26] = rows[5];                                           //物料单价(含税)
-                                newrow[27] = rows[6];                                           //物料成本(含税)
+                                newrow[23] = rows[0];                                                       //Entryid
+                                newrow[24] = rows[1];                                                       //物料编码ID
+                                newrow[25] = rows[2];                                                       //物料编码
+                                newrow[26] = rows[3];                                                       //物料名称
+                                newrow[27] = rows[4];                                                       //配方用量
+                                newrow[28] = rows[5];                                                       //物料单价(含税)
+                                newrow[29] = rows[6];                                                       //物料成本(含税)
                                 _bomdt.Rows.Add(newrow);
                             }
                             //将各TabPages内GridView中的需要进行删除的记录合并整理
