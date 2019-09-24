@@ -1,4 +1,6 @@
-﻿namespace BomOfferOrder.DB
+﻿using System.Drawing.Printing;
+
+namespace BomOfferOrder.DB
 {
     public class SqlList
     {
@@ -395,8 +397,94 @@
 
 
         /////////////////////////////////////查询端使用//////////////////////////////////////////////////////
-        
-        
+
+        /// <summary>
+        /// Main查询及查询端使用
+        /// </summary>
+        /// <returns></returns>
+        public string SearchBomList(int typeid,string value)
+        {
+            //OA流水号
+            if (typeid == 0)
+            {
+                _result = $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE a.OAorderno LIKE '%{value}%'
+                            ";
+            }
+            //产品名称
+            else if (typeid == 1)
+            {
+                _result = $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE EXISTS (
+				                                SELECT NULL
+				                                FROM dbo.T_OfferOrderHead b 
+				                                WHERE a.FId=b.FId
+				                                AND b.ProductName LIKE '%{value}%'
+		                                        )
+                            ";
+            }
+            //创建日期
+            else if (typeid == 2)
+            {
+                _result = $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                            ";
+            }
+            //审核日期
+            else if (typeid == 3)
+            {
+                _result = $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                            ";
+            }
+            //单据状态
+            else if(typeid == 4)
+            {
+                _result = $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE a.Fstatus='{value}'
+                            ";
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// 根据FID查询BOM报价单明细
+        /// </summary>
+        /// <returns></returns>
+        public string SearchBomDtl(int fid)
+        {
+            _result = $@"
+                            SELECT a.FId,a.OAorderno,a.Fstatus,a.ConfirmDt,a.CreateDt,a.CreateName,
+
+	                               b.Headid,b.ProductName,b.Bao,b.ProductMi,b.MaterialQty,b.BaoQty,
+	                               b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
+	                               b.Fremark,b.FBomOrder,b.FPrice,
+
+	                               c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.MaterialPrice,c.MaterialAmount
+	    
+                            FROM dbo.T_OfferOrder a
+                            INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+                            INNER JOIN dbo.T_OfferOrderEntry c ON b.Headid=c.Headid
+
+                            WHERE a.FId='{fid}'
+                        ";
+            return _result;
+        }
 
     }
 }

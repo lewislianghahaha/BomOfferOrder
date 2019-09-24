@@ -32,7 +32,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lbaccountdt = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.lbaccountmessage = new System.Windows.Forms.Label();
+            this.AccountMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmchangepwd = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.pbimg = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -41,6 +45,10 @@
             this.panel5 = new System.Windows.Forms.Panel();
             this.panel9 = new System.Windows.Forms.Panel();
             this.gvdtl = new System.Windows.Forms.DataGridView();
+            this.Menu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmshowdetail = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmbackconfirm = new System.Windows.Forms.ToolStripMenuItem();
             this.panel8 = new System.Windows.Forms.Panel();
             this.bngat = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -60,17 +68,11 @@
             this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.dtpconfirm = new System.Windows.Forms.DateTimePicker();
-            this.label7 = new System.Windows.Forms.Label();
-            this.btnusersearch = new System.Windows.Forms.Button();
+            this.txtvalue = new System.Windows.Forms.TextBox();
             this.comstatus = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.dtpcreatedt = new System.Windows.Forms.DateTimePicker();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.dtpdt = new System.Windows.Forms.DateTimePicker();
+            this.btnusersearch = new System.Windows.Forms.Button();
+            this.comselectvalue = new System.Windows.Forms.ComboBox();
             this.panel6 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
@@ -78,6 +80,7 @@
             this.btnSearch = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.AccountMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
             this.panel3.SuspendLayout();
             this.tctotalpage.SuspendLayout();
@@ -85,6 +88,7 @@
             this.panel5.SuspendLayout();
             this.panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
+            this.Menu.SuspendLayout();
             this.panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
             this.bngat.SuspendLayout();
@@ -107,21 +111,54 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.lbaccountdt);
+            this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.lbaccountmessage);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(744, 0);
+            this.panel2.Location = new System.Drawing.Point(656, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(224, 56);
+            this.panel2.Size = new System.Drawing.Size(312, 56);
             this.panel2.TabIndex = 1;
+            // 
+            // lbaccountdt
+            // 
+            this.lbaccountdt.AutoSize = true;
+            this.lbaccountdt.Location = new System.Drawing.Point(196, 41);
+            this.lbaccountdt.Name = "lbaccountdt";
+            this.lbaccountdt.Size = new System.Drawing.Size(0, 12);
+            this.lbaccountdt.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(137, 40);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 12);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "登入时间:";
             // 
             // lbaccountmessage
             // 
             this.lbaccountmessage.AutoSize = true;
+            this.lbaccountmessage.ContextMenuStrip = this.AccountMenu;
             this.lbaccountmessage.Location = new System.Drawing.Point(62, 40);
             this.lbaccountmessage.Name = "lbaccountmessage";
             this.lbaccountmessage.Size = new System.Drawing.Size(0, 12);
             this.lbaccountmessage.TabIndex = 1;
+            // 
+            // AccountMenu
+            // 
+            this.AccountMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmchangepwd});
+            this.AccountMenu.Name = "AccountMenu";
+            this.AccountMenu.Size = new System.Drawing.Size(149, 26);
+            // 
+            // tmchangepwd
+            // 
+            this.tmchangepwd.Name = "tmchangepwd";
+            this.tmchangepwd.Size = new System.Drawing.Size(148, 22);
+            this.tmchangepwd.Text = "修改用户密码";
             // 
             // label1
             // 
@@ -189,9 +226,9 @@
             // 
             this.panel9.Controls.Add(this.gvdtl);
             this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel9.Location = new System.Drawing.Point(0, 79);
+            this.panel9.Location = new System.Drawing.Point(0, 50);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(956, 331);
+            this.panel9.Size = new System.Drawing.Size(956, 360);
             this.panel9.TabIndex = 4;
             // 
             // gvdtl
@@ -199,13 +236,40 @@
             this.gvdtl.AllowUserToAddRows = false;
             this.gvdtl.AllowUserToDeleteRows = false;
             this.gvdtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.ReadOnly = true;
             this.gvdtl.RowTemplate.Height = 23;
-            this.gvdtl.Size = new System.Drawing.Size(956, 331);
+            this.gvdtl.Size = new System.Drawing.Size(956, 360);
             this.gvdtl.TabIndex = 0;
+            // 
+            // Menu
+            // 
+            this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmshowdetail,
+            this.toolStripSeparator1,
+            this.tmbackconfirm});
+            this.Menu.Name = "Menu";
+            this.Menu.Size = new System.Drawing.Size(125, 54);
+            // 
+            // tmshowdetail
+            // 
+            this.tmshowdetail.Name = "tmshowdetail";
+            this.tmshowdetail.Size = new System.Drawing.Size(124, 22);
+            this.tmshowdetail.Text = "查询明细";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(121, 6);
+            // 
+            // tmbackconfirm
+            // 
+            this.tmbackconfirm.Name = "tmbackconfirm";
+            this.tmbackconfirm.Size = new System.Drawing.Size(124, 22);
+            this.tmbackconfirm.Text = "反审核";
             // 
             // panel8
             // 
@@ -370,113 +434,57 @@
             // panel7
             // 
             this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel7.Controls.Add(this.dtpconfirm);
-            this.panel7.Controls.Add(this.label7);
-            this.panel7.Controls.Add(this.btnusersearch);
+            this.panel7.Controls.Add(this.txtvalue);
             this.panel7.Controls.Add(this.comstatus);
-            this.panel7.Controls.Add(this.label6);
-            this.panel7.Controls.Add(this.dtpcreatedt);
-            this.panel7.Controls.Add(this.label5);
-            this.panel7.Controls.Add(this.textBox2);
-            this.panel7.Controls.Add(this.label4);
-            this.panel7.Controls.Add(this.textBox1);
-            this.panel7.Controls.Add(this.label3);
+            this.panel7.Controls.Add(this.dtpdt);
+            this.panel7.Controls.Add(this.btnusersearch);
+            this.panel7.Controls.Add(this.comselectvalue);
             this.panel7.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel7.Location = new System.Drawing.Point(0, 22);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(956, 57);
+            this.panel7.Size = new System.Drawing.Size(956, 28);
             this.panel7.TabIndex = 2;
             // 
-            // dtpconfirm
+            // txtvalue
             // 
-            this.dtpconfirm.Location = new System.Drawing.Point(348, 30);
-            this.dtpconfirm.Name = "dtpconfirm";
-            this.dtpconfirm.Size = new System.Drawing.Size(172, 21);
-            this.dtpconfirm.TabIndex = 10;
+            this.txtvalue.Location = new System.Drawing.Point(150, 2);
+            this.txtvalue.Name = "txtvalue";
+            this.txtvalue.Size = new System.Drawing.Size(172, 21);
+            this.txtvalue.TabIndex = 11;
             // 
-            // label7
+            // comstatus
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(287, 35);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 12);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "审核日期:";
+            this.comstatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comstatus.FormattingEnabled = true;
+            this.comstatus.Location = new System.Drawing.Point(150, 3);
+            this.comstatus.Name = "comstatus";
+            this.comstatus.Size = new System.Drawing.Size(121, 20);
+            this.comstatus.TabIndex = 12;
+            // 
+            // dtpdt
+            // 
+            this.dtpdt.Location = new System.Drawing.Point(150, 2);
+            this.dtpdt.Name = "dtpdt";
+            this.dtpdt.Size = new System.Drawing.Size(172, 21);
+            this.dtpdt.TabIndex = 10;
             // 
             // btnusersearch
             // 
-            this.btnusersearch.Location = new System.Drawing.Point(760, 30);
+            this.btnusersearch.Location = new System.Drawing.Point(338, 1);
             this.btnusersearch.Name = "btnusersearch";
             this.btnusersearch.Size = new System.Drawing.Size(75, 23);
             this.btnusersearch.TabIndex = 8;
             this.btnusersearch.Text = "查询";
             this.btnusersearch.UseVisualStyleBackColor = true;
             // 
-            // comstatus
+            // comselectvalue
             // 
-            this.comstatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comstatus.FormattingEnabled = true;
-            this.comstatus.Location = new System.Drawing.Point(619, 31);
-            this.comstatus.Name = "comstatus";
-            this.comstatus.Size = new System.Drawing.Size(121, 20);
-            this.comstatus.TabIndex = 7;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(559, 35);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(59, 12);
-            this.label6.TabIndex = 6;
-            this.label6.Text = "审核状态:";
-            // 
-            // dtpcreatedt
-            // 
-            this.dtpcreatedt.Location = new System.Drawing.Point(81, 29);
-            this.dtpcreatedt.Name = "dtpcreatedt";
-            this.dtpcreatedt.Size = new System.Drawing.Size(172, 21);
-            this.dtpcreatedt.TabIndex = 5;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(20, 33);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(59, 12);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "创建日期:";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(348, 5);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(172, 21);
-            this.textBox2.TabIndex = 3;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(288, 9);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 12);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "产品名称:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(81, 4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(172, 21);
-            this.textBox1.TabIndex = 1;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(21, 9);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 12);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "OA流水号:";
+            this.comselectvalue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comselectvalue.FormattingEnabled = true;
+            this.comselectvalue.Location = new System.Drawing.Point(4, 3);
+            this.comselectvalue.Name = "comselectvalue";
+            this.comselectvalue.Size = new System.Drawing.Size(138, 20);
+            this.comselectvalue.TabIndex = 7;
             // 
             // panel6
             // 
@@ -541,6 +549,7 @@
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.AccountMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).EndInit();
             this.panel3.ResumeLayout(false);
             this.tctotalpage.ResumeLayout(false);
@@ -548,6 +557,7 @@
             this.panel5.ResumeLayout(false);
             this.panel9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
+            this.Menu.ResumeLayout(false);
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).EndInit();
@@ -582,14 +592,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel9;
         private System.Windows.Forms.DataGridView gvdtl;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.DateTimePicker dtpcreatedt;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.ComboBox comstatus;
+        private System.Windows.Forms.ComboBox comselectvalue;
         private System.Windows.Forms.Button btnusersearch;
         private System.Windows.Forms.BindingNavigator bngat;
         private System.Windows.Forms.ToolStripLabel bnCountItem;
@@ -608,7 +611,16 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
         private System.Windows.Forms.ToolStripLabel toolStripLabel5;
         private System.Windows.Forms.ToolStripLabel tstotalrow;
-        private System.Windows.Forms.DateTimePicker dtpconfirm;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.DateTimePicker dtpdt;
+        private System.Windows.Forms.ContextMenuStrip Menu;
+        private System.Windows.Forms.ToolStripMenuItem tmshowdetail;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tmbackconfirm;
+        private System.Windows.Forms.TextBox txtvalue;
+        private System.Windows.Forms.ContextMenuStrip AccountMenu;
+        private System.Windows.Forms.ToolStripMenuItem tmchangepwd;
+        private System.Windows.Forms.Label lbaccountdt;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comstatus;
     }
 }

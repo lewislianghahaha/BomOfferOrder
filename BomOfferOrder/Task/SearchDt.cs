@@ -138,8 +138,51 @@ namespace BomOfferOrder.Task
         }
 
         //////////////////////////////////////////////////主窗体及查询端使用//////////////////////////////////////////////////////////
-        
 
+        /// <summary>
+        /// Main查询及查询端使用
+        /// </summary>
+        /// <param name="typeid"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public DataTable SearchBomOrder(int typeid, string value)
+        {
+            var resultdt=new DataTable();
+            try
+            {
+                var sqlscript = sqlList.SearchBomList(typeid, value);
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetBomOfferConn());
+                sqlDataAdapter.Fill(resultdt);
+            }
+            catch (Exception)
+            {
+                resultdt.Rows.Clear();
+                resultdt.Columns.Clear();
+            }
+            return resultdt;
+        }
+
+        /// <summary>
+        /// 根据FID查询BOM报价单明细
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <returns></returns>
+        public DataTable SearchBomOrderDetail(int fid)
+        {
+            var resultdt = new DataTable();
+            try
+            {
+                var sqlscript = sqlList.SearchBomDtl(fid);
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetBomOfferConn());
+                sqlDataAdapter.Fill(resultdt);
+            }
+            catch (Exception)
+            {
+                resultdt.Rows.Clear();
+                resultdt.Columns.Clear();
+            }
+            return resultdt;
+        }
 
     }
 }

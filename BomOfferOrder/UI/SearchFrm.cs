@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using BomOfferOrder.Task;
 
@@ -10,6 +11,7 @@ namespace BomOfferOrder.UI
     {
         TaskLogic task=new TaskLogic();
         Load load=new Load();
+        DtlFrm dtlFrm=new DtlFrm();
 
         #region 变量参数
 
@@ -31,11 +33,15 @@ namespace BomOfferOrder.UI
         {
             InitializeComponent();
             OnRegisterEvents();
+            OnInitialize();
         }
 
         private void OnRegisterEvents()
         {
             btnsearch.Click += Btnsearch_Click;
+            tmbackconfirm.Click += Tmbackconfirm_Click;
+            tmshowdetail.Click += Tmshowdetail_Click;
+            comselectvalue.SelectedIndexChanged += Comselectvalue_SelectedIndexChanged;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -47,6 +53,61 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 初始化相关记录
+        /// </summary>
+        private void OnInitialize()
+        {
+            //初始化下拉列表
+            OnShowSelectTypeList();
+        }
+
+        /// <summary>
+        /// 当条件查询下拉列表ID发生变化时使用
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Comselectvalue_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                //获取下拉列表所选值
+                var dvordertylelist = (DataRowView)comselectvalue.Items[comselectvalue.SelectedIndex];
+                var typeId = Convert.ToInt32(dvordertylelist["Id"]);
+
+                //OA流水号  产品名称
+                switch (typeId)
+                {
+                    case 0:
+                    case 1:
+                        txtvalue.Visible = true;
+                        comstatus.Visible = false;
+                        dtpdt.Visible = false;
+                        break;
+                    case 2:
+                    case 3:
+                        dtpdt.Visible = true;
+                        dtpdt.Enabled = true;
+                        //将单据状态 及 文本框控件隐藏
+                        comstatus.Visible = false;
+                        txtvalue.Visible = false;
+                        break;
+                    default:
+                        comstatus.Visible = true;
+                        //将日期 以及 文本框控件隐藏
+                        dtpdt.Visible = false;
+                        txtvalue.Visible = false;
+                        //初始化单据状态下拉列表
+                        OnShowStatusList();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
         /// 查询 
         /// </summary>
         /// <param name="sender"></param>
@@ -55,8 +116,51 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                task.TaskId = "0.5";
+                var dvordertylelist = (DataRowView)comselectvalue.Items[comselectvalue.SelectedIndex];
+                var typeId = Convert.ToInt32(dvordertylelist["Id"]);
 
+                task.TaskId = "0.4";
+                task.SearchId = typeId;
+                switch (typeId)
+                {
+                    case 0:
+                    case 1:
+                        task.SearchValue = txtvalue.Text;
+                        break;
+                    case 2:
+                    case 3:
+                        task.SearchValue = Convert.ToString(dtpdt.Value.Date);
+                        break;
+                    default:
+                        var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
+                        var id = Convert.ToInt32(statuslist["Id"]);
+                        task.SearchValue = Convert.ToString(id);
+                        break;
+                }
+
+                new Thread(Start).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
+
+                if (task.ResultTable.Rows.Count > 0)
+                {
+                    _dtl = task.ResultTable;
+                    panel2.Visible = true;
+                    //初始化下拉框所选择的默认值
+                    tmshowrows.SelectedItem = "10";
+                    //定义初始化标记
+                    _pageChange = true;
+                    //GridView分页
+                    GridViewPageChange();
+                }
+                //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
+                else
+                {
+                    gvdtl.DataSource = task.ResultTable;
+                    panel2.Visible = false;
+                }
+                //控制GridView单元格显示方式
+                ControlGridViewisShow();
             }
             catch (Exception ex) 
             {
@@ -64,7 +168,56 @@ namespace BomOfferOrder.UI
             }
         }
 
+        /// <summary>
+        /// 显示单据明细
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmshowdetail_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有明细记录,不能继续操作");
+                //根据所选择的行获取其fid值
+                var fid = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
 
+                task.TaskId = "0.5";
+                task.Fid = fid;
+
+                new Thread(Start).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
+
+                //弹出对应窗体相关设置
+                //初始化信息
+                dtlFrm.FunState = "R";
+                dtlFrm.Useid = false;  //todo:需要谂 占用ID
+                dtlFrm.OnInitialize(task.ResultTable);
+                dtlFrm.StartPosition = FormStartPosition.CenterParent;
+                dtlFrm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 反审核
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmbackconfirm_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         /// <summary>
         /// 首页按钮(GridView页面跳转时使用)
@@ -310,7 +463,135 @@ namespace BomOfferOrder.UI
             }
         }
 
+        /// <summary>
+        ///子线程使用(重:用于监视功能调用情况,当完成时进行关闭LoadForm)
+        /// </summary>
+        private void Start()
+        {
+            task.StartTask();
 
+            //当完成后将Form2子窗体关闭
+            this.Invoke((ThreadStart)(() =>
+            {
+                load.Close();
+            }));
+        }
+
+        /// <summary>
+        /// 控制GridView单元格显示方式
+        /// </summary>
+        private void ControlGridViewisShow()
+        {
+            //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
+            if (gvdtl.RowCount > 0)
+                gvdtl.Columns[0].Visible = false;
+        }
+
+        /// <summary>
+        /// 初始化查询下拉列表
+        /// </summary>
+        private void OnShowSelectTypeList()
+        {
+            var dt = new DataTable();
+
+            //创建表头
+            for (var i = 0; i < 5; i++)
+            {
+                var dc = new DataColumn();
+                switch (i)
+                {
+                    case 0:
+                        dc.ColumnName = "Id";
+                        break;
+                    case 1:
+                        dc.ColumnName = "Name";
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+
+            //创建行内容
+            for (var j = 0; j < 5; j++)
+            {
+                var dr = dt.NewRow();
+
+                switch (j)
+                {
+                    case 0:
+                        dr[0] = "0";
+                        dr[1] = "OA流水号";
+                        break;
+                    case 1:
+                        dr[0] = "1";
+                        dr[1] = "产品名称";
+                        break;
+                    case 2:
+                        dr[0] = "2";
+                        dr[1] = "创建日期";
+                        break;
+                    case 3:
+                        dr[0] = "3";
+                        dr[1] = "审核日期";
+                        break;
+                    case 4:
+                        dr[0] = "4";
+                        dr[1] = "单据状态";
+                        break;
+                }
+                dt.Rows.Add(dr);
+            }
+
+            comselectvalue.DataSource = dt;
+            comselectvalue.DisplayMember = "Name"; //设置显示值
+            comselectvalue.ValueMember = "Id";    //设置默认值内码
+        }
+
+        /// <summary>
+        /// 初始化单据状态下拉列表
+        /// </summary>
+        private void OnShowStatusList()
+        {
+            var dt = new DataTable();
+
+            //创建表头
+            for (var i = 0; i < 2; i++)
+            {
+                var dc = new DataColumn();
+                switch (i)
+                {
+                    case 0:
+                        dc.ColumnName = "Id";
+                        break;
+                    case 1:
+                        dc.ColumnName = "Name";
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+
+            //创建行内容
+            for (var j = 0; j < 2; j++)
+            {
+                var dr = dt.NewRow();
+
+                switch (j)
+                {
+                    case 0:
+                        dr[0] = "0";
+                        dr[1] = "已审核";
+                        break;
+                    case 1:
+                        dr[0] = "1";
+                        dr[1] = "反审核";
+                        break;
+                }
+                dt.Rows.Add(dr);
+            }
+
+            comstatus.DataSource = dt;
+            comstatus.DisplayMember = "Name"; //设置显示值
+            comstatus.ValueMember = "Id";    //设置默认值内码
+        }
 
     }
 }

@@ -19,6 +19,7 @@ namespace BomOfferOrder.Task
             private DataTable _Importdt;        //获取准备提交的DT(提交时使用)
             private string _funState;           //记录单据状态(C:创建 R:读取) 
             private DataTable _deldt;           //记录从GridView内需要删除的DT记录(单据状态为R时使用)
+            private int _fid;                   //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
 
             private DataTable _resultTable;     //返回DT类型
             private DataTable _resultbomdt;     //返回BOM DT
@@ -76,13 +77,18 @@ namespace BomOfferOrder.Task
             /// </summary>
             public DataTable Deldt { set { _deldt = value; } }
 
+            /// <summary>
+            /// 记录从BOM报价单查询出来获取的FID值(查询明细时使用)
+            /// </summary>
+            public int Fid { set { _fid = value; } }
+
         #endregion
 
         #region Get
-            /// <summary>
-            ///返回DataTable至主窗体
-            /// </summary>
-            public DataTable ResultTable => _resultTable;
+        /// <summary>
+        ///返回DataTable至主窗体
+        /// </summary>
+        public DataTable ResultTable => _resultTable;
 
             /// <summary>
             /// 返回结果标记
@@ -117,11 +123,11 @@ namespace BomOfferOrder.Task
                     break;
                 //单据查询-主窗体使用
                 case "0.4":
-
+                    SearchBomOrder(_searchid, _searchvalue);
                     break;
                 //单据查询-查询页面使用
                 case "0.5":
-
+                    SearchBomOrderDetail(_fid);
                     break;
 
                 //运算
@@ -131,6 +137,10 @@ namespace BomOfferOrder.Task
                 //提交
                 case "2":
                     ImportDt(_funState,_Importdt,_deldt);
+                    break;
+                //更新单据状态
+                case "3":
+
                     break;
             }
         }
@@ -168,6 +178,22 @@ namespace BomOfferOrder.Task
         private void SearchOaOrder(string orderno)
         {
             _resultMark = searchDt.SearchOaOrderInclud(orderno);
+        }
+
+        /// <summary>
+        /// Main查询及查询端使用
+        /// </summary>
+        private void SearchBomOrder(int typeid, string value)
+        {
+            _resultTable = searchDt.SearchBomOrder(typeid,value);
+        }
+
+        /// <summary>
+        /// 根据FID查询BOM报价单明细
+        /// </summary>
+        private void SearchBomOrderDetail(int fid)
+        {
+            _resultTable = searchDt.SearchBomOrderDetail(fid);
         }
 
         /// <summary>

@@ -246,13 +246,14 @@ namespace BomOfferOrder.UI
         /// <param name="materialdt">原材料DT</param>
         public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt)
         {
+            //将‘原材料’DT赋值至变量内
+            _materialdt = materialdt;
+
             try
             {
                 //单据状态:创建 C
                 if (funState == "C")
                 {
-                    //将‘原材料’DT赋值至变量内
-                    _materialdt = materialdt;
                     //将单据状态获取至_funState变量内
                     _funState = funState;
                     FunStateCUse(funState,dt);
@@ -310,8 +311,24 @@ namespace BomOfferOrder.UI
             //获取临时表(GridView控件时使用) 注:‘创建’及‘读取’也会使用到
             var resultdt = dbList.MakeGridViewTemp();
             //将相关值赋值给对应的文本框及GridView控件内
-            //赋值至Headid变量(提交时使用) TODO 当读取时将Headid赋到此变量内 _headid
+            _headid = Convert.ToInt32(sourcedt.Rows[0][8]);                 //Headid
+            txtname.Text = Convert.ToString(sourcedt.Rows[0][9]);           //产品名称
+            txtbao.Text = Convert.ToString(sourcedt.Rows[0][10]);           //包装规格
+            txtmi.Text = Convert.ToString(sourcedt.Rows[0][11]);            //产品密度(KG/L)
+            txtmaterial.Text = Convert.ToString(sourcedt.Rows[0][12]);      //材料成本(不含税)
+            txtbaochenben.Text = Convert.ToString(sourcedt.Rows[0][13]);    //包装成本
+            txtren.Text = Convert.ToString(sourcedt.Rows[0][14]);           //人工及制造费用
+            txtkg.Text = Convert.ToString(sourcedt.Rows[0][15]);            //成本(元/KG)
+            txtl.Text = Convert.ToString(sourcedt.Rows[0][16]);             //成本(元/L)
+            txt50.Text = Convert.ToString(sourcedt.Rows[0][17]);            //50%报价
+            txt45.Text = Convert.ToString(sourcedt.Rows[0][18]);            //45%报价
+            txt40.Text = Convert.ToString(sourcedt.Rows[0][19]);            //40%报价
+            txtremark.Text = Convert.ToString(sourcedt.Rows[0][20]);        //备注
+            txtbom.Text = Convert.ToString(sourcedt.Rows[0][21]);           //对应BOM版本编号
+            txtprice.Text = Convert.ToString(sourcedt.Rows[0][22]);         //物料单价
 
+            //设置及刷新GridView
+            OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
         }
 
         /// <summary>
@@ -333,19 +350,30 @@ namespace BomOfferOrder.UI
                     {
                         var newrow = resultdt.NewRow();
                         newrow[0] = DBNull.Value;   //EntryId
-                        newrow[1] = rows[5];   //物料编码ID
-                        newrow[2] = rows[6];   //物料编码
-                        newrow[3] = rows[7];   //物料名称
-                        newrow[4] = rows[8];   //配方用量
-                        newrow[5] = rows[10];  //物料单价(含税)
-                        newrow[6] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) / 100 , 4);//物料成本(含税) 公式:物料单价*配方用量/100
+                        newrow[1] = rows[5];        //物料编码ID
+                        newrow[2] = rows[6];        //物料编码
+                        newrow[3] = rows[7];        //物料名称
+                        newrow[4] = rows[8];        //配方用量
+                        newrow[5] = rows[10];       //物料单价(含税)
+                        newrow[6] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) / 100 , 4);  //物料成本(含税) 公式:物料单价*配方用量/100
                         resultdt.Rows.Add(newrow);
                     }
                 }
                 //‘读取’状态
                 else
                 {
-                    
+                    foreach (DataRow rows in sourcedt.Rows)
+                    {
+                        var newrow = resultdt.NewRow();
+                        newrow[0] = rows[23];       //EntryId
+                        newrow[1] = rows[24];       //物料编码ID
+                        newrow[2] = rows[25];       //物料编码
+                        newrow[3] = rows[26];       //物料名称
+                        newrow[4] = rows[27];       //配方用量
+                        newrow[5] = rows[28];       //物料单价(含税)
+                        newrow[6] = rows[29];       //物料成本(含税)
+                        resultdt.Rows.Add(newrow);
+                    }
                 }
                 
             }

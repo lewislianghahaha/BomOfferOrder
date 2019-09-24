@@ -18,8 +18,8 @@ namespace BomOfferOrder.UI
             //单据状态标记(作用:记录打开此功能窗体时是 读取记录 还是 创建记录) C:创建 R:读取
             private string _funState;
             //记录审核状态(True:已审核;False:没审核)
-            private bool _confirmMarkId = false;
-            //记录单据是否占用情况 占用:true 末占用:false TODO:HOLD 
+            private bool _confirmMarkId;
+            //记录单据是否占用情况 占用:true 末占用:false
             private bool _useid = false;
 
             //收集TabControl内各Tab Pages的内容
@@ -28,7 +28,7 @@ namespace BomOfferOrder.UI
             private DataTable _deldt;
 
             //记录读取过来的FID值
-            private int _fid=0;
+            private int _fid;
             //记录读取过来的创建人信息
             private string _creatname;
             //记录读取过来的创建日期信息
@@ -46,6 +46,11 @@ namespace BomOfferOrder.UI
         /// 记录审核状态(True:已审核;False:没审核)
         /// </summary>
         public bool ConfirmMarkid { set { _confirmMarkId = value; } }
+
+        /// <summary>
+        /// 记录单据是否占用情况 占用:true 末占用:false
+        /// </summary>
+        public bool Useid { set { _useid = value; } }
 
         #endregion
 
@@ -73,11 +78,14 @@ namespace BomOfferOrder.UI
             //单据状态:创建 C
             if (_funState=="C")
             {
+                _confirmMarkId = false;
                 CreateDetail(bomdt, materialdt);
             }
             //单据状态:读取 R
             else
             {
+                //根据bomdt判断,若rows[2]=0为:已审核 1:反审核
+                _confirmMarkId = Convert.ToInt32(bomdt.Rows[0][2])==0;
                 ReadDetail(bomdt, materialdt);
             }
             //权限控制
@@ -91,7 +99,7 @@ namespace BomOfferOrder.UI
         {
             //获取临时表
             var dt = dbList.MakeTemp();
-            //产品名称
+            //设置TabName
             var tabname = string.Empty;
 
             try
@@ -136,12 +144,74 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 读取记录时使用
         /// </summary>
+        /// <param name="sourcedt">数据源DT</param>
+        /// <param name="materialdt">原材料物料DT</param>
         void ReadDetail(DataTable sourcedt, DataTable materialdt)
         {
+            //创建产成品名称临时表
+            var bomproductorderdt = dbList.CreateBomProductTemp();
+            //获取临时表
+            var bomdtldt = dbList.GetBomDtlTemp();
+
             try
             {
-                //todo =>读取时将FID存放至_fid内
+                //过滤得出不相同的‘产品名称’临时表
+                foreach (DataRow rows in sourcedt.Rows)
+                {
+                    if (bomproductorderdt.Select("ProductName='" + rows[7] + "'").Length > 0) continue;
+                    var newrow = bomproductorderdt.NewRow();
+                    newrow[0] = rows[7];
+                    bomproductorderdt.Rows.Add(newrow);
+                }
+                //再根据bomproductorderdt临时表进行循环
+                foreach (DataRow rows in bomproductorderdt.Rows)
+                {
+                    var tabname = Convert.ToString(rows[0]);
+                    var dtlrows = sourcedt.Select("ProductName='" + rows[0] + "'");
+                    for (var i = 0; i < dtlrows.Length; i++)
+                    {
+                        //当‘OA流水号’为空时,就将第一行的值赋给以下对应的变量内
+                        if (txtbom.Text == "")
+                        {
+                            txtbom.Text = dtlrows[i][1].ToString();
+                            _fid = Convert.ToInt32(dtlrows[i][0]);
+                            _creatname = Convert.ToString(dtlrows[i][5]);
+                            _createtime = Convert.ToDateTime(dtlrows[i][4]);
+                        }
+                        //将记录赋值给bomdtldt内
+                        var newrow = bomdtldt.NewRow();
+                        newrow[8] = dtlrows[i][6];                 //Headid
+                        newrow[9] = dtlrows[i][7];                 //产品名称
+                        newrow[10] = dtlrows[i][8];                //包装规格
+                        newrow[11] = dtlrows[i][9];                //产品密度(KG/L)
+                        newrow[12] = dtlrows[i][10];                //材料成本(不含税)
+                        newrow[13] = dtlrows[i][11];               //包装成本
+                        newrow[14] = dtlrows[i][12];               //人工及制造费用
+                        newrow[15] = dtlrows[i][13];               //成本(元/KG)
+                        newrow[16] = dtlrows[i][14];               //成本(元/L)
+                        newrow[17] = dtlrows[i][15];               //50%报价
+                        newrow[18] = dtlrows[i][16];               //45%报价
+                        newrow[19] = dtlrows[i][17];               //40%报价
+                        newrow[20] = dtlrows[i][18];               //备注
+                        newrow[21] = dtlrows[i][19];               //对应BOM版本编号
+                        newrow[22] = dtlrows[i][20];               //物料单价
 
+                        newrow[23] = dtlrows[i][21];               //Entryid
+                        newrow[24] = dtlrows[i][22];               //物料编码ID
+                        newrow[25] = dtlrows[i][23];               //物料编码
+                        newrow[26] = dtlrows[i][24];               //物料名称
+                        newrow[27] = dtlrows[i][25];               //配方用量
+                        newrow[28] = dtlrows[i][26];               //物料单价(含税)
+                        newrow[29] = dtlrows[i][27];               //物料成本(含税)
+                        bomdtldt.Rows.Add(newrow);
+                    }
+                    //将其作为数据源生成Tab Page及ShowDetailFrm
+                    CreateDetailFrm(tabname, bomdtldt, materialdt);
+                    //当生成完成后将bomdtldtdt清空内容,待下一次使用
+                    bomdtldt.Rows.Clear();
+                }
+                //最后将‘OA流水号’设置为只读
+                txtbom.ReadOnly = true;
             }
             catch (Exception ex)
             {
@@ -203,8 +273,8 @@ namespace BomOfferOrder.UI
                                 newrow[0] = _funState == "C" ? 0: _fid;                                     //Fid
                                 newrow[1] = txtbom.Text;                                                    //流水号
                                 newrow[2] = 0;                                                              //单据状态(0:已审核 1:反审核)
-                                newrow[3] = DateTime.Now.Date;                                              //审核日期
-                                newrow[4] = _funState =="C" ? DateTime.Now.Date : _createtime;              //创建日期
+                                newrow[3] = DateTime.Now;                                                   //审核日期
+                                newrow[4] = _funState =="C" ? DateTime.Now : _createtime;                   //创建日期
                                 newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
                                 newrow[6] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
                                 newrow[7] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
@@ -365,10 +435,9 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void PrivilegeControl()
         {
-            //TODO:(预留) 若该单据已让其它用户使用的话,就提示并不能操作
             //注:查看该单据是否让其它用户占用=>true:占用 false:未占用
-            if (!_useid)
-            {
+            //if (!_useid)
+            //{
                 //若为“审核”状态的话，就执行以下语句
                 if (_confirmMarkId)
                 {
@@ -384,6 +453,8 @@ namespace BomOfferOrder.UI
                     {
                         tmConfirm.Enabled = false;
                         tmsave.Enabled = false;
+                        //todo:添加是否显示金额明细权限控制 _readid
+
                     }
                     else
                     {
@@ -397,17 +468,19 @@ namespace BomOfferOrder.UI
                     txtbom.ReadOnly = false;
                     tmsave.Enabled = true;
                     tmConfirm.Enabled = true;
+                    //todo:添加是否显示金额明细权限控制 _readid
+
                 }
-            }
-            else
-            {
-                lblmessage.Text = $"该单据已被用户'aaa'占用,故只能只读";
-                lblmessage.ForeColor=Color.DarkRed;
-                txtbom.ReadOnly = true;
-                tmConfirm.Enabled = false;
-                tmsave.Enabled = false;
-                ControlTabPagesReadOnly();
-            }
+           // }
+            //else
+            //{
+            //    lblmessage.Text = $"该单据已被用户'{GlobalClasscs.User.StrUsrName}'占用,故只能只读";
+            //    lblmessage.ForeColor=Color.DarkRed;
+            //    txtbom.ReadOnly = true;
+            //    tmConfirm.Enabled = false;
+            //    tmsave.Enabled = false;
+            //    ControlTabPagesReadOnly();
+            //}
         }
 
         /// <summary>

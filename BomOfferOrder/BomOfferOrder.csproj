@@ -55,6 +55,12 @@
     <Compile Include="Task\ImportDt.cs" />
     <Compile Include="Task\SearchDt.cs" />
     <Compile Include="Task\TaskLogic.cs" />
+    <Compile Include="UI\ChangeAccount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ChangeAccount.Designer.cs">
+      <DependentUpon>ChangeAccount.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\DtlFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     <Compile Include="UI\ShowMaterialDetailFrm.Designer.cs">
       <DependentUpon>ShowMaterialDetailFrm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\ChangeAccount.resx">
+      <DependentUpon>ChangeAccount.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\DtlFrm.resx">
       <DependentUpon>DtlFrm.cs</DependentUpon>
     </EmbeddedResource>
