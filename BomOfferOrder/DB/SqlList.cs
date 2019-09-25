@@ -402,22 +402,26 @@ namespace BomOfferOrder.DB
         /// Main查询及查询端使用
         /// </summary>
         /// <returns></returns>
-        public string SearchBomList(int typeid,string value)
+        public string SearchBomList(int typeid,string value,string cratename)
         {
-            //OA流水号
-            if (typeid == 0)
+            if (cratename == "")
             {
-                _result = $@"
+                //OA流水号
+                if (typeid == 0)
+                {
+                    _result =
+                        $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
                                 FROM dbo.T_OfferOrder A
                                 WHERE a.OAorderno LIKE '%{value}%'
                             ";
-            }
-            //产品名称
-            else if (typeid == 1)
-            {
-                _result = $@"
+                }
+                //产品名称
+                else if (typeid == 1)
+                {
+                    _result =
+                        $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
                                 FROM dbo.T_OfferOrder A
@@ -428,39 +432,114 @@ namespace BomOfferOrder.DB
 				                                AND b.ProductName LIKE '%{value}%'
 		                                        )
                             ";
-            }
-            //创建日期
-            else if (typeid == 2)
-            {
-                _result = $@"
+                }
+                //创建日期
+                else if (typeid == 2)
+                {
+                    _result =
+                        $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
                                 FROM dbo.T_OfferOrder A
                                 WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
-            }
-            //审核日期
-            else if (typeid == 3)
-            {
-                _result = $@"
+                }
+                //审核日期
+                else if (typeid == 3)
+                {
+                    _result =
+                        $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
                                 FROM dbo.T_OfferOrder A
                                 WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
-            }
-            //单据状态
-            else if(typeid == 4)
-            {
-                _result = $@"
+                }
+                //单据状态
+                else if (typeid == 4)
+                {
+                    _result =
+                        $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
                                 FROM dbo.T_OfferOrder A
                                 WHERE a.Fstatus='{value}'
                             ";
+                }
             }
+            //当‘创建人’不为空时,执行以用户名为条件的查询
+            else
+            {
+                //OA流水号
+                if (typeid == 0)
+                {
+                    _result =
+                        $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE a.OAorderno LIKE '%{value}%'
+                                and A.CreateName='{cratename}'
+                            ";
+                }
+                //产品名称
+                else if (typeid == 1)
+                {
+                    _result =
+                        $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE EXISTS (
+				                                SELECT NULL
+				                                FROM dbo.T_OfferOrderHead b 
+				                                WHERE a.FId=b.FId
+				                                AND b.ProductName LIKE '%{value}%'
+		                                        )
+                                and A.CreateName='{cratename}'
+                            ";
+                }
+                //创建日期
+                else if (typeid == 2)
+                {
+                    _result =
+                        $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                                and A.CreateName='{cratename}'
+                            ";
+                }
+                //审核日期
+                else if (typeid == 3)
+                {
+                    _result =
+                        $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                                and A.CreateName='{cratename}'
+                            ";
+                }
+                //单据状态
+                else if (typeid == 4)
+                {
+                    _result =
+                        $@"
+                                SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                FROM dbo.T_OfferOrder A
+                                WHERE a.Fstatus='{value}'
+                                and A.CreateName='{cratename}'
+                            ";
+                }
+            }
+
             return _result;
         }
+
 
         /// <summary>
         /// 根据FID查询BOM报价单明细
@@ -482,6 +561,59 @@ namespace BomOfferOrder.DB
                             INNER JOIN dbo.T_OfferOrderEntry c ON b.Headid=c.Headid
 
                             WHERE a.FId='{fid}'
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 根据FID查询此单据占用情况
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <returns></returns>
+        public string SearchUseInfo(int fid)
+        {
+            _result = $@"
+                            SELECT a.Useid,a.UserName FROM dbo.T_OfferOrder a
+                            WHERE a.FId='{fid}'
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 更新单据占用情况
+        /// </summary>
+        /// <returns></returns>
+        public string UpUsedtl(int fid)
+        {
+            _result = $@"
+                           UPDATE dbo.T_OfferOrder SET Useid=0,UserName='{GlobalClasscs.User.StrUsrName}'
+                           where fid='{fid}' 
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 清空单据占用情况
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <returns></returns>
+        public string RemoveUsedtl(int fid)
+        {
+            _result = $@"
+                           UPDATE dbo.T_OfferOrder SET Useid=1,UserName=''
+                           where fid='{fid}' 
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 更新单据状态(更新为反审核状态,并将审核日期清空)
+        /// </summary>
+        /// <returns></returns>
+        public string UpOrderStatus(int fid)
+        {
+            _result = $@"
+                            UPDATE dbo.T_OfferOrder SET Fstatus=1,ConfirmDt=NULL WHERE FId='{fid}'
                         ";
             return _result;
         }

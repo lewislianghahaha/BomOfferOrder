@@ -31,10 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SearchFrm));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnsearch = new System.Windows.Forms.Button();
-            this.dtpdt = new System.Windows.Forms.DateTimePicker();
-            this.comselectvalue = new System.Windows.Forms.ComboBox();
             this.txtvalue = new System.Windows.Forms.TextBox();
+            this.dtpdt = new System.Windows.Forms.DateTimePicker();
+            this.comstatus = new System.Windows.Forms.ComboBox();
+            this.btnsearch = new System.Windows.Forms.Button();
+            this.comselectvalue = new System.Windows.Forms.ComboBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.bngat = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -59,7 +60,6 @@
             this.tmshowdetail = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tmbackconfirm = new System.Windows.Forms.ToolStripMenuItem();
-            this.comstatus = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
@@ -84,6 +84,29 @@
             this.panel1.Size = new System.Drawing.Size(929, 29);
             this.panel1.TabIndex = 0;
             // 
+            // txtvalue
+            // 
+            this.txtvalue.Location = new System.Drawing.Point(155, 3);
+            this.txtvalue.Name = "txtvalue";
+            this.txtvalue.Size = new System.Drawing.Size(172, 21);
+            this.txtvalue.TabIndex = 12;
+            // 
+            // dtpdt
+            // 
+            this.dtpdt.Location = new System.Drawing.Point(155, 3);
+            this.dtpdt.Name = "dtpdt";
+            this.dtpdt.Size = new System.Drawing.Size(172, 21);
+            this.dtpdt.TabIndex = 20;
+            // 
+            // comstatus
+            // 
+            this.comstatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comstatus.FormattingEnabled = true;
+            this.comstatus.Location = new System.Drawing.Point(154, 3);
+            this.comstatus.Name = "comstatus";
+            this.comstatus.Size = new System.Drawing.Size(121, 20);
+            this.comstatus.TabIndex = 22;
+            // 
             // btnsearch
             // 
             this.btnsearch.Location = new System.Drawing.Point(339, 2);
@@ -93,13 +116,6 @@
             this.btnsearch.Text = "查询";
             this.btnsearch.UseVisualStyleBackColor = true;
             // 
-            // dtpdt
-            // 
-            this.dtpdt.Location = new System.Drawing.Point(155, 3);
-            this.dtpdt.Name = "dtpdt";
-            this.dtpdt.Size = new System.Drawing.Size(172, 21);
-            this.dtpdt.TabIndex = 20;
-            // 
             // comselectvalue
             // 
             this.comselectvalue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -108,13 +124,6 @@
             this.comselectvalue.Name = "comselectvalue";
             this.comselectvalue.Size = new System.Drawing.Size(138, 20);
             this.comselectvalue.TabIndex = 18;
-            // 
-            // txtvalue
-            // 
-            this.txtvalue.Location = new System.Drawing.Point(155, 3);
-            this.txtvalue.Name = "txtvalue";
-            this.txtvalue.Size = new System.Drawing.Size(172, 21);
-            this.txtvalue.TabIndex = 12;
             // 
             // panel2
             // 
@@ -325,17 +334,9 @@
             this.tmbackconfirm.Size = new System.Drawing.Size(124, 22);
             this.tmbackconfirm.Text = "反审核";
             // 
-            // comstatus
-            // 
-            this.comstatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comstatus.FormattingEnabled = true;
-            this.comstatus.Location = new System.Drawing.Point(154, 3);
-            this.comstatus.Name = "comstatus";
-            this.comstatus.Size = new System.Drawing.Size(121, 20);
-            this.comstatus.TabIndex = 22;
-            // 
             // SearchFrm
             // 
+            this.AcceptButton = this.btnsearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(929, 585);

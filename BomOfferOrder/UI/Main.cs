@@ -3,6 +3,7 @@ using System.Data;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BomOfferOrder.Task;
 
@@ -16,6 +17,7 @@ namespace BomOfferOrder.UI
         DtlFrm dtlFrm=new DtlFrm();
 
         #region 变量参数
+
         //定义关闭符号的宽
         const int CloseSize = 11;
 
@@ -81,6 +83,60 @@ namespace BomOfferOrder.UI
             tctotalpage.DrawItem += Tctotalpage_DrawItem;
             tctotalpage.MouseDown += Tctotalpage_MouseDown;
             tctotalpage.Padding = new Point(CloseSize, CloseSize - 8);   //初始化时添加Tab Control控件各Page选项卡的额外宽与高(重)
+        }
+
+        /// <summary>
+        /// 根据所选的选择条件刷新GridView
+        /// </summary>
+        private void OnSearch()
+        {
+            //获取下拉列表所选值
+            var dvordertylelist = (DataRowView)comselectvalue.Items[comselectvalue.SelectedIndex];
+            var typeId = Convert.ToInt32(dvordertylelist["Id"]);
+
+            task.TaskId = "0.7";
+            task.SearchId = typeId;
+
+            switch (typeId)
+            {
+                case 0:
+                case 1:
+                    task.SearchValue = txtvalue.Text;
+                    break;
+                case 2:
+                case 3:
+                    task.SearchValue = Convert.ToString(dtpdt.Value.Date);
+                    break;
+                default:
+                    var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
+                    var id = Convert.ToInt32(statuslist["Id"]);
+                    task.SearchValue = Convert.ToString(id);
+                    break;
+            }
+
+            new Thread(Start).Start();
+            load.StartPosition = FormStartPosition.CenterScreen;
+            load.ShowDialog();
+
+            if (task.ResultTable.Rows.Count > 0)
+            {
+                _dtl = task.ResultTable;
+                panel8.Visible = true;
+                //初始化下拉框所选择的默认值
+                tmshowrows.SelectedItem = "10";
+                //定义初始化标记
+                _pageChange = true;
+                //GridView分页
+                GridViewPageChange();
+            }
+            //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
+            else
+            {
+                gvdtl.DataSource = task.ResultTable;
+                panel8.Visible = false;
+            }
+            //控制GridView单元格显示方式
+            ControlGridViewisShow();
         }
 
         /// <summary>
@@ -159,52 +215,8 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                //获取下拉列表所选值
-                var dvordertylelist = (DataRowView)comselectvalue.Items[comselectvalue.SelectedIndex];
-                var typeId = Convert.ToInt32(dvordertylelist["Id"]);
-
-                task.TaskId = "0.4";
-                task.SearchId = typeId;
-                switch (typeId)
-                {
-                    case 0:
-                    case 1:
-                        task.SearchValue = txtvalue.Text;
-                        break;
-                    case 2:
-                    case 3:
-                        task.SearchValue = Convert.ToString(dtpdt.Value.Date);
-                        break;
-                    default:
-                        var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
-                        var id = Convert.ToInt32(statuslist["Id"]);
-                        task.SearchValue = Convert.ToString(id);
-                        break;
-                }
-
-                new Thread(Start).Start();
-                load.StartPosition = FormStartPosition.CenterScreen;
-                load.ShowDialog();
-
-                if (task.ResultTable.Rows.Count > 0)
-                {
-                    _dtl = task.ResultTable;
-                    panel8.Visible = true;
-                    //初始化下拉框所选择的默认值
-                    tmshowrows.SelectedItem = "10";
-                    //定义初始化标记
-                    _pageChange = true;
-                    //GridView分页
-                    GridViewPageChange();
-                }
-                //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
-                else
-                {
-                    gvdtl.DataSource = task.ResultTable;
-                    panel8.Visible = false;
-                }
-                //控制GridView单元格显示方式
-                ControlGridViewisShow();
+                //根据所选的选择条件刷新GridView
+                OnSearch();
             }
             catch (Exception ex)
             {
@@ -222,11 +234,14 @@ namespace BomOfferOrder.UI
             try
             {
                 if(gvdtl.SelectedRows.Count==0)throw new Exception("没有明细记录,不能继续操作");
-                //todo:判断若有用户占用中,不能进入
-
-
+                //获取OA流水号
+                var oaorder = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
                 //根据所选择的行获取其fid值
                 var fid = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
+                //根据Fid获取数据库useid 及 username值;并根据useid判断是否占用
+                var usedt = ShowUsedtl(fid);
+                if (Convert.ToInt32(usedt.Rows[0][0])==0)
+                    throw new Exception($"所选单据'{oaorder}'不能进入, \n 原因:已被用户'{Convert.ToString(usedt.Rows[0][1])}'占用,需用户'{Convert.ToString(usedt.Rows[0][1])}'退出才能继续操作");
 
                 task.TaskId = "0.5";
                 task.Fid = fid;
@@ -238,9 +253,6 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                
-
-                dtlFrm.Useid = false;  //todo:需要谂 占用ID
                 dtlFrm.OnInitialize(task.ResultTable);     
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
@@ -261,10 +273,44 @@ namespace BomOfferOrder.UI
             try
             {
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有明细记录,不能继续操作");
-                //todo:判断若有用户占用中,不能进行审核
 
-                //todo:权限判断
+                //获取OA流水号
+                var oaorder = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
+                //根据所选择的行获取其fid值
+                var fid = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
+                //根据所选择的行获取其单据状态
+                var orderstatus = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[2].Value);
 
+                //判断若所选的行中的‘单据状态’不为已审核,即跳出异常
+                if(orderstatus!="已审核") throw new Exception($"单据'{oaorder}'的单据状态不为已审核,不能进行反审核操作");
+
+                //判断是否能进行反审核
+                if (!GlobalClasscs.User.Canbackconfirm) throw new Exception($"用户'{GlobalClasscs.User.StrUsrName}'没有反审核权限,不能进行反审核");
+
+                
+                //根据Fid获取数据库useid 及 username值;并根据useid判断是否占用
+                var usedt = ShowUsedtl(fid);
+                if (Convert.ToInt32(usedt.Rows[0][0]) == 0)
+                    throw new Exception($"所选单据'{oaorder}'不能进入, \n 原因:已被用户'{Convert.ToString(usedt.Rows[0][1])}'占用,需用户'{Convert.ToString(usedt.Rows[0][1])}'退出才能继续操作");
+
+                var clickMessage = $"您所选择的单据为:\n '{oaorder}' \n 是否进行反审核?";
+                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    task.TaskId = "3";
+                    task.Fid = fid;
+
+                    new Thread(Start).Start();
+                    load.StartPosition = FormStartPosition.CenterScreen;
+                    load.ShowDialog();
+
+                    if(!task.ResultMark)throw new Exception("反审核操作出现异常,请联系管理员.");
+                    else
+                    {
+                        MessageBox.Show($"反审核成功,请右键选择‘查询明细’进入", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //根据所选的选择条件刷新GridView
+                        OnSearch();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -854,6 +900,19 @@ namespace BomOfferOrder.UI
             {
                 load.Close();
             }));
+        }
+
+        /// <summary>
+        /// 根据FId查询占用记录
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <returns></returns>
+        private DataTable ShowUsedtl(int fid)
+        {
+            task.TaskId = "0.6";
+            task.Fid = fid;
+            task.StartTask();
+            return task.ResultTable;
         }
 
     }

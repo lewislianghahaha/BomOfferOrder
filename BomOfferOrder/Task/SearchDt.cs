@@ -32,88 +32,6 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 查询功能使用
-        /// </summary>
-        /// <returns></returns>
-        public DataTable SearchValue(int searchid, string searchvalue)
-        {
-            var resultdt = new DataTable();
-
-            try
-            {
-                var sqlscript = sqlList.Get_Search(searchid, searchvalue);
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetCloudConn());
-                sqlDataAdapter.Fill(resultdt);
-            }
-            catch (Exception)
-            {
-                resultdt.Rows.Clear();
-                resultdt.Columns.Clear();
-            }
-            return resultdt;
-        }
-
-        /// <summary>
-        /// 查询BOM明细记录信息(生成时使用)
-        /// </summary>
-        /// <returns></returns>
-        public DataTable SearchBomDtl()
-        {
-            var resultdt = new DataTable();
-            try
-            {
-                var sqlscript = sqlList.Get_Bomdtl();
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetCloudConn());
-                sqlDataAdapter.Fill(resultdt);
-            }
-            catch (Exception)
-            {
-                resultdt.Rows.Clear();
-                resultdt.Columns.Clear();
-            }
-            return resultdt;
-        }
-
-        /// <summary>
-        /// 查询物料明细(物料明细添加时使用)
-        /// </summary>
-        /// <param name="searchid"></param>
-        /// <param name="searchvalue"></param>
-        /// <returns></returns>
-        public DataTable SearchMaterialDtl(int searchid, string searchvalue)
-        {
-            var resultdt=new DataTable();
-            try
-            {
-                var sqlscript = sqlList.Get_MaterialDtl(searchid,searchvalue);
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetCloudConn());
-                sqlDataAdapter.Fill(resultdt);
-            }
-            catch (Exception)
-            {
-                resultdt.Rows.Clear();
-                resultdt.Columns.Clear();
-            }
-            return resultdt;
-        }
-
-        /// <summary>
-        /// 检测OA流水号是否存在
-        /// </summary>
-        /// <param name="orderno"></param>
-        /// <returns></returns>
-        public bool SearchOaOrderInclud(string orderno)
-        {
-            var resultdt=new DataTable();
-            var sqlscript = sqlList.SearchOaOrderInclud(orderno);
-            var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetBomOfferConn());
-            sqlDataAdapter.Fill(resultdt);
-            //若不存在为FALSE 存在为TRUE
-            var result = Convert.ToInt32(resultdt.Rows[0][0]) != 0;
-            return result;
-        }
-
-        /// <summary>
         /// 按照指定的SQL语句执行记录并返回执行结果（true 或 false）
         /// </summary>
         public bool Generdt(string sqlscript)
@@ -137,21 +55,21 @@ namespace BomOfferOrder.Task
             return result;
         }
 
-        //////////////////////////////////////////////////主窗体及查询端使用//////////////////////////////////////////////////////////
-
         /// <summary>
-        /// Main查询及查询端使用
+        /// 根据SQL语句查询得出对应的DT
         /// </summary>
-        /// <param name="typeid"></param>
-        /// <param name="value"></param>
+        /// <param name="type">0:获取K3-CLOUD数据库 1:获取BomOffer数据库</param>
+        /// <param name="sqlscript"></param>
         /// <returns></returns>
-        public DataTable SearchBomOrder(int typeid, string value)
+        public DataTable UseSqlSearchIntoDt(int type,string sqlscript)
         {
             var resultdt=new DataTable();
+            var sqlcon=new SqlConnection();
+
             try
             {
-                var sqlscript = sqlList.SearchBomList(typeid, value);
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetBomOfferConn());
+                sqlcon = type == 0 ? GetCloudConn() : GetBomOfferConn();
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, sqlcon);
                 sqlDataAdapter.Fill(resultdt);
             }
             catch (Exception)
@@ -160,6 +78,81 @@ namespace BomOfferOrder.Task
                 resultdt.Columns.Clear();
             }
             return resultdt;
+        }
+
+
+
+        /// <summary>
+        /// 查询功能使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchValue(int searchid, string searchvalue)
+        {
+            var sqlscript = sqlList.Get_Search(searchid, searchvalue);
+            return UseSqlSearchIntoDt(0,sqlscript);
+        }
+
+        /// <summary>
+        /// 查询BOM明细记录信息(生成时使用)
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchBomDtl()
+        {
+            var sqlscript = sqlList.Get_Bomdtl();
+            return UseSqlSearchIntoDt(0,sqlscript);
+        }
+
+        /// <summary>
+        /// 查询物料明细(物料明细添加时使用)
+        /// </summary>
+        /// <param name="searchid"></param>
+        /// <param name="searchvalue"></param>
+        /// <returns></returns>
+        public DataTable SearchMaterialDtl(int searchid, string searchvalue)
+        {
+            var sqlscript = sqlList.Get_MaterialDtl(searchid,searchvalue);
+            return UseSqlSearchIntoDt(0,sqlscript);
+        }
+
+        /// <summary>
+        /// 检测OA流水号是否存在
+        /// </summary>
+        /// <param name="orderno"></param>
+        /// <returns></returns>
+        public bool SearchOaOrderInclud(string orderno)
+        {
+            var sqlscript = sqlList.SearchOaOrderInclud(orderno);
+            //若不存在为FALSE 存在为TRUE
+            return Convert.ToInt32(UseSqlSearchIntoDt(1,sqlscript).Rows[0][0])!=0;
+        }
+
+
+
+        //////////////////////////////////////////////////主窗体及查询端使用//////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// 查询端使用
+        /// </summary>
+        /// <param name="typeid"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public DataTable SearchBomOrder(int typeid, string value)
+        {
+            var sqlscript = sqlList.SearchBomList(typeid, value,"");
+            return UseSqlSearchIntoDt(1,sqlscript);
+        }
+
+        /// <summary>
+        /// Main查询使用
+        /// </summary>
+        /// <param name="typeid"></param>
+        /// <param name="value"></param>
+        /// <param name="createname"></param>
+        /// <returns></returns>
+        public DataTable SearchMainBomOrder(int typeid, string value, string createname)
+        {
+            var sqlscript = sqlList.SearchBomList(typeid, value, createname);
+            return UseSqlSearchIntoDt(1, sqlscript);
         }
 
         /// <summary>
@@ -169,20 +162,22 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchBomOrderDetail(int fid)
         {
-            var resultdt = new DataTable();
-            try
-            {
-                var sqlscript = sqlList.SearchBomDtl(fid);
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, GetBomOfferConn());
-                sqlDataAdapter.Fill(resultdt);
-            }
-            catch (Exception)
-            {
-                resultdt.Rows.Clear();
-                resultdt.Columns.Clear();
-            }
-            return resultdt;
+            var sqlscript = sqlList.SearchBomDtl(fid);
+            return UseSqlSearchIntoDt(1,sqlscript);
         }
+
+        /// <summary>
+        /// 根据FID查询此单据占用情况
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <returns></returns>
+        public DataTable SearchUseInfo(int fid)
+        {
+            var sqlscript = sqlList.SearchUseInfo(fid);
+            return UseSqlSearchIntoDt(1,sqlscript);
+        }
+
+
 
     }
 }

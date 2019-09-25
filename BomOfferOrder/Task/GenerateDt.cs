@@ -139,18 +139,15 @@ namespace BomOfferOrder.Task
             return resultdt;
         }
 
+
         /// <summary>
         /// 获取最新的FID值
         /// </summary>
         /// <returns></returns>
         public int GetNewFidValue()
         {
-            var resultdt = new DataTable();
             var sqlscript = sqlList.GetNewFidValue();
-            var sqlDataAdapter = new SqlDataAdapter(sqlscript, searchDt.GetBomOfferConn());
-            sqlDataAdapter.Fill(resultdt);
-            var id = Convert.ToInt32(resultdt.Rows[0][0]);
-            return id;
+            return  Convert.ToInt32(searchDt.UseSqlSearchIntoDt(1, sqlscript).Rows[0][0]);
         }
 
         ///// <summary>
@@ -159,12 +156,8 @@ namespace BomOfferOrder.Task
         ///// <returns></returns>
         public int GetNewHeadidValue()
         {
-            var resultdt = new DataTable();
             var sqlscript = sqlList.GetNewHeadidValue();
-            var sqlDataAdapter = new SqlDataAdapter(sqlscript, searchDt.GetBomOfferConn());
-            sqlDataAdapter.Fill(resultdt);
-            var id = Convert.ToInt32(resultdt.Rows[0][0]);
-            return id;
+            return Convert.ToInt32(searchDt.UseSqlSearchIntoDt(1,sqlscript).Rows[0][0]);
         }
 
         /// <summary>
@@ -173,12 +166,31 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public int GetNewEntryidValue()
         {
-            var resultdt = new DataTable();
             var sqlscript = sqlList.GetNewEntryidValue();
-            var sqlDataAdapter = new SqlDataAdapter(sqlscript, searchDt.GetBomOfferConn());
-            sqlDataAdapter.Fill(resultdt);
-            var id = Convert.ToInt32(resultdt.Rows[0][0]);
-            return id;
+            return Convert.ToInt32(searchDt.UseSqlSearchIntoDt(1, sqlscript).Rows[0][0]);
+        }
+
+        /// <summary>
+        /// 根据FID更新此单据占用情况
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <param name="type">type:0(更新当前用户信息) 1(清空占用记录)</param>
+        /// <returns></returns>
+        public void UpDateUpUseDetail(int fid, int type)
+        {
+            var sqlscript = type == 0 ? sqlList.UpUsedtl(fid) : sqlList.RemoveUsedtl(fid);
+            searchDt.Generdt(sqlscript);
+        }
+
+        /// <summary>
+        /// 根据FID反审核单据状态(更新为反审核状态,并将审核日期清空)
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <returns></returns>
+        public bool UpdateOrderStatus(int fid)
+        {
+            var sqlscript = sqlList.UpOrderStatus(fid);
+            return searchDt.Generdt(sqlscript);
         }
     }
 }

@@ -9,78 +9,84 @@ namespace BomOfferOrder.Task
         ImportDt importDt=new ImportDt();
 
         #region 变量定义
-            private string _taskid;             //记录中转ID
-            private int _searchid;              //记录查询列表ID值(查询时使用)
-            private string _searchvalue;        //查询值(查询时使用)
-            private DataTable _dt;              //保存需要进行生成明细记录的DT
-            private string _valuelist;          //保存Fmaterialid列表(如:'426464','738199')
-            private DataTable _bomdt;           //保存BOM明细DT(生成时使用)
-            private string _oaorder;            //获取OA流水号
-            private DataTable _Importdt;        //获取准备提交的DT(提交时使用)
-            private string _funState;           //记录单据状态(C:创建 R:读取) 
-            private DataTable _deldt;           //记录从GridView内需要删除的DT记录(单据状态为R时使用)
-            private int _fid;                   //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
+        private string _taskid;             //记录中转ID
+        private int _searchid;              //记录查询列表ID值(查询时使用)
+        private string _searchvalue;        //查询值(查询时使用)
+        private DataTable _dt;              //保存需要进行生成明细记录的DT
+        private string _valuelist;          //保存Fmaterialid列表(如:'426464','738199')
+        private DataTable _bomdt;           //保存BOM明细DT(生成时使用)
+        private string _oaorder;            //获取OA流水号
+        private DataTable _Importdt;        //获取准备提交的DT(提交时使用)
+        private string _funState;           //记录单据状态(C:创建 R:读取) 
+        private DataTable _deldt;           //记录从GridView内需要删除的DT记录(单据状态为R时使用)
+        private int _fid;                   //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
+        private int _type;                  //记录占用情况类型(更新单据占用情况时使用)
 
-            private DataTable _resultTable;     //返回DT类型
-            private DataTable _resultbomdt;     //返回BOM DT
-            private bool _resultMark;           //返回是否成功标记
+        private DataTable _resultTable;     //返回DT类型
+        private DataTable _resultbomdt;     //返回BOM DT
+        private bool _resultMark;           //返回是否成功标记
         #endregion
 
         #region Set
-            /// <summary>
-            /// 中转ID
-            /// </summary>
-            public string TaskId { set { _taskid = value; } }
+        /// <summary>
+        /// 中转ID
+        /// </summary>
+        public string TaskId { set { _taskid = value; } }
 
-            /// <summary>
-            ///查询值(查询时使用)
-            /// </summary>
-            public string SearchValue { set { _searchvalue = value; } }
+        /// <summary>
+        ///查询值(查询时使用)
+        /// </summary>
+        public string SearchValue { set { _searchvalue = value; } }
 
-            /// <summary>
-            /// 记录查询列表ID值(查询时使用)
-            /// </summary>
-            public int SearchId { set { _searchid = value; } }
+        /// <summary>
+        /// 记录查询列表ID值(查询时使用)
+        /// </summary>
+        public int SearchId { set { _searchid = value; } }
 
-            /// <summary>
-            /// 保存需要进行生成明细记录的DT
-            /// </summary>
-            public DataTable Data { set { _dt = value; } }
+        /// <summary>
+        /// 保存需要进行生成明细记录的DT
+        /// </summary>
+        public DataTable Data { set { _dt = value; } }
 
-            /// <summary>
-            /// 保存Fmaterialid列表(如:'426464','738199')
-            /// </summary>
-            public string Valuelist { set { _valuelist = value; } }
+        /// <summary>
+        /// 保存Fmaterialid列表(如:'426464','738199')
+        /// </summary>
+        public string Valuelist { set { _valuelist = value; } }
 
-            /// <summary>
-            /// 保存BOM明细DT(生成时使用)
-            /// </summary>
-            public DataTable Bomdt { set { _bomdt = value; } }
+        /// <summary>
+        /// 保存BOM明细DT(生成时使用)
+        /// </summary>
+        public DataTable Bomdt { set { _bomdt = value; } }
 
-            /// <summary>
-            /// 获取OA流水号
-            /// </summary>
-            public string Oaorder { set { _oaorder = value; } }
+        /// <summary>
+        /// 获取OA流水号
+        /// </summary>
+        public string Oaorder { set { _oaorder = value; } }
 
-            /// <summary>
-            /// 获取准备提交的DT(提交时使用)
-            /// </summary>
-            public DataTable Importdt { set { _Importdt = value; } }
+        /// <summary>
+        /// 获取准备提交的DT(提交时使用)
+        /// </summary>
+        public DataTable Importdt { set { _Importdt = value; } }
 
-            /// <summary>
-            /// 记录单据状态(C:创建 R:读取) 
-            /// </summary>
-            public string FunState { set { _funState = value; } }
+        /// <summary>
+        /// 记录单据状态(C:创建 R:读取) 
+        /// </summary>
+        public string FunState { set { _funState = value; } }
 
-            /// <summary>
-            /// 记录从GridView内需要删除的DT记录(单据状态为R时使用)
-            /// </summary>
-            public DataTable Deldt { set { _deldt = value; } }
+        /// <summary>
+        /// 记录从GridView内需要删除的DT记录(单据状态为R时使用)
+        /// </summary>
+        public DataTable Deldt { set { _deldt = value; } }
 
-            /// <summary>
-            /// 记录从BOM报价单查询出来获取的FID值(查询明细时使用)
-            /// </summary>
-            public int Fid { set { _fid = value; } }
+        /// <summary>
+        /// 记录从BOM报价单查询出来获取的FID值(查询明细时使用)
+        /// </summary>
+        public int Fid { set { _fid = value; } }
+
+        /// <summary>
+        /// 记录占用情况类型(更新单据占用情况时使用)
+        /// </summary>
+        public int Type { set { _type = value; } }
 
         #endregion
 
@@ -121,13 +127,21 @@ namespace BomOfferOrder.Task
                 case "0.3":
                     SearchOaOrder(_oaorder);
                     break;
-                //单据查询-主窗体使用
+                //单据查询-查询端使用
                 case "0.4":
                     SearchBomOrder(_searchid, _searchvalue);
                     break;
-                //单据查询-查询页面使用
+                //单据查询-查询明细记录使用
                 case "0.5":
                     SearchBomOrderDetail(_fid);
+                    break;
+                //查询-占用记录
+                case "0.6":
+                    SearchUseInfo(_fid);
+                    break;
+                //单据查询-主窗体使用
+                case "0.7":
+                    SearchMainBomOrder(_searchid,_searchvalue,GlobalClasscs.User.StrUsrName);
                     break;
 
                 //运算
@@ -140,7 +154,11 @@ namespace BomOfferOrder.Task
                     break;
                 //更新单据状态
                 case "3":
-
+                    UpdateOrderStatus(_fid);
+                    break;
+                //更新单据占用状态
+                case "4":
+                    UpdateUseDetail(_fid, _type);
                     break;
             }
         }
@@ -181,11 +199,22 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// Main查询及查询端使用
+        /// 查询端使用
         /// </summary>
         private void SearchBomOrder(int typeid, string value)
         {
             _resultTable = searchDt.SearchBomOrder(typeid,value);
+        }
+
+        /// <summary>
+        /// Main查询使用
+        /// </summary>
+        /// <param name="typeid"></param>
+        /// <param name="value"></param>
+        /// <param name="createname">创建人</param>
+        private void SearchMainBomOrder(int typeid, string value,string createname)
+        {
+            _resultTable = searchDt.SearchMainBomOrder(typeid,value,createname);
         }
 
         /// <summary>
@@ -195,6 +224,21 @@ namespace BomOfferOrder.Task
         {
             _resultTable = searchDt.SearchBomOrderDetail(fid);
         }
+
+        /// <summary>
+        /// 根据FID查询此单据占用情况
+        /// </summary>
+        /// <param name="fid"></param>
+        private void SearchUseInfo(int fid)
+        {
+            _resultTable = searchDt.SearchUseInfo(fid);
+        }
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// 运算
@@ -225,6 +269,24 @@ namespace BomOfferOrder.Task
             _resultMark = importDt.ImportDtToDb(funState,souredt,deldt);
         }
 
+        /// <summary>
+        /// 更新单据状态
+        /// </summary>
+        /// <param name="fid"></param>
+        private void UpdateOrderStatus(int fid)
+        {
+            _resultMark = generateDt.UpdateOrderStatus(fid);
+        }
+
+        /// <summary>
+        /// 根据FID查询此单据占用情况
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <param name="type">type:0(更新当前用户信息) 1(清空占用记录)</param>
+        private void UpdateUseDetail(int fid,int type)
+        {
+            generateDt.UpDateUpUseDetail(fid,type);
+        }
 
 
     }

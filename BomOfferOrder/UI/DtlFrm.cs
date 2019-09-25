@@ -15,24 +15,23 @@ namespace BomOfferOrder.UI
         Load load=new Load();
 
         #region 参数定义
-            //单据状态标记(作用:记录打开此功能窗体时是 读取记录 还是 创建记录) C:创建 R:读取
-            private string _funState;
-            //记录审核状态(True:已审核;False:没审核)
-            private bool _confirmMarkId;
-            //记录单据是否占用情况 占用:true 末占用:false
-            private bool _useid = false;
+        //单据状态标记(作用:记录打开此功能窗体时是 读取记录 还是 创建记录) C:创建 R:读取
+        private string _funState;
+        //记录审核状态(True:已审核;False:没审核)
+        private bool _confirmMarkId;
+        
 
-            //收集TabControl内各Tab Pages的内容
-            private DataTable _bomdt;
-            //收集TabContol内各Tab Pages内的GridView要删除的内容(注:单据状态为R时使用)
-            private DataTable _deldt;
+        //收集TabControl内各Tab Pages的内容
+        private DataTable _bomdt;
+        //收集TabContol内各Tab Pages内的GridView要删除的内容(注:单据状态为R时使用)
+        private DataTable _deldt;
 
-            //记录读取过来的FID值
-            private int _fid;
-            //记录读取过来的创建人信息
-            private string _creatname;
-            //记录读取过来的创建日期信息
-            private DateTime _createtime;
+        //记录读取过来的FID值
+        private int _fid;
+        //记录读取过来的创建人信息
+        private string _creatname;
+        //记录读取过来的创建日期信息
+        private DateTime _createtime;
         #endregion
 
         #region Set
@@ -41,16 +40,6 @@ namespace BomOfferOrder.UI
         /// 获取单据状态标记ID C:创建 R:读取
         /// </summary>
         public string FunState { set { _funState = value; } }
-
-        /// <summary>
-        /// 记录审核状态(True:已审核;False:没审核)
-        /// </summary>
-        public bool ConfirmMarkid { set { _confirmMarkId = value; } }
-
-        /// <summary>
-        /// 记录单据是否占用情况 占用:true 末占用:false
-        /// </summary>
-        public bool Useid { set { _useid = value; } }
 
         #endregion
 
@@ -86,6 +75,9 @@ namespace BomOfferOrder.UI
             {
                 //根据bomdt判断,若rows[2]=0为:已审核 1:反审核
                 _confirmMarkId = Convert.ToInt32(bomdt.Rows[0][2])==0;
+                //更新_useid及username值
+                UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]),0);
+                //执行读取记录
                 ReadDetail(bomdt, materialdt);
             }
             //权限控制
@@ -380,7 +372,8 @@ namespace BomOfferOrder.UI
                 //当点击"OK"按钮时执行以下操作
                 if (result == DialogResult.Yes)
                 {
-                    //TODO 预留:当退出时,清空useid等相关占用信息
+                    //当退出时,清空useid等相关占用信息
+                    UpdateUseValue(_fid,1);
 
                     //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
                     for (var i = tctotalpage.TabCount - 1; i >= 0; i--)
@@ -389,7 +382,6 @@ namespace BomOfferOrder.UI
                     }
                     //允许窗体关闭
                     e.Cancel = false;
-                    //Application.Exit();
                 }
                 else
                 {
@@ -435,52 +427,42 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void PrivilegeControl()
         {
-            //注:查看该单据是否让其它用户占用=>true:占用 false:未占用
-            //if (!_useid)
-            //{
-                //若为“审核”状态的话，就执行以下语句
-                if (_confirmMarkId)
+            //若用户没有可读权限,即不会显示明细金额 true:有 flase:没有
+            if (!GlobalClasscs.User.Readid)
+            {
+                //设置TabPages内的GridView的某些字段设为不可见
+                ControlTabPagesGridViewVisible();
+            }
+
+            //若为“审核”状态的话，就执行以下语句
+            if (_confirmMarkId)
+            {
+                //加载图片
+                pbimg.Visible = true;
+                pbimg.BackgroundImage = Image.FromFile(Application.StartupPath + @"\PIC\1.png");
+                //对相关控件设为不可改或只读
+                txtbom.ReadOnly = true;
+                //循环TabPages内的控件将其设为只读
+                ControlTabPagesReadOnly();
+
+                if (_funState == "R")
                 {
-                    //加载图片
-                    pbimg.Visible = true;
-                    pbimg.BackgroundImage = Image.FromFile(Application.StartupPath + @"\PIC\1.png");
-                    //对相关控件设为不可改或只读
-                    txtbom.ReadOnly = true;
-                    //循环TabPages内的控件将其设为只读
-                    ControlTabPagesReadOnly();
-
-                    if (_funState == "R")
-                    {
-                        tmConfirm.Enabled = false;
-                        tmsave.Enabled = false;
-                        //todo:添加是否显示金额明细权限控制 _readid
-
-                    }
-                    else
-                    {
-                        tmConfirm.Enabled = false;
-                    }
+                    tmConfirm.Enabled = false;
+                    tmsave.Enabled = false;
                 }
-                //若为“非审核”状态的,就执行以下语句
                 else
                 {
-                    pbimg.Visible = false;
-                    txtbom.ReadOnly = false;
-                    tmsave.Enabled = true;
-                    tmConfirm.Enabled = true;
-                    //todo:添加是否显示金额明细权限控制 _readid
-
+                    tmConfirm.Enabled = false;
                 }
-           // }
-            //else
-            //{
-            //    lblmessage.Text = $"该单据已被用户'{GlobalClasscs.User.StrUsrName}'占用,故只能只读";
-            //    lblmessage.ForeColor=Color.DarkRed;
-            //    txtbom.ReadOnly = true;
-            //    tmConfirm.Enabled = false;
-            //    tmsave.Enabled = false;
-            //    ControlTabPagesReadOnly();
-            //}
+            }
+            //若为“非审核”状态的,就执行以下语句
+            else
+            {
+                pbimg.Visible = false;
+                txtbom.ReadOnly = false;
+                tmsave.Enabled = true;
+                tmConfirm.Enabled = true;
+            }
         }
 
         /// <summary>
@@ -506,6 +488,23 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 循环控制TabPages内的GridView控件的‘物料单价(含税)’ 以及 ‘物料成本(含税)’不可见
+        /// </summary>
+        void ControlTabPagesGridViewVisible()
+        {
+            for (var i = 0; i < tctotalpage.TabCount; i++)
+            {
+                //循环获取TabPages内各页的内容并进行相关设置
+                var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
+                if (showdetail != null)
+                {
+                    showdetail.gvdtl.Columns[5].Visible = false; //物料单价(含税)
+                    showdetail.gvdtl.Columns[6].Visible = false; //物料成本(含税)
+                }
+            }
+        }
+
+        /// <summary>
         ///子线程使用(重:用于监视功能调用情况,当完成时进行关闭LoadForm)
         /// </summary>
         private void Start()
@@ -517,6 +516,19 @@ namespace BomOfferOrder.UI
             {
                 load.Close();
             }));
+        }
+
+        /// <summary>
+        /// 根据相关情况将占用情况进行更新 type:0(更新当前用户信息) 1(清空占用记录)
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <param name="type"></param>
+        private void UpdateUseValue(int fid,int type)
+        {
+            task.TaskId = "4";
+            task.Fid = fid;
+            task.Type = type;
+            task.StartTask();
         }
 
         #region 获取Tabpages方法

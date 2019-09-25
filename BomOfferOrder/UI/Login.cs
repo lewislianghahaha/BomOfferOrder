@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace BomOfferOrder.UI
@@ -8,16 +9,47 @@ namespace BomOfferOrder.UI
         public Login()
         {
             InitializeComponent();
-            button1.Click += Button1_Click;
+            OnInitialize();
+            OnRegisterEvents();
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void OnInitialize()
         {
-            var main = new Main();
-            main.ShowDialog();
+            //加载图片
+            pbimg.BackgroundImage = Image.FromFile(Application.StartupPath + @"\PIC\2.png");
+            //
 
-            //this.DialogResult = DialogResult.OK;
-            //this.Close();
         }
+
+        private void OnRegisterEvents()
+        {
+            btnlogin.Click += Btnlogin_Click;
+            btnlogout.Click += Btnlogout_Click;
+        }
+
+        /// <summary>
+        /// 登入
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btnlogin_Click(object sender, EventArgs e)
+        {
+            GlobalClasscs.User.Canbackconfirm = true;
+            GlobalClasscs.User.Readid = false;
+
+            Main main = new Main();
+            main.ShowDialog();
+        }
+
+        /// <summary>
+        /// 退出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btnlogout_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
     }
 }
