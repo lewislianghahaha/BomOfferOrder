@@ -381,7 +381,7 @@ namespace BomOfferOrder.Task
         /// 获取Headid主键值
         /// </summary>
         /// <returns></returns>
-        public int GetHeadidKey()
+        private int GetHeadidKey()
         {
             return generateDt.GetNewHeadidValue();
         }
@@ -390,10 +390,54 @@ namespace BomOfferOrder.Task
         /// 获取最新的Entryid值
         /// </summary>
         /// <returns></returns>
-        public int GetEntryidKey()
+        private int GetEntryidKey()
         {
             return generateDt.GetNewEntryidValue();
         }
+
+        /// <summary>
+        /// 用户权限提交
+        /// </summary>
+        /// <returns></returns>
+        public bool ImportUserPermissionDt(DataTable sourcedt)
+        {
+            var result = true;
+            try
+            {
+                //获取用户权限临时表
+                var tempdt = dbList.CreateUserPermissionTemp();
+                //对临时表进行添加操作
+                var newrow = tempdt.NewRow();
+                newrow[0] = GetUseridKey();           //UseId
+                newrow[1] = sourcedt.Rows[0][1];      //用户名称
+                newrow[2] = sourcedt.Rows[0][2];      //用户密码
+                newrow[3] = sourcedt.Rows[0][3];      //创建人
+                newrow[4] = sourcedt.Rows[0][4];      //创建日期
+                newrow[5] = sourcedt.Rows[0][5];      //是否启用
+                newrow[6] = sourcedt.Rows[0][6];      //能否反审核
+                newrow[7] = sourcedt.Rows[0][7];      //能否查阅明细金额
+                newrow[8] = sourcedt.Rows[0][8];      //能否对明细物料操作
+                newrow[9] = sourcedt.Rows[0][9];      //是否占用
+                tempdt.Rows.Add(newrow);
+
+                ImportDtToDb("T_AD_User",tempdt);
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取最新的Userid值
+        /// </summary>
+        /// <returns></returns>
+        private int GetUseridKey()
+        {
+            return generateDt.GetNewUseridValue();
+        }
+
 
     }
 }

@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pbimg = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.pbimg = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtname = new System.Windows.Forms.TextBox();
+            this.btnlogout = new System.Windows.Forms.Button();
+            this.btnlogin = new System.Windows.Forms.Button();
             this.txtpwd = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.btnlogin = new System.Windows.Forms.Button();
-            this.btnlogout = new System.Windows.Forms.Button();
+            this.txtname = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
             this.panel2.SuspendLayout();
@@ -55,6 +55,16 @@
             this.panel1.Size = new System.Drawing.Size(515, 103);
             this.panel1.TabIndex = 1;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Cooper Black", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(88, 67);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(351, 34);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Bom成本报价单修改工具";
+            // 
             // pbimg
             // 
             this.pbimg.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -63,16 +73,6 @@
             this.pbimg.Size = new System.Drawing.Size(191, 50);
             this.pbimg.TabIndex = 1;
             this.pbimg.TabStop = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Consolas", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(88, 67);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(351, 34);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Bom成本报价单修改工具";
             // 
             // panel2
             // 
@@ -90,21 +90,23 @@
             this.panel2.Size = new System.Drawing.Size(515, 148);
             this.panel2.TabIndex = 2;
             // 
-            // label2
+            // btnlogout
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(111, 32);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 12);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "用名名称:";
+            this.btnlogout.Location = new System.Drawing.Point(273, 95);
+            this.btnlogout.Name = "btnlogout";
+            this.btnlogout.Size = new System.Drawing.Size(106, 23);
+            this.btnlogout.TabIndex = 5;
+            this.btnlogout.Text = "退出";
+            this.btnlogout.UseVisualStyleBackColor = true;
             // 
-            // txtname
+            // btnlogin
             // 
-            this.txtname.Location = new System.Drawing.Point(173, 27);
-            this.txtname.Name = "txtname";
-            this.txtname.Size = new System.Drawing.Size(190, 21);
-            this.txtname.TabIndex = 1;
+            this.btnlogin.Location = new System.Drawing.Point(116, 95);
+            this.btnlogin.Name = "btnlogin";
+            this.btnlogin.Size = new System.Drawing.Size(106, 23);
+            this.btnlogin.TabIndex = 4;
+            this.btnlogin.Text = "登入";
+            this.btnlogin.UseVisualStyleBackColor = true;
             // 
             // txtpwd
             // 
@@ -123,26 +125,25 @@
             this.label3.TabIndex = 2;
             this.label3.Text = "用名密码:";
             // 
-            // btnlogin
+            // txtname
             // 
-            this.btnlogin.Location = new System.Drawing.Point(116, 95);
-            this.btnlogin.Name = "btnlogin";
-            this.btnlogin.Size = new System.Drawing.Size(106, 23);
-            this.btnlogin.TabIndex = 4;
-            this.btnlogin.Text = "登入";
-            this.btnlogin.UseVisualStyleBackColor = true;
+            this.txtname.Location = new System.Drawing.Point(173, 27);
+            this.txtname.Name = "txtname";
+            this.txtname.Size = new System.Drawing.Size(190, 21);
+            this.txtname.TabIndex = 1;
             // 
-            // btnlogout
+            // label2
             // 
-            this.btnlogout.Location = new System.Drawing.Point(273, 95);
-            this.btnlogout.Name = "btnlogout";
-            this.btnlogout.Size = new System.Drawing.Size(106, 23);
-            this.btnlogout.TabIndex = 5;
-            this.btnlogout.Text = "退出";
-            this.btnlogout.UseVisualStyleBackColor = true;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(111, 32);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(59, 12);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "用名名称:";
             // 
             // Login
             // 
+            this.AcceptButton = this.btnlogin;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(515, 251);

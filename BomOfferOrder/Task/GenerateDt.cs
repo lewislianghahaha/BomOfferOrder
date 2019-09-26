@@ -192,5 +192,16 @@ namespace BomOfferOrder.Task
             var sqlscript = sqlList.UpOrderStatus(fid);
             return searchDt.Generdt(sqlscript);
         }
+
+        /// <summary>
+        /// 获取最新的Userid值
+        /// </summary>
+        /// <returns></returns>
+        public int GetNewUseridValue()
+        {
+            var sqlscript = sqlList.GetNewUseridValue();
+            return Convert.ToInt32(searchDt.UseSqlSearchIntoDt(1, sqlscript).Rows[0][0]);
+        }
+
     }
 }

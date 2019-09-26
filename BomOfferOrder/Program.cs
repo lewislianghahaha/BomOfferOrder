@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using BomOfferOrder.UI;
+using BomOfferOrder.UI.Admin;
 
 namespace BomOfferOrder
 {
@@ -30,17 +31,17 @@ namespace BomOfferOrder
                     return;
                 }
 
-                //判断若在LOGIN窗体内选择了'帐户信息管理窗体'窗体的话;就进入"帐户信息功能设定"窗体，反之进入主窗体
-                //if (GlobalClasscs.User.ChoseTypeid == 1)   //GlobalClasscs.User.StrUsrName == "Admin" || 
-                //{
-                //    var adminFrm = new AdminFrm();
-                //    adminFrm.ShowDialog();
-                //}
-                //else
-                //{
-                //    var main = new Main();
-                //    main.ShowDialog();
-                //}
+                //判断若输入的帐号为Admin,即进入权限窗体;反之进入Main窗体
+                if (GlobalClasscs.User.StrUsrName == "Admin")
+                {
+                    PermissionFrm permission=new PermissionFrm();
+                    permission.ShowDialog();
+                }
+                else
+                {
+                    var main=new Main();
+                    main.ShowDialog();
+                }
             }
             else
             {

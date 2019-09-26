@@ -618,5 +618,135 @@ namespace BomOfferOrder.DB
             return _result;
         }
 
+        //////////////////////////////////////////////////权限使用////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// 权限查询-用户权限主窗体使用
+        /// </summary>
+        /// <param name="typeid">0:用户名称 1:创建人 2:创建日期 3:启用状态</param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string SearchAdminDetail(int typeid, string value)
+        {
+            if (typeid == 0)
+            {
+                _result = $@"
+                                SELECT a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
+	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '是否启用',
+	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '是否可反审核',
+	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '是否可查阅明细金额',
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '是否可修改物料明细'
+                                FROM dbo.T_AD_User a
+                                where a.UserName like '%{value}%'
+                            ";
+            }
+            else if (typeid == 1)
+            {
+                _result = $@"
+                                SELECT a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
+	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '是否启用',
+	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '是否可反审核',
+	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '是否可查阅明细金额',
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '是否可修改物料明细'
+                                FROM dbo.T_AD_User a
+                                where a.CreateName like '%{value}%'
+                            ";
+            }
+            else if (typeid == 2)
+            {
+                _result = $@"
+                                SELECT a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
+	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '是否启用',
+	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '是否可反审核',
+	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '是否可查阅明细金额',
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '是否可修改物料明细'
+                                FROM dbo.T_AD_User a
+                                where CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                            ";
+            }
+            else if (typeid == 3)
+            {
+                _result = $@"
+                                SELECT a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
+	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '是否启用',
+	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '是否可反审核',
+	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '是否可查阅明细金额',
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '是否可修改物料明细'
+                                FROM dbo.T_AD_User a
+                                where a.ApplyId='{value}'
+                            ";
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string SearchK3User(string value)
+        {
+            //初始化使用
+            if (value == "")
+            {
+                _result = $@"
+                                select a.FNAME K3用名姓名,c.FNAME K3用户组别,a.FPHONE K3用户手机
+                                FROM T_SEC_USER a
+                                left JOIN dbo.T_SEC_USERGROUP b ON a.FPRIMARYGROUP=b.FID
+                                left JOIN dbo.T_SEC_USERGROUP_L c ON b.FID=c.FID
+                                WHERE a.FFORBIDSTATUS='A' --AND a.FNAME LIKE'%蓝%'
+                                AND a.FNAME NOT IN ('Guest','Administrator','attendance')
+                                AND NOT EXISTS (
+					                                SELECT NULL 
+					                                FROM BomOffer.dbo.T_AD_User a1
+					                                WHERE a.FNAME=a1.UserName
+				                                )
+                                ORDER BY a.FPWDVALIDDATE
+                           ";
+            }
+            //查询使用
+            else
+            {
+                _result = $@"
+                                select a.FNAME K3用名姓名,c.FNAME K3用户组别,a.FPHONE K3用户手机
+                                FROM T_SEC_USER a
+                                left JOIN dbo.T_SEC_USERGROUP b ON a.FPRIMARYGROUP=b.FID
+                                left JOIN dbo.T_SEC_USERGROUP_L c ON b.FID=c.FID
+                                WHERE a.FFORBIDSTATUS='A' --AND a.FNAME LIKE'%蓝%'
+                                AND a.FNAME NOT IN ('Guest','Administrator','attendance')
+                                AND NOT EXISTS (
+					                                SELECT NULL 
+					                                FROM BomOffer.dbo.T_AD_User a1
+					                                WHERE a.FNAME=a1.UserName
+				                                )
+                                and a.FName like '%{value}%'
+                                ORDER BY a.FPWDVALIDDATE
+                            ";
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// 获取最新的Useid值
+        /// </summary>
+        /// <returns></returns>
+        public string GetNewUseridValue()
+        {
+            _result = @"
+                            DECLARE
+	                            @id INT;
+                            BEGIN
+	                            INSERT INTO dbo.T_AD_User_KEY( Column1 )
+	                            VALUES  (1)
+
+	                            SELECT @id=Id FROM dbo.T_AD_User_KEY
+
+	                            DELETE FROM dbo.T_AD_User_KEY
+
+	                            SELECT @id
+                            END
+                       ";
+            return _result;
+        }
+
     }
 }

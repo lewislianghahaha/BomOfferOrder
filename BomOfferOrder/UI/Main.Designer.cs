@@ -141,10 +141,11 @@
             // lbaccountmessage
             // 
             this.lbaccountmessage.AutoSize = true;
+            this.lbaccountmessage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.lbaccountmessage.ContextMenuStrip = this.AccountMenu;
             this.lbaccountmessage.Location = new System.Drawing.Point(62, 40);
             this.lbaccountmessage.Name = "lbaccountmessage";
-            this.lbaccountmessage.Size = new System.Drawing.Size(0, 12);
+            this.lbaccountmessage.Size = new System.Drawing.Size(2, 14);
             this.lbaccountmessage.TabIndex = 1;
             // 
             // AccountMenu

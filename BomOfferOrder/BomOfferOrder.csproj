@@ -55,6 +55,18 @@
     <Compile Include="Task\ImportDt.cs" />
     <Compile Include="Task\SearchDt.cs" />
     <Compile Include="Task\TaskLogic.cs" />
+    <Compile Include="UI\Admin\AccountDetailFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Admin\AccountDetailFrm.Designer.cs">
+      <DependentUpon>AccountDetailFrm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Admin\GetAccountFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Admin\GetAccountFrm.Designer.cs">
+      <DependentUpon>GetAccountFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ChangeAccount.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,10 +102,10 @@
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\PermissionFrm.cs">
+    <Compile Include="UI\Admin\PermissionFrm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\PermissionFrm.Designer.cs">
+    <Compile Include="UI\Admin\PermissionFrm.Designer.cs">
       <DependentUpon>PermissionFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Main.cs">
@@ -120,6 +132,15 @@
     <Compile Include="UI\ShowMaterialDetailFrm.Designer.cs">
       <DependentUpon>ShowMaterialDetailFrm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\Admin\AccountDetailFrm.resx">
+      <DependentUpon>AccountDetailFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Admin\GetAccountFrm.resx">
+      <DependentUpon>GetAccountFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Admin\PermissionFrm.resx">
+      <DependentUpon>PermissionFrm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\ChangeAccount.resx">
       <DependentUpon>ChangeAccount.cs</DependentUpon>
     </EmbeddedResource>

@@ -177,7 +177,27 @@ namespace BomOfferOrder.Task
             return UseSqlSearchIntoDt(1,sqlscript);
         }
 
+        /// <summary>
+        /// 权限查询-用户权限主窗体使用
+        /// </summary>
+        /// <param name="typeid"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public DataTable SearchAdminDetail(int typeid, string value)
+        {
+            var sqlscript = sqlList.SearchAdminDetail(typeid, value);
+            return UseSqlSearchIntoDt(1, sqlscript);
+        }
 
+        /// <summary>
+        /// 查询K3用户信息(初始化及查询页面使用)
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchK3User(string value)
+        {
+            var sqlscript = sqlList.SearchK3User(value);
+            return UseSqlSearchIntoDt(0,sqlscript);
+        }
 
     }
 }

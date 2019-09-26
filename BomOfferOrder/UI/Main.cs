@@ -51,7 +51,7 @@ namespace BomOfferOrder.UI
             tip1.SetToolTip(btnSearch,"成本Bom报价单-查询");
             tip1.SetToolTip(btnCreate,"成本Bom报价单-创建");
             //初始化登入用户信息
-            lbaccountmessage.Text = "Lewis";//GlobalClasscs.User.StrUsrName;
+            lbaccountmessage.Text = GlobalClasscs.User.StrUsrName;
             lbaccountmessage.ForeColor = Color.Brown;
             //初始化登入用户时间
             lbaccountdt.Text = DateTime.Now.ToString();

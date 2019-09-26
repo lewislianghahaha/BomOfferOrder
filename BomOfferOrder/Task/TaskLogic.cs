@@ -111,9 +111,10 @@ namespace BomOfferOrder.Task
         {
             switch (_taskid)
             {
+                #region 查询
                 //查询:查询窗体使用
                 case "0":
-                    Searchdt(_searchid,_searchvalue);
+                    Searchdt(_searchid, _searchvalue);
                     break;
                 //查询:初始化获取BOM明细记录时使用
                 case "0.1":
@@ -121,7 +122,7 @@ namespace BomOfferOrder.Task
                     break;
                 //查询:调用物料明细窗体时使用
                 case "0.2":
-                    SearchMaterialdt(_searchid,_searchvalue);
+                    SearchMaterialdt(_searchid, _searchvalue);
                     break;
                 //查询:OA流水号是否存在
                 case "0.3":
@@ -141,17 +142,39 @@ namespace BomOfferOrder.Task
                     break;
                 //单据查询-主窗体使用
                 case "0.7":
-                    SearchMainBomOrder(_searchid,_searchvalue,GlobalClasscs.User.StrUsrName);
+                    SearchMainBomOrder(_searchid, _searchvalue, GlobalClasscs.User.StrUsrName);
                     break;
+                //权限查询-用户权限主窗体使用
+                case "0.8":
+                    SearchAdminDetail(_searchid, _searchvalue);
+                    break;
+                //权限查询-获取K3用户记录(初始化及查询页面使用)
+                case "0.9":
+                    SearchK3User(_searchvalue);
+                    break;
+                //
 
+                #endregion
+
+                #region 运算
                 //运算
                 case "1":
-                    Generatedt(_valuelist,_dt,_bomdt);
+                    Generatedt(_valuelist, _dt, _bomdt);
                     break;
+                #endregion
+                
+                #region 提交
                 //提交
                 case "2":
                     ImportDt(_funState,_Importdt,_deldt);
                     break;
+                //用户权限提交
+                case "2.1":
+                    ImportUserPermissionDt(_Importdt);
+                    break;
+                #endregion
+
+                #region 更新
                 //更新单据状态
                 case "3":
                     UpdateOrderStatus(_fid);
@@ -160,6 +183,7 @@ namespace BomOfferOrder.Task
                 case "4":
                     UpdateUseDetail(_fid, _type);
                     break;
+                #endregion
             }
         }
 
@@ -234,6 +258,25 @@ namespace BomOfferOrder.Task
             _resultTable = searchDt.SearchUseInfo(fid);
         }
 
+        /// <summary>
+        /// 权限查询-用户权限主窗体使用
+        /// </summary>
+        /// <param name="typeid"></param>
+        /// <param name="value"></param>
+        private void SearchAdminDetail(int typeid,string value)
+        {
+            _resultTable = searchDt.SearchAdminDetail(typeid,value);
+        }
+
+        /// <summary>
+        /// 查询K3用户信息(初始化及查询页面使用)
+        /// </summary>
+        /// <param name="value"></param>
+        private void SearchK3User(string value)
+        {
+            _resultTable = searchDt.SearchK3User(value);
+        }
+
 
 
 
@@ -267,6 +310,14 @@ namespace BomOfferOrder.Task
         private void ImportDt(string funState,DataTable souredt,DataTable deldt)
         {
             _resultMark = importDt.ImportDtToDb(funState,souredt,deldt);
+        }
+
+        /// <summary>
+        /// 用户权限提交
+        /// </summary>
+        private void ImportUserPermissionDt(DataTable sourcedt)
+        {
+            _resultMark = importDt.ImportUserPermissionDt(sourcedt);
         }
 
         /// <summary>

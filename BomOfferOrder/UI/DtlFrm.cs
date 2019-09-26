@@ -414,10 +414,17 @@ namespace BomOfferOrder.UI
             //检测:1)'OA流水号'是否填写 2)此流水号是否存在
             if (_funState == "C")
             {
-                task.TaskId = "0.3";
-                task.Oaorder = txtbom.Text;
-                task.StartTask();
-                result = txtbom.Text != "" && !task.ResultMark;
+                if (txtbom.Text == "")
+                {
+                    result = false;
+                }
+                else
+                {
+                    task.TaskId = "0.3";
+                    task.Oaorder = txtbom.Text;
+                    task.StartTask();
+                    result = txtbom.Text != "" && !task.ResultMark;
+                } 
             }
             return result;
         }
@@ -431,7 +438,13 @@ namespace BomOfferOrder.UI
             if (!GlobalClasscs.User.Readid)
             {
                 //设置TabPages内的GridView的某些字段设为不可见
-                ControlTabPagesGridViewVisible();
+                ControlTabPages();
+            }
+            //若用户没有修改明细物料权限,即不会显示右键菜单功能
+            if (!GlobalClasscs.User.Addid)
+            {
+                //设置用户的右键菜单不可见
+                ControlTabPages();
             }
 
             //若为“审核”状态的话，就执行以下语句
@@ -442,8 +455,8 @@ namespace BomOfferOrder.UI
                 pbimg.BackgroundImage = Image.FromFile(Application.StartupPath + @"\PIC\1.png");
                 //对相关控件设为不可改或只读
                 txtbom.ReadOnly = true;
-                //循环TabPages内的控件将其设为只读
-                ControlTabPagesReadOnly();
+                //循环TabPages内的控件
+                ControlTabPages();
 
                 if (_funState == "R")
                 {
@@ -466,9 +479,9 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 循环控制TabPages内的控件只读
+        /// 循环控制TabPages内的控件
         /// </summary>
-        void ControlTabPagesReadOnly()
+        void ControlTabPages()
         {
             for (var i = 0; i < tctotalpage.TabCount; i++)
             {
@@ -476,30 +489,32 @@ namespace BomOfferOrder.UI
                 var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
                 if (showdetail != null)
                 {
-                    showdetail.txtren.ReadOnly = true;
-                    showdetail.gvdtl.ReadOnly = true;
-                    showdetail.tmReplace.Visible = false;
-                    showdetail.ts1.Visible = false;
-                    showdetail.tmAdd.Visible = false;
-                    showdetail.ts2.Visible = false;
-                    showdetail.tmdel.Visible = false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 循环控制TabPages内的GridView控件的‘物料单价(含税)’ 以及 ‘物料成本(含税)’不可见
-        /// </summary>
-        void ControlTabPagesGridViewVisible()
-        {
-            for (var i = 0; i < tctotalpage.TabCount; i++)
-            {
-                //循环获取TabPages内各页的内容并进行相关设置
-                var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
-                if (showdetail != null)
-                {
-                    showdetail.gvdtl.Columns[5].Visible = false; //物料单价(含税)
-                    showdetail.gvdtl.Columns[6].Visible = false; //物料成本(含税)
+                    //若该用户没有设置‘查阅金额’权限,即将以下两列设置为不可见
+                    if (!GlobalClasscs.User.Readid)
+                    {
+                        showdetail.gvdtl.Columns[5].Visible = false; //物料单价(含税)
+                        showdetail.gvdtl.Columns[6].Visible = false; //物料成本(含税)
+                    }
+                    //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见
+                    if (!GlobalClasscs.User.Addid)
+                    {
+                        showdetail.tmReplace.Visible = false;
+                        showdetail.ts1.Visible = false;
+                        showdetail.tmAdd.Visible = false;
+                        showdetail.ts2.Visible = false;
+                        showdetail.tmdel.Visible = false;
+                    }
+                    //若为‘审核’状态时,将以下控件设为不可见或只读
+                    if (_confirmMarkId)
+                    {
+                        showdetail.txtren.ReadOnly = true;
+                        showdetail.gvdtl.ReadOnly = true;
+                        showdetail.tmReplace.Visible = false;
+                        showdetail.ts1.Visible = false;
+                        showdetail.tmAdd.Visible = false;
+                        showdetail.ts2.Visible = false;
+                        showdetail.tmdel.Visible = false;
+                    }
                 }
             }
         }

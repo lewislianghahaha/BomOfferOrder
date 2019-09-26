@@ -564,7 +564,7 @@ namespace BomOfferOrder.DB
                 {
                     //产品名称(物料名称)
                     case 0:
-                        dc.ColumnName = "ProductName"; ;
+                        dc.ColumnName = "ProductName";
                         dc.DataType = Type.GetType("System.String");
                         break;
                 }
@@ -573,7 +573,64 @@ namespace BomOfferOrder.DB
             return dt;
         }
 
+        /// <summary>
+        /// 创建用户权限表临时表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable CreateUserPermissionTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 10; i++)
+            {
+                var dc = new DataColumn();
 
+                switch (i)
+                {
+                    case 0:
+                        dc.ColumnName = "Userid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 1:
+                        dc.ColumnName = "UserName";
+                        dc.DataType = Type.GetType("System.String"); 
+                        break;
+                    case 2:
+                        dc.ColumnName = "UserPwd";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 3:
+                        dc.ColumnName = "CreateName";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 4:
+                        dc.ColumnName = "CreateDt";
+                        dc.DataType = Type.GetType("System.DateTime"); 
+                        break;
+                    case 5:
+                        dc.ColumnName = "ApplyId";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 6:
+                        dc.ColumnName = "CanBackConfirm";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 7:
+                        dc.ColumnName = "Readid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 8:
+                        dc.ColumnName = "Addid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 9:
+                        dc.ColumnName = "Useid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
 
     }
 }
