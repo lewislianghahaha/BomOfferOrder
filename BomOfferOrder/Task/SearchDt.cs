@@ -9,6 +9,8 @@ namespace BomOfferOrder.Task
     {
         SqlList sqlList=new SqlList();
 
+        private string _sqlscript=string.Empty;
+
         /// <summary>
         /// 获取K3-Cloud连接
         /// </summary>
@@ -64,12 +66,11 @@ namespace BomOfferOrder.Task
         public DataTable UseSqlSearchIntoDt(int type,string sqlscript)
         {
             var resultdt=new DataTable();
-            var sqlcon=new SqlConnection();
 
             try
             {
-                sqlcon = type == 0 ? GetCloudConn() : GetBomOfferConn();
-                var sqlDataAdapter = new SqlDataAdapter(sqlscript, sqlcon);
+                var sqlcon = type == 0 ? GetCloudConn() : GetBomOfferConn();
+                var sqlDataAdapter = new SqlDataAdapter(_sqlscript, sqlcon);
                 sqlDataAdapter.Fill(resultdt);
             }
             catch (Exception)
@@ -88,8 +89,8 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchValue(int searchid, string searchvalue)
         {
-            var sqlscript = sqlList.Get_Search(searchid, searchvalue);
-            return UseSqlSearchIntoDt(0,sqlscript);
+            _sqlscript = sqlList.Get_Search(searchid, searchvalue);
+            return UseSqlSearchIntoDt(0,_sqlscript);
         }
 
         /// <summary>
@@ -98,8 +99,8 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchBomDtl()
         {
-            var sqlscript = sqlList.Get_Bomdtl();
-            return UseSqlSearchIntoDt(0,sqlscript);
+            _sqlscript = sqlList.Get_Bomdtl();
+            return UseSqlSearchIntoDt(0,_sqlscript);
         }
 
         /// <summary>
@@ -110,8 +111,8 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchMaterialDtl(int searchid, string searchvalue)
         {
-            var sqlscript = sqlList.Get_MaterialDtl(searchid,searchvalue);
-            return UseSqlSearchIntoDt(0,sqlscript);
+            _sqlscript = sqlList.Get_MaterialDtl(searchid,searchvalue);
+            return UseSqlSearchIntoDt(0,_sqlscript);
         }
 
         /// <summary>
@@ -121,9 +122,9 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public bool SearchOaOrderInclud(string orderno)
         {
-            var sqlscript = sqlList.SearchOaOrderInclud(orderno);
+            _sqlscript = sqlList.SearchOaOrderInclud(orderno);
             //若不存在为FALSE 存在为TRUE
-            return Convert.ToInt32(UseSqlSearchIntoDt(1,sqlscript).Rows[0][0])!=0;
+            return Convert.ToInt32(UseSqlSearchIntoDt(1,_sqlscript).Rows[0][0])!=0;
         }
 
 
@@ -138,8 +139,8 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchBomOrder(int typeid, string value)
         {
-            var sqlscript = sqlList.SearchBomList(typeid, value,"");
-            return UseSqlSearchIntoDt(1,sqlscript);
+            _sqlscript = sqlList.SearchBomList(typeid, value,"");
+            return UseSqlSearchIntoDt(1,_sqlscript);
         }
 
         /// <summary>
@@ -151,8 +152,8 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchMainBomOrder(int typeid, string value, string createname)
         {
-            var sqlscript = sqlList.SearchBomList(typeid, value, createname);
-            return UseSqlSearchIntoDt(1, sqlscript);
+            _sqlscript = sqlList.SearchBomList(typeid, value, createname);
+            return UseSqlSearchIntoDt(1, _sqlscript);
         }
 
         /// <summary>
@@ -162,8 +163,8 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchBomOrderDetail(int fid)
         {
-            var sqlscript = sqlList.SearchBomDtl(fid);
-            return UseSqlSearchIntoDt(1,sqlscript);
+            _sqlscript = sqlList.SearchBomDtl(fid);
+            return UseSqlSearchIntoDt(1,_sqlscript);
         }
 
         /// <summary>
@@ -173,8 +174,8 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchUseInfo(int fid)
         {
-            var sqlscript = sqlList.SearchUseInfo(fid);
-            return UseSqlSearchIntoDt(1,sqlscript);
+            _sqlscript = sqlList.SearchUseInfo(fid);
+            return UseSqlSearchIntoDt(1,_sqlscript);
         }
 
         /// <summary>
@@ -185,8 +186,8 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchAdminDetail(int typeid, string value)
         {
-            var sqlscript = sqlList.SearchAdminDetail(typeid, value);
-            return UseSqlSearchIntoDt(1, sqlscript);
+            _sqlscript = sqlList.SearchAdminDetail(typeid, value);
+            return UseSqlSearchIntoDt(1, _sqlscript);
         }
 
         /// <summary>
@@ -195,8 +196,29 @@ namespace BomOfferOrder.Task
         /// <returns></returns>
         public DataTable SearchK3User(string value)
         {
-            var sqlscript = sqlList.SearchK3User(value);
-            return UseSqlSearchIntoDt(0,sqlscript);
+            _sqlscript = sqlList.SearchK3User(value);
+            return UseSqlSearchIntoDt(0,_sqlscript);
+        }
+
+        /// <summary>
+        /// 获取用户权限表明细
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchUseDetail()
+        {
+            _sqlscript = sqlList.SearchUseDetail();
+            return UseSqlSearchIntoDt(1,_sqlscript);
+        }
+
+        /// <summary>
+        /// 根据USERID查询该用户是否占用
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public DataTable SearchAdminUserInfo(int userid)
+        {
+            _sqlscript = sqlList.SearchAdminUserInfo(userid);
+            return UseSqlSearchIntoDt(1, _sqlscript);
         }
 
     }

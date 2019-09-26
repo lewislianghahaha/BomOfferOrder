@@ -618,6 +618,7 @@ namespace BomOfferOrder.DB
             return _result;
         }
 
+
         //////////////////////////////////////////////////权限使用////////////////////////////////////////////////////////
 
         /// <summary>
@@ -745,6 +746,33 @@ namespace BomOfferOrder.DB
 	                            SELECT @id
                             END
                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 获取用户权限表记录
+        /// </summary>
+        /// <returns></returns>
+        public string SearchUseDetail()
+        {
+            _result = $@"
+                            SELECT a.Userid,a.UserName,a.UserPwd,a.ApplyId,a.CanBackConfirm,a.Readid,a.Addid,a.Userid 
+                            FROM dbo.T_AD_User a
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 根据USERID查询该用户是否占用
+        /// </summary>
+        /// <returns></returns>
+        public string SearchAdminUserInfo(int userid)
+        {
+            _result = $@"
+                            SELECT a.Userid 
+                            FROM dbo.T_AD_User a
+                            where a.Userid='{userid}'
+                        ";
             return _result;
         }
 

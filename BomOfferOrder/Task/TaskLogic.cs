@@ -152,7 +152,14 @@ namespace BomOfferOrder.Task
                 case "0.9":
                     SearchK3User(_searchvalue);
                     break;
-                //
+                //获取用户权限表记录
+                case "0.9.1":
+                    SearchUseDetail();
+                    break;
+                //查询:检测该用户是否占用
+                case "0.9.2":
+                    SearchUseUseid(_fid);
+                    break;
 
                 #endregion
 
@@ -277,9 +284,21 @@ namespace BomOfferOrder.Task
             _resultTable = searchDt.SearchK3User(value);
         }
 
+        /// <summary>
+        /// 获取用户权限表明细
+        /// </summary>
+        private void SearchUseDetail()
+        {
+            _resultTable = searchDt.SearchUseDetail();
+        }
 
-
-
+        /// <summary>
+        /// 根据USERID查询用户是否占用
+        /// </summary>
+        private void SearchUseUseid(int userid)
+        {
+            _resultTable = searchDt.SearchAdminUserInfo(userid);
+        }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

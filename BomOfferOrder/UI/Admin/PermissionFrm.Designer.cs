@@ -314,7 +314,7 @@
             this.gvdtl.AllowUserToAddRows = false;
             this.gvdtl.AllowUserToDeleteRows = false;
             this.gvdtl.AllowUserToOrderColumns = true;
-            this.gvdtl.ColumnHeadersHeight = 20;
+            this.gvdtl.ColumnHeadersHeight = 25;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";

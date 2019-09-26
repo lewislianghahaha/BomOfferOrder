@@ -59,6 +59,8 @@ namespace BomOfferOrder.UI
 
             //初始化查询下拉列表
             OnShowSelectTypeList();
+            //更新用户占用值 useid todo
+
         }
 
         private void OnRegisterEvents()
@@ -70,6 +72,7 @@ namespace BomOfferOrder.UI
             tmshowdetail.Click += Tmshowdetail_Click;
             comselectvalue.SelectedIndexChanged += Comselectvalue_SelectedIndexChanged;
             tmchangepwd.Click += Tmchangepwd_Click;
+            this.FormClosing += Main_FormClosing;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -527,6 +530,16 @@ namespace BomOfferOrder.UI
             return tab;
         }
 
+        /// <summary>
+        /// 关闭窗体
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// 首页按钮(GridView页面跳转时使用)
@@ -914,6 +927,8 @@ namespace BomOfferOrder.UI
             task.StartTask();
             return task.ResultTable;
         }
+
+
 
     }
 }
