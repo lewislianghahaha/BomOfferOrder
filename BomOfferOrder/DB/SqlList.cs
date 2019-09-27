@@ -373,11 +373,17 @@ namespace BomOfferOrder.DB
                                 WHERE Headid=@Headid
                                 ";
                     break;
-                case "":
-                    _result = @"UPDATE dbo.T_OfferOrderEntry SET MaterialID=@MaterialID,MaterialCode=@MaterialCode,MaterialName=@MaterialName,
+                case "T_OfferOrderEntry":
+                    _result = @"UPDATE dbo.T_OfferOrderEntry SET @MaterialID=@MaterialID,MaterialCode=@MaterialCode,MaterialName=@MaterialName,
                                                                  PeiQty=@PeiQty,MaterialPrice=@MaterialPrice,MaterialAmount=@MaterialAmount
                                 WHERE Entryid=@Entryid
                                ";
+                    break;
+                case "T_AD_User":
+                    _result = @"
+                                    UPDATE dbo.T_AD_User SET ApplyId=@ApplyId,CanBackConfirm=@CanBackConfirm,Readid=@Readid,Addid=@Addid
+                                    WHERE Userid=@Userid
+                                ";
                     break;
             }
             return _result;
@@ -548,7 +554,7 @@ namespace BomOfferOrder.DB
         public string SearchBomDtl(int fid)
         {
             _result = $@"
-                            SELECT a.FId,a.OAorderno,a.Fstatus,a.ConfirmDt,a.CreateDt,a.CreateName,
+                            SELECT a.FId,a.OAorderno,a.Fstatus,a.CreateDt,a.ConfirmDt,a.CreateName,
 
 	                               b.Headid,b.ProductName,b.Bao,b.ProductMi,b.MaterialQty,b.BaoQty,
 	                               b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
@@ -596,12 +602,18 @@ namespace BomOfferOrder.DB
         /// 清空单据占用情况
         /// </summary>
         /// <param name="fid"></param>
+        /// <param name="oaorder"></param>
         /// <returns></returns>
-        public string RemoveUsedtl(int fid)
+        public string RemoveUsedtl(int fid,string oaorder)
         {
-            _result = $@"
+            _result = oaorder == ""
+                ? $@"
                            UPDATE dbo.T_OfferOrder SET Useid=1,UserName=''
                            where fid='{fid}' 
+                        "
+                : $@"
+                           UPDATE dbo.T_OfferOrder SET Useid=1,UserName=''
+                           where OAOrderno='{oaorder}' 
                         ";
             return _result;
         }
@@ -632,11 +644,11 @@ namespace BomOfferOrder.DB
             if (typeid == 0)
             {
                 _result = $@"
-                                SELECT a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
-	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '是否启用',
-	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '是否可反审核',
-	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '是否可查阅明细金额',
-	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '是否可修改物料明细'
+                                SELECT a.userid,a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
+	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
+	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
+	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细'
                                 FROM dbo.T_AD_User a
                                 where a.UserName like '%{value}%'
                             ";
@@ -644,11 +656,11 @@ namespace BomOfferOrder.DB
             else if (typeid == 1)
             {
                 _result = $@"
-                                SELECT a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
-	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '是否启用',
-	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '是否可反审核',
-	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '是否可查阅明细金额',
-	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '是否可修改物料明细'
+                                SELECT a.userid,a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
+	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
+	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
+	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细'
                                 FROM dbo.T_AD_User a
                                 where a.CreateName like '%{value}%'
                             ";
@@ -656,11 +668,11 @@ namespace BomOfferOrder.DB
             else if (typeid == 2)
             {
                 _result = $@"
-                                SELECT a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
-	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '是否启用',
-	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '是否可反审核',
-	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '是否可查阅明细金额',
-	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '是否可修改物料明细'
+                                SELECT a.userid,a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
+	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
+	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
+	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细'
                                 FROM dbo.T_AD_User a
                                 where CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
@@ -668,11 +680,10 @@ namespace BomOfferOrder.DB
             else if (typeid == 3)
             {
                 _result = $@"
-                                SELECT a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
-	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '是否启用',
-	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '是否可反审核',
-	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '是否可查阅明细金额',
-	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '是否可修改物料明细'
+                                SELECT a.userid,a.UserName 用户,a.CreateName 创建人,a.CreateDt 创建日期,
+	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
+	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
+	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
                                 FROM dbo.T_AD_User a
                                 where a.ApplyId='{value}'
                             ";

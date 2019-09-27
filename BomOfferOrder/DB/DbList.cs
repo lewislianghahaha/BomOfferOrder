@@ -189,15 +189,15 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "Fstatus";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
-                    //审核日期
+                    //创建日期
                     case 3:
+                        dc.ColumnName = "CreateDt";
+                        dc.DataType = Type.GetType("System.DateTime");                
+                        break;
+                    //审核日期
+                    case 4:
                         dc.ColumnName = "ConfirmDt";
                         dc.DataType = Type.GetType("System.DateTime");
-                        break;
-                    //创建日期
-                    case 4:
-                        dc.ColumnName= "CreateDt";
-                        dc.DataType = Type.GetType("System.DateTime"); 
                         break;
                     //创建人
                     case 5:

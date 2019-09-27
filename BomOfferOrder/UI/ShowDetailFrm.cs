@@ -18,8 +18,6 @@ namespace BomOfferOrder.UI
             private DataTable _materialdt;
             //保存需要进行删除的行记录(提交时使用) 注:状态为R读取时才适用
             private DataTable _deldt;
-            //记录能否删除ID(删除权限使用)
-            private bool _candel;
 
             //保存查询出来的GridView记录
             private DataTable _dtl;
@@ -34,13 +32,6 @@ namespace BomOfferOrder.UI
             private int _totalpagecount;
             //记录初始化标记(GridView页面跳转 初始化时使用)
             private bool _pageChange;
-        #endregion
-
-        #region Set
-            /// <summary>
-            /// 记录能否删除ID(删除权限使用)
-            /// </summary>
-            public bool Candel { set { _candel = value; } }
         #endregion
 
         #region Get
@@ -197,8 +188,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                //权限控制 TODO:预留
-
                 if(gvdtl.SelectedRows.Count==0)throw new Exception("没有选择行,不能继续");
 
                 var clickMessage = $"您所选择需删除的行数为:{gvdtl.SelectedRows.Count}行 \n 是否继续?";
@@ -209,8 +198,6 @@ namespace BomOfferOrder.UI
 
                     if (_funState == "R")
                     {
-                        //将相关行保存至_deldt内,供保存时使用
-                        _deldt = dbList.MakeGridViewTemp();
                         foreach (DataGridViewRow rows in gvdtl.SelectedRows)
                         {
                             //判断若Entryid不为空,才执行插入
@@ -264,6 +251,8 @@ namespace BomOfferOrder.UI
                     //将单据状态获取至_funState变量内
                     _funState = funState;
                     FunStateRUse(funState,dt);
+                    //初始化定义删除临时表(单据状态为R,并且执行‘删除明细行’时才使用)
+                    _deldt = dbList.MakeGridViewTemp();
                 }
             }
             catch (Exception ex)

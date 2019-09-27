@@ -70,7 +70,7 @@ namespace BomOfferOrder.Task
             try
             {
                 var sqlcon = type == 0 ? GetCloudConn() : GetBomOfferConn();
-                var sqlDataAdapter = new SqlDataAdapter(_sqlscript, sqlcon);
+                var sqlDataAdapter = new SqlDataAdapter(sqlscript, sqlcon);
                 sqlDataAdapter.Fill(resultdt);
             }
             catch (Exception)

@@ -210,9 +210,9 @@ namespace BomOfferOrder.Task
                 {
                     for (var j = 0; j < dt.Columns.Count; j++)
                     {
-                        ds.Tables[0].Rows[i].BeginEdit();
-                        ds.Tables[0].Rows[i][j] = dt.Rows[i][j];
-                        ds.Tables[0].Rows[i].EndEdit();
+                        ds.Tables[0].Rows[0].BeginEdit();
+                        ds.Tables[0].Rows[0][j] = dt.Rows[i][j];
+                        ds.Tables[0].Rows[0].EndEdit();
                     }
                     sqladpter.Update(ds.Tables[0]);
                 }
@@ -243,8 +243,8 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@FId", SqlDbType.Int, 8, "FId");
                     da.UpdateCommand.Parameters.Add("@OAorderno", SqlDbType.NVarChar,100, "OAorderno");
                     da.UpdateCommand.Parameters.Add("@Fstatus", SqlDbType.Int, 8, "Fstatus");
-                    da.UpdateCommand.Parameters.Add("@ConfirmDt", SqlDbType.DateTime, 10, "ConfirmDt");
                     da.UpdateCommand.Parameters.Add("@CreateDt", SqlDbType.DateTime, 10, "CreateDt");
+                    da.UpdateCommand.Parameters.Add("@ConfirmDt", SqlDbType.DateTime, 10, "ConfirmDt");
                     da.UpdateCommand.Parameters.Add("@CreateName", SqlDbType.NVarChar, 100, "CreateName");
                     da.UpdateCommand.Parameters.Add("@Useid", SqlDbType.Int, 8, "Useid");
                     da.UpdateCommand.Parameters.Add("@UserName", SqlDbType.NVarChar, 200, "UserName");
@@ -274,6 +274,13 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@PeiQty", SqlDbType.Decimal, 4, "PeiQty");
                     da.UpdateCommand.Parameters.Add("@MaterialPrice", SqlDbType.Decimal, 4, "MaterialPrice");
                     da.UpdateCommand.Parameters.Add("@MaterialAmount", SqlDbType.Decimal, 4, "MaterialAmount");
+                    break;
+                case "T_AD_User":
+                    da.UpdateCommand.Parameters.Add("@Userid", SqlDbType.Int, 8, "Userid");
+                    da.UpdateCommand.Parameters.Add("@ApplyId", SqlDbType.Int, 8, "ApplyId");
+                    da.UpdateCommand.Parameters.Add("@CanBackConfirm", SqlDbType.Int, 8, "CanBackConfirm");
+                    da.UpdateCommand.Parameters.Add("@Readid", SqlDbType.Int, 8, "Readid");
+                    da.UpdateCommand.Parameters.Add("@Addid", SqlDbType.Int, 8, "Addid");
                     break;
             }
             return da;
@@ -363,7 +370,7 @@ namespace BomOfferOrder.Task
             newrow[4] = sourcerow[26];      //物料名称
             newrow[5] = sourcerow[27];      //配方用量
             newrow[6] = sourcerow[28];      //物料单价(含税)
-            newrow[7] = sourcerow[19];      //物料成本(含税)
+            newrow[7] = sourcerow[29];      //物料成本(含税)
             dt.Rows.Add(newrow);
             return dt;
         }
@@ -406,9 +413,14 @@ namespace BomOfferOrder.Task
             {
                 //获取用户权限临时表
                 var tempdt = dbList.CreateUserPermissionTemp();
+
+                //判断若sourcedt内的Userid为0,即需要插入操作,反之,为更新操作
+                var dtlrows = sourcedt.Select("Userid=0");
+
                 //对临时表进行添加操作
                 var newrow = tempdt.NewRow();
-                newrow[0] = GetUseridKey();           //UseId
+
+                newrow[0] = dtlrows.Length > 0 ? GetUseridKey() : sourcedt.Rows[0][0]; //UserId       
                 newrow[1] = sourcedt.Rows[0][1];      //用户名称
                 newrow[2] = sourcedt.Rows[0][2];      //用户密码
                 newrow[3] = sourcedt.Rows[0][3];      //创建人
@@ -420,7 +432,16 @@ namespace BomOfferOrder.Task
                 newrow[9] = sourcedt.Rows[0][9];      //是否占用
                 tempdt.Rows.Add(newrow);
 
-                ImportDtToDb("T_AD_User",tempdt);
+                //执行插入操作
+                if (dtlrows.Length > 0)
+                {
+                    ImportDtToDb("T_AD_User", tempdt);
+                }
+                //执行更新操作
+                else
+                {
+                    UpdateDbFromDt("T_AD_User",tempdt);
+                }
             }
             catch (Exception)
             {

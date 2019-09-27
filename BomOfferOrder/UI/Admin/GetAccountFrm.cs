@@ -108,7 +108,7 @@ namespace BomOfferOrder.UI.Admin
                     //将当前窗体隐藏
                     this.Visible = false;
                     //初始化信息并读取
-                    accountDetail.OnInitialize(k3Name,k3Group,k3Phone);
+                    accountDetail.OnInitialize("C", k3Name,k3Group,k3Phone,null);
                     accountDetail.StartPosition=FormStartPosition.CenterParent;
                     accountDetail.ShowDialog();
                 }

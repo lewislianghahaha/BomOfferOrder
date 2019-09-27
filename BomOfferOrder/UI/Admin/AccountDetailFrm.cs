@@ -16,6 +16,10 @@ namespace BomOfferOrder.UI.Admin
         #region 变量参数
         //记录用户权限记录是否保存
         private bool _saveid;
+        //记录用户ID(更新时使用)
+        private int _userid;
+        //保存用户权限状态(C:创建 R:读取)
+        private string _funState;
         #endregion
 
         public AccountDetailFrm()
@@ -33,11 +37,27 @@ namespace BomOfferOrder.UI.Admin
         /// <summary>
         /// 初始化相关记录
         /// </summary>
-        public void OnInitialize(string k3Name,string k3Group,string k3Phone)
+        public void OnInitialize(string funState,string k3Name,string k3Group,string k3Phone,DataTable sourcedt)
         {
-            txtusername.Text = k3Name;
-            txtGroup.Text = k3Group;
-            txtphone.Text = k3Phone;
+            //单据状态为‘创建’
+            if (funState == "C")
+            {
+                _funState = funState;
+                txtusername.Text = k3Name;
+                txtGroup.Text = k3Group;
+                txtphone.Text = k3Phone;
+            }
+            //若是‘读取’状态,即将PermissionFrm所选择的信息读取在对应的控件内
+            else
+            {
+                _funState = funState;
+                _userid = Convert.ToInt32(sourcedt.Rows[0][0]);                     //Userid
+                txtusername.Text = Convert.ToString(sourcedt.Rows[0][1]);
+                cbapplyid.Checked = Convert.ToInt32(sourcedt.Rows[0][5]) == 0;      //是否启用
+                cbbackconfirm.Checked = Convert.ToInt32(sourcedt.Rows[0][6]) == 0;  //能否反审核
+                cbreadid.Checked= Convert.ToInt32(sourcedt.Rows[0][7]) == 0;        //能否查阅明细金额
+                cbaddid.Checked= Convert.ToInt32(sourcedt.Rows[0][8]) == 0;         //能否对明细物料操作
+            }
             _saveid = false;
         }
 
@@ -103,16 +123,16 @@ namespace BomOfferOrder.UI.Admin
             var tempdt = dbList.CreateUserPermissionTemp();
 
             var newrow = tempdt.NewRow();
-            newrow[0] = DBNull.Value;                     //UseId
-            newrow[1] = txtusername.Text ;                //用户名称
-            newrow[2] = "888888";                         //用户密码
-            newrow[3] = GlobalClasscs.User.StrUsrName;    //创建人
-            newrow[4] = DateTime.Now;                     //创建日期
-            newrow[5] = cbapplyid.Checked ? 0 : 1;        //是否启用
-            newrow[6] = cbbackconfirm.Checked ? 0 : 1;    //能否反审核
-            newrow[7] = cbreadid.Checked ? 0 : 1;         //能否查阅明细金额
-            newrow[8] = cbaddid.Checked ? 0 : 1;          //能否对明细物料操作
-            newrow[9] = 1;                                //是否占用
+            newrow[0] =  _funState == "C" ? 0 : _userid;                              //UseId
+            newrow[1] = txtusername.Text;                                             //用户名称
+            newrow[2] = _funState == "C" ? "888888": "";                              //用户密码
+            newrow[3] = _funState == "C" ? GlobalClasscs.User.StrUsrName : "";        //创建人
+            newrow[4] = _funState == "C" ? DateTime.Now : Convert.ToDateTime(null);   //创建日期
+            newrow[5] = cbapplyid.Checked ? 0 : 1;                                    //是否启用
+            newrow[6] = cbbackconfirm.Checked ? 0 : 1;                                //能否反审核
+            newrow[7] = cbreadid.Checked ? 0 : 1;                                     //能否查阅明细金额
+            newrow[8] = cbaddid.Checked ? 0 : 1;                                      //能否对明细物料操作
+            newrow[9] = 1;                                                            //是否占用
             tempdt.Rows.Add(newrow);
             return tempdt;
         }

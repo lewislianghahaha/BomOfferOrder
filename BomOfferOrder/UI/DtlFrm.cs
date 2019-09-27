@@ -75,8 +75,10 @@ namespace BomOfferOrder.UI
             {
                 //根据bomdt判断,若rows[2]=0为:已审核 1:反审核
                 _confirmMarkId = Convert.ToInt32(bomdt.Rows[0][2])==0;
+                //若该单据反审核并且需要重新审核的,就要将tmsave.Enabled=true;反之为false
+                tmsave.Enabled = !_confirmMarkId;
                 //更新_useid及username值
-                UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]),0);
+                UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]),0,"");
                 //执行读取记录
                 ReadDetail(bomdt, materialdt);
             }
@@ -167,8 +169,8 @@ namespace BomOfferOrder.UI
                         {
                             txtbom.Text = dtlrows[i][1].ToString();
                             _fid = Convert.ToInt32(dtlrows[i][0]);
+                            _createtime = Convert.ToDateTime(dtlrows[i][3]);
                             _creatname = Convert.ToString(dtlrows[i][5]);
-                            _createtime = Convert.ToDateTime(dtlrows[i][4]);
                         }
                         //将记录赋值给bomdtldt内
                         var newrow = bomdtldt.NewRow();
@@ -176,7 +178,7 @@ namespace BomOfferOrder.UI
                         newrow[9] = dtlrows[i][7];                 //产品名称
                         newrow[10] = dtlrows[i][8];                //包装规格
                         newrow[11] = dtlrows[i][9];                //产品密度(KG/L)
-                        newrow[12] = dtlrows[i][10];                //材料成本(不含税)
+                        newrow[12] = dtlrows[i][10];               //材料成本(不含税)
                         newrow[13] = dtlrows[i][11];               //包装成本
                         newrow[14] = dtlrows[i][12];               //人工及制造费用
                         newrow[15] = dtlrows[i][13];               //成本(元/KG)
@@ -258,6 +260,7 @@ namespace BomOfferOrder.UI
                         if (showdetail != null)
                         {
                             var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
+
                             //根据明细项循环获取其内部值
                             foreach (DataRow rows in bomdtldt.Rows)
                             {
@@ -265,8 +268,8 @@ namespace BomOfferOrder.UI
                                 newrow[0] = _funState == "C" ? 0: _fid;                                     //Fid
                                 newrow[1] = txtbom.Text;                                                    //流水号
                                 newrow[2] = 0;                                                              //单据状态(0:已审核 1:反审核)
-                                newrow[3] = DateTime.Now;                                                   //审核日期
-                                newrow[4] = _funState =="C" ? DateTime.Now : _createtime;                   //创建日期
+                                newrow[3] = _funState == "C" ? DateTime.Now : _createtime;                  //创建日期
+                                newrow[4] = DateTime.Now;                                                   //审核日期
                                 newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
                                 newrow[6] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
                                 newrow[7] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
@@ -347,7 +350,7 @@ namespace BomOfferOrder.UI
                 if(!task.ResultMark)throw new Exception("提交异常,请联系管理员");
                 else
                 {
-                    MessageBox.Show($"单据'{txtbom.Text}'提交成功,可关闭此单据", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"单据'{txtbom.Text}'提交成功,可关闭此单据", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tmsave.Enabled = false;
                 }
             }
@@ -373,13 +376,24 @@ namespace BomOfferOrder.UI
                 if (result == DialogResult.Yes)
                 {
                     //当退出时,清空useid等相关占用信息
-                    UpdateUseValue(_fid,1);
+                    //当单据状态为C时执行
+                    if (_funState == "C")
+                    {
+                        UpdateUseValue(0,1,txtbom.Text);
+                    }
+                    //当单据状态为R时执行
+                    else
+                    {
+                       UpdateUseValue(_fid,1,""); 
+                    }
 
                     //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
                     for (var i = tctotalpage.TabCount - 1; i >= 0; i--)
                     {
                         tctotalpage.TabPages.RemoveAt(i);
                     }
+                    //将OA流水号文本框清空
+                    txtbom.Text = "";
                     //允许窗体关闭
                     e.Cancel = false;
                 }
@@ -460,8 +474,18 @@ namespace BomOfferOrder.UI
 
                 if (_funState == "R")
                 {
-                    tmConfirm.Enabled = false;
-                    tmsave.Enabled = false;
+                    //若单据状态为R,并且已重新审核的,执行如下操作(注:需利用tmsave.Enabled为条件;)
+                    //若该单据反审核并且需要重新审核的,就要将tmsave.Enabled=true;反之为false
+                    if (tmsave.Enabled)
+                    {
+                        tmConfirm.Enabled = false;
+                    }
+                    //若单据不需要重新审核,只是查询审核单据,就执行以下
+                    else
+                    {
+                        tmConfirm.Enabled = false;
+                        tmsave.Enabled = false;
+                    }
                 }
                 else
                 {
@@ -495,7 +519,7 @@ namespace BomOfferOrder.UI
                         showdetail.gvdtl.Columns[5].Visible = false; //物料单价(含税)
                         showdetail.gvdtl.Columns[6].Visible = false; //物料成本(含税)
                     }
-                    //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见
+                    //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见 以及 '配方用量'只读
                     if (!GlobalClasscs.User.Addid)
                     {
                         showdetail.tmReplace.Visible = false;
@@ -503,6 +527,8 @@ namespace BomOfferOrder.UI
                         showdetail.tmAdd.Visible = false;
                         showdetail.ts2.Visible = false;
                         showdetail.tmdel.Visible = false;
+                        //‘配方用量’只读
+                        showdetail.gvdtl.Columns[4].ReadOnly = true;
                     }
                     //若为‘审核’状态时,将以下控件设为不可见或只读
                     if (_confirmMarkId)
@@ -538,11 +564,13 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="fid"></param>
         /// <param name="type"></param>
-        private void UpdateUseValue(int fid,int type)
+        /// <param name="oaorder"></param>
+        private void UpdateUseValue(int fid,int type,string oaorder)
         {
             task.TaskId = "4";
             task.Fid = fid;
             task.Type = type;
+            task.Oaorder = oaorder;
             task.StartTask();
         }
 

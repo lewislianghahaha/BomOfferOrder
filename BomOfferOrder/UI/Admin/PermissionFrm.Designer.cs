@@ -58,6 +58,8 @@
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.gvdtl = new System.Windows.Forms.DataGridView();
+            this.Menu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmshowdetail = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -65,6 +67,7 @@
             this.bngat.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
+            this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainMenu
@@ -314,15 +317,29 @@
             this.gvdtl.AllowUserToAddRows = false;
             this.gvdtl.AllowUserToDeleteRows = false;
             this.gvdtl.AllowUserToOrderColumns = true;
-            this.gvdtl.ColumnHeadersHeight = 25;
+            this.gvdtl.ColumnHeadersHeight = 20;
+            this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.ReadOnly = true;
-            this.gvdtl.RowHeadersWidth = 55;
+            this.gvdtl.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.gvdtl.RowTemplate.Height = 23;
             this.gvdtl.Size = new System.Drawing.Size(867, 462);
             this.gvdtl.TabIndex = 0;
+            // 
+            // Menu
+            // 
+            this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmshowdetail});
+            this.Menu.Name = "Menu";
+            this.Menu.Size = new System.Drawing.Size(125, 26);
+            // 
+            // tmshowdetail
+            // 
+            this.tmshowdetail.Name = "tmshowdetail";
+            this.tmshowdetail.Size = new System.Drawing.Size(124, 22);
+            this.tmshowdetail.Text = "查阅明细";
             // 
             // PermissionFrm
             // 
@@ -348,6 +365,7 @@
             this.bngat.PerformLayout();
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
+            this.Menu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -383,5 +401,7 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
         private System.Windows.Forms.ToolStripLabel toolStripLabel5;
         private System.Windows.Forms.ToolStripLabel tstotalrow;
+        private System.Windows.Forms.ContextMenuStrip Menu;
+        private System.Windows.Forms.ToolStripMenuItem tmshowdetail;
     }
 }

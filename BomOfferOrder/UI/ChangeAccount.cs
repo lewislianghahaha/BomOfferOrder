@@ -54,7 +54,7 @@ namespace BomOfferOrder.UI
 
                 //提交
                 var clickMessage = $"用户'{GlobalClasscs.User.StrUsrName}'可以更新密码 \n 是否继续?";
-                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     task.TaskId = "4.2";
                     task.Fid = GlobalClasscs.User.UserId;
@@ -77,7 +77,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtnewpwd.Text = "";
                 txtnewpwdconfirm.Text = "";
             }

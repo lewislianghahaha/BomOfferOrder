@@ -16,7 +16,7 @@ namespace BomOfferOrder.Task
         private string _valuelist;          //保存Fmaterialid列表(如:'426464','738199')
         private DataTable _bomdt;           //保存BOM明细DT(生成时使用)
         private string _oaorder;            //获取OA流水号
-        private DataTable _Importdt;        //获取准备提交的DT(提交时使用)
+        private DataTable _importdt;        //获取准备提交的DT(提交时使用)
         private string _funState;           //记录单据状态(C:创建 R:读取) 
         private DataTable _deldt;           //记录从GridView内需要删除的DT记录(单据状态为R时使用)
         private int _fid;                   //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
@@ -67,7 +67,7 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 获取准备提交的DT(提交时使用)
         /// </summary>
-        public DataTable Importdt { set { _Importdt = value; } }
+        public DataTable Importdt { set { _importdt = value; } }
 
         /// <summary>
         /// 记录单据状态(C:创建 R:读取) 
@@ -93,7 +93,6 @@ namespace BomOfferOrder.Task
         /// 记录用户新密码
         /// </summary>
         public string Newpwd { set { _newpwd = value; } }
-
         #endregion
 
         #region Get
@@ -179,11 +178,11 @@ namespace BomOfferOrder.Task
                 #region 提交
                 //提交
                 case "2":
-                    ImportDt(_funState,_Importdt,_deldt);
+                    ImportDt(_funState,_importdt,_deldt);
                     break;
                 //用户权限提交
                 case "2.1":
-                    ImportUserPermissionDt(_Importdt);
+                    ImportUserPermissionDt(_importdt);
                     break;
                 #endregion
 
@@ -194,7 +193,7 @@ namespace BomOfferOrder.Task
                     break;
                 //更新单据占用状态
                 case "4":
-                    UpdateUseDetail(_fid, _type);
+                    UpdateUseDetail(_fid, _type,_oaorder);
                     break;
                 //更新用户权限占用状态
                 case "4.1":
@@ -372,9 +371,10 @@ namespace BomOfferOrder.Task
         /// </summary>
         /// <param name="fid"></param>
         /// <param name="type">type:0(更新当前用户信息) 1(清空占用记录)</param>
-        private void UpdateUseDetail(int fid, int type)
+        /// <param name="oano">OA流水号(当单据状态为C时使用)</param>
+        private void UpdateUseDetail(int fid, int type,string oano)
         {
-            generateDt.UpDateUpUseDetail(fid, type);
+            generateDt.UpDateUpUseDetail(fid, type,oano);
         }
 
         /// <summary>

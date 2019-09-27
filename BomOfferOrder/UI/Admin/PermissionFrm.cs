@@ -3,6 +3,7 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using BomOfferOrder.DB;
 using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI.Admin
@@ -12,6 +13,8 @@ namespace BomOfferOrder.UI.Admin
         TaskLogic task=new TaskLogic();
         Load load=new Load();
         GetAccountFrm getAccount=new GetAccountFrm();
+        AccountDetailFrm accountDetail=new AccountDetailFrm();
+        DbList dbList=new DbList();
 
         #region 变量参数
         //获取K3用户信息
@@ -54,6 +57,7 @@ namespace BomOfferOrder.UI.Admin
             btnsearch.Click += Btnsearch_Click;
             comselectvalue.SelectedIndexChanged += Comselectvalue_SelectedIndexChanged;
             tmAddUse.Click += TmAddUse_Click;
+            tmshowdetail.Click += Tmshowdetail_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -65,6 +69,61 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
+        /// 查询相关值
+        /// </summary>
+        void OnSearch()
+        {
+            //获取下拉列表所选值
+            var dvordertylelist = (DataRowView)comselectvalue.Items[comselectvalue.SelectedIndex];
+            var typeId = Convert.ToInt32(dvordertylelist["Id"]);
+
+            task.TaskId = "0.8";
+            task.SearchId = typeId;
+            switch (typeId)
+            {
+                //用户名称 创建人
+                case 0:
+                case 1:
+                    task.SearchValue = txtvalue.Text;
+                    break;
+                //创建日期
+                case 2:
+                    task.SearchValue = Convert.ToString(dtpdt.Value.Date);
+                    break;
+                //启用状态
+                default:
+                    var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
+                    var id = Convert.ToInt32(statuslist["Id"]);
+                    task.SearchValue = Convert.ToString(id);
+                    break;
+            }
+
+            new Thread(Start).Start();
+            load.StartPosition = FormStartPosition.CenterScreen;
+            load.ShowDialog();
+
+            if (task.ResultTable.Rows.Count > 0)
+            {
+                _dtl = task.ResultTable;
+                panel2.Visible = true;
+                //初始化下拉框所选择的默认值
+                tmshowrows.SelectedItem = "10";
+                //定义初始化标记
+                _pageChange = true;
+                //GridView分页
+                GridViewPageChange();
+            }
+            //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
+            else
+            {
+                gvdtl.DataSource = task.ResultTable;
+                panel2.Visible = false;
+            }
+            //控制GridView单元格显示方式
+            ControlGridViewisShow();
+        }
+
+        /// <summary>
         /// 查询
         /// </summary>
         /// <param name="sender"></param>
@@ -73,52 +132,8 @@ namespace BomOfferOrder.UI.Admin
         {
             try
             {
-                //获取下拉列表所选值
-                var dvordertylelist = (DataRowView)comselectvalue.Items[comselectvalue.SelectedIndex];
-                var typeId = Convert.ToInt32(dvordertylelist["Id"]);
-
-                task.TaskId = "0.8";
-                task.SearchId = typeId;
-                switch (typeId)
-                {
-                    //用户名称 创建人
-                    case 0:
-                    case 1:
-                        task.SearchValue = txtvalue.Text;
-                        break;
-                    //创建日期
-                    case 2:
-                        task.SearchValue = Convert.ToString(dtpdt.Value.Date);
-                        break;
-                    //启用状态
-                    default:
-                        var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
-                        var id = Convert.ToInt32(statuslist["Id"]);
-                        task.SearchValue = Convert.ToString(id);
-                        break;
-                }
-
-                new Thread(Start).Start();
-                load.StartPosition = FormStartPosition.CenterScreen;
-                load.ShowDialog();
-
-                if (task.ResultTable.Rows.Count > 0)
-                {
-                    _dtl = task.ResultTable;
-                    panel2.Visible = true;
-                    //初始化下拉框所选择的默认值
-                    tmshowrows.SelectedItem = "10";
-                    //定义初始化标记
-                    _pageChange = true;
-                    //GridView分页
-                    GridViewPageChange();
-                }
-                //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
-                else
-                {
-                    gvdtl.DataSource = task.ResultTable;
-                    panel2.Visible = false;
-                }
+                //执行查询
+                OnSearch();
             }
             catch (Exception ex)
             {
@@ -188,12 +203,38 @@ namespace BomOfferOrder.UI.Admin
                 getAccount.OnInitialize(_k3UserDt);
                 getAccount.StartPosition = FormStartPosition.CenterParent;
                 getAccount.ShowDialog();
+                //执行查询
+                OnSearch();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        ///  查阅明细
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmshowdetail_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有明细记录,不能继续操作");
+                //初始化信息并读取
+                accountDetail.OnInitialize("R", null, null, null, OnGetSelectRecordTemp());
+                accountDetail.StartPosition = FormStartPosition.CenterParent;
+                accountDetail.ShowDialog();
+                //执行查询
+                OnSearch();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
         /// <summary>
         /// 首页按钮(GridView页面跳转时使用)
@@ -565,5 +606,37 @@ namespace BomOfferOrder.UI.Admin
             _k3UserDt = task.ResultTable;
         }
 
+        /// <summary>
+        /// 控制GridView单元格显示方式
+        /// </summary>
+        private void ControlGridViewisShow()
+        {
+            //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
+            if (gvdtl.Rows.Count > 0)
+                gvdtl.Columns[0].Visible = false;
+        }
+
+        /// <summary>
+        /// 获取所选择的GridView行生成DT
+        /// </summary>
+        private DataTable OnGetSelectRecordTemp()
+        {
+            //获取用户权限临时表
+            var tempdt = dbList.CreateUserPermissionTemp();
+            var newrow = tempdt.NewRow();
+            newrow[0] = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);     //UseId
+            newrow[1] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);    //用户名称
+            newrow[2] = DBNull.Value;                                                               //用户密码
+            newrow[3] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[2].Value);    //创建人
+            newrow[4] = Convert.ToDateTime(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[3].Value);  //创建日期
+
+            newrow[5] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[4].Value) == "已启用" ? 0 : 1; //是否启用  
+            newrow[6] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[5].Value) == "是" ? 0 : 1;     //能否反审核
+            newrow[7] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[6].Value) == "是" ? 0 : 1;     //能否查阅明细金额
+            newrow[8] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[7].Value) == "是" ? 0 : 1;     //能否对明细物料操作
+            newrow[9] = 1;                                                                                           //是否占用
+            tempdt.Rows.Add(newrow);
+            return tempdt;
+        }
     }
 }

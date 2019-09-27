@@ -175,10 +175,11 @@ namespace BomOfferOrder.Task
         /// </summary>
         /// <param name="fid"></param>
         /// <param name="type">type:0(更新当前用户信息) 1(清空占用记录)</param>
+        /// <param name="oaorder"></param>
         /// <returns></returns>
-        public void UpDateUpUseDetail(int fid, int type)
+        public void UpDateUpUseDetail(int fid, int type,string oaorder)
         {
-            var sqlscript = type == 0 ? sqlList.UpUsedtl(fid) : sqlList.RemoveUsedtl(fid);
+            var sqlscript = type == 0 ? sqlList.UpUsedtl(fid) : sqlList.RemoveUsedtl(fid, oaorder);
             searchDt.Generdt(sqlscript);
         }
 

@@ -161,9 +161,9 @@
             this.cbaddid.AutoSize = true;
             this.cbaddid.Location = new System.Drawing.Point(47, 94);
             this.cbaddid.Name = "cbaddid";
-            this.cbaddid.Size = new System.Drawing.Size(258, 16);
+            this.cbaddid.Size = new System.Drawing.Size(264, 16);
             this.cbaddid.TabIndex = 5;
-            this.cbaddid.Text = "是否可操作物料明细(包括:新增 替换 删除)";
+            this.cbaddid.Text = "是否可操作物料明细及设置配方用量为可修改";
             this.cbaddid.UseVisualStyleBackColor = true;
             // 
             // cbreadid
