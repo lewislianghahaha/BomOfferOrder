@@ -756,22 +756,56 @@ namespace BomOfferOrder.DB
         public string SearchUseDetail()
         {
             _result = $@"
-                            SELECT a.Userid,a.UserName,a.UserPwd,a.ApplyId,a.CanBackConfirm,a.Readid,a.Addid,a.Userid 
+                            SELECT a.Userid,a.UserName,a.UserPwd,a.ApplyId,a.CanBackConfirm,a.Readid,a.Addid
                             FROM dbo.T_AD_User a
                         ";
             return _result;
         }
 
         /// <summary>
-        /// 根据USERID查询该用户是否占用
+        /// 根据Userid查询该用户是否占用
         /// </summary>
         /// <returns></returns>
         public string SearchAdminUserInfo(int userid)
         {
             _result = $@"
-                            SELECT a.Userid 
+                            SELECT a.Useid 
                             FROM dbo.T_AD_User a
                             where a.Userid='{userid}'
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 更新用户权限占用
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public string UpdateAccountUseid(int userid)
+        {
+            _result = $@"
+                           UPDATE dbo.T_AD_User SET Useid=0 WHERE Userid='{userid}'
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 清空用户权限占用
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public string RemoveAccountUseid(int userid)
+        {
+            _result = $@"
+                          UPDATE dbo.T_AD_User SET Useid=1 WHERE Userid='{userid}' 
+                        ";
+            return _result;
+        }
+
+        public string UpdateUserNewpwd(int userid, string newpwd)
+        {
+            _result = $@"
+                            UPDATE dbo.T_AD_User SET UserPwd='{newpwd}' WHERE Userid='{userid}'
                         ";
             return _result;
         }

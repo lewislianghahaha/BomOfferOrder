@@ -58,12 +58,12 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Cooper Black", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(88, 67);
+            this.label1.Font = new System.Drawing.Font("Cooper Black", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(101, 67);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(351, 34);
+            this.label1.Size = new System.Drawing.Size(288, 27);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Bom成本报价单修改工具";
+            this.label1.Text = "Bom 成本报价单修改工具";
             // 
             // pbimg
             // 

@@ -23,8 +23,6 @@ namespace BomOfferOrder.UI
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
-        //保存查询出来的角色权限记录
-        private DataTable _userdt;
 
         //记录当前页数(GridView页面跳转使用)
         private int _pageCurrent = 1;
@@ -59,8 +57,8 @@ namespace BomOfferOrder.UI
 
             //初始化查询下拉列表
             OnShowSelectTypeList();
-            //更新用户占用值 useid todo
-
+            //更新用户占用值 useid
+            UpUseridValue(0);
         }
 
         private void OnRegisterEvents()
@@ -151,7 +149,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-
                 changeAccount.StartPosition = FormStartPosition.CenterParent;
                 changeAccount.ShowDialog();
             }
@@ -537,7 +534,24 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            throw new NotImplementedException();
+            var clickMessage = $"是否退出?";
+            if (e.CloseReason != CloseReason.ApplicationExitCall)
+            {
+                var result = MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                //当点击"OK"按钮时执行以下操作
+                if (result == DialogResult.Yes)
+                {
+                    //当退出时,清空用户权限useid相关占用信息
+                    UpUseridValue(1);
+                    //允许窗体关闭
+                    e.Cancel = false;
+                }
+                else
+                {
+                    //将Cancel属性设置为 true 可以"阻止"窗体关闭
+                    e.Cancel = true;
+                }
+            }
         }
 
 
@@ -928,7 +942,17 @@ namespace BomOfferOrder.UI
             return task.ResultTable;
         }
 
-
+        /// <summary>
+        /// 更新或清空用户占用记录(0:更新用户占用 1:清空)
+        /// </summary>
+        /// <param name="typeid">0:更新用户占用 1:清空</param>
+        private void UpUseridValue(int typeid)
+        {
+            task.TaskId = "4.1";
+            task.Fid = GlobalClasscs.User.UserId;
+            task.Type = typeid;
+            task.StartTask();
+        }
 
     }
 }

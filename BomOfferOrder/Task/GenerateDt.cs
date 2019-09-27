@@ -203,5 +203,28 @@ namespace BomOfferOrder.Task
             return Convert.ToInt32(searchDt.UseSqlSearchIntoDt(1, sqlscript).Rows[0][0]);
         }
 
+        /// <summary>
+        /// 根据useid更新用户占用记录
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="typeid">0:更新占用 1:清空占用</param>
+        public void UpAccountUseridValue(int userid, int typeid)
+        {
+            var sqlscript = typeid == 0 ? sqlList.UpdateAccountUseid(userid) : sqlList.RemoveAccountUseid(userid);
+            searchDt.Generdt(sqlscript);
+        }
+
+        /// <summary>
+        /// 更新用户新密码
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="newpwd"></param>
+        /// <returns></returns>
+        public bool UpdateUserNewpwd(int userid, string newpwd)
+        {
+            var sqlscript = sqlList.UpdateUserNewpwd(userid, newpwd);
+            return searchDt.Generdt(sqlscript);
+        }
+
     }
 }

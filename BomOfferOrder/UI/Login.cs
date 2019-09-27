@@ -59,7 +59,6 @@ namespace BomOfferOrder.UI
                 //普通用户进入
                 else
                 {
-                    var a = _userdt;
                     //判断所填写的用户及密码是否正确
                     if(_userdt.Select("UserName='" + txtname.Text + "' and UserPwd='" +txtpwd.Text + "'").Length==0)
                         throw new Exception($"登入用户'{txtname.Text}' 不能进入, \n 原因:该用户没建立或密码不正确,请确定后继续");
@@ -70,11 +69,12 @@ namespace BomOfferOrder.UI
 
                     //判断此用户是否已在其它地方登录(若Useid=0 表示已使用此用户打开) 动态查询判断
                     var userInfodt = SearchAdminUserInfo(Convert.ToInt32(applyrows[0][0]));
-                    if(Convert.ToInt32(userInfodt.Rows[0][0])==0)throw new Exception($"登入用户'{txtname.Text}'不能进入, \n 原因:已打开或在其它地方登录,故不能再次登入,请先退出该用户,再进入");
+                    if(Convert.ToInt32(userInfodt.Rows[0][0])==0)throw new Exception($"登入用户'{txtname.Text}'不能进入, \n 原因:已打开或在其它地方登录,故不能再次登入, \n 请先退出该用户,再进入");
 
                     //若上面两步通过就将相关信息保存至结构类内
                     GlobalClasscs.User.UserId = Convert.ToInt32(applyrows[0][0]);
                     GlobalClasscs.User.StrUsrName = txtname.Text;
+                    GlobalClasscs.User.StrUsrpwd = txtpwd.Text;
                     GlobalClasscs.User.Canbackconfirm = Convert.ToInt32(applyrows[0][4]) == 0;
                     GlobalClasscs.User.Readid = Convert.ToInt32(applyrows[0][5]) == 0;
                     GlobalClasscs.User.Addid = Convert.ToInt32(applyrows[0][6]) == 0;

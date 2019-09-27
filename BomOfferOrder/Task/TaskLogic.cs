@@ -21,6 +21,7 @@ namespace BomOfferOrder.Task
         private DataTable _deldt;           //记录从GridView内需要删除的DT记录(单据状态为R时使用)
         private int _fid;                   //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
         private int _type;                  //记录占用情况类型(更新单据占用情况时使用)
+        private string _newpwd;             //记录用户新密码
 
         private DataTable _resultTable;     //返回DT类型
         private DataTable _resultbomdt;     //返回BOM DT
@@ -87,6 +88,11 @@ namespace BomOfferOrder.Task
         /// 记录占用情况类型(更新单据占用情况时使用)
         /// </summary>
         public int Type { set { _type = value; } }
+
+        /// <summary>
+        /// 记录用户新密码
+        /// </summary>
+        public string Newpwd { set { _newpwd = value; } }
 
         #endregion
 
@@ -190,10 +196,19 @@ namespace BomOfferOrder.Task
                 case "4":
                     UpdateUseDetail(_fid, _type);
                     break;
+                //更新用户权限占用状态
+                case "4.1":
+                    UpAccountUseridValue(_fid, _type);
+                    break;
+                //更新用户密码
+                case "4.2":
+                    UpdateUserNewpwd(_fid, _newpwd);
+                    break;
                 #endregion
             }
         }
 
+        #region 查询相关方法
         /// <summary>
         /// 查询窗体使用
         /// </summary>
@@ -217,7 +232,7 @@ namespace BomOfferOrder.Task
         /// </summary>
         private void SearchMaterialdt(int searchid, string searchvalue)
         {
-            _resultTable = searchDt.SearchMaterialDtl(searchid,searchvalue);
+            _resultTable = searchDt.SearchMaterialDtl(searchid, searchvalue);
         }
 
         /// <summary>
@@ -234,7 +249,7 @@ namespace BomOfferOrder.Task
         /// </summary>
         private void SearchBomOrder(int typeid, string value)
         {
-            _resultTable = searchDt.SearchBomOrder(typeid,value);
+            _resultTable = searchDt.SearchBomOrder(typeid, value);
         }
 
         /// <summary>
@@ -243,9 +258,9 @@ namespace BomOfferOrder.Task
         /// <param name="typeid"></param>
         /// <param name="value"></param>
         /// <param name="createname">创建人</param>
-        private void SearchMainBomOrder(int typeid, string value,string createname)
+        private void SearchMainBomOrder(int typeid, string value, string createname)
         {
-            _resultTable = searchDt.SearchMainBomOrder(typeid,value,createname);
+            _resultTable = searchDt.SearchMainBomOrder(typeid, value, createname);
         }
 
         /// <summary>
@@ -270,9 +285,9 @@ namespace BomOfferOrder.Task
         /// </summary>
         /// <param name="typeid"></param>
         /// <param name="value"></param>
-        private void SearchAdminDetail(int typeid,string value)
+        private void SearchAdminDetail(int typeid, string value)
         {
-            _resultTable = searchDt.SearchAdminDetail(typeid,value);
+            _resultTable = searchDt.SearchAdminDetail(typeid, value);
         }
 
         /// <summary>
@@ -299,16 +314,16 @@ namespace BomOfferOrder.Task
         {
             _resultTable = searchDt.SearchAdminUserInfo(userid);
         }
+        #endregion
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        #region 运算相关方法
         /// <summary>
         /// 运算
         /// </summary>
         /// <param name="valuelist">FMATERIALID列表ID</param>
         /// <param name="sourcedt"></param>
         /// <param name="bomdt">BOM明细记录DT</param>
-        private void Generatedt(string valuelist,DataTable sourcedt,DataTable bomdt)
+        private void Generatedt(string valuelist, DataTable sourcedt, DataTable bomdt)
         {
             //若_resultTable有值,即先将其清空,再进行赋值
             if (_resultTable.Rows.Count > 0)
@@ -316,19 +331,21 @@ namespace BomOfferOrder.Task
                 _resultTable.Rows.Clear();
                 _resultTable.Columns.Clear();
             }
-            _resultTable = generateDt.Generatedt(valuelist,sourcedt,bomdt);
+            _resultTable = generateDt.Generatedt(valuelist, sourcedt, bomdt);
             _resultMark = _resultTable.Rows.Count > 0;
         }
+        #endregion
 
+        #region 提交相关方法
         /// <summary>
         /// 提交
         /// </summary>
         /// <param name="funState">单据状态</param>
         /// <param name="souredt">Tab Pages收集过来的DT</param>
         /// <param name="deldt">需要删除的记录DT(单据状态为R时使用)</param>
-        private void ImportDt(string funState,DataTable souredt,DataTable deldt)
+        private void ImportDt(string funState, DataTable souredt, DataTable deldt)
         {
-            _resultMark = importDt.ImportDtToDb(funState,souredt,deldt);
+            _resultMark = importDt.ImportDtToDb(funState, souredt, deldt);
         }
 
         /// <summary>
@@ -338,7 +355,9 @@ namespace BomOfferOrder.Task
         {
             _resultMark = importDt.ImportUserPermissionDt(sourcedt);
         }
+        #endregion
 
+        #region 更新相关方法
         /// <summary>
         /// 更新单据状态
         /// </summary>
@@ -349,15 +368,35 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 根据FID查询此单据占用情况
+        /// 根据FID更新此单据占用情况
         /// </summary>
         /// <param name="fid"></param>
         /// <param name="type">type:0(更新当前用户信息) 1(清空占用记录)</param>
-        private void UpdateUseDetail(int fid,int type)
+        private void UpdateUseDetail(int fid, int type)
         {
-            generateDt.UpDateUpUseDetail(fid,type);
+            generateDt.UpDateUpUseDetail(fid, type);
         }
 
+        /// <summary>
+        /// 根据userid更新此用户的占用记录
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="type">0:更新用户占用 1:清空</param>
+        private void UpAccountUseridValue(int userid, int type)
+        {
+            generateDt.UpAccountUseridValue(userid, type);
+        }
 
+        /// <summary>
+        /// 更新用户新密码
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="newpwd"></param>
+        private void UpdateUserNewpwd(int userid,string newpwd)
+        {
+            _resultMark = generateDt.UpdateUserNewpwd(userid,newpwd);
+        }
+
+        #endregion
     }
 }
