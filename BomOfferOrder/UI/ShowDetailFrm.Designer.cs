@@ -557,34 +557,34 @@
             this.ts2,
             this.tmdel});
             this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(153, 104);
+            this.Menu.Size = new System.Drawing.Size(149, 82);
             // 
             // tmReplace
             // 
             this.tmReplace.Name = "tmReplace";
-            this.tmReplace.Size = new System.Drawing.Size(152, 22);
+            this.tmReplace.Size = new System.Drawing.Size(148, 22);
             this.tmReplace.Text = "替换此行记录";
             // 
             // ts1
             // 
             this.ts1.Name = "ts1";
-            this.ts1.Size = new System.Drawing.Size(149, 6);
+            this.ts1.Size = new System.Drawing.Size(145, 6);
             // 
             // tmAdd
             // 
             this.tmAdd.Name = "tmAdd";
-            this.tmAdd.Size = new System.Drawing.Size(152, 22);
+            this.tmAdd.Size = new System.Drawing.Size(148, 22);
             this.tmAdd.Text = "新增记录";
             // 
             // ts2
             // 
             this.ts2.Name = "ts2";
-            this.ts2.Size = new System.Drawing.Size(149, 6);
+            this.ts2.Size = new System.Drawing.Size(145, 6);
             // 
             // tmdel
             // 
             this.tmdel.Name = "tmdel";
-            this.tmdel.Size = new System.Drawing.Size(152, 22);
+            this.tmdel.Size = new System.Drawing.Size(148, 22);
             this.tmdel.Text = "删除明细行";
             // 
             // ShowDetailFrm
@@ -595,6 +595,7 @@
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ShowDetailFrm";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

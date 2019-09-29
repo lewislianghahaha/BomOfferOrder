@@ -103,7 +103,7 @@ namespace BomOfferOrder.Task
         /// <param name="tempdt">对应临时表</param>
         private void GetDtToDb(string funState,string tablename,DataTable tempdt)
         {
-            //若tablename是T_OfferOrder 或 T_OfferOrderHead,其操作中心:若单据状态为C就插入,若为U就更新
+            //若tablename是T_OfferOrder 或 T_OfferOrderHead,其操作中心:若单据状态为C就插入,若为R就更新
             if (tablename == "T_OfferOrder" || tablename == "T_OfferOrderHead")
             {
                 //执行插入
@@ -294,7 +294,7 @@ namespace BomOfferOrder.Task
             //根据指定条件循环将记录行删除
             foreach (DataRow rows in deldt.Rows)
             {
-                var sqlscript = sqlList.DelEntry(Convert.ToInt32(rows[1]));
+                var sqlscript = sqlList.DelEntry(Convert.ToInt32(rows[0]));
                 searchDt.Generdt(sqlscript);
             }
         }

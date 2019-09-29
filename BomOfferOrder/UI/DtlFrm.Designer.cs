@@ -28,13 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DtlFrm));
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.tmConfirm = new System.Windows.Forms.ToolStripMenuItem();
             this.tmsave = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.lblmessage = new System.Windows.Forms.Label();
             this.pbimg = new System.Windows.Forms.PictureBox();
             this.txtbom = new System.Windows.Forms.TextBox();
+            this.lblmessage = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
             this.MainMenu.SuspendLayout();
@@ -78,14 +79,6 @@
             this.panel1.Size = new System.Drawing.Size(854, 29);
             this.panel1.TabIndex = 1;
             // 
-            // lblmessage
-            // 
-            this.lblmessage.AutoSize = true;
-            this.lblmessage.Location = new System.Drawing.Point(331, 8);
-            this.lblmessage.Name = "lblmessage";
-            this.lblmessage.Size = new System.Drawing.Size(0, 12);
-            this.lblmessage.TabIndex = 14;
-            // 
             // pbimg
             // 
             this.pbimg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -102,6 +95,14 @@
             this.txtbom.Name = "txtbom";
             this.txtbom.Size = new System.Drawing.Size(248, 21);
             this.txtbom.TabIndex = 1;
+            // 
+            // lblmessage
+            // 
+            this.lblmessage.AutoSize = true;
+            this.lblmessage.Location = new System.Drawing.Point(331, 8);
+            this.lblmessage.Name = "lblmessage";
+            this.lblmessage.Size = new System.Drawing.Size(0, 12);
+            this.lblmessage.TabIndex = 14;
             // 
             // label1
             // 
@@ -129,6 +130,7 @@
             this.Controls.Add(this.tctotalpage);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.MainMenu);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.MainMenu;
             this.Name = "DtlFrm";
             this.Text = "明细记录生成";

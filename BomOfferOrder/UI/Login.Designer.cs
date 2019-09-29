@@ -123,7 +123,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 12);
             this.label3.TabIndex = 2;
-            this.label3.Text = "用名密码:";
+            this.label3.Text = "用户密码:";
             // 
             // txtname
             // 
@@ -139,7 +139,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 12);
             this.label2.TabIndex = 0;
-            this.label2.Text = "用名名称:";
+            this.label2.Text = "用户名称:";
             // 
             // Login
             // 
@@ -151,7 +151,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "Login";
-            this.Text = "Login";
+            this.Text = "登录";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).EndInit();
