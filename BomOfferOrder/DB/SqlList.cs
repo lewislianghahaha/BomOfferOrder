@@ -701,7 +701,7 @@ namespace BomOfferOrder.DB
             if (value == "")
             {
                 _result = $@"
-                                select a.FNAME K3用名姓名,c.FNAME K3用户组别,a.FPHONE K3用户手机
+                                select a.FNAME K3用户姓名,c.FNAME K3用户组别,a.FPHONE K3用户手机
                                 FROM T_SEC_USER a
                                 left JOIN dbo.T_SEC_USERGROUP b ON a.FPRIMARYGROUP=b.FID
                                 left JOIN dbo.T_SEC_USERGROUP_L c ON b.FID=c.FID
@@ -719,7 +719,7 @@ namespace BomOfferOrder.DB
             else
             {
                 _result = $@"
-                                select a.FNAME K3用名姓名,c.FNAME K3用户组别,a.FPHONE K3用户手机
+                                select a.FNAME K3用户姓名,c.FNAME K3用户组别,a.FPHONE K3用户手机
                                 FROM T_SEC_USER a
                                 left JOIN dbo.T_SEC_USERGROUP b ON a.FPRIMARYGROUP=b.FID
                                 left JOIN dbo.T_SEC_USERGROUP_L c ON b.FID=c.FID
