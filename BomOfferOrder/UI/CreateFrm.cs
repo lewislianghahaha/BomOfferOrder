@@ -15,6 +15,7 @@ namespace BomOfferOrder.UI
         DbList dbList=new DbList();
         DtlFrm dtlFrm=new DtlFrm();
 
+        #region 变量参数
         //保存BOM明细DT(生成时使用;注:当打开录入界面时初始化执行)
         private DataTable _bomdt = new DataTable();
 
@@ -32,6 +33,7 @@ namespace BomOfferOrder.UI
         private int _totalpagecount;
         //记录初始化标记(GridView页面跳转 初始化时使用)
         private bool _pageChange;
+        #endregion
 
         public CreateFrm()
         {
@@ -46,6 +48,7 @@ namespace BomOfferOrder.UI
             btngenerate.Click += Btngenerate_Click;
             tmadd.Click += Tmadd_Click;
             tmdel.Click += Tmdel_Click;
+            btngennew.Click += Btngennew_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -56,6 +59,7 @@ namespace BomOfferOrder.UI
             panel2.Visible = false;
 
             btngenerate.Enabled = false;
+            btngennew.Enabled = false;
             comtype.SelectedIndexChanged += Comtype_SelectedIndexChanged;
         }
 
@@ -68,6 +72,8 @@ namespace BomOfferOrder.UI
             OnShowTypeList();
             //初始化BOM明细DT
             OnInitializeBomdt();
+            //判断显示生成按钮
+            CheckShowButton();
         }
 
         /// <summary>
@@ -166,8 +172,16 @@ namespace BomOfferOrder.UI
                 gvdtl.DataSource=AddsoucetoDt(temp);
                 //控制GridView单元格显示方式
                 ControlGridViewisShow(1);
-                //若成行添加,就将‘生成明细记录按钮’按钮设为‘启用’
-                btngenerate.Enabled = true;
+                //若添加成功,就将‘生成明细记录按钮’按钮设为‘启用’
+                //按情况将对应‘生成’按钮设置为可用
+                if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+                {
+                    btngennew.Enabled = true;
+                }
+                else
+                {
+                    btngenerate.Enabled = true;
+                }
             }
             catch (Exception ex)
             {
@@ -197,7 +211,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 生成明细记录
+        /// 生成成本BOM报价单
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -240,6 +254,39 @@ namespace BomOfferOrder.UI
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// 新产品成本报价单-创建(无BOM明细记录)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btngennew_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (gvdtl.RowCount == 0) throw new Exception("没有明细记录,不能执行运算");
+                var clickMessage = $"您所选择进行生成的物料有:'{gvdtl.RowCount}'行物料记录 \n 是否继续生成?";
+                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    //弹出对应窗体相关设置
+                    dtlFrm.FunState = "C";
+                    dtlFrm.OnInitialize((DataTable)gvdtl.DataSource);     //初始化信息
+                    dtlFrm.StartPosition = FormStartPosition.CenterParent;
+                    dtlFrm.ShowDialog();
+                }
+                //若返回父窗体后将各控件清空
+                gvdtl.DataSource = null;
+                gvsearchdtl.DataSource = null;
+                _adddt.Rows.Clear();
+                txtvalue.Text = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
 
         /// <summary>
         /// 首页按钮(GridView页面跳转时使用)
@@ -659,6 +706,23 @@ namespace BomOfferOrder.UI
             task.TaskId = "0.1";
             task.StartTask();
             _bomdt=task.Resultbomdt;
+        }
+
+        /// <summary>
+        /// 根据Global值,判断是显示那个生成按钮
+        /// </summary>
+        private void CheckShowButton()
+        {
+            if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+            {
+                btngennew.Visible = true;
+                btngenerate.Visible = false;
+            }
+            else
+            {
+                btngennew.Visible = false;
+                btngenerate.Visible = true;
+            }
         }
     }
 }

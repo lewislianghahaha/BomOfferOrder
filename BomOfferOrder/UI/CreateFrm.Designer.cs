@@ -61,6 +61,7 @@
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
+            this.btngennew = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
             this.DelMenu.SuspendLayout();
@@ -128,6 +129,7 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.btngennew);
             this.panel1.Controls.Add(this.btngenerate);
             this.panel1.Controls.Add(this.btnsearch);
             this.panel1.Controls.Add(this.txtvalue);
@@ -142,9 +144,9 @@
             // 
             this.btngenerate.Location = new System.Drawing.Point(600, 2);
             this.btngenerate.Name = "btngenerate";
-            this.btngenerate.Size = new System.Drawing.Size(87, 23);
+            this.btngenerate.Size = new System.Drawing.Size(133, 23);
             this.btngenerate.TabIndex = 3;
-            this.btngenerate.Text = "生成明细记录";
+            this.btngenerate.Text = "生成成本BOM报价单";
             this.btngenerate.UseVisualStyleBackColor = true;
             // 
             // btnsearch
@@ -358,6 +360,15 @@
             this.tstotalrow.Size = new System.Drawing.Size(55, 21);
             this.tstotalrow.Text = "共 {0} 行";
             // 
+            // btngennew
+            // 
+            this.btngennew.Location = new System.Drawing.Point(601, 2);
+            this.btngennew.Name = "btngennew";
+            this.btngennew.Size = new System.Drawing.Size(133, 23);
+            this.btngennew.TabIndex = 4;
+            this.btngennew.Text = "生成新产品成本报价单";
+            this.btngennew.UseVisualStyleBackColor = true;
+            // 
             // CreateFrm
             // 
             this.AcceptButton = this.btnsearch;
@@ -419,6 +430,7 @@
         private System.Windows.Forms.ToolStripLabel tstotalrow;
         private System.Windows.Forms.ToolStripMenuItem tmdel;
         private System.Windows.Forms.ToolStripMenuItem tmadd;
+        private System.Windows.Forms.Button btngennew;
     }
 }
 

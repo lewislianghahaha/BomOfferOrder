@@ -38,6 +38,7 @@
             this.AccountMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmchangepwd = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
+            this.pbimg = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tctotalpage = new System.Windows.Forms.TabControl();
             this.tbMain = new System.Windows.Forms.TabPage();
@@ -55,7 +56,11 @@
             this.bnPositionItem = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.bnMoveFirstItem = new System.Windows.Forms.ToolStripButton();
+            this.bnMovePreviousItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.bnMoveNextItem = new System.Windows.Forms.ToolStripButton();
+            this.bnMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.tmshowrows = new System.Windows.Forms.ToolStripComboBox();
@@ -71,16 +76,13 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.bnMoveFirstItem = new System.Windows.Forms.ToolStripButton();
-            this.bnMovePreviousItem = new System.Windows.Forms.ToolStripButton();
-            this.bnMoveNextItem = new System.Windows.Forms.ToolStripButton();
-            this.bnMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.pbimg = new System.Windows.Forms.PictureBox();
+            this.btnCreateNew = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
             this.panel3.SuspendLayout();
             this.tctotalpage.SuspendLayout();
             this.tbMain.SuspendLayout();
@@ -94,7 +96,6 @@
             this.panel7.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -169,6 +170,15 @@
             this.label1.Size = new System.Drawing.Size(59, 12);
             this.label1.TabIndex = 0;
             this.label1.Text = "登入用户:";
+            // 
+            // pbimg
+            // 
+            this.pbimg.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.pbimg.Location = new System.Drawing.Point(3, 3);
+            this.pbimg.Name = "pbimg";
+            this.pbimg.Size = new System.Drawing.Size(191, 50);
+            this.pbimg.TabIndex = 0;
+            this.pbimg.TabStop = false;
             // 
             // panel3
             // 
@@ -342,10 +352,46 @@
             this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
             this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 24);
             // 
+            // bnMoveFirstItem
+            // 
+            this.bnMoveFirstItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bnMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bnMoveFirstItem.Image")));
+            this.bnMoveFirstItem.Name = "bnMoveFirstItem";
+            this.bnMoveFirstItem.RightToLeftAutoMirrorImage = true;
+            this.bnMoveFirstItem.Size = new System.Drawing.Size(23, 21);
+            this.bnMoveFirstItem.Text = "移到第一条记录";
+            // 
+            // bnMovePreviousItem
+            // 
+            this.bnMovePreviousItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bnMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bnMovePreviousItem.Image")));
+            this.bnMovePreviousItem.Name = "bnMovePreviousItem";
+            this.bnMovePreviousItem.RightToLeftAutoMirrorImage = true;
+            this.bnMovePreviousItem.Size = new System.Drawing.Size(23, 21);
+            this.bnMovePreviousItem.Text = "移到上一条记录";
+            // 
             // bindingNavigatorSeparator
             // 
             this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
             this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 24);
+            // 
+            // bnMoveNextItem
+            // 
+            this.bnMoveNextItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bnMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bnMoveNextItem.Image")));
+            this.bnMoveNextItem.Name = "bnMoveNextItem";
+            this.bnMoveNextItem.RightToLeftAutoMirrorImage = true;
+            this.bnMoveNextItem.Size = new System.Drawing.Size(23, 21);
+            this.bnMoveNextItem.Text = "移到下一条记录";
+            // 
+            // bnMoveLastItem
+            // 
+            this.bnMoveLastItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bnMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bnMoveLastItem.Image")));
+            this.bnMoveLastItem.Name = "bnMoveLastItem";
+            this.bnMoveLastItem.RightToLeftAutoMirrorImage = true;
+            this.bnMoveLastItem.Size = new System.Drawing.Size(23, 21);
+            this.bnMoveLastItem.Text = "移到最后一条记录";
             // 
             // bindingNavigatorSeparator2
             // 
@@ -465,6 +511,7 @@
             // 
             this.panel4.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.btnCreateNew);
             this.panel4.Controls.Add(this.btnCreate);
             this.panel4.Controls.Add(this.btnSearch);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
@@ -473,42 +520,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(956, 90);
             this.panel4.TabIndex = 0;
-            // 
-            // bnMoveFirstItem
-            // 
-            this.bnMoveFirstItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bnMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bnMoveFirstItem.Image")));
-            this.bnMoveFirstItem.Name = "bnMoveFirstItem";
-            this.bnMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bnMoveFirstItem.Size = new System.Drawing.Size(23, 21);
-            this.bnMoveFirstItem.Text = "移到第一条记录";
-            // 
-            // bnMovePreviousItem
-            // 
-            this.bnMovePreviousItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bnMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bnMovePreviousItem.Image")));
-            this.bnMovePreviousItem.Name = "bnMovePreviousItem";
-            this.bnMovePreviousItem.RightToLeftAutoMirrorImage = true;
-            this.bnMovePreviousItem.Size = new System.Drawing.Size(23, 21);
-            this.bnMovePreviousItem.Text = "移到上一条记录";
-            // 
-            // bnMoveNextItem
-            // 
-            this.bnMoveNextItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bnMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bnMoveNextItem.Image")));
-            this.bnMoveNextItem.Name = "bnMoveNextItem";
-            this.bnMoveNextItem.RightToLeftAutoMirrorImage = true;
-            this.bnMoveNextItem.Size = new System.Drawing.Size(23, 21);
-            this.bnMoveNextItem.Text = "移到下一条记录";
-            // 
-            // bnMoveLastItem
-            // 
-            this.bnMoveLastItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bnMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bnMoveLastItem.Image")));
-            this.bnMoveLastItem.Name = "bnMoveLastItem";
-            this.bnMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bnMoveLastItem.Size = new System.Drawing.Size(23, 21);
-            this.bnMoveLastItem.Text = "移到最后一条记录";
             // 
             // btnCreate
             // 
@@ -528,14 +539,14 @@
             this.btnSearch.TabIndex = 0;
             this.btnSearch.UseVisualStyleBackColor = true;
             // 
-            // pbimg
+            // btnCreateNew
             // 
-            this.pbimg.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.pbimg.Location = new System.Drawing.Point(3, 3);
-            this.pbimg.Name = "pbimg";
-            this.pbimg.Size = new System.Drawing.Size(191, 50);
-            this.pbimg.TabIndex = 0;
-            this.pbimg.TabStop = false;
+            this.btnCreateNew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
+            this.btnCreateNew.Location = new System.Drawing.Point(147, -2);
+            this.btnCreateNew.Name = "btnCreateNew";
+            this.btnCreateNew.Size = new System.Drawing.Size(75, 93);
+            this.btnCreateNew.TabIndex = 2;
+            this.btnCreateNew.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -552,6 +563,7 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.AccountMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbimg)).EndInit();
             this.panel3.ResumeLayout(false);
             this.tctotalpage.ResumeLayout(false);
             this.tbMain.ResumeLayout(false);
@@ -569,7 +581,6 @@
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbimg)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -624,5 +635,6 @@
         private System.Windows.Forms.Label lbaccountdt;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comstatus;
+        private System.Windows.Forms.Button btnCreateNew;
     }
 }

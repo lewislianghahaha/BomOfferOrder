@@ -135,11 +135,11 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(379, 34);
+            this.label14.Location = new System.Drawing.Point(355, 34);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(59, 12);
+            this.label14.Size = new System.Drawing.Size(83, 12);
             this.label14.TabIndex = 27;
-            this.label14.Text = "物料单价:";
+            this.label14.Text = "产品成本含税:";
             // 
             // txtprice
             // 
@@ -268,7 +268,6 @@
             // 
             // txtbaochenben
             // 
-            this.txtbaochenben.Enabled = false;
             this.txtbaochenben.Location = new System.Drawing.Point(60, 51);
             this.txtbaochenben.Name = "txtbaochenben";
             this.txtbaochenben.Size = new System.Drawing.Size(214, 21);

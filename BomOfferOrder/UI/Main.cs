@@ -47,6 +47,7 @@ namespace BomOfferOrder.UI
             var tip1=new ToolTip();
             tip1.SetToolTip(btnSearch,"成本Bom报价单-查询");
             tip1.SetToolTip(btnCreate,"成本Bom报价单-创建");
+            tip1.SetToolTip(btnCreateNew, "新产品成本报价单-创建");
             //初始化登入用户信息
             lbaccountmessage.Text = GlobalClasscs.User.StrUsrName;
             lbaccountmessage.ForeColor = Color.Brown;
@@ -70,6 +71,7 @@ namespace BomOfferOrder.UI
             comselectvalue.SelectedIndexChanged += Comselectvalue_SelectedIndexChanged;
             tmchangepwd.Click += Tmchangepwd_Click;
             this.FormClosing += Main_FormClosing;
+            btnCreateNew.Click += BtnCreateNew_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -326,6 +328,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                GlobalClasscs.Fun.FunctionName = "";
                 CreateTabPages("成本BOM报价单-创建");
             }
             catch (Exception ex)
@@ -344,6 +347,24 @@ namespace BomOfferOrder.UI
             try
             {
                 CreateTabPages("成本BOM报价单-查询");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 新产品成本报价单-创建
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnCreateNew_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                GlobalClasscs.Fun.FunctionName = "NewProduct";
+                CreateTabPages("新产品成本报价单-创建");  
             }
             catch (Exception ex)
             {
@@ -452,6 +473,7 @@ namespace BomOfferOrder.UI
                 switch (tabtext)
                 {
                     case "成本BOM报价单-创建":
+                    case "新产品成本报价单-创建":
                         var createFrm = new CreateFrm
                         {
                             TopLevel = false,
@@ -459,9 +481,8 @@ namespace BomOfferOrder.UI
                             Dock = DockStyle.Fill,
                             FormBorderStyle = FormBorderStyle.None
                         };
-
-                        createFrm.Show();                                         //只能使用Show()
-                        newpage.Controls.Add(createFrm);                         //将窗体控件加入至新创建的Tab Page内
+                        createFrm.Show();                                      
+                        newpage.Controls.Add(createFrm);    
                         break;
 
                     case "成本BOM报价单-查询":
@@ -472,9 +493,8 @@ namespace BomOfferOrder.UI
                             Dock = DockStyle.Fill,
                             FormBorderStyle = FormBorderStyle.None
                         };
-
-                        searchFrm.Show();                               //只能使用Show()
-                        newpage.Controls.Add(searchFrm);                //将窗体控件加入至新创建的Tab Page内
+                        searchFrm.Show();                    
+                        newpage.Controls.Add(searchFrm); 
                         break;
                 }
                 tctotalpage.TabPages.Add(newpage);                      //将新创建的Tab Page添加至TabControl控件内

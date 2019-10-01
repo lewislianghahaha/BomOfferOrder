@@ -12,6 +12,13 @@
             public bool Addid;           //获取权限标记-能否对明细物料操作(包括:新增 替换 以及删除)
         };
 
+        public struct FunName
+        {
+            public string FunctionName;  //获取所选择的功能名称
+        }
+
         public static Account User;
+
+        public static FunName Fun;
     }
 }

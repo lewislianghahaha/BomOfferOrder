@@ -57,6 +57,7 @@ namespace BomOfferOrder.UI
             tmReplace.Click += TmReplace_Click;
             gvdtl.CellValueChanged += Gvdtl_CellValueChanged;
             txtren.Leave += Txtren_Leave;
+            txtbaochenben.Leave += Txtbaochenben_Leave;
             tmdel.Click += Tmdel_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
@@ -107,6 +108,30 @@ namespace BomOfferOrder.UI
                 if (!Regex.IsMatch(txtren.Text, @"^-?\d+$|^(-?\d+)(\.\d+)?$"))
                 {
                     txtren.Text = "";
+                    throw new Exception("不能输入非数字外的值,请输入数字后再继续");
+                }
+                //根据指定值将相关项进行改变指定文本框内的值
+                GenerateValue();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// ‘包装成本’文本框修改时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Txtbaochenben_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                //检测所输入的数字必须为数字(包括小数)
+                if (!Regex.IsMatch(txtren.Text, @"^-?\d+$|^(-?\d+)(\.\d+)?$"))
+                {
+                    txtbaochenben.Text = "";
                     throw new Exception("不能输入非数字外的值,请输入数字后再继续");
                 }
                 //根据指定值将相关项进行改变指定文本框内的值
@@ -271,19 +296,35 @@ namespace BomOfferOrder.UI
             //获取临时表(GridView控件时使用) 注:‘创建’及‘读取’也会使用到
             var resultdt = dbList.MakeGridViewTemp();
 
-            //将相关值赋值给对应的文本框及GridView控件内
-            txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);   //产品名称
-            txtbom.Text = Convert.ToString(sourcedt.Rows[0][2]);    //BOM编号
-            txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);    //包装规格
-            txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);     //产品密度
-            txtprice.Text = Convert.ToString(sourcedt.Rows[0][11]); //表头物料单价
-            
-            //设置及刷新GridView
-            OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
+            //判断若是NewProduct的话,就只将‘产品名称’,‘包装规格’ 以及 ‘产品密度’赋值上就可以;明细内容不用理会
+            if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+            {
+                txtname.Text = Convert.ToString(sourcedt.Rows[0][1]); //产品名称
+                txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]); //包装规格
+                txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]); //产品密度
 
+                //将临时表(空行记录)插入到GridView内
+                OnInitialize(resultdt);
+            }
+            //反之,执行“生成成本BOM报价单”代码
+            else
+            {
+                //将相关值赋值给对应的文本框及GridView控件内
+                txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);     //产品名称
+                txtbom.Text = Convert.ToString(sourcedt.Rows[0][2]);      //BOM编号
+                txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);      //包装规格
+                txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);       //产品密度
+                //txtprice.Text = Convert.ToString(sourcedt.Rows[0][11]); //产品成本含税
+
+                //设置及刷新GridView
+                OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
+            }
             //包装成本 公式:表头物料单价/包装规格/1.13
-            txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtprice.Text) / 
-                                                    GetNumberInt(Convert.ToString(sourcedt.Rows[0][3])) / Convert.ToDecimal(1.13),4));
+            //txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtprice.Text) / 
+            //                                        GetNumberInt(Convert.ToString(sourcedt.Rows[0][3])) / Convert.ToDecimal(1.13),4));
+
+            //包装成本(自填)
+            txtbaochenben.Text = "0";
             //人工制造费用(自填)  
             txtren.Text = "0";
             //根据指定值将相关项进行改变指定文本框内的值
@@ -314,7 +355,7 @@ namespace BomOfferOrder.UI
             txt40.Text = Convert.ToString(sourcedt.Rows[0][19]);            //40%报价
             txtremark.Text = Convert.ToString(sourcedt.Rows[0][20]);        //备注
             txtbom.Text = Convert.ToString(sourcedt.Rows[0][21]);           //对应BOM版本编号
-            txtprice.Text = Convert.ToString(sourcedt.Rows[0][22]);         //物料单价
+            txtprice.Text = Convert.ToString(sourcedt.Rows[0][22]);         //产品成本含税
 
             //设置及刷新GridView
             OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
@@ -764,7 +805,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 获取字符串中的数字
+        /// 获取字符串中的数字('包装规格'使用)
         /// </summary>
         /// <param name="str">字符串</param>
         /// <returns>数字</returns>
@@ -775,11 +816,20 @@ namespace BomOfferOrder.UI
             {
                 // 正则表达式剔除非数字字符（不包含小数点.）
                 str = Regex.Replace(str, @"[^\d.\d]", "");
-                // 如果是数字，则转换为decimal类型
-                if (Regex.IsMatch(str, @"^[+-]?\d*[.]?\d*$"))
+                //当判断到str值是空的,就返回1,返回对应值
+                if (str == "")
                 {
-                    result = int.Parse(str);
+                    result = 1;
                 }
+                else
+                {
+                    // 如果是数字，则转换为decimal类型
+                    if (Regex.IsMatch(str, @"^[+-]?\d*[.]?\d*$"))
+                    {
+                        result = int.Parse(str);
+                    }
+                }
+                
             }
             return result;
         }
@@ -792,10 +842,13 @@ namespace BomOfferOrder.UI
             //获取累加的‘物料成本(含税)’之和
             var materialsumqty = GernerateSumQty();
 
+            //产品成本含税
+            txtprice.Text = Convert.ToString(Math.Round(materialsumqty,4));
+
             //材料成本(不含税) 公式:物料成本之和/1.13
             txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
 
-            //成本(元/KG) 公式:材料成本+包装成本+人工制造费用
+            //成本(元/KG) 公式:材料成本+包装成本(自填)+人工制造费用(自填)
             txtkg.Text = Convert.ToString(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text));
             //成本(元/L) 公式:成本(元/KG)*产品密度
             txtl.Text = Convert.ToString(Convert.ToDecimal(txtkg.Text) * Convert.ToDecimal(txtmi.Text));

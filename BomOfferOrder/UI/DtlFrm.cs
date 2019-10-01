@@ -68,7 +68,16 @@ namespace BomOfferOrder.UI
             if (_funState=="C")
             {
                 _confirmMarkId = false;
-                CreateDetail(bomdt, materialdt);
+                //新产品成本报价单-创建使用
+                if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+                {
+                    CreateNewProductDeatail(bomdt, materialdt);
+                }
+                //成本BOM报价单-创建使用
+                else
+                {
+                    CreateBomDetail(bomdt, materialdt);
+                }
             }
             //单据状态:读取 R
             else
@@ -87,9 +96,42 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 创建时使用
+        /// 新产品成本报价单-创建使用
         /// </summary>
-        void CreateDetail(DataTable sourcedt,DataTable materialdt)
+        void CreateNewProductDeatail(DataTable sourcedt,DataTable materialdt)
+        {
+            //获取临时表
+            var dt = dbList.MakeTemp();
+            //设置TabName
+            var tabname = string.Empty;
+
+            try
+            {
+                //循环sourcedt,并将其相关信息插入至临时表,以及生成TabPages
+                foreach (DataRow rows in sourcedt.Rows)
+                {
+                    var newrow = dt.NewRow();
+                    newrow[1] = rows[2];           //产品名称
+                    newrow[3] = rows[3];           //包装规格 
+                    newrow[4] = rows[4];           //产品密度 
+                    dt.Rows.Add(newrow);
+                    tabname = Convert.ToString(rows[2]);
+                    //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
+                    CreateDetailFrm(tabname, dt, materialdt);
+                    //当生成完成后将dt清空内容,待下一次使用
+                    dt.Rows.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 成本BOM报价单-创建使用
+        /// </summary>
+        void CreateBomDetail(DataTable sourcedt,DataTable materialdt)
         {
             //获取临时表
             var dt = dbList.MakeTemp();
@@ -119,7 +161,7 @@ namespace BomOfferOrder.UI
                             newrow[7] = t[7];           //物料名称
                             newrow[8] = t[8];           //配方用量
                             newrow[10] = t[10];         //物料单价
-                            newrow[11] = t[11];         //表头物料单价
+                            //newrow[11] = t[11];         //表头物料单价
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
@@ -244,6 +286,9 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                //检测所审核的TabPages内是否有GridView行没有一行也没有填的情况,若发现,跳出异常
+                if(!CheckTabPagesGridView()) throw new Exception($"检测到单据'{txtbom.Text}' 内有物料明细行没有填写,请至少填写一行再进行审核");
+
                 var clickMessage = $"您所选择的信息为:\n 单据名称:{txtbom.Text} \n 是否继续? \n 注:审核后需反审核才能对该单据的记录进行修改, \n 请谨慎处理.";
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
@@ -444,6 +489,32 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 检测各TabPages内的GridView是否有内容
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckTabPagesGridView()
+        {
+            var result = true;
+
+            for (var i = 0; i < tctotalpage.TabCount; i++)
+            {
+                var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
+                //检测各TabPages内的GridView是否有内容
+                if (showdetail != null)
+                {
+                    var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
+
+                    if (bomdtldt.Rows.Count == 0)
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 权限控制
         /// </summary>
         private void PrivilegeControl()
@@ -452,13 +523,13 @@ namespace BomOfferOrder.UI
             if (!GlobalClasscs.User.Readid)
             {
                 //设置TabPages内的GridView的某些字段设为不可见
-                ControlTabPages();
+                ControlTabPages(0);
             }
             //若用户没有修改明细物料权限,即不会显示右键菜单功能
             if (!GlobalClasscs.User.Addid)
             {
                 //设置用户的右键菜单不可见
-                ControlTabPages();
+                ControlTabPages(0);
             }
 
             //若为“审核”状态的话，就执行以下语句
@@ -470,7 +541,7 @@ namespace BomOfferOrder.UI
                 //对相关控件设为不可改或只读
                 txtbom.ReadOnly = true;
                 //循环TabPages内的控件
-                ControlTabPages();
+                ControlTabPages(0);
 
                 if (_funState == "R")
                 {
@@ -495,6 +566,12 @@ namespace BomOfferOrder.UI
             //若为“非审核”状态的,就执行以下语句
             else
             {
+                //当选择的窗体是‘新产品成本报价单-创建’时执行,令指定的文本框可修改
+                if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+                {
+                    ControlTabPages(1);
+                }
+
                 pbimg.Visible = false;
                 txtbom.ReadOnly = false;
                 tmsave.Enabled = true;
@@ -505,7 +582,8 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 循环控制TabPages内的控件
         /// </summary>
-        void ControlTabPages()
+        /// <param name="typeid">0:控制TabPages各子窗体不可见 1:设置子窗体中两个文本框可修改</param>
+        void ControlTabPages(int typeid)
         {
             for (var i = 0; i < tctotalpage.TabCount; i++)
             {
@@ -513,33 +591,44 @@ namespace BomOfferOrder.UI
                 var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
                 if (showdetail != null)
                 {
-                    //若该用户没有设置‘查阅金额’权限,即将以下两列设置为不可见
-                    if (!GlobalClasscs.User.Readid)
+                    if (typeid == 0)
                     {
-                        showdetail.gvdtl.Columns[5].Visible = false; //物料单价(含税)
-                        showdetail.gvdtl.Columns[6].Visible = false; //物料成本(含税)
+                        //若该用户没有设置‘查阅金额’权限,即将以下两列设置为不可见
+                        if (!GlobalClasscs.User.Readid)
+                        {
+                            showdetail.gvdtl.Columns[5].Visible = false; //物料单价(含税)
+                            showdetail.gvdtl.Columns[6].Visible = false; //物料成本(含税)
+                        }
+                        //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见 以及 '配方用量'只读
+                        if (!GlobalClasscs.User.Addid)
+                        {
+                            showdetail.tmReplace.Visible = false;
+                            showdetail.ts1.Visible = false;
+                            showdetail.tmAdd.Visible = false;
+                            showdetail.ts2.Visible = false;
+                            showdetail.tmdel.Visible = false;
+                            //‘配方用量’只读
+                            showdetail.gvdtl.Columns[4].ReadOnly = true;
+                        }
+                        //若为‘审核’状态时,将以下控件设为不可见或只读
+                        if (_confirmMarkId)
+                        {
+                            showdetail.txtren.ReadOnly = true;
+                            showdetail.txtbaochenben.ReadOnly = true;
+
+                            showdetail.gvdtl.ReadOnly = true;
+                            showdetail.tmReplace.Visible = false;
+                            showdetail.ts1.Visible = false;
+                            showdetail.tmAdd.Visible = false;
+                            showdetail.ts2.Visible = false;
+                            showdetail.tmdel.Visible = false;
+                        }
                     }
-                    //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见 以及 '配方用量'只读
-                    if (!GlobalClasscs.User.Addid)
+                    //控制‘产品名称’及‘对应BOM版本编号’可修改
+                    else
                     {
-                        showdetail.tmReplace.Visible = false;
-                        showdetail.ts1.Visible = false;
-                        showdetail.tmAdd.Visible = false;
-                        showdetail.ts2.Visible = false;
-                        showdetail.tmdel.Visible = false;
-                        //‘配方用量’只读
-                        showdetail.gvdtl.Columns[4].ReadOnly = true;
-                    }
-                    //若为‘审核’状态时,将以下控件设为不可见或只读
-                    if (_confirmMarkId)
-                    {
-                        showdetail.txtren.ReadOnly = true;
-                        showdetail.gvdtl.ReadOnly = true;
-                        showdetail.tmReplace.Visible = false;
-                        showdetail.ts1.Visible = false;
-                        showdetail.tmAdd.Visible = false;
-                        showdetail.ts2.Visible = false;
-                        showdetail.tmdel.Visible = false;
+                        showdetail.txtname.ReadOnly = false;
+                        showdetail.txtbom.ReadOnly = false;
                     }
                 }
             }

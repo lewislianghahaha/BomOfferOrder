@@ -107,7 +107,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                //区分:当_id=0时,表示‘新增’记录,可多行选择; 反之,为‘替换’使用,只能选择一行
+                //区分:当_remark="A"时,表示‘新增’记录,可多行选择; 反之,为‘替换’使用,只能选择一行
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
                 //获取GridView临时表
                 _resultTable = dbList.MakeGridViewTemp();
