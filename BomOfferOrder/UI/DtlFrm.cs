@@ -489,7 +489,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 检测各TabPages内的GridView是否有内容
+        /// 检测各TabPages内的GridView是否有内容(注:若没有内容的话,就跳出异常)
         /// </summary>
         /// <returns></returns>
         private bool CheckTabPagesGridView()
@@ -504,11 +504,9 @@ namespace BomOfferOrder.UI
                 {
                     var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
 
-                    if (bomdtldt.Rows.Count == 0)
-                    {
-                        result = false;
-                        break;
-                    }
+                    if (bomdtldt.Rows.Count != 0) continue;
+                    result = false;
+                    break;
                 }
             }
             return result;

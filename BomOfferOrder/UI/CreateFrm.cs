@@ -247,6 +247,7 @@ namespace BomOfferOrder.UI
                     gvsearchdtl.DataSource = null;
                     _adddt.Rows.Clear();
                     txtvalue.Text = "";
+                    panel2.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -279,6 +280,7 @@ namespace BomOfferOrder.UI
                 gvsearchdtl.DataSource = null;
                 _adddt.Rows.Clear();
                 txtvalue.Text = "";
+                panel2.Visible = false;
             }
             catch (Exception ex)
             {

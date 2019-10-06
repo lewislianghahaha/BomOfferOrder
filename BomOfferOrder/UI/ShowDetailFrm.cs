@@ -344,18 +344,21 @@ namespace BomOfferOrder.UI
             _headid = Convert.ToInt32(sourcedt.Rows[0][8]);                 //Headid
             txtname.Text = Convert.ToString(sourcedt.Rows[0][9]);           //产品名称
             txtbao.Text = Convert.ToString(sourcedt.Rows[0][10]);           //包装规格
-            txtmi.Text = Convert.ToString(sourcedt.Rows[0][11]);            //产品密度(KG/L)
-            txtmaterial.Text = Convert.ToString(sourcedt.Rows[0][12]);      //材料成本(不含税)
-            txtbaochenben.Text = Convert.ToString(sourcedt.Rows[0][13]);    //包装成本
-            txtren.Text = Convert.ToString(sourcedt.Rows[0][14]);           //人工及制造费用
-            txtkg.Text = Convert.ToString(sourcedt.Rows[0][15]);            //成本(元/KG)
-            txtl.Text = Convert.ToString(sourcedt.Rows[0][16]);             //成本(元/L)
-            txt50.Text = Convert.ToString(sourcedt.Rows[0][17]);            //50%报价
-            txt45.Text = Convert.ToString(sourcedt.Rows[0][18]);            //45%报价
-            txt40.Text = Convert.ToString(sourcedt.Rows[0][19]);            //40%报价
+
+            txtmi.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][11]),4));            //产品密度(KG/L)
+            txtmaterial.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][12]),4));      //材料成本(不含税)
+            txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][13]),4));    //包装成本
+            txtren.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][14]),4));           //人工及制造费用
+            txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][15]),4));            //成本(元/KG)
+            txtl.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][16]),4));             //成本(元/L)
+            txt50.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][17]),4));            //50%报价
+            txt45.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][18]),4));            //45%报价
+            txt40.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][19]),4));            //40%报价
+
             txtremark.Text = Convert.ToString(sourcedt.Rows[0][20]);        //备注
             txtbom.Text = Convert.ToString(sourcedt.Rows[0][21]);           //对应BOM版本编号
-            txtprice.Text = Convert.ToString(sourcedt.Rows[0][22]);         //产品成本含税
+
+            txtprice.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][22]),4));         //产品成本含税
 
             //设置及刷新GridView
             OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
@@ -849,9 +852,9 @@ namespace BomOfferOrder.UI
             txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
 
             //成本(元/KG) 公式:材料成本+包装成本(自填)+人工制造费用(自填)
-            txtkg.Text = Convert.ToString(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text));
+            txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text),4));
             //成本(元/L) 公式:成本(元/KG)*产品密度
-            txtl.Text = Convert.ToString(Convert.ToDecimal(txtkg.Text) * Convert.ToDecimal(txtmi.Text));
+            txtl.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) * Convert.ToDecimal(txtmi.Text),4));
             //50%报价   公式:成本(元/KG)/(1-50/100)
             txt50.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.5), 4));
             //45%报价   公式:成本(元/KG)/(1-45/100)     
