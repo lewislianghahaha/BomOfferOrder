@@ -58,7 +58,7 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 执行循环插入(递归)
+        /// 执行循环插入(递归) 注:在同一个‘产品名称’下,各物料是唯一的,并将相同的‘物料’‘配方用量’进行累加
         /// </summary>
         /// <param name="id">产品ID（从1开始)</param>
         /// <param name="fmaterialid">表头物料ID(循环条件)</param>
@@ -68,7 +68,7 @@ namespace BomOfferOrder.Task
         /// <param name="bomnum">BOM编号</param>
         /// <param name="bomdt">初始化BOM明细DT(全部Bom内容)</param>
         /// <param name="resultdt">结果临时表</param>
-        /// <param name="qty">用量使用</param>
+        /// <param name="qty">配方用量使用</param>
         /// <returns></returns>
         private DataTable GetdtltoDt(int id,int fmaterialid,string productname,string bao,string productmi, string bomnum,DataTable bomdt,
                                      DataTable resultdt,decimal qty)
@@ -85,29 +85,55 @@ namespace BomOfferOrder.Task
                 if (Convert.ToString(dtlrows[i][5]) == "外购")
                 {
                     //判断进入的物料ID是否需要更新或是插入记录
-                    //检查获取过来的‘物料编码ID’是否在第一层级的BOM明细行内存在,若存在,即不用创建新行插入,只需累加‘用量’即可
-                    var resultrows = resultdt.Select("产品名称='" + productname + "' and 明细行BOM编号='" + bomnum + "' and 物料编码ID='"+ dtlrows[i][2] + "'");  
- 
+                    //检查若此物料ID在resultdt内已存在(注:在同一个‘产品名称’下),就不需要再次插入,只需要将其‘配方用量’与已存在的记录相加即可
+                    var resultrows = resultdt.Select("产品名称='" + productname + "' and 物料编码ID='" + dtlrows[i][2] + "'");
+
+                    //使用‘产品名称’以及‘物料编码’放到resultdt内判断是否存在;若存在,就更新,不用插入新行至resultdt
                     if (resultrows.Length > 0)
                     {
-                        foreach (DataRow row in resultdt.Rows)
+                        foreach (DataRow rows in resultdt.Rows)
                         {
-                            //使用‘产品名称’ ‘明细行BOM编号’ ‘表体物料ID’放到resultdt内判断是否存在;若存在,就更新,不用插入新行至resultdt
-                            if (row[1].ToString() == productname && row[9].ToString() == bomnum  && Convert.ToInt32(row[5]) == Convert.ToInt32(dtlrows[i][2]))
+                            if (rows[1].ToString() == productname && Convert.ToInt32(rows[5]) == Convert.ToInt32(dtlrows[i][2]))
                             {
                                 //当检查到物料在resultdt存在的话,就进行更新
                                 resultdt.BeginInit();
-                                //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
-                                qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) : 
-                                    decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+                                //配方用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                                qtytemp = decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
                                 //累加‘用量’
-                                row[8] = Convert.ToDecimal(row[8]) + qtytemp;
+                                rows[8] = Convert.ToDecimal(rows[8])+qtytemp;
                                 resultdt.EndInit();
                                 //当修改完成后,跳出该循环
                                 break;
                             }
                         }
                     }
+
+                    #region Hide
+                    //检查获取过来的‘物料编码ID’是否在第一层级的BOM明细行内存在,若存在,即不用创建新行插入,只需累加‘用量’即可
+                    //var resultrows = resultdt.Select("产品名称='" + productname + "' and 明细行BOM编号='" + bomnum + "' and 物料编码ID='" + dtlrows[i][2] + "'");
+
+                    //if (resultrows.Length > 0)
+                    //{
+                    //    foreach (DataRow row in resultdt.Rows)
+                    //    {
+                    //        //使用‘产品名称’ ‘明细行BOM编号’ ‘表体物料ID’放到resultdt内判断是否存在;若存在,就更新,不用插入新行至resultdt
+                    //        if (row[1].ToString() == productname && row[9].ToString() == bomnum && Convert.ToInt32(row[5]) == Convert.ToInt32(dtlrows[i][2]))
+                    //        {
+                    //            //当检查到物料在resultdt存在的话,就进行更新
+                    //            resultdt.BeginInit();
+                    //            //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                    //            qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
+                    //                decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+                    //            //累加‘用量’
+                    //            row[8] = Convert.ToDecimal(row[8]) + qtytemp;
+                    //            resultdt.EndInit();
+                    //            //当修改完成后,跳出该循环
+                    //            break;
+                    //        }
+                    //    }
+                    //}
+                    #endregion
+
                     else
                     {
                         //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
@@ -133,7 +159,11 @@ namespace BomOfferOrder.Task
                 //递归调用
                 else
                 {
-                    GetdtltoDt(id, Convert.ToInt32(dtlrows[i][2]),productname,bao,productmi,bomnum,bomdt,resultdt,Convert.ToDecimal(dtlrows[i][6]));
+                    //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                    qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
+                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+
+                    GetdtltoDt(id, Convert.ToInt32(dtlrows[i][2]),productname,bao,productmi,bomnum,bomdt,resultdt,qtytemp);
                 }
             }
             return resultdt;

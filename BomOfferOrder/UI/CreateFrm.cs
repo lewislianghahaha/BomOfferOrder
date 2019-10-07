@@ -16,7 +16,7 @@ namespace BomOfferOrder.UI
         DtlFrm dtlFrm=new DtlFrm();
 
         #region 变量参数
-        //保存BOM明细DT(生成时使用;注:当打开录入界面时初始化执行)
+        //保存BOM明细DT(生成时使用)
         private DataTable _bomdt = new DataTable();
 
         //保存GridView内需要进行添加的临时表
@@ -34,6 +34,14 @@ namespace BomOfferOrder.UI
         //记录初始化标记(GridView页面跳转 初始化时使用)
         private bool _pageChange;
         #endregion
+
+        #region Set
+            /// <summary>
+            /// 保存BOM明细DT(生成时使用)
+            /// </summary>
+            public DataTable Bomdt { set { _bomdt = value; } }
+        #endregion
+
 
         public CreateFrm()
         {
@@ -70,8 +78,6 @@ namespace BomOfferOrder.UI
         {
             //下拉列表使用
             OnShowTypeList();
-            //初始化BOM明细DT
-            OnInitializeBomdt();
             //判断显示生成按钮
             CheckShowButton();
         }
@@ -697,17 +703,6 @@ namespace BomOfferOrder.UI
                 }
             }
             return result;
-        }
-
-        /// <summary>
-        /// 初始化BOM明细DT
-        /// </summary>
-        /// <returns></returns>
-        private void OnInitializeBomdt()
-        {
-            task.TaskId = "0.1";
-            task.StartTask();
-            _bomdt=task.Resultbomdt;
         }
 
         /// <summary>

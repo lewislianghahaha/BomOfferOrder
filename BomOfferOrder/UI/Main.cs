@@ -16,6 +16,8 @@ namespace BomOfferOrder.UI
         DtlFrm dtlFrm=new DtlFrm();
 
         #region 变量参数
+        //保存BOM明细DT(生成时使用;注:当打开录入界面时初始化执行)
+        private DataTable _bomdt = new DataTable();
 
         //定义关闭符号的宽
         const int CloseSize = 11;
@@ -57,6 +59,8 @@ namespace BomOfferOrder.UI
 
             //初始化查询下拉列表
             OnShowSelectTypeList();
+            //初始化BOM明细DT(生成BOM明细时使用)
+            OnInitializeBomdt();
             //更新用户占用值 useid
             UpUseridValue(0);
         }
@@ -481,6 +485,7 @@ namespace BomOfferOrder.UI
                             Dock = DockStyle.Fill,
                             FormBorderStyle = FormBorderStyle.None
                         };
+                        createFrm.Bomdt = _bomdt;
                         createFrm.Show();                                      
                         newpage.Controls.Add(createFrm);    
                         break;
@@ -971,6 +976,16 @@ namespace BomOfferOrder.UI
             task.Fid = GlobalClasscs.User.UserId;
             task.Type = typeid;
             task.StartTask();
+        }
+
+        /// <summary>
+        /// 初始化BOM明细DT
+        /// </summary>
+        private void OnInitializeBomdt()
+        {
+            task.TaskId = "0.1";
+            task.StartTask();
+            _bomdt = task.Resultbomdt;
         }
 
     }

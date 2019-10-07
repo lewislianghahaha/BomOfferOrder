@@ -152,9 +152,9 @@ namespace BomOfferOrder.DB
 
                             INNER JOIN dbo.T_BD_MATERIAL f ON a.FMATERIALID=f.FMATERIALID
 
-                            WHERE A.FFORBIDSTATUS='A' --BOM禁用状态:否
+                            WHERE /*A.FFORBIDSTATUS='A' --BOM禁用状态:否
                             AND A.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
-                            AND C.FDOCUMENTSTATUS='C' --物料审核状态:已审核
+                            AND*/ C.FDOCUMENTSTATUS='C' --物料审核状态:已审核
                             AND C.FFORBIDSTATUS='A'   --物料禁用状态:否
                             AND D.FLOCALEID='2052'
                             AND CONVERT(varchar(100), a.FMODIFYDATE, 20)= (
@@ -171,7 +171,7 @@ namespace BomOfferOrder.DB
         }
 
         /// <summary>
-        /// 获取原材料物料记录(Bom明细调用新物料时使用)
+        /// 获取原材料物料记录(Bom明细调用新物料时使用) 注:材料来源为‘原材料’
         /// </summary>
         /// <param name="searchid">0:全部查询</param>
         /// <param name="searchvalue">查询值</param>

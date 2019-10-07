@@ -64,7 +64,7 @@ namespace BomOfferOrder.UI
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
             bnMoveNextItem.Click += BnMoveNextItem_Click;
             bnMoveLastItem.Click += BnMoveLastItem_Click;
-            bnPositionItem.TextChanged += BnPositionItem_TextChanged;
+            bnPositionItem.Leave += BnPositionItem_Leave;
             tmshowrows.DropDownClosed += Tmshowrows_DropDownClosed;
             panel2.Visible = false;
         }
@@ -237,11 +237,28 @@ namespace BomOfferOrder.UI
                         }
                     }
 
+                    //先根据GridView所选择的行将_dtl对应的行删除
+                    for (var i = _dtl.Rows.Count; i > 0; i--)
+                    {
+                        for (var j = 0; j < gvdtl.SelectedRows.Count; j++)
+                        {
+                            if (Convert.ToInt32(_dtl.Rows[i - 1][1]) == Convert.ToInt32(gvdtl.SelectedRows[j].Cells[1].Value))
+                            {
+                                _dtl.Rows.RemoveAt(i-1);
+                            }
+                        }
+                    }
+
                     //完成后将GridView内的指定行进行删除
                     for (var i = gvdtl.SelectedRows.Count; i > 0; i--)
                     {
                         gvdtl.Rows.RemoveAt(gvdtl.SelectedRows[i - 1].Index);
                     }
+                    
+                    //根据指定值将相关项进行改变指定文本框内的值
+                    GenerateValue();
+                    //操作完成后进行刷新
+                    OnInitialize(_dtl);
                 }
             }
             catch (Exception ex)
@@ -299,9 +316,9 @@ namespace BomOfferOrder.UI
             //判断若是NewProduct的话,就只将‘产品名称’,‘包装规格’ 以及 ‘产品密度’赋值上就可以;明细内容不用理会
             if (GlobalClasscs.Fun.FunctionName == "NewProduct")
             {
-                txtname.Text = Convert.ToString(sourcedt.Rows[0][1]); //产品名称
-                txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]); //包装规格
-                txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]); //产品密度
+                txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);   //产品名称
+                txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);    //包装规格
+                txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);     //产品密度
 
                 //将临时表(空行记录)插入到GridView内
                 OnInitialize(resultdt);
@@ -388,7 +405,7 @@ namespace BomOfferOrder.UI
                         newrow[3] = rows[7];        //物料名称
                         newrow[4] = rows[8];        //配方用量
                         newrow[5] = rows[10];       //物料单价(含税)
-                        newrow[6] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) / 100 , 4);  //物料成本(含税) 公式:物料单价*配方用量/100
+                        newrow[6] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) , 4);  //物料成本(含税) 公式:物料单价*配方用量
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -538,7 +555,7 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BnPositionItem_TextChanged(object sender, EventArgs e)
+        private void BnPositionItem_Leave(object sender, EventArgs e)
         {
             try
             {
@@ -684,7 +701,7 @@ namespace BomOfferOrder.UI
             try
             {
                 //将GridView内的内容赋值到DT
-                var gridViewdt = (DataTable)gvdtl.DataSource;
+                var gridViewdt = _dtl;//(DataTable)gvdtl.DataSource;
 
                 //循环将获取过来的值插入至GridView内
                 foreach (DataRow rows in sourcedt.Rows)
@@ -723,7 +740,7 @@ namespace BomOfferOrder.UI
 
                 //循环GridView内的值,当发现ID与条件ID相同,即进入行更新
                 //将GridView内的内容赋值到DT
-                var gridViewdt = (DataTable)gvdtl.DataSource;
+                var gridViewdt = _dtl;  //(DataTable)gvdtl.DataSource;
                 //判断若sourcedt内的物料ID已在GridView内存在,即跳出异常不能继续替换操作
                 if(gridViewdt.Select("物料编码ID='"+ sourcedt.Rows[0][1] +"'").Length>0)
                     throw new Exception($"获取物料'{sourcedt.Rows[0][2]}'已存在,故不能进行替换,请重新选择其它物料");
@@ -759,6 +776,7 @@ namespace BomOfferOrder.UI
         private void Gvdtl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             var colindex = 00;
+
             try
             {
                 colindex = e.ColumnIndex;
@@ -776,10 +794,15 @@ namespace BomOfferOrder.UI
                     var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value);
                     //获取当前行的配方用量
                     var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[5].Value);
-                    //计算‘物料成本(含税)’项 公式:物料单价*配方用量/100
-                    gvdtl.Rows[e.RowIndex].Cells[6].Value = decimal.Round(materialprice * peiqty / 100, 4);
+                    //计算‘物料成本(含税)’项 公式:物料单价*配方用量
+                    //gvdtl.Rows[e.RowIndex].Cells[6].Value = decimal.Round(materialprice * peiqty, 4);
+                    var qtytemp = decimal.Round(materialprice*peiqty,4);
+                    //根据‘物料编码ID’更新_dtl内的对应的'物料成本(含税)' 目的:更新_dtl
+                    UpdateGridViewValue(materialprice,peiqty,Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value), qtytemp);
                     //根据指定值将相关项进行改变指定文本框内的值
                     GenerateValue();
+                    //操作完成后进行刷新
+                    OnInitialize(_dtl);
                 }
             }
             catch (Exception ex)
@@ -796,11 +819,11 @@ namespace BomOfferOrder.UI
         {
             decimal result = 0;
             //将GridView内的内容赋值到DT
-            var gridViewdt = (DataTable)gvdtl.DataSource;
+            //var gridViewdt = (DataTable)gvdtl.DataSource;
 
-            foreach (DataRow rows in gridViewdt.Rows)
+            foreach (DataRow rows in _dtl.Rows)
             {
-                if(rows[6] == DBNull.Value) continue;
+                if (rows[6] == DBNull.Value) continue;
                 //累加‘物料成本’
                 result += Convert.ToDecimal(rows[6]);
             }
@@ -861,6 +884,25 @@ namespace BomOfferOrder.UI
             txt45.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.55), 4));
             //40%报价   公式:成本(元/KG)/(1-40/100)       
             txt40.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.6), 4));
+        }
+
+        /// <summary>
+        /// 利用指定值更新_dtl内的'物料成本(含税)'
+        /// </summary>
+        private void UpdateGridViewValue(decimal materialprice, decimal peiqty, int fmaterialid,decimal value)
+        {
+            //针对_dtl循环其内容
+            foreach (DataRow rows in _dtl.Rows)
+            {
+                if (Convert.ToInt32(rows[1]) == fmaterialid)
+                {
+                    _dtl.BeginInit();
+                    rows[4] = materialprice; //物料单价
+                    rows[5] = peiqty;        //配方用量
+                    rows[6] = value;         //物料成本(含税)
+                    _dtl.EndInit();
+                }
+            }
         }
 
     }

@@ -146,7 +146,7 @@
             this.txtprice.Location = new System.Drawing.Point(439, 29);
             this.txtprice.Name = "txtprice";
             this.txtprice.ReadOnly = true;
-            this.txtprice.Size = new System.Drawing.Size(144, 21);
+            this.txtprice.Size = new System.Drawing.Size(250, 21);
             this.txtprice.TabIndex = 26;
             // 
             // txtremark
@@ -187,7 +187,7 @@
             this.txt45.Enabled = false;
             this.txt45.Location = new System.Drawing.Point(439, 117);
             this.txt45.Name = "txt45";
-            this.txt45.Size = new System.Drawing.Size(144, 21);
+            this.txt45.Size = new System.Drawing.Size(250, 21);
             this.txt45.TabIndex = 21;
             // 
             // label11
@@ -254,7 +254,7 @@
             // 
             this.txtren.Location = new System.Drawing.Point(439, 95);
             this.txtren.Name = "txtren";
-            this.txtren.Size = new System.Drawing.Size(144, 21);
+            this.txtren.Size = new System.Drawing.Size(250, 21);
             this.txtren.TabIndex = 13;
             // 
             // label7
@@ -287,7 +287,7 @@
             this.txtmaterial.Enabled = false;
             this.txtmaterial.Location = new System.Drawing.Point(439, 51);
             this.txtmaterial.Name = "txtmaterial";
-            this.txtmaterial.Size = new System.Drawing.Size(144, 21);
+            this.txtmaterial.Size = new System.Drawing.Size(250, 21);
             this.txtmaterial.TabIndex = 9;
             // 
             // label5
@@ -304,7 +304,7 @@
             this.txtmi.Enabled = false;
             this.txtmi.Location = new System.Drawing.Point(439, 73);
             this.txtmi.Name = "txtmi";
-            this.txtmi.Size = new System.Drawing.Size(144, 21);
+            this.txtmi.Size = new System.Drawing.Size(250, 21);
             this.txtmi.TabIndex = 7;
             // 
             // label4
