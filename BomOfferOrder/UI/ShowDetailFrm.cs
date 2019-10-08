@@ -88,6 +88,7 @@ namespace BomOfferOrder.UI
             //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
             else
             {
+                _dtl = gridViewdt;
                 gvdtl.DataSource = gridViewdt;
                 panel2.Visible = false;
             }
@@ -181,7 +182,7 @@ namespace BomOfferOrder.UI
             try
             {
                 if(gvdtl.SelectedRows.Count==0) throw new Exception("请选择任意一行,再继续");
-                if(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value == DBNull.Value)throw new Exception("空行不能进行替换,请再次选择");
+                if(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value == DBNull.Value) throw new Exception("空行不能进行替换,请再次选择");
                 //获取GridView内的物料编码ID
                 var materialId = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
 
@@ -213,7 +214,8 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                if(gvdtl.SelectedRows.Count==0)throw new Exception("没有选择行,不能继续");
+                if(gvdtl.SelectedRows.Count==0) throw new Exception("没有选择行,不能继续");
+                if(_dtl.Rows.Count==0)throw new Exception("没有明细记录,不能进行删除");
 
                 var clickMessage = $"您所选择需删除的行数为:{gvdtl.SelectedRows.Count}行 \n 是否继续?";
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
@@ -313,13 +315,17 @@ namespace BomOfferOrder.UI
             //获取临时表(GridView控件时使用) 注:‘创建’及‘读取’也会使用到
             var resultdt = dbList.MakeGridViewTemp();
 
+            //包装成本(自填)
+            txtbaochenben.Text = "0";
+            //人工制造费用(自填)               
+            txtren.Text = "0";                                      
+
             //判断若是NewProduct的话,就只将‘产品名称’,‘包装规格’ 以及 ‘产品密度’赋值上就可以;明细内容不用理会
             if (GlobalClasscs.Fun.FunctionName == "NewProduct")
             {
                 txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);   //产品名称
                 txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);    //包装规格
                 txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);     //产品密度
-
                 //将临时表(空行记录)插入到GridView内
                 OnInitialize(resultdt);
             }
@@ -332,20 +338,16 @@ namespace BomOfferOrder.UI
                 txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);      //包装规格
                 txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);       //产品密度
                 //txtprice.Text = Convert.ToString(sourcedt.Rows[0][11]); //产品成本含税
-
                 //设置及刷新GridView
                 OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
+                //根据指定值将相关项进行改变指定文本框内的值
+                GenerateValue();
             }
+            #region Hide 原包装成本公式
             //包装成本 公式:表头物料单价/包装规格/1.13
             //txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtprice.Text) / 
             //                                        GetNumberInt(Convert.ToString(sourcedt.Rows[0][3])) / Convert.ToDecimal(1.13),4));
-
-            //包装成本(自填)
-            txtbaochenben.Text = "0";
-            //人工制造费用(自填)  
-            txtren.Text = "0";
-            //根据指定值将相关项进行改变指定文本框内的值
-            GenerateValue();
+            #endregion
         }
 
         /// <summary>
@@ -742,8 +744,8 @@ namespace BomOfferOrder.UI
                 //将GridView内的内容赋值到DT
                 var gridViewdt = _dtl;  //(DataTable)gvdtl.DataSource;
                 //判断若sourcedt内的物料ID已在GridView内存在,即跳出异常不能继续替换操作
-                if(gridViewdt.Select("物料编码ID='"+ sourcedt.Rows[0][1] +"'").Length>0)
-                    throw new Exception($"获取物料'{sourcedt.Rows[0][2]}'已存在,故不能进行替换,请重新选择其它物料");
+                if (gridViewdt.Select("物料编码ID='"+ sourcedt.Rows[0][1] +"'").Length>0)
+                        throw new Exception($"获取物料'{sourcedt.Rows[0][2]}'已存在,故不能进行替换,请重新选择其它物料");
 
                 foreach (DataRow rows in gridViewdt.Rows)
                 {

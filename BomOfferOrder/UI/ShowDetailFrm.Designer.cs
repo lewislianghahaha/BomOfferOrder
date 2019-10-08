@@ -167,9 +167,9 @@
             // 
             // txt40
             // 
-            this.txt40.Enabled = false;
             this.txt40.Location = new System.Drawing.Point(80, 117);
             this.txt40.Name = "txt40";
+            this.txt40.ReadOnly = true;
             this.txt40.Size = new System.Drawing.Size(194, 21);
             this.txt40.TabIndex = 23;
             // 
@@ -184,9 +184,9 @@
             // 
             // txt45
             // 
-            this.txt45.Enabled = false;
             this.txt45.Location = new System.Drawing.Point(439, 117);
             this.txt45.Name = "txt45";
+            this.txt45.ReadOnly = true;
             this.txt45.Size = new System.Drawing.Size(250, 21);
             this.txt45.TabIndex = 21;
             // 
@@ -201,9 +201,9 @@
             // 
             // txt50
             // 
-            this.txt50.Enabled = false;
             this.txt50.Location = new System.Drawing.Point(80, 139);
             this.txt50.Name = "txt50";
+            this.txt50.ReadOnly = true;
             this.txt50.Size = new System.Drawing.Size(194, 21);
             this.txt50.TabIndex = 19;
             // 
@@ -218,9 +218,9 @@
             // 
             // txtl
             // 
-            this.txtl.Enabled = false;
             this.txtl.Location = new System.Drawing.Point(80, 95);
             this.txtl.Name = "txtl";
+            this.txtl.ReadOnly = true;
             this.txtl.Size = new System.Drawing.Size(194, 21);
             this.txtl.TabIndex = 17;
             // 
@@ -235,9 +235,9 @@
             // 
             // txtkg
             // 
-            this.txtkg.Enabled = false;
             this.txtkg.Location = new System.Drawing.Point(80, 73);
             this.txtkg.Name = "txtkg";
+            this.txtkg.ReadOnly = true;
             this.txtkg.Size = new System.Drawing.Size(194, 21);
             this.txtkg.TabIndex = 15;
             // 
@@ -284,9 +284,9 @@
             // 
             // txtmaterial
             // 
-            this.txtmaterial.Enabled = false;
             this.txtmaterial.Location = new System.Drawing.Point(439, 51);
             this.txtmaterial.Name = "txtmaterial";
+            this.txtmaterial.ReadOnly = true;
             this.txtmaterial.Size = new System.Drawing.Size(250, 21);
             this.txtmaterial.TabIndex = 9;
             // 
@@ -301,9 +301,9 @@
             // 
             // txtmi
             // 
-            this.txtmi.Enabled = false;
             this.txtmi.Location = new System.Drawing.Point(439, 73);
             this.txtmi.Name = "txtmi";
+            this.txtmi.ReadOnly = true;
             this.txtmi.Size = new System.Drawing.Size(250, 21);
             this.txtmi.TabIndex = 7;
             // 

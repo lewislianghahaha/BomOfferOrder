@@ -613,6 +613,7 @@ namespace BomOfferOrder.UI
                         {
                             showdetail.txtren.ReadOnly = true;
                             showdetail.txtbaochenben.ReadOnly = true;
+                            showdetail.txtremark.ReadOnly = true;
 
                             showdetail.gvdtl.ReadOnly = true;
                             showdetail.tmReplace.Visible = false;
