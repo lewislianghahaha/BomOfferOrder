@@ -62,7 +62,7 @@ namespace BomOfferOrder.UI
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
             bnMoveNextItem.Click += BnMoveNextItem_Click;
             bnMoveLastItem.Click += BnMoveLastItem_Click;
-            bnPositionItem.TextChanged += BnPositionItem_TextChanged;
+            bnPositionItem.Leave += BnPositionItem_Leave;
             tmshowrows.DropDownClosed += Tmshowrows_DropDownClosed;
             panel2.Visible = false;
 
@@ -404,7 +404,7 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BnPositionItem_TextChanged(object sender, EventArgs e)
+        private void BnPositionItem_Leave(object sender, EventArgs e)
         {
             try
             {
