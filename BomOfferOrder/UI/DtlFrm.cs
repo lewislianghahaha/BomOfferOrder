@@ -19,7 +19,8 @@ namespace BomOfferOrder.UI
         private string _funState;
         //记录审核状态(True:已审核;False:没审核)
         private bool _confirmMarkId;
-        
+        //反审核标记(注:当需要反审核的R状态单据要进行再次审核时使用)
+        private bool _backconfirm;
 
         //收集TabControl内各Tab Pages的内容
         private DataTable _bomdt;
@@ -82,10 +83,10 @@ namespace BomOfferOrder.UI
             //单据状态:读取 R
             else
             {
+                //初始化反审核标记为false
+                _backconfirm = false;
                 //根据bomdt判断,若rows[2]=0为:已审核 1:反审核
                 _confirmMarkId = Convert.ToInt32(bomdt.Rows[0][2])==0;
-                //若该单据反审核并且需要重新审核的,就要将tmsave.Enabled=true;反之为false
-                tmsave.Enabled = !_confirmMarkId;
                 //更新_useid及username值
                 UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]),0,"");
                 //执行读取记录
@@ -359,6 +360,9 @@ namespace BomOfferOrder.UI
                         //审核成功后操作 =>1)审核图片显示 2)将控件设为不可修改 3)弹出成功信息窗体 4)将_confirmMarkid标记设为True
                         MessageBox.Show($"审核成功,请进行提交操作", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         _confirmMarkId = true;
+                        //若单据状态为R时,_backconfirm为TRUE
+                        if (_funState == "R")
+                            _backconfirm = true;
                         //权限控制
                         PrivilegeControl();
                     }
@@ -541,21 +545,13 @@ namespace BomOfferOrder.UI
                 //循环TabPages内的控件
                 ControlTabPages(0);
 
-                if (_funState == "R")
+                //若单据状态为R并且不为‘反审核’时执行
+                if (_funState == "R" && !_backconfirm)
                 {
-                    //若单据状态为R,并且已重新审核的,执行如下操作(注:需利用tmsave.Enabled为条件;)
-                    //若该单据反审核并且需要重新审核的,就要将tmsave.Enabled=true;反之为false
-                    if (tmsave.Enabled)
-                    {
-                        tmConfirm.Enabled = false;
-                    }
-                    //若单据不需要重新审核,只是查询审核单据,就执行以下
-                    else
-                    {
-                        tmConfirm.Enabled = false;
-                        tmsave.Enabled = false;
-                    }
+                    tmConfirm.Enabled = false;
+                    tmsave.Enabled = false;
                 }
+                //单据状态为C“创建” 及R “反审核”时使用,当审核完成单据,但还没提交时执行
                 else
                 {
                     tmConfirm.Enabled = false;
