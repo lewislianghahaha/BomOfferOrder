@@ -31,6 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowDetailFrm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txtpeitotal = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.txtcust = new System.Windows.Forms.TextBox();
+            this.llcust = new System.Windows.Forms.LinkLabel();
             this.label14 = new System.Windows.Forms.Label();
             this.txtprice = new System.Windows.Forms.TextBox();
             this.txtremark = new System.Windows.Forms.TextBox();
@@ -98,6 +102,10 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.txtpeitotal);
+            this.panel1.Controls.Add(this.label15);
+            this.panel1.Controls.Add(this.txtcust);
+            this.panel1.Controls.Add(this.llcust);
             this.panel1.Controls.Add(this.label14);
             this.panel1.Controls.Add(this.txtprice);
             this.panel1.Controls.Add(this.txtremark);
@@ -129,8 +137,43 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(736, 164);
+            this.panel1.Size = new System.Drawing.Size(736, 187);
             this.panel1.TabIndex = 0;
+            // 
+            // txtpeitotal
+            // 
+            this.txtpeitotal.Location = new System.Drawing.Point(439, 161);
+            this.txtpeitotal.Name = "txtpeitotal";
+            this.txtpeitotal.ReadOnly = true;
+            this.txtpeitotal.Size = new System.Drawing.Size(250, 21);
+            this.txtpeitotal.TabIndex = 31;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(354, 166);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(83, 12);
+            this.label15.TabIndex = 30;
+            this.label15.Text = "配方用量合计:";
+            // 
+            // txtcust
+            // 
+            this.txtcust.Location = new System.Drawing.Point(80, 161);
+            this.txtcust.Name = "txtcust";
+            this.txtcust.ReadOnly = true;
+            this.txtcust.Size = new System.Drawing.Size(194, 21);
+            this.txtcust.TabIndex = 29;
+            // 
+            // llcust
+            // 
+            this.llcust.AutoSize = true;
+            this.llcust.Location = new System.Drawing.Point(43, 166);
+            this.llcust.Name = "llcust";
+            this.llcust.Size = new System.Drawing.Size(35, 12);
+            this.llcust.TabIndex = 28;
+            this.llcust.TabStop = true;
+            this.llcust.Text = "客户:";
             // 
             // label14
             // 
@@ -372,7 +415,7 @@
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2.Controls.Add(this.bngat);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 485);
+            this.panel2.Location = new System.Drawing.Point(0, 550);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(736, 26);
             this.panel2.TabIndex = 1;
@@ -531,20 +574,19 @@
             // 
             this.panel3.Controls.Add(this.gvdtl);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(0, 164);
+            this.panel3.Location = new System.Drawing.Point(0, 187);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(736, 321);
+            this.panel3.Size = new System.Drawing.Size(736, 363);
             this.panel3.TabIndex = 2;
             // 
             // gvdtl
             // 
-            this.gvdtl.ColumnHeadersHeight = 20;
-            this.gvdtl.ContextMenuStrip = this.Menu;
+            this.gvdtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.RowTemplate.Height = 23;
-            this.gvdtl.Size = new System.Drawing.Size(736, 321);
+            this.gvdtl.Size = new System.Drawing.Size(736, 363);
             this.gvdtl.TabIndex = 0;
             // 
             // Menu
@@ -590,7 +632,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(736, 511);
+            this.ClientSize = new System.Drawing.Size(736, 576);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -658,7 +700,6 @@
         public System.Windows.Forms.TextBox txt45;
         public System.Windows.Forms.TextBox txt50;
         public System.Windows.Forms.TextBox txtremark;
-        public System.Windows.Forms.DataGridView gvdtl;
         private System.Windows.Forms.Label label14;
         public System.Windows.Forms.TextBox txtprice;
         public System.Windows.Forms.ContextMenuStrip Menu;
@@ -667,5 +708,10 @@
         public System.Windows.Forms.ToolStripMenuItem tmAdd;
         public System.Windows.Forms.ToolStripSeparator ts2;
         public System.Windows.Forms.ToolStripMenuItem tmdel;
+        private System.Windows.Forms.TextBox txtpeitotal;
+        private System.Windows.Forms.Label label15;
+        public System.Windows.Forms.TextBox txtcust;
+        private System.Windows.Forms.LinkLabel llcust;
+        public System.Windows.Forms.DataGridView gvdtl;
     }
 }

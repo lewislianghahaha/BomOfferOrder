@@ -37,6 +37,7 @@
             this.AddMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmadd = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btngennew = new System.Windows.Forms.Button();
             this.btngenerate = new System.Windows.Forms.Button();
             this.btnsearch = new System.Windows.Forms.Button();
             this.txtvalue = new System.Windows.Forms.TextBox();
@@ -61,7 +62,7 @@
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
-            this.btngennew = new System.Windows.Forms.Button();
+            this.btngenemptynew = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
             this.DelMenu.SuspendLayout();
@@ -129,6 +130,7 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.btngenemptynew);
             this.panel1.Controls.Add(this.btngennew);
             this.panel1.Controls.Add(this.btngenerate);
             this.panel1.Controls.Add(this.btnsearch);
@@ -139,6 +141,15 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(929, 28);
             this.panel1.TabIndex = 7;
+            // 
+            // btngennew
+            // 
+            this.btngennew.Location = new System.Drawing.Point(601, 2);
+            this.btngennew.Name = "btngennew";
+            this.btngennew.Size = new System.Drawing.Size(133, 23);
+            this.btngennew.TabIndex = 4;
+            this.btngennew.Text = "生成新产品成本报价单";
+            this.btngennew.UseVisualStyleBackColor = true;
             // 
             // btngenerate
             // 
@@ -360,14 +371,14 @@
             this.tstotalrow.Size = new System.Drawing.Size(55, 21);
             this.tstotalrow.Text = "共 {0} 行";
             // 
-            // btngennew
+            // btngenemptynew
             // 
-            this.btngennew.Location = new System.Drawing.Point(601, 2);
-            this.btngennew.Name = "btngennew";
-            this.btngennew.Size = new System.Drawing.Size(133, 23);
-            this.btngennew.TabIndex = 4;
-            this.btngennew.Text = "生成新产品成本报价单";
-            this.btngennew.UseVisualStyleBackColor = true;
+            this.btngenemptynew.Location = new System.Drawing.Point(747, 2);
+            this.btngenemptynew.Name = "btngenemptynew";
+            this.btngenemptynew.Size = new System.Drawing.Size(100, 23);
+            this.btngenemptynew.TabIndex = 5;
+            this.btngenemptynew.Text = "生成空白报价单";
+            this.btngenemptynew.UseVisualStyleBackColor = true;
             // 
             // CreateFrm
             // 
@@ -431,6 +442,7 @@
         private System.Windows.Forms.ToolStripMenuItem tmdel;
         private System.Windows.Forms.ToolStripMenuItem tmadd;
         private System.Windows.Forms.Button btngennew;
+        private System.Windows.Forms.Button btngenemptynew;
     }
 }
 

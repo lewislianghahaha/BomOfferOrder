@@ -225,6 +225,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Main);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.Main;
             this.Name = "AccountDetailFrm";
             this.Text = "用户权限添加窗体";

@@ -78,6 +78,12 @@
     <Compile Include="UI\ChangeAccount.Designer.cs">
       <DependentUpon>ChangeAccount.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CustInfoFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\CustInfoFrm.Designer.cs">
+      <DependentUpon>CustInfoFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\DtlFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,6 +154,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ChangeAccount.resx">
       <DependentUpon>ChangeAccount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CustInfoFrm.resx">
+      <DependentUpon>CustInfoFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DtlFrm.resx">
       <DependentUpon>DtlFrm.cs</DependentUpon>

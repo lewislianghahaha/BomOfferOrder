@@ -72,7 +72,16 @@ namespace BomOfferOrder.UI
                 //新产品成本报价单-创建使用
                 if (GlobalClasscs.Fun.FunctionName == "NewProduct")
                 {
-                    CreateNewProductDeatail(bomdt, materialdt);
+                    //当bomdt为空时,表示生成空白报价单
+                    if (bomdt == null)
+                    {
+                        GlobalClasscs.Fun.FunctionName = "NewEmptyProduct";
+                        CreateNewProductEmptyDetail(materialdt);
+                    }
+                    else
+                    {
+                        CreateNewProductDeatail(bomdt, materialdt);
+                    } 
                 }
                 //成本BOM报价单-创建使用
                 else
@@ -99,7 +108,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 新产品成本报价单-创建使用
         /// </summary>
-        void CreateNewProductDeatail(DataTable sourcedt,DataTable materialdt)
+        private void CreateNewProductDeatail(DataTable sourcedt,DataTable materialdt)
         {
             //获取临时表
             var dt = dbList.MakeTemp();
@@ -130,9 +139,26 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 空白报价单-创建使用
+        /// </summary>
+        /// <param name="materialdt"></param>
+        private void CreateNewProductEmptyDetail(DataTable materialdt)
+        {
+            try
+            {
+                //生成Tab Page及ShowDetailFrm
+                CreateDetailFrm("",null,materialdt);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
         /// 成本BOM报价单-创建使用
         /// </summary>
-        void CreateBomDetail(DataTable sourcedt,DataTable materialdt)
+        private void CreateBomDetail(DataTable sourcedt,DataTable materialdt)
         {
             //获取临时表
             var dt = dbList.MakeTemp();
@@ -565,6 +591,10 @@ namespace BomOfferOrder.UI
                 {
                     ControlTabPages(1);
                 }
+                else if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct")
+                {
+                    ControlTabPages(2);
+                }
 
                 pbimg.Visible = false;
                 txtbom.ReadOnly = false;
@@ -620,10 +650,15 @@ namespace BomOfferOrder.UI
                         }
                     }
                     //控制‘产品名称’及‘对应BOM版本编号’可修改
-                    else
+                    else if(typeid==1)
                     {
                         showdetail.txtname.ReadOnly = false;
                         showdetail.txtbom.ReadOnly = false;
+                    }
+                    //todo
+                    else if (typeid == 2)
+                    {
+                        
                     }
                 }
             }

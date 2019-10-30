@@ -318,8 +318,10 @@ namespace BomOfferOrder.UI
             //包装成本(自填)
             txtbaochenben.Text = "0";
             //人工制造费用(自填)               
-            txtren.Text = "0";                                      
+            txtren.Text = "0";
 
+            //当要创建的窗体为‘空白报价单’时,不需执行以下操作
+            if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct") return;
             //判断若是NewProduct的话,就只将‘产品名称’,‘包装规格’ 以及 ‘产品密度’赋值上就可以;明细内容不用理会
             if (GlobalClasscs.Fun.FunctionName == "NewProduct")
             {

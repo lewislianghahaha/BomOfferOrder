@@ -57,6 +57,7 @@ namespace BomOfferOrder.UI
             tmadd.Click += Tmadd_Click;
             tmdel.Click += Tmdel_Click;
             btngennew.Click += Btngennew_Click;
+            btngenemptynew.Click += Btngenemptynew_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -294,7 +295,30 @@ namespace BomOfferOrder.UI
             }
         }
 
-
+        /// <summary>
+        /// 生成空白报价单(注:此功能不需要进行查询物料就可以生成)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btngenemptynew_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var clickMessage = $"即将生成空白报价单 \n 是否继续生成?";
+                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    //弹出对应窗体相关设置
+                    dtlFrm.FunState = "C";
+                    dtlFrm.OnInitialize(null);     //初始化信息
+                    dtlFrm.StartPosition = FormStartPosition.CenterParent;
+                    dtlFrm.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         /// <summary>
         /// 首页按钮(GridView页面跳转时使用)
@@ -714,11 +738,13 @@ namespace BomOfferOrder.UI
             {
                 btngennew.Visible = true;
                 btngenerate.Visible = false;
+                btngenemptynew.Visible = true;
             }
             else
             {
                 btngennew.Visible = false;
                 btngenerate.Visible = true;
+                btngenemptynew.Visible = false;
             }
         }
     }

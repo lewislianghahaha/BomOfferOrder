@@ -170,6 +170,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtoldpwd);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ChangeAccount";
             this.Text = "修改密码";
             this.ResumeLayout(false);

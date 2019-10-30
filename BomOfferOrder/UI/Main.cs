@@ -63,6 +63,8 @@ namespace BomOfferOrder.UI
             OnInitializeBomdt();
             //更新用户占用值 useid
             UpUseridValue(0);
+            //权限控制
+            PrivilegeControl();
         }
 
         private void OnRegisterEvents()
@@ -986,6 +988,18 @@ namespace BomOfferOrder.UI
             task.TaskId = "0.1";
             task.StartTask();
             _bomdt = task.Resultbomdt;
+        }
+
+        /// <summary>
+        /// 权限控制
+        /// </summary>
+        private void PrivilegeControl()
+        {
+            //若用户没有可读权限,即‘成本BOM报价单’功能有不显示
+            if (!GlobalClasscs.User.Readid)
+            {
+                btnCreate.Visible = false;
+            }
         }
 
     }
