@@ -345,6 +345,7 @@ namespace BomOfferOrder.UI
                                 newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
                                 newrow[6] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
                                 newrow[7] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
+                                //(单据类型ID=>0:BOM成本报价单 1:新产品成本报价单)
 
                                 newrow[8] = _funState == "C" ? 0 : showdetail.Headid;                       //Headid
                                 newrow[9] = showdetail.txtname.Text;                                        //产品名称(物料名称)
@@ -361,7 +362,8 @@ namespace BomOfferOrder.UI
                                 newrow[20] = showdetail.txtremark.Text;                                     //备注
                                 newrow[21] = showdetail.txtbom.Text;                                        //对应BOM版本编号
                                 newrow[22] = Convert.ToDecimal(showdetail.txtprice.Text);                   //物料单价
-                                 
+                                //客户
+
                                 newrow[23] = rows[0];                                                       //Entryid
                                 newrow[24] = rows[1];                                                       //物料编码ID
                                 newrow[25] = rows[2];                                                       //物料编码
@@ -637,9 +639,11 @@ namespace BomOfferOrder.UI
                         //若为‘审核’状态时,将以下控件设为不可见或只读
                         if (_confirmMarkId)
                         {
-                            showdetail.txtren.ReadOnly = true;
-                            showdetail.txtbaochenben.ReadOnly = true;
-                            showdetail.txtremark.ReadOnly = true;
+                            showdetail.txtren.ReadOnly = true;         //人工制造费用
+                            showdetail.txtbaochenben.ReadOnly = true;  //包装成本
+                            showdetail.txtremark.ReadOnly = true;      //备注
+
+                            showdetail.llcust.Enabled = false;         //将客户超连接设置为不可用
 
                             showdetail.gvdtl.ReadOnly = true;
                             showdetail.tmReplace.Visible = false;
@@ -647,18 +651,22 @@ namespace BomOfferOrder.UI
                             showdetail.tmAdd.Visible = false;
                             showdetail.ts2.Visible = false;
                             showdetail.tmdel.Visible = false;
+                            showdetail.ts3.Visible = false;
+                            showdetail.tmshowhistory.Visible = false;
                         }
                     }
                     //控制‘产品名称’及‘对应BOM版本编号’可修改
-                    else if(typeid==1)
+                    else if (typeid==1)
                     {
                         showdetail.txtname.ReadOnly = false;
                         showdetail.txtbom.ReadOnly = false;
                     }
-                    //todo
+                    //控制‘生成空白报价单’指定项的操作方式
                     else if (typeid == 2)
                     {
-                        
+                        showdetail.txtname.ReadOnly = false;
+                        showdetail.txtbom.ReadOnly = false;
+                        showdetail.txtbao.ReadOnly = false;            //包装规格
                     }
                 }
             }

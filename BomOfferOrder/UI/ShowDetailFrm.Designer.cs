@@ -89,6 +89,8 @@
             this.tmAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.ts2 = new System.Windows.Forms.ToolStripSeparator();
             this.tmdel = new System.Windows.Forms.ToolStripMenuItem();
+            this.ts3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmshowhistory = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
@@ -142,7 +144,7 @@
             // 
             // txtpeitotal
             // 
-            this.txtpeitotal.Location = new System.Drawing.Point(439, 161);
+            this.txtpeitotal.Location = new System.Drawing.Point(472, 161);
             this.txtpeitotal.Name = "txtpeitotal";
             this.txtpeitotal.ReadOnly = true;
             this.txtpeitotal.Size = new System.Drawing.Size(250, 21);
@@ -151,7 +153,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(354, 166);
+            this.label15.Location = new System.Drawing.Point(387, 166);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(83, 12);
             this.label15.TabIndex = 30;
@@ -162,7 +164,7 @@
             this.txtcust.Location = new System.Drawing.Point(80, 161);
             this.txtcust.Name = "txtcust";
             this.txtcust.ReadOnly = true;
-            this.txtcust.Size = new System.Drawing.Size(194, 21);
+            this.txtcust.Size = new System.Drawing.Size(252, 21);
             this.txtcust.TabIndex = 29;
             // 
             // llcust
@@ -178,7 +180,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(355, 34);
+            this.label14.Location = new System.Drawing.Point(388, 34);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(83, 12);
             this.label14.TabIndex = 27;
@@ -186,7 +188,7 @@
             // 
             // txtprice
             // 
-            this.txtprice.Location = new System.Drawing.Point(439, 29);
+            this.txtprice.Location = new System.Drawing.Point(472, 29);
             this.txtprice.Name = "txtprice";
             this.txtprice.ReadOnly = true;
             this.txtprice.Size = new System.Drawing.Size(250, 21);
@@ -194,7 +196,7 @@
             // 
             // txtremark
             // 
-            this.txtremark.Location = new System.Drawing.Point(439, 139);
+            this.txtremark.Location = new System.Drawing.Point(472, 139);
             this.txtremark.Name = "txtremark";
             this.txtremark.Size = new System.Drawing.Size(250, 21);
             this.txtremark.TabIndex = 25;
@@ -202,7 +204,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(402, 144);
+            this.label13.Location = new System.Drawing.Point(435, 144);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(35, 12);
             this.label13.TabIndex = 24;
@@ -213,7 +215,7 @@
             this.txt40.Location = new System.Drawing.Point(80, 117);
             this.txt40.Name = "txt40";
             this.txt40.ReadOnly = true;
-            this.txt40.Size = new System.Drawing.Size(194, 21);
+            this.txt40.Size = new System.Drawing.Size(252, 21);
             this.txt40.TabIndex = 23;
             // 
             // label12
@@ -227,7 +229,7 @@
             // 
             // txt45
             // 
-            this.txt45.Location = new System.Drawing.Point(439, 117);
+            this.txt45.Location = new System.Drawing.Point(472, 117);
             this.txt45.Name = "txt45";
             this.txt45.ReadOnly = true;
             this.txt45.Size = new System.Drawing.Size(250, 21);
@@ -236,7 +238,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(385, 122);
+            this.label11.Location = new System.Drawing.Point(418, 122);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(53, 12);
             this.label11.TabIndex = 20;
@@ -247,7 +249,7 @@
             this.txt50.Location = new System.Drawing.Point(80, 139);
             this.txt50.Name = "txt50";
             this.txt50.ReadOnly = true;
-            this.txt50.Size = new System.Drawing.Size(194, 21);
+            this.txt50.Size = new System.Drawing.Size(252, 21);
             this.txt50.TabIndex = 19;
             // 
             // label10
@@ -264,7 +266,7 @@
             this.txtl.Location = new System.Drawing.Point(80, 95);
             this.txtl.Name = "txtl";
             this.txtl.ReadOnly = true;
-            this.txtl.Size = new System.Drawing.Size(194, 21);
+            this.txtl.Size = new System.Drawing.Size(252, 21);
             this.txtl.TabIndex = 17;
             // 
             // label9
@@ -281,7 +283,7 @@
             this.txtkg.Location = new System.Drawing.Point(80, 73);
             this.txtkg.Name = "txtkg";
             this.txtkg.ReadOnly = true;
-            this.txtkg.Size = new System.Drawing.Size(194, 21);
+            this.txtkg.Size = new System.Drawing.Size(252, 21);
             this.txtkg.TabIndex = 15;
             // 
             // label8
@@ -295,7 +297,7 @@
             // 
             // txtren
             // 
-            this.txtren.Location = new System.Drawing.Point(439, 95);
+            this.txtren.Location = new System.Drawing.Point(472, 95);
             this.txtren.Name = "txtren";
             this.txtren.Size = new System.Drawing.Size(250, 21);
             this.txtren.TabIndex = 13;
@@ -303,7 +305,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(343, 100);
+            this.label7.Location = new System.Drawing.Point(376, 100);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(95, 12);
             this.label7.TabIndex = 12;
@@ -313,7 +315,7 @@
             // 
             this.txtbaochenben.Location = new System.Drawing.Point(60, 51);
             this.txtbaochenben.Name = "txtbaochenben";
-            this.txtbaochenben.Size = new System.Drawing.Size(214, 21);
+            this.txtbaochenben.Size = new System.Drawing.Size(272, 21);
             this.txtbaochenben.TabIndex = 11;
             // 
             // label6
@@ -327,7 +329,7 @@
             // 
             // txtmaterial
             // 
-            this.txtmaterial.Location = new System.Drawing.Point(439, 51);
+            this.txtmaterial.Location = new System.Drawing.Point(472, 51);
             this.txtmaterial.Name = "txtmaterial";
             this.txtmaterial.ReadOnly = true;
             this.txtmaterial.Size = new System.Drawing.Size(250, 21);
@@ -336,7 +338,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(332, 56);
+            this.label5.Location = new System.Drawing.Point(365, 56);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(107, 12);
             this.label5.TabIndex = 8;
@@ -344,7 +346,7 @@
             // 
             // txtmi
             // 
-            this.txtmi.Location = new System.Drawing.Point(439, 73);
+            this.txtmi.Location = new System.Drawing.Point(472, 73);
             this.txtmi.Name = "txtmi";
             this.txtmi.ReadOnly = true;
             this.txtmi.Size = new System.Drawing.Size(250, 21);
@@ -353,7 +355,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(344, 78);
+            this.label4.Location = new System.Drawing.Point(377, 78);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(95, 12);
             this.label4.TabIndex = 6;
@@ -364,7 +366,7 @@
             this.txtbao.Location = new System.Drawing.Point(60, 29);
             this.txtbao.Name = "txtbao";
             this.txtbao.ReadOnly = true;
-            this.txtbao.Size = new System.Drawing.Size(214, 21);
+            this.txtbao.Size = new System.Drawing.Size(272, 21);
             this.txtbao.TabIndex = 5;
             // 
             // label3
@@ -378,7 +380,7 @@
             // 
             // txtbom
             // 
-            this.txtbom.Location = new System.Drawing.Point(439, 7);
+            this.txtbom.Location = new System.Drawing.Point(472, 7);
             this.txtbom.Name = "txtbom";
             this.txtbom.ReadOnly = true;
             this.txtbom.Size = new System.Drawing.Size(250, 21);
@@ -387,7 +389,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(338, 12);
+            this.label2.Location = new System.Drawing.Point(371, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 12);
             this.label2.TabIndex = 2;
@@ -581,7 +583,7 @@
             // 
             // gvdtl
             // 
-            this.gvdtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
@@ -596,37 +598,50 @@
             this.ts1,
             this.tmAdd,
             this.ts2,
-            this.tmdel});
+            this.tmdel,
+            this.ts3,
+            this.tmshowhistory});
             this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(149, 82);
+            this.Menu.Size = new System.Drawing.Size(245, 110);
             // 
             // tmReplace
             // 
             this.tmReplace.Name = "tmReplace";
-            this.tmReplace.Size = new System.Drawing.Size(148, 22);
+            this.tmReplace.Size = new System.Drawing.Size(268, 22);
             this.tmReplace.Text = "替换此行记录";
             // 
             // ts1
             // 
             this.ts1.Name = "ts1";
-            this.ts1.Size = new System.Drawing.Size(145, 6);
+            this.ts1.Size = new System.Drawing.Size(265, 6);
             // 
             // tmAdd
             // 
             this.tmAdd.Name = "tmAdd";
-            this.tmAdd.Size = new System.Drawing.Size(148, 22);
+            this.tmAdd.Size = new System.Drawing.Size(268, 22);
             this.tmAdd.Text = "新增记录";
             // 
             // ts2
             // 
             this.ts2.Name = "ts2";
-            this.ts2.Size = new System.Drawing.Size(145, 6);
+            this.ts2.Size = new System.Drawing.Size(265, 6);
             // 
             // tmdel
             // 
             this.tmdel.Name = "tmdel";
-            this.tmdel.Size = new System.Drawing.Size(148, 22);
+            this.tmdel.Size = new System.Drawing.Size(268, 22);
             this.tmdel.Text = "删除明细行";
+            // 
+            // ts3
+            // 
+            this.ts3.Name = "ts3";
+            this.ts3.Size = new System.Drawing.Size(265, 6);
+            // 
+            // tmshowhistory
+            // 
+            this.tmshowhistory.Name = "tmshowhistory";
+            this.tmshowhistory.Size = new System.Drawing.Size(244, 22);
+            this.tmshowhistory.Text = "获取新产品成本报价单历史记录";
             // 
             // ShowDetailFrm
             // 
@@ -711,7 +726,9 @@
         private System.Windows.Forms.TextBox txtpeitotal;
         private System.Windows.Forms.Label label15;
         public System.Windows.Forms.TextBox txtcust;
-        private System.Windows.Forms.LinkLabel llcust;
         public System.Windows.Forms.DataGridView gvdtl;
+        public System.Windows.Forms.LinkLabel llcust;
+        public System.Windows.Forms.ToolStripSeparator ts3;
+        public System.Windows.Forms.ToolStripMenuItem tmshowhistory;
     }
 }

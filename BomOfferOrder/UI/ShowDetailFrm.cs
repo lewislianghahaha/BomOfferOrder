@@ -12,26 +12,28 @@ namespace BomOfferOrder.UI
         ShowMaterialDetailFrm showMaterial=new ShowMaterialDetailFrm();
 
         #region 变量参数
-            //定义单据状态(C:创建 R:读取)
-            private string _funState;
-            //获取‘原材料’DT
-            private DataTable _materialdt;
-            //保存需要进行删除的行记录(提交时使用) 注:状态为R读取时才适用
-            private DataTable _deldt;
+        //定义单据状态(C:创建 R:读取)
+        private string _funState;
+        //获取‘原材料’DT
+        private DataTable _materialdt;
+        //保存需要进行删除的行记录(提交时使用) 注:状态为R读取时才适用
+        private DataTable _deldt;
 
-            //保存查询出来的GridView记录
-            private DataTable _dtl;
-            //保存查询出来的角色权限记录
-            private DataTable _userdt;
-            //返回所记录的Headid
-            private int _headid;
+        //保存查询出来的GridView记录
+        private DataTable _dtl;
+        //保存查询出来的角色权限记录
+        private DataTable _userdt;
+        //返回所记录的Headid
+        private int _headid;
+        //返回所记录的Typeid（单据类型ID=>0:BOM成本报价单 1:新产品成本报价单）
+        private int _typeid;
 
-            //记录当前页数(GridView页面跳转使用)
-            private int _pageCurrent = 1;
-            //记录计算出来的总页数(GridView页面跳转使用)
-            private int _totalpagecount;
-            //记录初始化标记(GridView页面跳转 初始化时使用)
-            private bool _pageChange;
+        //记录当前页数(GridView页面跳转使用)
+        private int _pageCurrent = 1;
+        //记录计算出来的总页数(GridView页面跳转使用)
+        private int _totalpagecount;
+        //记录初始化标记(GridView页面跳转 初始化时使用)
+        private bool _pageChange;
         #endregion
 
         #region Get
@@ -43,6 +45,10 @@ namespace BomOfferOrder.UI
         /// 返回所记录的Headid
         /// </summary>
         public int Headid=> _headid;
+        /// <summary>
+        /// 返回单据
+        /// </summary>
+        public int Typeid => _typeid;
         #endregion
 
         public ShowDetailFrm()
@@ -59,6 +65,7 @@ namespace BomOfferOrder.UI
             txtren.Leave += Txtren_Leave;
             txtbaochenben.Leave += Txtbaochenben_Leave;
             tmdel.Click += Tmdel_Click;
+            tmshowhistory.Click += Tmshowhistory_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -270,6 +277,24 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 获取新产品BOM明细记录
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmshowhistory_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        /// <summary>
         /// 将相关值根据获取过来的DT填充至对应的项内
         /// </summary>
         /// <param name="funState"></param>
@@ -279,7 +304,7 @@ namespace BomOfferOrder.UI
         {
             //将‘原材料’DT赋值至变量内
             _materialdt = materialdt;
-
+            
             try
             {
                 //单据状态:创建 C
@@ -287,6 +312,9 @@ namespace BomOfferOrder.UI
                 {
                     //将单据状态获取至_funState变量内
                     _funState = funState;
+                    //记录单据类型ID 单据类型ID(0:BOM成本报价单 1:新产品成本报价单)
+                    _typeid = GlobalClasscs.Fun.FunctionName == "" ? 0 : 1;
+
                     FunStateCUse(funState,dt);
                 }
                 //单据状态:读取 R
@@ -321,9 +349,13 @@ namespace BomOfferOrder.UI
             txtren.Text = "0";
 
             //当要创建的窗体为‘空白报价单’时,不需执行以下操作
-            if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct") return;
+            if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct")
+            {
+                //将临时表(空行记录)插入到GridView内
+                OnInitialize(resultdt);
+            }
             //判断若是NewProduct的话,就只将‘产品名称’,‘包装规格’ 以及 ‘产品密度’赋值上就可以;明细内容不用理会
-            if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+            else if (GlobalClasscs.Fun.FunctionName == "NewProduct")
             {
                 txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);   //产品名称
                 txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);    //包装规格
@@ -345,6 +377,7 @@ namespace BomOfferOrder.UI
                 //根据指定值将相关项进行改变指定文本框内的值
                 GenerateValue();
             }
+
             #region Hide 原包装成本公式
             //包装成本 公式:表头物料单价/包装规格/1.13
             //txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtprice.Text) / 
@@ -365,6 +398,7 @@ namespace BomOfferOrder.UI
             _headid = Convert.ToInt32(sourcedt.Rows[0][8]);                 //Headid
             txtname.Text = Convert.ToString(sourcedt.Rows[0][9]);           //产品名称
             txtbao.Text = Convert.ToString(sourcedt.Rows[0][10]);           //包装规格
+            _typeid = 0;//单据类型ID
 
             txtmi.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][11]),4));            //产品密度(KG/L)
             txtmaterial.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][12]),4));      //材料成本(不含税)
@@ -380,6 +414,7 @@ namespace BomOfferOrder.UI
             txtbom.Text = Convert.ToString(sourcedt.Rows[0][21]);           //对应BOM版本编号
 
             txtprice.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][22]),4));         //产品成本含税
+            txtcust.Text = "";   //客户名称
 
             //设置及刷新GridView
             OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
@@ -444,10 +479,10 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void ControlGridViewisShow()
         {
-            gvdtl.Columns[0].Visible = false;  //EntryID
-            gvdtl.Columns[1].Visible = false;  //物料ID
-            gvdtl.Columns[2].ReadOnly = true;  //物料编码
-            gvdtl.Columns[3].ReadOnly = true;  //物料名称
+            gvdtl.Columns[0].Visible = false;      //EntryID
+            gvdtl.Columns[1].Visible = false;     //物料ID
+            gvdtl.Columns[2].ReadOnly = true;    //物料编码
+            gvdtl.Columns[3].ReadOnly = false;  //物料名称 
             gvdtl.Columns[6].ReadOnly = true;  //物料成本(含税)
         }
 
@@ -791,13 +826,20 @@ namespace BomOfferOrder.UI
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);
                     throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除并通过右键菜单进行添加新物料");
                 }
+                //当修改的列是‘物料名称’时,执行以下语句 todo
+                if (colindex == 3)
+                {
+                    //
+
+                }
+
                 //当修改的列是‘配方用量’或‘物料单价(含税)’时,将以下关联的值作出改变
                 if (colindex == 4 || colindex == 5)
                 {
+                    //获取当前行的配方用量(注:配方用量=所填配方用量*100 change date:20191031)
+                    var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value)*100;
                     //获取当前行的物料单价
-                    var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value);
-                    //获取当前行的配方用量
-                    var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[5].Value);
+                    var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[5].Value);
                     //计算‘物料成本(含税)’项 公式:物料单价*配方用量
                     //gvdtl.Rows[e.RowIndex].Cells[6].Value = decimal.Round(materialprice * peiqty, 4);
                     var qtytemp = decimal.Round(materialprice*peiqty,4);
@@ -831,6 +873,25 @@ namespace BomOfferOrder.UI
                 //累加‘物料成本’
                 result += Convert.ToDecimal(rows[6]);
             }
+            return result;
+        }
+
+        /// <summary>
+        /// 累加‘配方用量’
+        /// </summary>
+        /// <returns></returns>
+        private string GenerateSumpeitotal()
+        {
+            var result = string.Empty;
+            decimal tempqty = 0;
+
+            foreach (DataRow rows in _dtl.Rows)
+            {
+                if(rows[4]==DBNull.Value)continue;
+                //累加‘配方用量’
+                tempqty += Convert.ToDecimal(rows[4]);
+            }
+            result = Convert.ToString(tempqty);
             return result;
         }
 
@@ -871,6 +932,9 @@ namespace BomOfferOrder.UI
         {
             //获取累加的‘物料成本(含税)’之和
             var materialsumqty = GernerateSumQty();
+
+            //累加并获取‘配方用量’合计(add date:20191031)
+            txtpeitotal.Text = GenerateSumpeitotal();
 
             //产品成本含税
             txtprice.Text = Convert.ToString(Math.Round(materialsumqty,4));
