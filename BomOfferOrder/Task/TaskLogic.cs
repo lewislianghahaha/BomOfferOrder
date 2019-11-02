@@ -165,7 +165,14 @@ namespace BomOfferOrder.Task
                 case "0.9.2":
                     SearchUseUseid(_fid);
                     break;
-
+                //查询:新产品报价单历史记录
+                case "0.9.3":
+                    SearchOfferBomHistoryDtl(_searchid, _searchvalue);
+                    break;
+                //查询:客户记录
+                case "0.9.4":
+                    SearchK3CustomerList(_searchid, _searchvalue);
+                    break;
                 #endregion
 
                 #region 运算
@@ -313,6 +320,27 @@ namespace BomOfferOrder.Task
         {
             _resultTable = searchDt.SearchAdminUserInfo(userid);
         }
+
+        /// <summary>
+        /// 查询‘新产品报价单历史记录’
+        /// </summary>
+        /// <param name="searchid"></param>
+        /// <param name="searchvalue"></param>
+        private void SearchOfferBomHistoryDtl(int searchid, string searchvalue)
+        {
+            _resultTable = searchDt.SearchOfferBomHistoryDtl(searchid,searchvalue);
+        }
+
+        /// <summary>
+        /// 查询K3客户信息
+        /// </summary>
+        /// <param name="searchid"></param>
+        /// <param name="searchvalue"></param>
+        private void SearchK3CustomerList(int searchid, string searchvalue)
+        {
+            _resultTable = searchDt.SearchK3CustomerList(searchid, searchvalue);
+        }
+
         #endregion
 
         #region 运算相关方法

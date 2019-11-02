@@ -1,6 +1,4 @@
-﻿using System.Drawing.Printing;
-
-namespace BomOfferOrder.DB
+﻿namespace BomOfferOrder.DB
 {
     public class SqlList
     {
@@ -257,6 +255,109 @@ namespace BomOfferOrder.DB
         }
 
         /// <summary>
+        /// 查询‘新产品报价单历史记录’ (ShowMaterialDeatailFrm.cs使用)
+        /// </summary>
+        /// <param name="searchid"></param>
+        /// <param name="searchvalue"></param>
+        /// <returns></returns>
+        public string SearchBomHistory(int searchid, string searchvalue)
+        {
+            //全部查询
+            if (searchid == 0 || searchvalue == "")
+            {
+                _result = $@"
+                                SELECT DISTINCT A.MaterialID,A.MaterialCode 物料编码,A.MaterialName 物料名称,A.MaterialPrice 物料单价,c.OAorderno 对应OA流水号,b.ProductName 对应产品名称
+                                FROM dbo.T_OfferOrderEntry A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.Headid=b.Headid
+                                INNER JOIN dbo.T_OfferOrder c ON b.FId=c.FId
+                                WHERE c.Fstatus=0
+                                ORDER BY c.OAorderno,a.MaterialID
+                            ";
+            }
+            //按‘物料名称’进行查询
+            else if (searchid == 1)
+            {
+                _result = $@"
+                                SELECT DISTINCT A.MaterialID,A.MaterialCode 物料编码,A.MaterialName 物料名称,A.MaterialPrice 物料单价,c.OAorderno 对应OA流水号,b.ProductName 对应产品名称
+                                FROM dbo.T_OfferOrderEntry A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.Headid=b.Headid
+                                INNER JOIN dbo.T_OfferOrder c ON b.FId=c.FId
+                                WHERE c.Fstatus = 0
+                                AND A.MaterialName LIKE '%{searchvalue}%'
+                                ORDER BY c.OAorderno,a.MaterialID
+                            ";
+            }
+            //按‘物料编码’进行查询
+            else if (searchid == 2)
+            {
+                _result = $@"
+                                SELECT DISTINCT A.MaterialID,A.MaterialCode 物料编码,A.MaterialName 物料名称,A.MaterialPrice 物料单价,c.OAorderno 对应OA流水号,b.ProductName 对应产品名称
+                                FROM dbo.T_OfferOrderEntry A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.Headid=b.Headid
+                                INNER JOIN dbo.T_OfferOrder c ON b.FId=c.FId
+                                WHERE c.Fstatus = 0
+                                AND A.MaterialCode LIKE '%{searchvalue}%'
+                                ORDER BY c.OAorderno,a.MaterialID
+                            ";
+            }
+            //按‘OA流水号’进行查询
+            else if(searchid == 3)
+            {
+                _result = $@"
+                                SELECT DISTINCT A.MaterialID,A.MaterialCode 物料编码,A.MaterialName 物料名称,A.MaterialPrice 物料单价,c.OAorderno 对应OA流水号,b.ProductName 对应产品名称
+                                FROM dbo.T_OfferOrderEntry A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.Headid=b.Headid
+                                INNER JOIN dbo.T_OfferOrder c ON b.FId=c.FId
+                                WHERE c.Fstatus = 0
+                                AND c.OAorderno LIKE '%{searchvalue}%'
+                                ORDER BY c.OAorderno,a.MaterialID
+                            ";
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// 查询K3客户信息
+        /// </summary>
+        /// <returns></returns>
+        public string SearchK3CustomerList(int searchid, string searchvalue)
+        {
+            //全部查询
+            if (searchid == 0 || searchvalue == "")
+            {
+                _result = $@"
+                                SELECT A.FNUMBER 客户编码,B.FNAME 客户名称,a.FADDRESS 客户地址,a.f_ytc_text45 联系电话
+                                FROM dbo.T_BD_CUSTOMER A
+                                INNER JOIN dbo.T_BD_CUSTOMER_L B ON A.FCUSTID=B.FCUSTID
+                                WHERE a.FDOCUMENTSTATUS='C'
+                            ";
+            }
+            //按‘客户编码’进行查询
+            else if (searchid == 1)
+            {
+                _result = $@"
+                                SELECT A.FNUMBER 客户编码,B.FNAME 客户名称,a.FADDRESS 客户地址,a.f_ytc_text45 联系电话
+                                FROM dbo.T_BD_CUSTOMER A
+                                INNER JOIN dbo.T_BD_CUSTOMER_L B ON A.FCUSTID=B.FCUSTID
+                                WHERE a.FDOCUMENTSTATUS='C'
+                                AND A.FNUMBER LIKE '%{searchvalue}%'
+                            ";
+            }
+            //按‘客户名称’进行查询
+            else if (searchid == 2)
+            {
+                _result = $@"
+                                SELECT A.FNUMBER 客户编码,B.FNAME 客户名称,a.FADDRESS 客户地址,a.f_ytc_text45 联系电话
+                                FROM dbo.T_BD_CUSTOMER A
+                                INNER JOIN dbo.T_BD_CUSTOMER_L B ON A.FCUSTID=B.FCUSTID
+                                WHERE a.FDOCUMENTSTATUS='C'
+                                AND B.FNAME LIKE '%{searchvalue}%'
+                            ";
+            }
+            return _result;
+        }
+
+        /// <summary>
         /// 检测OA流水号是否存在
         /// </summary>
         /// <param name="orderno"></param>
@@ -364,12 +465,13 @@ namespace BomOfferOrder.DB
             {
                 case "T_OfferOrder":
                     _result = @"UPDATE dbo.T_OfferOrder SET OAorderno=@OAorderno,Fstatus=@Fstatus,ConfirmDt=@ConfirmDt,CreateDt=@CreateDt,
-                                                            CreateName=@CreateName,Useid=@Useid,UserName=@UserName
+                                                            CreateName=@CreateName,Useid=@Useid,UserName=@UserName,Typeid=@Typeid
                                 WHERE FId=@FId";
                     break;
                 case "T_OfferOrderHead":
                     _result = @"UPDATE dbo.T_OfferOrderHead SET ProductName=@ProductName,Bao=@Bao,ProductMi=@ProductMi,MaterialQty=@MaterialQty,BaoQty=@BaoQty,RenQty=@RenQty,KGQty=@KGQty,
-                                                                LQty=@LQty,FiveQty=@FiveQty,FourFiveQty=@FourFiveQty,FourQty=@FourQty,Fremark=@Fremark,FBomOrder=@FBomOrder,FPrice=@FPrice
+                                                                LQty=@LQty,FiveQty=@FiveQty,FourFiveQty=@FourFiveQty,FourQty=@FourQty,Fremark=@Fremark,FBomOrder=@FBomOrder,FPrice=@FPrice,
+                                                                CustName=@CustName
                                 WHERE Headid=@Headid
                                 ";
                     break;
@@ -405,7 +507,7 @@ namespace BomOfferOrder.DB
         /////////////////////////////////////查询端使用//////////////////////////////////////////////////////
 
         /// <summary>
-        /// Main查询及查询端使用
+        /// Main查询及查询端使用(注:当createname为空时,就表示查询端使用,反之是Main主窗体页使用)
         /// </summary>
         /// <returns></returns>
         public string SearchBomList(int typeid,string value,string cratename)
@@ -554,11 +656,11 @@ namespace BomOfferOrder.DB
         public string SearchBomDtl(int fid)
         {
             _result = $@"
-                            SELECT a.FId,a.OAorderno,a.Fstatus,a.CreateDt,a.ConfirmDt,a.CreateName,
+                            SELECT a.FId,a.OAorderno,a.Fstatus,a.CreateDt,a.ConfirmDt,a.CreateName,a.Typeid,
 
 	                               b.Headid,b.ProductName,b.Bao,b.ProductMi,b.MaterialQty,b.BaoQty,
 	                               b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
-	                               b.Fremark,b.FBomOrder,b.FPrice,
+	                               b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
 
 	                               c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.MaterialPrice,c.MaterialAmount
 	    
@@ -629,6 +731,8 @@ namespace BomOfferOrder.DB
                         ";
             return _result;
         }
+
+
 
 
         //////////////////////////////////////////////////权限使用////////////////////////////////////////////////////////

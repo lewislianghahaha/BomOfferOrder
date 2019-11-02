@@ -38,9 +38,9 @@ namespace BomOfferOrder.Task
                 //过滤得出不相同的‘产品名称’临时表
                 foreach (DataRow rows in souredt.Rows)
                 {
-                    if(bomproductorderdt.Select("ProductName='" + rows[9] + "'").Length>0) continue;
+                    if(bomproductorderdt.Select("ProductName='" + rows[10] + "'").Length>0) continue;
                     var newrow = bomproductorderdt.NewRow();
-                    newrow[0] = rows[9];
+                    newrow[0] = rows[10];
                     bomproductorderdt.Rows.Add(newrow);
                 }
 
@@ -248,6 +248,7 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@CreateName", SqlDbType.NVarChar, 100, "CreateName");
                     da.UpdateCommand.Parameters.Add("@Useid", SqlDbType.Int, 8, "Useid");
                     da.UpdateCommand.Parameters.Add("@UserName", SqlDbType.NVarChar, 200, "UserName");
+                    da.UpdateCommand.Parameters.Add("@Typeid",SqlDbType.Int,8, "Typeid");
                     break;
                 case "T_OfferOrderHead":
                     da.UpdateCommand.Parameters.Add("@Headid", SqlDbType.Int, 8, "Headid");
@@ -265,6 +266,7 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@Fremark", SqlDbType.NVarChar, 500, "Fremark");
                     da.UpdateCommand.Parameters.Add("@FBomOrder", SqlDbType.NVarChar, 500, "FBomOrder");
                     da.UpdateCommand.Parameters.Add("@FPrice", SqlDbType.Decimal, 4, "FPrice");
+                    da.UpdateCommand.Parameters.Add("@CustName",SqlDbType.NVarChar,300, "CustName");
                     break;
                 case "T_OfferOrderEntry":
                     da.UpdateCommand.Parameters.Add("@Entryid", SqlDbType.Int, 8, "Entryid");
@@ -312,11 +314,12 @@ namespace BomOfferOrder.Task
             newrow[0] = funState == "C" ? GetFidKey() : sourcerow[0];  //FID 
             newrow[1] = sourcerow[1];                                  //流水号
             newrow[2] = sourcerow[2];                                  //单据状态
-            newrow[3] = sourcerow[3];                                  //审核日期
-            newrow[4] = sourcerow[4];                                  //创建日期
+            newrow[3] = sourcerow[4];                                  //创建日期
+            newrow[4] = sourcerow[3];                                  //审核日期
             newrow[5] = sourcerow[5];                                  //创建人
-            newrow[6] = sourcerow[6];                                  //记录当前单据使用标记
-            newrow[7] = sourcerow[7];                                  //记录当前单据使用者信息
+            newrow[6] = sourcerow[7];                                  //记录当前单据使用标记
+            newrow[7] = sourcerow[8];                                  //记录当前单据使用者信息
+            newrow[8] = sourcerow[6];                                  //单据类型ID
             dt.Rows.Add(newrow);
             return dt;
         }
@@ -332,25 +335,26 @@ namespace BomOfferOrder.Task
         private DataTable GetDataToOfferOrderHeadDt(int fid,string funState, DataTable dt, DataRow sourcerow)
         {
             //必须‘产成品名称’不在dt内,才将数据插入
-            if (dt.Select("ProductName='"+ sourcerow[9] +"'").Length == 0)
+            if (dt.Select("ProductName='"+ sourcerow[10] +"'").Length == 0)
             {
                 var newrow = dt.NewRow();
                 newrow[0] = fid;                                               //FID
-                newrow[1] = funState == "C" ? GetHeadidKey() : sourcerow[8];   //Headid 
-                newrow[2] = sourcerow[9];                                      //产品名称(物料名称)
-                newrow[3] = sourcerow[10];                                      //包装规格
-                newrow[4] = sourcerow[11];                                     //产品密度(KG/L)
-                newrow[5] = sourcerow[12];                                     //材料成本(不含税)
-                newrow[6] = sourcerow[13];                                     //包装成本
-                newrow[7] = sourcerow[14];                                     //人工及制造费用
-                newrow[8] = sourcerow[15];                                     //成本(元/KG)
-                newrow[9] = sourcerow[16];                                     //成本(元/L)
-                newrow[10] = sourcerow[17];                                    //50%报价
-                newrow[11] = sourcerow[18];                                    //45%报价
-                newrow[12] = sourcerow[19];                                    //40%报价
-                newrow[13] = sourcerow[20];                                    //备注
-                newrow[14] = sourcerow[21];                                    //对应BOM版本编号
-                newrow[15] = sourcerow[22];                                    //物料单价
+                newrow[1] = funState == "C" ? GetHeadidKey() : sourcerow[9];   //Headid 
+                newrow[2] = sourcerow[10];                                     //产品名称(物料名称)
+                newrow[3] = sourcerow[11];                                     //包装规格
+                newrow[4] = sourcerow[12];                                     //产品密度(KG/L)
+                newrow[5] = sourcerow[13];                                     //材料成本(不含税)
+                newrow[6] = sourcerow[14];                                     //包装成本
+                newrow[7] = sourcerow[15];                                     //人工及制造费用
+                newrow[8] = sourcerow[16];                                     //成本(元/KG)
+                newrow[9] = sourcerow[17];                                     //成本(元/L)
+                newrow[10] = sourcerow[18];                                    //50%报价
+                newrow[11] = sourcerow[19];                                    //45%报价
+                newrow[12] = sourcerow[20];                                    //40%报价
+                newrow[13] = sourcerow[21];                                    //备注
+                newrow[14] = sourcerow[22];                                    //对应BOM版本编号
+                newrow[15] = sourcerow[23];                                    //物料单价
+                newrow[16] = sourcerow[24];                                    //客户
                 dt.Rows.Add(newrow);
             }
             return dt;
@@ -364,13 +368,13 @@ namespace BomOfferOrder.Task
         {
             var newrow = dt.NewRow();
             newrow[0] = headid;             //Headid
-            newrow[1] = sourcerow[23];      //Entryid
-            newrow[2] = sourcerow[24];      //物料编码ID
-            newrow[3] = sourcerow[25];      //物料编码
-            newrow[4] = sourcerow[26];      //物料名称
-            newrow[5] = sourcerow[27];      //配方用量
-            newrow[6] = sourcerow[28];      //物料单价(含税)
-            newrow[7] = sourcerow[29];      //物料成本(含税)
+            newrow[1] = sourcerow[25];      //Entryid
+            newrow[2] = sourcerow[26];      //物料编码ID
+            newrow[3] = sourcerow[27];      //物料编码
+            newrow[4] = sourcerow[28];      //物料名称
+            newrow[5] = sourcerow[29];      //配方用量
+            newrow[6] = sourcerow[30];      //物料单价(含税)
+            newrow[7] = sourcerow[31];      //物料成本(含税)
             dt.Rows.Add(newrow);
             return dt;
         }

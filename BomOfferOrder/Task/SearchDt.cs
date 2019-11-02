@@ -104,7 +104,7 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 查询物料明细(物料明细添加时使用)
+        /// 查询物料明细(物料明细添加时使用 (ShowMaterialDeatailFrm.cs使用))
         /// </summary>
         /// <param name="searchid"></param>
         /// <param name="searchvalue"></param>
@@ -127,7 +127,27 @@ namespace BomOfferOrder.Task
             return Convert.ToInt32(UseSqlSearchIntoDt(1,_sqlscript).Rows[0][0])!=0;
         }
 
+        /// <summary>
+        /// 查询‘新产品报价单历史记录’DT(ShowMaterialDeatailFrm.cs使用)
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchOfferBomHistoryDtl(int searchid, string searchvalue)
+        {
+            _sqlscript = sqlList.SearchBomHistory(searchid, searchvalue);
+            return UseSqlSearchIntoDt(1,_sqlscript);
+        }
 
+        /// <summary>
+        /// 查询K3客户信息
+        /// </summary>
+        /// <param name="searchid"></param>
+        /// <param name="searchvalue"></param>
+        /// <returns></returns>
+        public DataTable SearchK3CustomerList(int searchid, string searchvalue)
+        {
+            _sqlscript = sqlList.SearchK3CustomerList(searchid, searchvalue);
+            return UseSqlSearchIntoDt(0, _sqlscript);
+        }
 
         //////////////////////////////////////////////////主窗体及查询端使用//////////////////////////////////////////////////////////
 

@@ -10,12 +10,17 @@ namespace BomOfferOrder.UI
     {
         DbList dbList=new DbList();
         ShowMaterialDetailFrm showMaterial=new ShowMaterialDetailFrm();
+        CustInfoFrm custInfo=new CustInfoFrm();
 
         #region 变量参数
         //定义单据状态(C:创建 R:读取)
         private string _funState;
         //获取‘原材料’DT
         private DataTable _materialdt;
+        //获取‘新产品报价单历史记录’DT
+        private DataTable _historydt;
+        //获取‘客户列表’DT
+        private DataTable _custinfo;
         //保存需要进行删除的行记录(提交时使用) 注:状态为R读取时才适用
         private DataTable _deldt;
 
@@ -25,8 +30,6 @@ namespace BomOfferOrder.UI
         private DataTable _userdt;
         //返回所记录的Headid
         private int _headid;
-        //返回所记录的Typeid（单据类型ID=>0:BOM成本报价单 1:新产品成本报价单）
-        private int _typeid;
 
         //记录当前页数(GridView页面跳转使用)
         private int _pageCurrent = 1;
@@ -45,10 +48,6 @@ namespace BomOfferOrder.UI
         /// 返回所记录的Headid
         /// </summary>
         public int Headid=> _headid;
-        /// <summary>
-        /// 返回单据
-        /// </summary>
-        public int Typeid => _typeid;
         #endregion
 
         public ShowDetailFrm()
@@ -65,7 +64,9 @@ namespace BomOfferOrder.UI
             txtren.Leave += Txtren_Leave;
             txtbaochenben.Leave += Txtbaochenben_Leave;
             tmdel.Click += Tmdel_Click;
-            tmshowhistory.Click += Tmshowhistory_Click;
+            tmHAdd.Click += TmHAdd_Click;
+            tmHReplace.Click += TmHReplace_Click;
+            llcust.Click += Llcust_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -160,22 +161,11 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                showMaterial.Remark = "A";
-                //初始化GridView
-                showMaterial.OnInitializeGridView(_materialdt);
-                showMaterial.StartPosition = FormStartPosition.CenterScreen;
-                showMaterial.ShowDialog();
-
-                //以下为返回相关记录回本窗体相关处理
-                //判断若返回的DT为空的话,就不需要任何效果
-                if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
-                //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行插入效果)
-                if (showMaterial.ResultTable != null || showMaterial.ResultTable.Rows.Count > 0)
-                    InsertDtToGridView(showMaterial.ResultTable);
+                InsertRecordToGridView("A");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -192,19 +182,7 @@ namespace BomOfferOrder.UI
                 if(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value == DBNull.Value) throw new Exception("空行不能进行替换,请再次选择");
                 //获取GridView内的物料编码ID
                 var materialId = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
-
-                showMaterial.Remark = "U";
-                //初始化GridView
-                showMaterial.OnInitializeGridView(_materialdt);
-                showMaterial.StartPosition=FormStartPosition.CenterScreen;
-                showMaterial.ShowDialog();
-
-                //以下为返回相关记录回本窗体相关处理
-                //判断若返回的DT为空的话,就不需要任何效果
-                if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
-                //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
-                if (showMaterial.ResultTable != null || showMaterial.ResultTable.Rows.Count > 0)
-                    UpdateDtToGridView(materialId, showMaterial.ResultTable);
+                UpdateRecordToGridView(materialId,"U");
             }
             catch (Exception ex)
             {
@@ -277,15 +255,15 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 获取新产品BOM明细记录
+        /// 获取新产品BOM明细记录-新增
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Tmshowhistory_Click(object sender, EventArgs e)
+        private void TmHAdd_Click(object sender, EventArgs e)
         {
             try
             {
-
+                InsertRecordToGridView("HA");
             }
             catch (Exception ex)
             {
@@ -293,6 +271,53 @@ namespace BomOfferOrder.UI
             }
         }
 
+        /// <summary>
+        /// 获取新产品BOM明细记录-替换
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmHReplace_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (gvdtl.SelectedRows.Count == 0) throw new Exception("请选择任意一行,再继续");
+                if (gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value == DBNull.Value) throw new Exception("空行不能进行替换,请再次选择");
+                //获取GridView内的物料编码ID
+                var materialId = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
+                UpdateRecordToGridView(materialId,"HU");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 客户
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Llcust_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //初始化GridView
+                custInfo.OnInitialize(_custinfo);
+                custInfo.StartPosition = FormStartPosition.CenterScreen;
+                custInfo.ShowDialog();
+
+                //以下为返回相关记录回本窗体相关处理
+                //判断若返回的DT为空的话,就不需要任何效果
+                if (custInfo.ResultTable == null || custInfo.ResultTable.Rows.Count == 0) return;
+                //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
+                if (custInfo.ResultTable != null || custInfo.ResultTable.Rows.Count > 0)
+                    InsertCustRecordToTxt(custInfo.ResultTable);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         /// <summary>
         /// 将相关值根据获取过来的DT填充至对应的项内
@@ -300,11 +325,17 @@ namespace BomOfferOrder.UI
         /// <param name="funState"></param>
         /// <param name="dt"></param>
         /// <param name="materialdt">原材料DT</param>
-        public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt)
+        /// <param name="historydt">新产品报价单历史记录DT</param>
+        /// <param name="custinfo">记录K3客户列表DT</param>
+        public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt)
         {
             //将‘原材料’DT赋值至变量内
             _materialdt = materialdt;
-            
+            //将‘新产品报价单历史记录’DT赋值至变量内
+            _historydt = historydt;
+            //将‘K3-客户信息’DT赋值至变量内
+            _custinfo = custinfodt;
+
             try
             {
                 //单据状态:创建 C
@@ -312,9 +343,6 @@ namespace BomOfferOrder.UI
                 {
                     //将单据状态获取至_funState变量内
                     _funState = funState;
-                    //记录单据类型ID 单据类型ID(0:BOM成本报价单 1:新产品成本报价单)
-                    _typeid = GlobalClasscs.Fun.FunctionName == "" ? 0 : 1;
-
                     FunStateCUse(funState,dt);
                 }
                 //单据状态:读取 R
@@ -388,33 +416,32 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 单据状态为R时使用
         /// </summary>
-        /// <param name="funState"></param>
-        /// <param name="sourcedt"></param>
+        /// <param name="funState">单据状态</param>
+        /// <param name="sourcedt">数据源</param>
         private void FunStateRUse(string funState,DataTable sourcedt)
         {
             //获取临时表(GridView控件时使用) 注:‘创建’及‘读取’也会使用到
             var resultdt = dbList.MakeGridViewTemp();
             //将相关值赋值给对应的文本框及GridView控件内
-            _headid = Convert.ToInt32(sourcedt.Rows[0][8]);                 //Headid
-            txtname.Text = Convert.ToString(sourcedt.Rows[0][9]);           //产品名称
-            txtbao.Text = Convert.ToString(sourcedt.Rows[0][10]);           //包装规格
-            _typeid = 0;//单据类型ID
+            _headid = Convert.ToInt32(sourcedt.Rows[0][9]);                                                  //Headid
+            txtname.Text = Convert.ToString(sourcedt.Rows[0][10]);                                           //产品名称
+            txtbao.Text = Convert.ToString(sourcedt.Rows[0][11]);                                            //包装规格
 
-            txtmi.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][11]),4));            //产品密度(KG/L)
-            txtmaterial.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][12]),4));      //材料成本(不含税)
-            txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][13]),4));    //包装成本
-            txtren.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][14]),4));           //人工及制造费用
-            txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][15]),4));            //成本(元/KG)
-            txtl.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][16]),4));             //成本(元/L)
-            txt50.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][17]),4));            //50%报价
-            txt45.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][18]),4));            //45%报价
-            txt40.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][19]),4));            //40%报价
+            txtmi.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][12]),4));            //产品密度(KG/L)
+            txtmaterial.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][13]),4));      //材料成本(不含税)
+            txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][14]),4));    //包装成本
+            txtren.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][15]),4));           //人工及制造费用
+            txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][16]),4));            //成本(元/KG)
+            txtl.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][17]),4));             //成本(元/L)
+            txt50.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][18]),4));            //50%报价
+            txt45.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][19]),4));            //45%报价
+            txt40.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][20]),4));            //40%报价
 
-            txtremark.Text = Convert.ToString(sourcedt.Rows[0][20]);        //备注
-            txtbom.Text = Convert.ToString(sourcedt.Rows[0][21]);           //对应BOM版本编号
+            txtremark.Text = Convert.ToString(sourcedt.Rows[0][21]);                                         //备注
+            txtbom.Text = Convert.ToString(sourcedt.Rows[0][22]);                                            //对应BOM版本编号
 
-            txtprice.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][22]),4));         //产品成本含税
-            txtcust.Text = "";   //客户名称
+            txtprice.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][23]),4));         //产品成本含税(物料单价)
+            txtcust.Text = Convert.ToString(sourcedt.Rows[0][24]);                                           //客户名称
 
             //设置及刷新GridView
             OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
@@ -454,13 +481,13 @@ namespace BomOfferOrder.UI
                     foreach (DataRow rows in sourcedt.Rows)
                     {
                         var newrow = resultdt.NewRow();
-                        newrow[0] = rows[23];       //EntryId
-                        newrow[1] = rows[24];       //物料编码ID
-                        newrow[2] = rows[25];       //物料编码
-                        newrow[3] = rows[26];       //物料名称
-                        newrow[4] = rows[27];       //配方用量
-                        newrow[5] = rows[28];       //物料单价(含税)
-                        newrow[6] = rows[29];       //物料成本(含税)
+                        newrow[0] = rows[25];       //EntryId
+                        newrow[1] = rows[26];       //物料编码ID
+                        newrow[2] = rows[27];       //物料编码
+                        newrow[3] = rows[28];       //物料名称
+                        newrow[4] = rows[29];       //配方用量
+                        newrow[5] = rows[30];       //物料单价(含税)
+                        newrow[6] = rows[31];       //物料成本(含税)
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -482,7 +509,7 @@ namespace BomOfferOrder.UI
             gvdtl.Columns[0].Visible = false;      //EntryID
             gvdtl.Columns[1].Visible = false;     //物料ID
             gvdtl.Columns[2].ReadOnly = true;    //物料编码
-            gvdtl.Columns[3].ReadOnly = false;  //物料名称 
+           // gvdtl.Columns[3].ReadOnly = false;  //物料名称 
             gvdtl.Columns[6].ReadOnly = true;  //物料成本(含税)
         }
 
@@ -826,7 +853,7 @@ namespace BomOfferOrder.UI
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);
                     throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除并通过右键菜单进行添加新物料");
                 }
-                //当修改的列是‘物料名称’时,执行以下语句 todo
+                //当修改的列是‘物料名称’时,执行以下语句 todo 检测所改变的fmaterialid是否已存在,若是就报异常
                 if (colindex == 3)
                 {
                     //
@@ -957,6 +984,10 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 利用指定值更新_dtl内的'物料成本(含税)'
         /// </summary>
+        /// <param name="materialprice">物料单价</param>
+        /// <param name="peiqty">配方用量</param>
+        /// <param name="fmaterialid">物料ID</param>
+        /// <param name="value">物料成本(含税) 中间值</param>
         private void UpdateGridViewValue(decimal materialprice, decimal peiqty, int fmaterialid,decimal value)
         {
             //针对_dtl循环其内容
@@ -965,11 +996,69 @@ namespace BomOfferOrder.UI
                 if (Convert.ToInt32(rows[1]) == fmaterialid)
                 {
                     _dtl.BeginInit();
-                    rows[4] = materialprice; //物料单价
-                    rows[5] = peiqty;        //配方用量
-                    rows[6] = value;         //物料成本(含税)
+                    rows[4] = peiqty;         //配方用量
+                    rows[5] = materialprice;  //物料单价
+                    rows[6] = value;          //物料成本(含税)
                     _dtl.EndInit();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 新增记录至GridView
+        /// </summary>
+        /// <param name="remark">标记 A:新增 HI:历史记录新增</param>
+        private void InsertRecordToGridView(string remark)
+        {
+            //若remark="A",数据源就采用_materialdt,反之采用_historydt
+            var sourcedt = remark == "A" ? _materialdt : _historydt;
+
+            showMaterial.Remark = remark;
+            //初始化GridView
+            showMaterial.OnInitializeGridView(sourcedt);
+            showMaterial.StartPosition = FormStartPosition.CenterScreen;
+            showMaterial.ShowDialog();
+
+            //以下为返回相关记录回本窗体相关处理
+            //判断若返回的DT为空的话,就不需要任何效果
+            if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
+            //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行插入效果)
+            if (showMaterial.ResultTable != null || showMaterial.ResultTable.Rows.Count > 0)
+                InsertDtToGridView(showMaterial.ResultTable);
+        }
+
+        /// <summary>
+        /// 更新记录至GridView
+        /// </summary>
+        /// <param name="materialId">物料ID 替换时使用</param>
+        /// <param name="remark">标记 U:替换 HU:历史记录替换</param>
+        private void UpdateRecordToGridView(int materialId, string remark)
+        {
+            //若remark="A",数据源就采用_materialdt,反之采用_historydt
+            var sourcedt = remark == "A" ? _materialdt : _historydt;
+
+            showMaterial.Remark = remark;
+            //初始化GridView
+            showMaterial.OnInitializeGridView(sourcedt);
+            showMaterial.StartPosition = FormStartPosition.CenterScreen;
+            showMaterial.ShowDialog();
+
+            //以下为返回相关记录回本窗体相关处理
+            //判断若返回的DT为空的话,就不需要任何效果
+            if (showMaterial.ResultTable == null || showMaterial.ResultTable.Rows.Count == 0) return;
+            //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
+            if (showMaterial.ResultTable != null || showMaterial.ResultTable.Rows.Count > 0)
+                UpdateDtToGridView(materialId, showMaterial.ResultTable);
+        }
+
+        /// <summary>
+        /// 插入客户信息
+        /// </summary>
+        private void InsertCustRecordToTxt(DataTable sourcedt)
+        {
+            if (sourcedt.Rows.Count > 0)
+            {
+                txtcust.Text = Convert.ToString(sourcedt.Rows[0][0]);
             }
         }
 

@@ -15,19 +15,19 @@ namespace BomOfferOrder.UI
         DbList dbList = new DbList();
 
         #region 变量参数
-            //获取remark值(替换时使用 A:新增;U:替换)
-            private string _remark;
-            //返回DT类型
-            private DataTable _resultTable;
+        //获取remark值(A:新增;U:替换;HA:获取新产品BOM明细记录-新增 HU:获取新产品BOM明细记录-替换)
+        private string _remark;
+        //返回DT类型
+        private DataTable _resultTable;
 
-            //保存查询出来的GridView记录（GridView页面跳转时使用）
-            private DataTable _dtl;
-            //记录当前页数(GridView页面跳转使用)
-            private int _pageCurrent = 1;
-            //记录计算出来的总页数(GridView页面跳转使用)
-            private int _totalpagecount;
-            //记录初始化标记(GridView页面跳转 初始化时使用)
-            private bool _pageChange;
+        //保存查询出来的GridView记录（GridView页面跳转时使用）
+        private DataTable _dtl;
+        //记录当前页数(GridView页面跳转使用)
+        private int _pageCurrent = 1;
+        //记录计算出来的总页数(GridView页面跳转使用)
+        private int _totalpagecount;
+        //记录初始化标记(GridView页面跳转 初始化时使用)
+        private bool _pageChange;
         #endregion
 
         #region Set
@@ -81,9 +81,12 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 初始化GridView信息
         /// </summary>
-        public void OnInitializeGridView(DataTable materialdt)
+        public void OnInitializeGridView(DataTable sourcedt)
         {
-            LinkGridViewPageChange(materialdt);
+            //根据_remark初始化标题名称
+            OnShowTitle();
+            //将数据源放到GridView内显示
+            LinkGridViewPageChange(sourcedt);
             //设置GridView是否显示某些列
             ControlGridViewisShow();
         }
@@ -100,6 +103,7 @@ namespace BomOfferOrder.UI
 
         /// <summary>
         /// 获取
+        /// A:新增;U:替换;HA:获取新产品BOM明细记录-新增 HU:获取新产品BOM明细记录-替换
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -111,7 +115,7 @@ namespace BomOfferOrder.UI
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
                 //获取GridView临时表
                 _resultTable = dbList.MakeGridViewTemp();
-                //当为‘新增’操作时
+                //当为‘新增’操作时-> _remark="A"时使用
                 if (_remark =="A")
                 {
                     //循环所选择的行数
@@ -125,8 +129,23 @@ namespace BomOfferOrder.UI
                         _resultTable.Rows.Add(newrow);
                     }
                 }
-                //当为‘替换’操作时
-                else
+                //当为‘新增’操作时-> _remark="HA"时使用
+                else if (_remark=="HA")
+                {
+                    //循环所选择的行数
+                    foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                    {
+                        var newrow = _resultTable.NewRow();
+                        newrow[1] = row.Cells[0].Value;     //物料编码ID
+                        newrow[2] = row.Cells[1].Value;     //物料编码
+                        newrow[3] = row.Cells[2].Value;     //物料名称
+                        newrow[5] = row.Cells[3].Value;     //物料单价
+                        _resultTable.Rows.Add(newrow);
+                    }
+                }
+
+                //当为‘替换’操作时-> _remark="U"时使用
+                else if(_remark=="U")
                 {
                     if(gvdtl.SelectedRows.Count>1) throw new Exception("只能选择一行记录进行替换,请重新选择");
                     var newrow = _resultTable.NewRow();
@@ -134,6 +153,17 @@ namespace BomOfferOrder.UI
                     newrow[2] = gvdtl.SelectedRows[0].Cells[1].Value; //物料编码
                     newrow[3] = gvdtl.SelectedRows[0].Cells[2].Value; //物料名称
                     newrow[5] = gvdtl.SelectedRows[0].Cells[6].Value; //物料单价
+                    _resultTable.Rows.Add(newrow);
+                }
+                //当为‘替换’操作时-> _remark="HU"时使用
+                else if (_remark=="HU")
+                {
+                    if (gvdtl.SelectedRows.Count > 1) throw new Exception("只能选择一行记录进行替换,请重新选择");
+                    var newrow = _resultTable.NewRow();
+                    newrow[1] = gvdtl.SelectedRows[0].Cells[0].Value; //物料编码ID
+                    newrow[2] = gvdtl.SelectedRows[0].Cells[1].Value; //物料编码
+                    newrow[3] = gvdtl.SelectedRows[0].Cells[2].Value; //物料名称
+                    newrow[5] = gvdtl.SelectedRows[0].Cells[3].Value; //物料单价
                     _resultTable.Rows.Add(newrow);
                 }
                 //完成后关闭该窗体
@@ -158,7 +188,18 @@ namespace BomOfferOrder.UI
                 var dvordertylelist = (DataRowView)comtype.Items[comtype.SelectedIndex];
                 var ordertypeId = Convert.ToInt32(dvordertylelist["Id"]);
 
-                task.TaskId = "0.2";
+                //根据不同_remark得出不同的TaskId值
+                switch (_remark)
+                {
+                    case "A":
+                    case "U":
+                        task.TaskId = "0.2";
+                        break;
+                    case "HA":
+                    case "HU":
+                        task.TaskId = "0.9.3";
+                        break;
+                }
                 task.SearchId = ordertypeId;
                 task.SearchValue = txtvalue.Text;
 
@@ -467,28 +508,73 @@ namespace BomOfferOrder.UI
                 dt.Columns.Add(dc);
             }
 
-            //创建行内容
-            for (var j = 1; j < 3; j++)
+            //若标记为A或U的话,就执行以下语句
+            if (_remark == "A" || _remark == "U")
             {
-                var dr = dt.NewRow();
-
-                switch (j)
+                //创建行内容
+                for (var j = 1; j < 3; j++)
                 {
-                    case 1:
-                        dr[0] = "1";
-                        dr[1] = "物料名称";
-                        break;
-                    case 2:
-                        dr[0] = "2";
-                        dr[1] = "物料编码";
-                        break;
+                    var dr = dt.NewRow();
+
+                    switch (j)
+                    {
+                        case 1:
+                            dr[0] = "1";
+                            dr[1] = "物料名称";
+                            break;
+                        case 2:
+                            dr[0] = "2";
+                            dr[1] = "物料编码";
+                            break;
+                    }
+                    dt.Rows.Add(dr);
                 }
-                dt.Rows.Add(dr);
+            }
+            //若标记为HA或HU的话,就执行以下语句
+            else if (_remark == "HA" || _remark == "HU")
+            {
+                //创建行内容
+                for (var j = 1; j < 3; j++)
+                {
+                    var dr = dt.NewRow();
+
+                    switch (j)
+                    {
+                        case 1:
+                            dr[0] = "1";
+                            dr[1] = "物料名称";
+                            break;
+                        case 2:
+                            dr[0] = "2";
+                            dr[1] = "物料编码";
+                            break;
+                        case 3:
+                            dr[0] = "3";
+                            dr[1] = "OA流水号";
+                            break;
+                    }
+                    dt.Rows.Add(dr);
+                }
             }
 
             comtype.DataSource = dt;
             comtype.DisplayMember = "Name"; //设置显示值
             comtype.ValueMember = "Id";    //设置默认值内码
+        }
+
+        /// <summary>
+        /// 按要求显示标题名称
+        /// </summary>
+        private void OnShowTitle()
+        {
+            if (_remark == "A" || _remark == "U")
+            {
+                this.Text = "物料明细表";
+            }
+            else
+            {
+                this.Text = "新产品报价单历史记录";
+            }
         }
 
         /// <summary>

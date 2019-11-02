@@ -33,6 +33,8 @@ namespace BomOfferOrder.UI
         private string _creatname;
         //记录读取过来的创建日期信息
         private DateTime _createtime;
+        //(单据类型ID=>0:BOM成本报价单 1:新产品成本报价单及其它单据)
+        private int _typeid;
         #endregion
 
         #region Set
@@ -64,11 +66,17 @@ namespace BomOfferOrder.UI
         {
             //初始化获取‘原材料’物料明细信息(注:添加物料明细窗体使用)
             var materialdt = OnInitializeMaterialDt();
+            //初始化获取‘新产品报价单历史记录’
+            var historydt = OnInitializeHistoryDt();
+            //初始化获取K3客户信息
+            var custinfodt = OnInitializeK3CustinfoDt();
 
             //单据状态:创建 C
             if (_funState=="C")
             {
                 _confirmMarkId = false;
+                //对_typeid进行赋值(注:(0:BOM成本报价单 1:新产品成本报价单及其它单据))
+                _typeid = GlobalClasscs.Fun.FunctionName == "" ? 0 : 1;
                 //新产品成本报价单-创建使用
                 if (GlobalClasscs.Fun.FunctionName == "NewProduct")
                 {
@@ -76,17 +84,17 @@ namespace BomOfferOrder.UI
                     if (bomdt == null)
                     {
                         GlobalClasscs.Fun.FunctionName = "NewEmptyProduct";
-                        CreateNewProductEmptyDetail(materialdt);
+                        CreateNewProductEmptyDetail(materialdt, historydt,custinfodt);
                     }
                     else
                     {
-                        CreateNewProductDeatail(bomdt, materialdt);
+                        CreateNewProductDeatail(bomdt, materialdt, historydt, custinfodt);
                     } 
                 }
                 //成本BOM报价单-创建使用
                 else
                 {
-                    CreateBomDetail(bomdt, materialdt);
+                    CreateBomDetail(bomdt, materialdt, historydt, custinfodt);
                 }
             }
             //单据状态:读取 R
@@ -99,7 +107,7 @@ namespace BomOfferOrder.UI
                 //更新_useid及username值
                 UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]),0,"");
                 //执行读取记录
-                ReadDetail(bomdt, materialdt);
+                ReadDetail(bomdt, materialdt, historydt, custinfodt);
             }
             //权限控制
             PrivilegeControl();
@@ -108,7 +116,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 新产品成本报价单-创建使用
         /// </summary>
-        private void CreateNewProductDeatail(DataTable sourcedt,DataTable materialdt)
+        private void CreateNewProductDeatail(DataTable sourcedt,DataTable materialdt,DataTable historydt, DataTable custinfodt)
         {
             //获取临时表
             var dt = dbList.MakeTemp();
@@ -127,7 +135,7 @@ namespace BomOfferOrder.UI
                     dt.Rows.Add(newrow);
                     tabname = Convert.ToString(rows[2]);
                     //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, dt, materialdt);
+                    CreateDetailFrm(tabname, dt, materialdt,historydt,custinfodt);
                     //当生成完成后将dt清空内容,待下一次使用
                     dt.Rows.Clear();
                 }
@@ -142,12 +150,14 @@ namespace BomOfferOrder.UI
         /// 空白报价单-创建使用
         /// </summary>
         /// <param name="materialdt"></param>
-        private void CreateNewProductEmptyDetail(DataTable materialdt)
+        /// <param name="historydt"></param>
+        /// <param name="custinfodt"></param>
+        private void CreateNewProductEmptyDetail(DataTable materialdt,DataTable historydt,DataTable custinfodt)
         {
             try
             {
                 //生成Tab Page及ShowDetailFrm
-                CreateDetailFrm("",null,materialdt);
+                CreateDetailFrm("",null,materialdt,historydt,custinfodt);
             }
             catch (Exception ex)
             {
@@ -158,7 +168,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 成本BOM报价单-创建使用
         /// </summary>
-        private void CreateBomDetail(DataTable sourcedt,DataTable materialdt)
+        private void CreateBomDetail(DataTable sourcedt,DataTable materialdt,DataTable historydt, DataTable custinfodt)
         {
             //获取临时表
             var dt = dbList.MakeTemp();
@@ -192,7 +202,7 @@ namespace BomOfferOrder.UI
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                        CreateDetailFrm(tabname,dt,materialdt);
+                        CreateDetailFrm(tabname,dt,materialdt,historydt,custinfodt);
                         //当生成完成后将dt清空内容,待下一次使用
                         dt.Rows.Clear();
                     }
@@ -209,7 +219,9 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="sourcedt">数据源DT</param>
         /// <param name="materialdt">原材料物料DT</param>
-        void ReadDetail(DataTable sourcedt, DataTable materialdt)
+        /// <param name="historydt"></param>
+        /// <param name="custinfodt"></param>
+        void ReadDetail(DataTable sourcedt, DataTable materialdt,DataTable historydt, DataTable custinfodt)
         {
             //创建产成品名称临时表
             var bomproductorderdt = dbList.CreateBomProductTemp();
@@ -221,9 +233,9 @@ namespace BomOfferOrder.UI
                 //过滤得出不相同的‘产品名称’临时表
                 foreach (DataRow rows in sourcedt.Rows)
                 {
-                    if (bomproductorderdt.Select("ProductName='" + rows[7] + "'").Length > 0) continue;
+                    if (bomproductorderdt.Select("ProductName='" + rows[8] + "'").Length > 0) continue;
                     var newrow = bomproductorderdt.NewRow();
-                    newrow[0] = rows[7];
+                    newrow[0] = rows[8];
                     bomproductorderdt.Rows.Add(newrow);
                 }
                 //再根据bomproductorderdt临时表进行循环
@@ -236,40 +248,42 @@ namespace BomOfferOrder.UI
                         //当‘OA流水号’为空时,就将第一行的值赋给以下对应的变量内
                         if (txtbom.Text == "")
                         {
-                            txtbom.Text = dtlrows[i][1].ToString();
-                            _fid = Convert.ToInt32(dtlrows[i][0]);
-                            _createtime = Convert.ToDateTime(dtlrows[i][3]);
-                            _creatname = Convert.ToString(dtlrows[i][5]);
+                            txtbom.Text = dtlrows[i][1].ToString();             //OA流水号
+                            _fid = Convert.ToInt32(dtlrows[i][0]);              //fid主键
+                            _createtime = Convert.ToDateTime(dtlrows[i][3]);    //创建日期
+                            _creatname = Convert.ToString(dtlrows[i][5]);       //创建人
+                            _typeid = Convert.ToInt32(dtlrows[i][6]);           //单据类型ID=>0:BOM成本报价单 1:新产品成本报价单及其它单据
                         }
                         //将记录赋值给bomdtldt内
                         var newrow = bomdtldt.NewRow();
-                        newrow[8] = dtlrows[i][6];                 //Headid
-                        newrow[9] = dtlrows[i][7];                 //产品名称
-                        newrow[10] = dtlrows[i][8];                //包装规格
-                        newrow[11] = dtlrows[i][9];                //产品密度(KG/L)
-                        newrow[12] = dtlrows[i][10];               //材料成本(不含税)
-                        newrow[13] = dtlrows[i][11];               //包装成本
-                        newrow[14] = dtlrows[i][12];               //人工及制造费用
-                        newrow[15] = dtlrows[i][13];               //成本(元/KG)
-                        newrow[16] = dtlrows[i][14];               //成本(元/L)
-                        newrow[17] = dtlrows[i][15];               //50%报价
-                        newrow[18] = dtlrows[i][16];               //45%报价
-                        newrow[19] = dtlrows[i][17];               //40%报价
-                        newrow[20] = dtlrows[i][18];               //备注
-                        newrow[21] = dtlrows[i][19];               //对应BOM版本编号
-                        newrow[22] = dtlrows[i][20];               //物料单价
+                        newrow[9] = dtlrows[i][7];                 //Headid
+                        newrow[10] = dtlrows[i][8];                //产品名称
+                        newrow[11] = dtlrows[i][9];                //包装规格
+                        newrow[12] = dtlrows[i][10];               //产品密度(KG/L)
+                        newrow[13] = dtlrows[i][11];               //材料成本(不含税)
+                        newrow[14] = dtlrows[i][12];               //包装成本
+                        newrow[15] = dtlrows[i][13];               //人工及制造费用
+                        newrow[16] = dtlrows[i][14];               //成本(元/KG)
+                        newrow[17] = dtlrows[i][15];               //成本(元/L)
+                        newrow[18] = dtlrows[i][16];               //50%报价
+                        newrow[19] = dtlrows[i][17];               //45%报价
+                        newrow[20] = dtlrows[i][18];               //40%报价
+                        newrow[21] = dtlrows[i][19];               //备注
+                        newrow[22] = dtlrows[i][20];               //对应BOM版本编号
+                        newrow[23] = dtlrows[i][21];               //产品成本含税(物料单价)
+                        newrow[24] = dtlrows[i][22];               //客户名称
 
-                        newrow[23] = dtlrows[i][21];               //Entryid
-                        newrow[24] = dtlrows[i][22];               //物料编码ID
-                        newrow[25] = dtlrows[i][23];               //物料编码
-                        newrow[26] = dtlrows[i][24];               //物料名称
-                        newrow[27] = dtlrows[i][25];               //配方用量
-                        newrow[28] = dtlrows[i][26];               //物料单价(含税)
-                        newrow[29] = dtlrows[i][27];               //物料成本(含税)
+                        newrow[25] = dtlrows[i][23];               //Entryid
+                        newrow[26] = dtlrows[i][24];               //物料编码ID
+                        newrow[27] = dtlrows[i][25];               //物料编码
+                        newrow[28] = dtlrows[i][26];               //物料名称
+                        newrow[29] = dtlrows[i][27];               //配方用量
+                        newrow[30] = dtlrows[i][28];               //物料单价(含税)
+                        newrow[31] = dtlrows[i][29];               //物料成本(含税)
                         bomdtldt.Rows.Add(newrow);
                     }
                     //将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, bomdtldt, materialdt);
+                    CreateDetailFrm(tabname, bomdtldt, materialdt,historydt,custinfodt);
                     //当生成完成后将bomdtldtdt清空内容,待下一次使用
                     bomdtldt.Rows.Clear();
                 }
@@ -285,7 +299,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 生成Tab page及对应的ShowDetailFrm
         /// </summary>
-        void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt)
+        void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt)
         {
             var newpage = new TabPage {Text = $"{tabname}"};
 
@@ -297,7 +311,7 @@ namespace BomOfferOrder.UI
                 FormBorderStyle = FormBorderStyle.None
             };
             //对ShowDetailFrm赋值
-            showDetailFrm.AddDbToFrm(_funState,dt,materialdt);
+            showDetailFrm.AddDbToFrm(_funState,dt,materialdt, historydt,custinfodt);
             showDetailFrm.Show();                   //只能使用Show()
             newpage.Controls.Add(showDetailFrm);    //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);      //将新创建的Tab Page添加至TabControl控件内
@@ -343,34 +357,34 @@ namespace BomOfferOrder.UI
                                 newrow[3] = _funState == "C" ? DateTime.Now : _createtime;                  //创建日期
                                 newrow[4] = DateTime.Now;                                                   //审核日期
                                 newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
-                                newrow[6] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
-                                newrow[7] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
-                                //(单据类型ID=>0:BOM成本报价单 1:新产品成本报价单)
+                                newrow[6] = _typeid;                                                        //单据类型ID(0:BOM成本报价单 1:新产品成本报价单及其它单据)
+                                newrow[7] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
+                                newrow[8] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
 
-                                newrow[8] = _funState == "C" ? 0 : showdetail.Headid;                       //Headid
-                                newrow[9] = showdetail.txtname.Text;                                        //产品名称(物料名称)
-                                newrow[10] = showdetail.txtbao.Text;                                        //包装规格
-                                newrow[11] = Convert.ToDecimal(showdetail.txtmi.Text);                      //产品密度(KG/L)
-                                newrow[12] = Convert.ToDecimal(showdetail.txtmaterial.Text);                //材料成本(不含税)
-                                newrow[13] = Convert.ToDecimal(showdetail.txtbaochenben.Text);              //包装成本
-                                newrow[14] = Convert.ToDecimal(showdetail.txtren.Text);                     //人工及制造费用
-                                newrow[15] = Convert.ToDecimal(showdetail.txtkg.Text);                      //成本(元/KG)
-                                newrow[16] = Convert.ToDecimal(showdetail.txtl.Text);                       //成本(元/L)
-                                newrow[17] = Convert.ToDecimal(showdetail.txt50.Text);                      //50%报价
-                                newrow[18] = Convert.ToDecimal(showdetail.txt45.Text);                      //45%报价
-                                newrow[19] = Convert.ToDecimal(showdetail.txt40.Text);                      //40%报价
-                                newrow[20] = showdetail.txtremark.Text;                                     //备注
-                                newrow[21] = showdetail.txtbom.Text;                                        //对应BOM版本编号
-                                newrow[22] = Convert.ToDecimal(showdetail.txtprice.Text);                   //物料单价
-                                //客户
+                                newrow[9] = _funState == "C" ? 0 : showdetail.Headid;                       //Headid
+                                newrow[10] = showdetail.txtname.Text;                                       //产品名称(物料名称)
+                                newrow[11] = showdetail.txtbao.Text;                                        //包装规格
+                                newrow[12] = Convert.ToDecimal(showdetail.txtmi.Text);                      //产品密度(KG/L)
+                                newrow[13] = Convert.ToDecimal(showdetail.txtmaterial.Text);                //材料成本(不含税)
+                                newrow[14] = Convert.ToDecimal(showdetail.txtbaochenben.Text);              //包装成本
+                                newrow[15] = Convert.ToDecimal(showdetail.txtren.Text);                     //人工及制造费用
+                                newrow[16] = Convert.ToDecimal(showdetail.txtkg.Text);                      //成本(元/KG)
+                                newrow[17] = Convert.ToDecimal(showdetail.txtl.Text);                       //成本(元/L)
+                                newrow[18] = Convert.ToDecimal(showdetail.txt50.Text);                      //50%报价
+                                newrow[19] = Convert.ToDecimal(showdetail.txt45.Text);                      //45%报价
+                                newrow[20] = Convert.ToDecimal(showdetail.txt40.Text);                      //40%报价
+                                newrow[21] = showdetail.txtremark.Text;                                     //备注
+                                newrow[22] = showdetail.txtbom.Text;                                        //对应BOM版本编号
+                                newrow[23] = Convert.ToDecimal(showdetail.txtprice.Text);                   //物料单价
+                                newrow[24] = showdetail.txtcust.Text;                                       //客户
 
-                                newrow[23] = rows[0];                                                       //Entryid
-                                newrow[24] = rows[1];                                                       //物料编码ID
-                                newrow[25] = rows[2];                                                       //物料编码
-                                newrow[26] = rows[3];                                                       //物料名称
-                                newrow[27] = rows[4];                                                       //配方用量
-                                newrow[28] = rows[5];                                                       //物料单价(含税)
-                                newrow[29] = rows[6];                                                       //物料成本(含税)
+                                newrow[25] = rows[0];                                                       //Entryid
+                                newrow[26] = rows[1];                                                       //物料编码ID
+                                newrow[27] = rows[2];                                                       //物料编码
+                                newrow[28] = rows[3];                                                       //物料名称
+                                newrow[29] = rows[4];                                                       //配方用量
+                                newrow[30] = rows[5];                                                       //物料单价(含税)
+                                newrow[31] = rows[6];                                                       //物料成本(含税)
                                 _bomdt.Rows.Add(newrow);
                             }
                             //将各TabPages内GridView中的需要进行删除的记录合并整理
@@ -489,6 +503,30 @@ namespace BomOfferOrder.UI
         private DataTable OnInitializeMaterialDt()
         {
             task.TaskId = "0.2";
+            task.SearchId = 0;
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 初始化新产品报价单历史记录DT
+        /// </summary>
+        /// <returns></returns>
+        private DataTable OnInitializeHistoryDt()
+        {
+            task.TaskId = "0.9.3";
+            task.SearchId = 0;
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 初始化K3客户信息列表DT
+        /// </summary>
+        /// <returns></returns>
+        private DataTable OnInitializeK3CustinfoDt()
+        {
+            task.TaskId = "0.9.4";
             task.SearchId = 0;
             task.StartTask();
             return task.ResultTable;
@@ -625,7 +663,7 @@ namespace BomOfferOrder.UI
                             showdetail.gvdtl.Columns[5].Visible = false; //物料单价(含税)
                             showdetail.gvdtl.Columns[6].Visible = false; //物料成本(含税)
                         }
-                        //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见 以及 '配方用量'只读
+                        //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见 以及 '配方用量'只读 ‘物料名称’ 只读
                         if (!GlobalClasscs.User.Addid)
                         {
                             showdetail.tmReplace.Visible = false;
@@ -635,6 +673,8 @@ namespace BomOfferOrder.UI
                             showdetail.tmdel.Visible = false;
                             //‘配方用量’只读
                             showdetail.gvdtl.Columns[4].ReadOnly = true;
+                            //‘物料名称’只读
+                            showdetail.gvdtl.Columns[3].ReadOnly = true;
                         }
                         //若为‘审核’状态时,将以下控件设为不可见或只读
                         if (_confirmMarkId)
@@ -646,13 +686,16 @@ namespace BomOfferOrder.UI
                             showdetail.llcust.Enabled = false;         //将客户超连接设置为不可用
 
                             showdetail.gvdtl.ReadOnly = true;
-                            showdetail.tmReplace.Visible = false;
-                            showdetail.ts1.Visible = false;
-                            showdetail.tmAdd.Visible = false;
-                            showdetail.ts2.Visible = false;
-                            showdetail.tmdel.Visible = false;
-                            showdetail.ts3.Visible = false;
-                            showdetail.tmshowhistory.Visible = false;
+
+                            showdetail.Menu.Visible = false;
+
+                            //showdetail.tmReplace.Visible = false;
+                            //showdetail.ts1.Visible = false;
+                            //showdetail.tmAdd.Visible = false;
+                            //showdetail.ts2.Visible = false;
+                            //showdetail.tmdel.Visible = false;
+                            //showdetail.ts3.Visible = false;
+                            //showdetail.tmshowhistory.Visible = false;
                         }
                     }
                     //控制‘产品名称’及‘对应BOM版本编号’可修改

@@ -91,6 +91,9 @@
             this.tmdel = new System.Windows.Forms.ToolStripMenuItem();
             this.ts3 = new System.Windows.Forms.ToolStripSeparator();
             this.tmshowhistory = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmHAdd = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmHReplace = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
@@ -602,46 +605,67 @@
             this.ts3,
             this.tmshowhistory});
             this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(245, 110);
+            this.Menu.Size = new System.Drawing.Size(185, 110);
             // 
             // tmReplace
             // 
             this.tmReplace.Name = "tmReplace";
-            this.tmReplace.Size = new System.Drawing.Size(268, 22);
+            this.tmReplace.Size = new System.Drawing.Size(184, 22);
             this.tmReplace.Text = "替换此行记录";
             // 
             // ts1
             // 
             this.ts1.Name = "ts1";
-            this.ts1.Size = new System.Drawing.Size(265, 6);
+            this.ts1.Size = new System.Drawing.Size(181, 6);
             // 
             // tmAdd
             // 
             this.tmAdd.Name = "tmAdd";
-            this.tmAdd.Size = new System.Drawing.Size(268, 22);
+            this.tmAdd.Size = new System.Drawing.Size(184, 22);
             this.tmAdd.Text = "新增记录";
             // 
             // ts2
             // 
             this.ts2.Name = "ts2";
-            this.ts2.Size = new System.Drawing.Size(265, 6);
+            this.ts2.Size = new System.Drawing.Size(181, 6);
             // 
             // tmdel
             // 
             this.tmdel.Name = "tmdel";
-            this.tmdel.Size = new System.Drawing.Size(268, 22);
+            this.tmdel.Size = new System.Drawing.Size(184, 22);
             this.tmdel.Text = "删除明细行";
             // 
             // ts3
             // 
             this.ts3.Name = "ts3";
-            this.ts3.Size = new System.Drawing.Size(265, 6);
+            this.ts3.Size = new System.Drawing.Size(181, 6);
             // 
             // tmshowhistory
             // 
+            this.tmshowhistory.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmHAdd,
+            this.toolStripSeparator1,
+            this.tmHReplace});
             this.tmshowhistory.Name = "tmshowhistory";
-            this.tmshowhistory.Size = new System.Drawing.Size(244, 22);
-            this.tmshowhistory.Text = "获取新产品成本报价单历史记录";
+            this.tmshowhistory.Size = new System.Drawing.Size(184, 22);
+            this.tmshowhistory.Text = "获取报价单历史记录";
+            // 
+            // tmHAdd
+            // 
+            this.tmHAdd.Name = "tmHAdd";
+            this.tmHAdd.Size = new System.Drawing.Size(152, 22);
+            this.tmHAdd.Text = "新增";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // tmHReplace
+            // 
+            this.tmHReplace.Name = "tmHReplace";
+            this.tmHReplace.Size = new System.Drawing.Size(152, 22);
+            this.tmHReplace.Text = "替换";
             // 
             // ShowDetailFrm
             // 
@@ -730,5 +754,8 @@
         public System.Windows.Forms.LinkLabel llcust;
         public System.Windows.Forms.ToolStripSeparator ts3;
         public System.Windows.Forms.ToolStripMenuItem tmshowhistory;
+        private System.Windows.Forms.ToolStripMenuItem tmHAdd;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tmHReplace;
     }
 }
