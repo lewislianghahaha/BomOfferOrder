@@ -864,10 +864,20 @@ namespace BomOfferOrder.UI
                     //根据‘物料名称’放到_materialdt进行查询
                     var dtlrows = _materialdt.Select("物料名称 like '%" + materialname + "%'");
 
+                    //若没有记录的话,就执行如下
                     if (dtlrows.Length == 0)
                     {
-                        //需将不合法的行删除
-                        gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
+                        //当materialid为0时,即为新建操作,将已填写的行删除即可
+                        if (materialid == 0)
+                        {
+                            //需将不合法的行删除
+                            gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
+                        }
+                        //若materialid不为0,表示为更新操作,即将原来的‘物料名称’还原,并作异常提示
+                        else
+                        {
+                            gvdtl.Rows[e.RowIndex].Cells[3].Value = _materialdt.Select("FMATERIALID='" + materialid + "'");
+                        }
                         throw new Exception($"找不到关于'{materialname}'物料名称的相关记录, \n 请重新进行填写");
                     }
                     //若只有一行的话,就执行以下
