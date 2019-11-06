@@ -161,7 +161,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                InsertRecordToGridView("A");
+                InsertRecordToGridView("A",null);
             }
             catch (Exception ex)
             {
@@ -182,7 +182,7 @@ namespace BomOfferOrder.UI
                 if(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value == DBNull.Value) throw new Exception("空行不能进行替换,请再次选择");
                 //获取GridView内的物料编码ID
                 var materialId = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
-                UpdateRecordToGridView(materialId,"U");
+                UpdateRecordToGridView(materialId,"U",null);
             }
             catch (Exception ex)
             {
@@ -263,7 +263,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                InsertRecordToGridView("HA");
+                InsertRecordToGridView("HA",null);
             }
             catch (Exception ex)
             {
@@ -284,7 +284,7 @@ namespace BomOfferOrder.UI
                 if (gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value == DBNull.Value) throw new Exception("空行不能进行替换,请再次选择");
                 //获取GridView内的物料编码ID
                 var materialId = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
-                UpdateRecordToGridView(materialId,"HU");
+                UpdateRecordToGridView(materialId,null,"HU");
             }
             catch (Exception ex)
             {
@@ -326,7 +326,7 @@ namespace BomOfferOrder.UI
         /// <param name="dt"></param>
         /// <param name="materialdt">原材料DT</param>
         /// <param name="historydt">新产品报价单历史记录DT</param>
-        /// <param name="custinfo">记录K3客户列表DT</param>
+        /// <param name="custinfodt">记录K3客户列表DT</param>
         public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt)
         {
             //将‘原材料’DT赋值至变量内
@@ -841,27 +841,57 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void Gvdtl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            var colindex = 00;
+            //定义物料ID变量
+            var materialid = 0;
 
             try
             {
-                colindex = e.ColumnIndex;
-                //判断若所选中的行中的Materialid没有值,即不能执行运算
-                if (gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value)
+                var colindex = e.ColumnIndex;
+                //判断若所选中的行中的Materialid没有值(注:并且所填的项不为‘物料名称’),即不能执行运算
+                if (gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value && colindex!=3)
                 {
                     //需将不合法的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);
                     throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除并通过右键菜单进行添加新物料");
                 }
-                //当修改的列是‘物料名称’时,执行以下语句 todo 检测所改变的fmaterialid是否已存在,若是就报异常
+                //当修改的列是‘物料名称’时,执行以下语句
                 if (colindex == 3)
                 {
-                    //
+                    //获取该行的‘物料ID’,更新使用
+                    materialid = gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value);
+                    //获取所填写的‘物料名称’记录
+                    var materialname = Convert.ToString(gvdtl.Rows[e.RowIndex].Cells[3].Value);
+                    //根据‘物料名称’放到_materialdt进行查询
+                    var dtlrows = _materialdt.Select("物料名称 like '%" + materialname + "%'");
 
+                    if (dtlrows.Length == 0)
+                    {
+                        //需将不合法的行删除
+                        gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
+                        throw new Exception($"找不到关于'{materialname}'物料名称的相关记录, \n 请重新进行填写");
+                    }
+                    //若只有一行的话,就执行以下
+                    if(dtlrows.Length == 1)
+                    {
+                        GetMaterialDeatail(materialid,materialname,dtlrows);
+                    }
+                    //当发现有多行的话,就作出提示并执行以下语句
+                    else if (dtlrows.Length > 1)
+                    {
+                        var clickMessage = $"检测到所输入的物料名称'{materialname}'有多条可选择的记录, \n 是否继续?";
+                        if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                        {
+                            GetMaterialDeatail(materialid,materialname,dtlrows);
+                        }
+                        else
+                        {
+                            //将‘物料名称’项进行清空
+                            gvdtl.Rows[e.RowIndex].Cells[3].Value = "";
+                        }
+                    }
                 }
-
                 //当修改的列是‘配方用量’或‘物料单价(含税)’时,将以下关联的值作出改变
-                if (colindex == 4 || colindex == 5)
+                else if (colindex == 4 || colindex == 5)
                 {
                     //获取当前行的配方用量(注:配方用量=所填配方用量*100 change date:20191031)
                     var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value)*100;
@@ -874,18 +904,75 @@ namespace BomOfferOrder.UI
                     UpdateGridViewValue(materialprice,peiqty,Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value), qtytemp);
                     //根据指定值将相关项进行改变指定文本框内的值
                     GenerateValue();
-                    //操作完成后进行刷新
-                    OnInitialize(_dtl);
                 }
+                //操作完成后进行刷新
+                OnInitialize(_dtl);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         /// <summary>
-        /// 计算‘物料成本(含税)’之和
+        /// 查询及获取对应的物料信息
+        /// </summary>
+        /// 若发现一对一的关系,并且fmaterialid为空,就执行InsertDtToGridView(),反之执行UpdateDtToGridView()
+        /// 若发现一对多关系,并且fmaterialid为空,就执行InsertRecordToGridView(),反之执行UpdateRecordToGridView() 
+        /// <param name="materialid"></param>
+        /// <param name="materialname"></param>
+        /// <param name="dtlrows"></param>
+        private void GetMaterialDeatail(int materialid,string materialname,DataRow[] dtlrows)
+        {
+            var resultTable = dbList.MakeGridViewTemp();
+            
+            if (dtlrows.Length == 1)
+            {
+                //将相关结果插入至_resultTable内
+                var newrow = resultTable.NewRow();
+                newrow[1] = dtlrows[0][0];  //物料编码ID
+                newrow[2] = dtlrows[0][1];  //物料编码
+                newrow[3] = dtlrows[0][2];  //物料名称
+                newrow[5] = dtlrows[0][6];  //物料单价
+                resultTable.Rows.Add(newrow);
+
+                //执行插入
+                if (materialid == 0)
+                {
+                    //先将在GridView内填写的行删除
+                    gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
+                    //再进行插入操作
+                    InsertDtToGridView(resultTable);
+                }
+                //执行更新
+                else
+                {
+                    UpdateDtToGridView(materialid,resultTable);
+                }
+            }
+            //多行结果时执行
+            else
+            {
+                //执行插入
+                if (materialid == 0)
+                {
+                    ////先将在GridView内填写的行删除
+                    gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
+                    //再进行插入操作
+                    InsertRecordToGridView("A",materialname);
+                }
+                //执行更新
+                else
+                {
+                    UpdateRecordToGridView(materialid, "U",materialname);
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// 累加‘物料成本(含税)’
         /// </summary>
         /// <returns></returns>
         private decimal GernerateSumQty()
@@ -914,7 +1001,7 @@ namespace BomOfferOrder.UI
 
             foreach (DataRow rows in _dtl.Rows)
             {
-                if(rows[4]==DBNull.Value)continue;
+                if(rows[4]==DBNull.Value) continue;
                 //累加‘配方用量’
                 tempqty += Convert.ToDecimal(rows[4]);
             }
@@ -1008,10 +1095,21 @@ namespace BomOfferOrder.UI
         /// 新增记录至GridView
         /// </summary>
         /// <param name="remark">标记 A:新增 HI:历史记录新增</param>
-        private void InsertRecordToGridView(string remark)
+        /// <param name="materialname">物料名称</param>
+        private void InsertRecordToGridView(string remark,string materialname)
         {
+            var sourcedt=new DataTable();
+
             //若remark="A",数据源就采用_materialdt,反之采用_historydt
-            var sourcedt = remark == "A" ? _materialdt : _historydt;
+            if (remark == "A")
+            {
+                //若materialname不为空,即以此为条件查询出相关值并放到sourcedt内
+                sourcedt = materialname != "" ? GetMaterialDetailDt(materialname) : _materialdt;
+            }
+            else
+            {
+                sourcedt = _historydt;
+            }
 
             showMaterial.Remark = remark;
             //初始化GridView
@@ -1032,10 +1130,21 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="materialId">物料ID 替换时使用</param>
         /// <param name="remark">标记 U:替换 HU:历史记录替换</param>
-        private void UpdateRecordToGridView(int materialId, string remark)
+        /// <param name="materialname">物料名称</param>
+        private void UpdateRecordToGridView(int materialId, string remark,string materialname)
         {
-            //若remark="A",数据源就采用_materialdt,反之采用_historydt
-            var sourcedt = remark == "A" ? _materialdt : _historydt;
+            var sourcedt = new DataTable();
+
+            //若remark="U",数据源就采用_materialdt,反之采用_historydt
+            if (remark == "U")
+            {
+                //若materialname不为空,即以此为条件查询出相关值并放到sourcedt内
+                sourcedt = materialname != "" ? GetMaterialDetailDt(materialname) : _materialdt;
+            }
+            else
+            {
+                sourcedt = _historydt;
+            }
 
             showMaterial.Remark = remark;
             //初始化GridView
@@ -1049,6 +1158,28 @@ namespace BomOfferOrder.UI
             //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
             if (showMaterial.ResultTable != null || showMaterial.ResultTable.Rows.Count > 0)
                 UpdateDtToGridView(materialId, showMaterial.ResultTable);
+        }
+
+        /// <summary>
+        /// 根据materialname获取其明细内容
+        /// </summary>
+        /// <returns></returns>
+        private DataTable GetMaterialDetailDt(string materialname)
+        {
+            var dt = _materialdt.Clone();
+            //根据materialname在_materialdt内查询并将结果插入至dt内
+            var dtlrows = _materialdt.Select("物料名称 like '%"+ materialname +"%'");
+
+            for (var i = 0; i < dtlrows.Length; i++)
+            {
+                var newrow = dt.NewRow();
+                for (var j = 0; j < dt.Columns.Count; j++)
+                {
+                    newrow[j] = dtlrows[i][j];
+                }
+                dt.Rows.Add(newrow);
+            }
+            return dt;
         }
 
         /// <summary>

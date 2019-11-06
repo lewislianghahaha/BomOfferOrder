@@ -666,15 +666,12 @@ namespace BomOfferOrder.UI
                         //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见 以及 '配方用量'只读 ‘物料名称’ 只读
                         if (!GlobalClasscs.User.Addid)
                         {
-                            showdetail.tmReplace.Visible = false;
-                            showdetail.ts1.Visible = false;
-                            showdetail.tmAdd.Visible = false;
-                            showdetail.ts2.Visible = false;
-                            showdetail.tmdel.Visible = false;
-                            //‘配方用量’只读
-                            showdetail.gvdtl.Columns[4].ReadOnly = true;
+                            //设置‘右键菜单’不显示
+                            showdetail.Menu.Visible = false;
                             //‘物料名称’只读
                             showdetail.gvdtl.Columns[3].ReadOnly = true;
+                            //‘配方用量’只读
+                            showdetail.gvdtl.Columns[4].ReadOnly = true;
                         }
                         //若为‘审核’状态时,将以下控件设为不可见或只读
                         if (_confirmMarkId)
@@ -684,18 +681,8 @@ namespace BomOfferOrder.UI
                             showdetail.txtremark.ReadOnly = true;      //备注
 
                             showdetail.llcust.Enabled = false;         //将客户超连接设置为不可用
-
                             showdetail.gvdtl.ReadOnly = true;
-
                             showdetail.Menu.Visible = false;
-
-                            //showdetail.tmReplace.Visible = false;
-                            //showdetail.ts1.Visible = false;
-                            //showdetail.tmAdd.Visible = false;
-                            //showdetail.ts2.Visible = false;
-                            //showdetail.tmdel.Visible = false;
-                            //showdetail.ts3.Visible = false;
-                            //showdetail.tmshowhistory.Visible = false;
                         }
                     }
                     //控制‘产品名称’及‘对应BOM版本编号’可修改

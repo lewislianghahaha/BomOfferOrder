@@ -95,6 +95,8 @@ namespace BomOfferOrder.UI
                 var newrow = _resultTable.NewRow();
                 newrow[0] = gvdtl.SelectedRows[0].Cells[1].Value;  //客户名称
                 _resultTable.Rows.Add(newrow);
+                //完成后关闭该窗体
+                this.Close();
             }
             catch (Exception ex)
             {
