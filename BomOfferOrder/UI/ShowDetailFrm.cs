@@ -379,6 +379,7 @@ namespace BomOfferOrder.UI
             //当要创建的窗体为‘空白报价单’时,不需执行以下操作
             if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct")
             {
+                txtmi.Text = Convert.ToString(0);
                 //将临时表(空行记录)插入到GridView内
                 OnInitialize(resultdt);
             }
@@ -841,14 +842,11 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void Gvdtl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            //定义物料ID变量
-            var materialid = 0;
-
             try
             {
                 var colindex = e.ColumnIndex;
                 //判断若所选中的行中的Materialid没有值(注:并且所填的项不为‘物料名称’),即不能执行运算
-                if (gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value && colindex!=3)
+                if (gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value && colindex != 3)
                 {
                     //需将不合法的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);
@@ -858,7 +856,7 @@ namespace BomOfferOrder.UI
                 if (colindex == 3)
                 {
                     //获取该行的‘物料ID’,更新使用
-                    materialid = gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value);
+                    var materialid = gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value);
                     //获取所填写的‘物料名称’记录
                     var materialname = Convert.ToString(gvdtl.Rows[e.RowIndex].Cells[3].Value);
                     //根据‘物料名称’放到_materialdt进行查询
@@ -867,20 +865,18 @@ namespace BomOfferOrder.UI
                     //若没有记录的话,就执行如下
                     if (dtlrows.Length == 0)
                     {
-                        //当materialid为0时,即为新建操作,将已填写的行删除即可
-                        if (materialid == 0)
+                        if (_dtl.Rows.Count == 0)
                         {
-                            //需将不合法的行删除
                             gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
                         }
-                        //若materialid不为0,表示为更新操作,即将原来的‘物料名称’还原,并作异常提示
                         else
                         {
-                            gvdtl.Rows[e.RowIndex].Cells[3].Value = _materialdt.Select("FMATERIALID='" + materialid + "'");
+                            //刷新记录,将原来填写的值还原
+                            OnInitialize(_dtl);
                         }
                         throw new Exception($"找不到关于'{materialname}'物料名称的相关记录, \n 请重新进行填写");
                     }
-                    //若只有一行的话,就执行以下
+                    //若只有一行的话,就执行以下语句
                     if(dtlrows.Length == 1)
                     {
                         GetMaterialDeatail(materialid,materialname,dtlrows);
@@ -895,8 +891,8 @@ namespace BomOfferOrder.UI
                         }
                         else
                         {
-                            //将‘物料名称’项进行清空
-                            gvdtl.Rows[e.RowIndex].Cells[3].Value = "";
+                            //若不继续就刷新GridView
+                            OnInitialize(_dtl);
                         }
                     }
                 }
@@ -914,9 +910,9 @@ namespace BomOfferOrder.UI
                     UpdateGridViewValue(materialprice,peiqty,Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value), qtytemp);
                     //根据指定值将相关项进行改变指定文本框内的值
                     GenerateValue();
+                    //操作完成后进行刷新
+                    OnInitialize(_dtl);
                 }
-                //操作完成后进行刷新
-                OnInitialize(_dtl);
             }
             catch (Exception ex)
             {
@@ -978,8 +974,6 @@ namespace BomOfferOrder.UI
                 }
             }
         }
-
-
 
         /// <summary>
         /// 累加‘物料成本(含税)’
@@ -1068,7 +1062,7 @@ namespace BomOfferOrder.UI
 
             //成本(元/KG) 公式:材料成本+包装成本(自填)+人工制造费用(自填)
             txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text),4));
-            //成本(元/L) 公式:成本(元/KG)*产品密度
+            //成本(元/L) 公式:成本(元/KG)*产品密度(KG/L)
             txtl.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) * Convert.ToDecimal(txtmi.Text),4));
             //50%报价   公式:成本(元/KG)/(1-50/100)
             txt50.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) / Convert.ToDecimal(0.5), 4));

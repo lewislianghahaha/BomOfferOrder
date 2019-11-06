@@ -226,7 +226,8 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                if(gvdtl.RowCount==0)throw new Exception("没有明细记录,不能执行运算");
+                GlobalClasscs.Fun.FunctionName = "";
+                if (gvdtl.RowCount==0)throw new Exception("没有明细记录,不能执行运算");
                 var clickMessage = $"您所选择进行生成的物料有:'{gvdtl.RowCount}'行物料记录 \n 是否继续生成?";
 
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
@@ -272,6 +273,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                GlobalClasscs.Fun.FunctionName = "NewProduct";
                 if (gvdtl.RowCount == 0) throw new Exception("没有明细记录,不能执行运算");
                 var clickMessage = $"您所选择进行生成的物料有:'{gvdtl.RowCount}'行物料记录 \n 是否继续生成?";
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
@@ -304,6 +306,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                GlobalClasscs.Fun.FunctionName = "NewEmptyProduct";
                 var clickMessage = $"即将生成空白报价单 \n 是否继续生成?";
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {

@@ -80,16 +80,12 @@ namespace BomOfferOrder.UI
                 //新产品成本报价单-创建使用
                 if (GlobalClasscs.Fun.FunctionName == "NewProduct")
                 {
-                    //当bomdt为空时,表示生成空白报价单
-                    if (bomdt == null)
-                    {
-                        GlobalClasscs.Fun.FunctionName = "NewEmptyProduct";
-                        CreateNewProductEmptyDetail(materialdt, historydt,custinfodt);
-                    }
-                    else
-                    {
-                        CreateNewProductDeatail(bomdt, materialdt, historydt, custinfodt);
-                    } 
+                    CreateNewProductDeatail(bomdt, materialdt, historydt, custinfodt);
+                }
+                //空白报价单-创建使用
+                else if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct")
+                {
+                    CreateNewProductEmptyDetail(materialdt, historydt, custinfodt);
                 }
                 //成本BOM报价单-创建使用
                 else
@@ -666,8 +662,15 @@ namespace BomOfferOrder.UI
                         //若该用户没有设置‘可对明细物料操作’权限,即右键菜单不可见 以及 '配方用量'只读 ‘物料名称’ 只读
                         if (!GlobalClasscs.User.Addid)
                         {
-                            //设置‘右键菜单’不显示
-                            showdetail.Menu.Visible = false;
+                            //设置‘右键菜单’下的各项不显示
+                            showdetail.tmReplace.Visible = false;
+                            showdetail.ts1.Visible = false;
+                            showdetail.tmAdd.Visible = false;
+                            showdetail.ts2.Visible = false;
+                            showdetail.tmdel.Visible = false;
+                            showdetail.ts3.Visible = false;
+                            showdetail.tmshowhistory.Visible = false;
+
                             //‘物料名称’只读
                             showdetail.gvdtl.Columns[3].ReadOnly = true;
                             //‘配方用量’只读
@@ -682,11 +685,19 @@ namespace BomOfferOrder.UI
 
                             showdetail.llcust.Enabled = false;         //将客户超连接设置为不可用
                             showdetail.gvdtl.ReadOnly = true;
-                            showdetail.Menu.Visible = false;
+
+                            //设置‘右键菜单’下的各项不显示
+                            showdetail.tmReplace.Visible = false;
+                            showdetail.ts1.Visible = false;
+                            showdetail.tmAdd.Visible = false;
+                            showdetail.ts2.Visible = false;
+                            showdetail.tmdel.Visible = false;
+                            showdetail.ts3.Visible = false;
+                            showdetail.tmshowhistory.Visible = false;
                         }
                     }
                     //控制‘产品名称’及‘对应BOM版本编号’可修改
-                    else if (typeid==1)
+                    else if (typeid == 1)
                     {
                         showdetail.txtname.ReadOnly = false;
                         showdetail.txtbom.ReadOnly = false;
@@ -694,9 +705,10 @@ namespace BomOfferOrder.UI
                     //控制‘生成空白报价单’指定项的操作方式
                     else if (typeid == 2)
                     {
-                        showdetail.txtname.ReadOnly = false;
-                        showdetail.txtbom.ReadOnly = false;
+                        showdetail.txtname.ReadOnly = false;           //产品名称
+                        showdetail.txtbom.ReadOnly = false;            //对应BOM版本编号
                         showdetail.txtbao.ReadOnly = false;            //包装规格
+                        showdetail.txtmi.ReadOnly = false;             //产品密度(KG/L)
                     }
                 }
             }
