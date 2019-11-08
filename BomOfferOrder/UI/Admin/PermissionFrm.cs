@@ -109,7 +109,7 @@ namespace BomOfferOrder.UI.Admin
                 //初始化下拉框所选择的默认值
                 tmshowrows.SelectedItem = "10";
                 //定义初始化标记
-                _pageChange = true;
+                _pageChange = _pageCurrent <= 1;
                 //GridView分页
                 GridViewPageChange();
             }

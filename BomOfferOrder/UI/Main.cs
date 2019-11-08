@@ -132,8 +132,8 @@ namespace BomOfferOrder.UI
                 panel8.Visible = true;
                 //初始化下拉框所选择的默认值
                 tmshowrows.SelectedItem = "10";
-                //定义初始化标记
-                _pageChange = true;
+                //定义初始化标记(设置为不初始化)
+                _pageChange = _pageCurrent <= 1;
                 //GridView分页
                 GridViewPageChange();
             }
@@ -787,7 +787,7 @@ namespace BomOfferOrder.UI
                 //初始化BindingNavigator控件内的各子控件 及 对应初始化信息
                 if (_pageChange)
                 {
-                    bnPositionItem.Text = Convert.ToString(1);                       //初始化填充跳转页为1
+                    bnPositionItem.Text = Convert.ToString(1);                      //初始化填充跳转页为1
                     tmshowrows.Enabled = true;                                      //每页显示行数（下拉框）  
 
                     //初始化时判断;若“总页数”=1，四个按钮不可用；若>1,“下一页” “末页”按钮可用

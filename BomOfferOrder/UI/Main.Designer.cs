@@ -76,9 +76,9 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnCreateNew = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.btnCreateNew = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
@@ -308,14 +308,14 @@
             this.toolStripLabel5,
             this.tstotalrow});
             this.bngat.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.bngat.Location = new System.Drawing.Point(468, 0);
+            this.bngat.Location = new System.Drawing.Point(437, 0);
             this.bngat.MoveFirstItem = this.bnMoveFirstItem;
             this.bngat.MoveLastItem = this.bnMoveLastItem;
             this.bngat.MoveNextItem = this.bnMoveNextItem;
             this.bngat.MovePreviousItem = this.bnMovePreviousItem;
             this.bngat.Name = "bngat";
             this.bngat.PositionItem = this.bnPositionItem;
-            this.bngat.Size = new System.Drawing.Size(486, 24);
+            this.bngat.Size = new System.Drawing.Size(517, 24);
             this.bngat.TabIndex = 0;
             this.bngat.Text = "bindingNavigator1";
             // 
@@ -521,6 +521,15 @@
             this.panel4.Size = new System.Drawing.Size(956, 90);
             this.panel4.TabIndex = 0;
             // 
+            // btnCreateNew
+            // 
+            this.btnCreateNew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
+            this.btnCreateNew.Location = new System.Drawing.Point(147, -2);
+            this.btnCreateNew.Name = "btnCreateNew";
+            this.btnCreateNew.Size = new System.Drawing.Size(75, 93);
+            this.btnCreateNew.TabIndex = 2;
+            this.btnCreateNew.UseVisualStyleBackColor = true;
+            // 
             // btnCreate
             // 
             this.btnCreate.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
@@ -538,15 +547,6 @@
             this.btnSearch.Size = new System.Drawing.Size(75, 93);
             this.btnSearch.TabIndex = 0;
             this.btnSearch.UseVisualStyleBackColor = true;
-            // 
-            // btnCreateNew
-            // 
-            this.btnCreateNew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
-            this.btnCreateNew.Location = new System.Drawing.Point(147, -2);
-            this.btnCreateNew.Name = "btnCreateNew";
-            this.btnCreateNew.Size = new System.Drawing.Size(75, 93);
-            this.btnCreateNew.TabIndex = 2;
-            this.btnCreateNew.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
