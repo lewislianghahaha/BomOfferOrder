@@ -76,10 +76,10 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btngenemptynew = new System.Windows.Forms.Button();
             this.btnCreateNew = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.btngenemptynew = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
@@ -523,6 +523,15 @@
             this.panel4.Size = new System.Drawing.Size(956, 90);
             this.panel4.TabIndex = 0;
             // 
+            // btngenemptynew
+            // 
+            this.btngenemptynew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
+            this.btngenemptynew.Location = new System.Drawing.Point(217, -2);
+            this.btngenemptynew.Name = "btngenemptynew";
+            this.btngenemptynew.Size = new System.Drawing.Size(75, 93);
+            this.btngenemptynew.TabIndex = 3;
+            this.btngenemptynew.UseVisualStyleBackColor = true;
+            // 
             // btnCreateNew
             // 
             this.btnCreateNew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
@@ -549,15 +558,6 @@
             this.btnSearch.Size = new System.Drawing.Size(75, 93);
             this.btnSearch.TabIndex = 0;
             this.btnSearch.UseVisualStyleBackColor = true;
-            // 
-            // btngenemptynew
-            // 
-            this.btngenemptynew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
-            this.btngenemptynew.Location = new System.Drawing.Point(218, -2);
-            this.btngenemptynew.Name = "btngenemptynew";
-            this.btngenemptynew.Size = new System.Drawing.Size(75, 93);
-            this.btngenemptynew.TabIndex = 3;
-            this.btngenemptynew.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
