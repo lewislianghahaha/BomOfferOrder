@@ -80,7 +80,7 @@ namespace BomOfferOrder.UI
             //下拉列表使用
             OnShowTypeList();
             //判断显示生成按钮
-            CheckShowButton();
+            //CheckShowButton();
         }
 
         /// <summary>
@@ -179,9 +179,11 @@ namespace BomOfferOrder.UI
                 gvdtl.DataSource=AddsoucetoDt(temp);
                 //控制GridView单元格显示方式
                 ControlGridViewisShow(1);
-                //若添加成功,就将‘生成明细记录按钮’按钮设为‘启用’
+                //若添加成功,执行以下操作
+                //按详细情况将对应的生成按钮显示
+                CheckShowButton();
                 //按情况将对应‘生成’按钮设置为可用
-                if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+                if (GlobalClasscs.Fun.FunctionName == "N")
                 {
                     btngennew.Enabled = true;
                 }
@@ -226,7 +228,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                GlobalClasscs.Fun.FunctionName = "";
                 if (gvdtl.RowCount==0)throw new Exception("没有明细记录,不能执行运算");
                 var clickMessage = $"您所选择进行生成的物料有:'{gvdtl.RowCount}'行物料记录 \n 是否继续生成?";
 
@@ -273,7 +274,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                GlobalClasscs.Fun.FunctionName = "NewProduct";
                 if (gvdtl.RowCount == 0) throw new Exception("没有明细记录,不能执行运算");
                 var clickMessage = $"您所选择进行生成的物料有:'{gvdtl.RowCount}'行物料记录 \n 是否继续生成?";
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
@@ -306,7 +306,8 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                GlobalClasscs.Fun.FunctionName = "NewEmptyProduct";
+                //将功能变量设置为E-空白报价单标记
+                GlobalClasscs.Fun.EmptyFunctionName = "E";
                 var clickMessage = $"即将生成空白报价单 \n 是否继续生成?";
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
@@ -737,7 +738,8 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void CheckShowButton()
         {
-            if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+            //若功能变量为N的话,表示要将‘空白报价单’或‘新产品报价单’的按钮显示
+            if (GlobalClasscs.Fun.FunctionName == "N")
             {
                 btngennew.Visible = true;
                 btngenerate.Visible = false;

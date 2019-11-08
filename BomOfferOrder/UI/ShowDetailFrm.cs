@@ -376,35 +376,39 @@ namespace BomOfferOrder.UI
             //人工制造费用(自填)               
             txtren.Text = "0";
 
-            //当要创建的窗体为‘空白报价单’时,不需执行以下操作
-            if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct")
+            //判断若是NewProduct的话,就只将‘产品名称’,‘包装规格’ 以及 ‘产品密度’赋值上就可以;明细内容不用理会
+
+            //空白报价单-创建使用
+            if (sourcedt == null)
             {
                 txtmi.Text = Convert.ToString(0);
                 //将临时表(空行记录)插入到GridView内
                 OnInitialize(resultdt);
             }
-            //判断若是NewProduct的话,就只将‘产品名称’,‘包装规格’ 以及 ‘产品密度’赋值上就可以;明细内容不用理会
-            else if (GlobalClasscs.Fun.FunctionName == "NewProduct")
-            {
-                txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);   //产品名称
-                txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);    //包装规格
-                txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);     //产品密度
-                //将临时表(空行记录)插入到GridView内
-                OnInitialize(resultdt);
-            }
-            //反之,执行“生成成本BOM报价单”代码
             else
             {
-                //将相关值赋值给对应的文本框及GridView控件内
-                txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);     //产品名称
-                txtbom.Text = Convert.ToString(sourcedt.Rows[0][2]);      //BOM编号
-                txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);      //包装规格
-                txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);       //产品密度
-                //txtprice.Text = Convert.ToString(sourcedt.Rows[0][11]); //产品成本含税
-                //设置及刷新GridView
-                OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
-                //根据指定值将相关项进行改变指定文本框内的值
-                GenerateValue();
+                //新产品成本报价单-创建使用
+                if (GlobalClasscs.Fun.FunctionName == "N")
+                {
+                    txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);   //产品名称
+                    txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);    //包装规格
+                    txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);     //产品密度
+                    //将临时表(空行记录)插入到GridView内
+                    OnInitialize(resultdt);
+                }
+                //“生成成本BOM报价单”代码
+                else
+                {
+                    //将相关值赋值给对应的文本框及GridView控件内
+                    txtname.Text = Convert.ToString(sourcedt.Rows[0][1]);     //产品名称
+                    txtbom.Text = Convert.ToString(sourcedt.Rows[0][2]);      //BOM编号
+                    txtbao.Text = Convert.ToString(sourcedt.Rows[0][3]);      //包装规格
+                    txtmi.Text = Convert.ToString(sourcedt.Rows[0][4]);       //产品密度
+                    //设置及刷新GridView
+                    OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
+                    //根据指定值将相关项进行改变指定文本框内的值
+                    GenerateValue();
+                }
             }
 
             #region Hide 原包装成本公式
@@ -429,7 +433,6 @@ namespace BomOfferOrder.UI
             txtbao.Text = Convert.ToString(sourcedt.Rows[0][11]);                                            //包装规格
 
             txtmi.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][12]),4));            //产品密度(KG/L)
-            txtmaterial.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][13]),4));      //材料成本(不含税)
             txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][14]),4));    //包装成本
             txtren.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][15]),4));           //人工及制造费用
             txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][16]),4));            //成本(元/KG)
@@ -440,12 +443,18 @@ namespace BomOfferOrder.UI
 
             txtremark.Text = Convert.ToString(sourcedt.Rows[0][21]);                                         //备注
             txtbom.Text = Convert.ToString(sourcedt.Rows[0][22]);                                            //对应BOM版本编号
-
-            txtprice.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][23]),4));         //产品成本含税(物料单价)
             txtcust.Text = Convert.ToString(sourcedt.Rows[0][24]);                                           //客户名称
 
             //设置及刷新GridView
             OnInitialize(GetGridViewdt(funState, sourcedt, resultdt));
+            //累加并获取‘配方用量’合计
+            txtpeitotal.Text = GenerateSumpeitotal();
+            //计算物料成本(含税)之和
+            var materialsumqty = GernerateSumQty();
+            //产品成本含税(物料单价)
+            txtprice.Text = Convert.ToString(Math.Round(materialsumqty, 4));
+            //材料成本(不含税)
+            txtmaterial.Text= Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
         }
 
         /// <summary>
@@ -466,13 +475,14 @@ namespace BomOfferOrder.UI
                     foreach (DataRow rows in sourcedt.Rows)
                     {
                         var newrow = resultdt.NewRow();
-                        newrow[0] = DBNull.Value;   //EntryId
-                        newrow[1] = rows[5];        //物料编码ID
-                        newrow[2] = rows[6];        //物料编码
-                        newrow[3] = rows[7];        //物料名称
-                        newrow[4] = rows[8];        //配方用量
-                        newrow[5] = rows[10];       //物料单价(含税)
-                        newrow[6] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) , 4);  //物料成本(含税) 公式:物料单价*配方用量
+                        newrow[0] = DBNull.Value;                   //EntryId
+                        newrow[1] = rows[5];                        //物料编码ID
+                        newrow[2] = rows[6];                        //物料编码
+                        newrow[3] = rows[7];                        //物料名称
+                        newrow[4] = rows[8];                        //配方用量
+                        newrow[5] = Convert.ToDecimal(rows[8])*100; //占比
+                        newrow[6] = rows[10];                       //物料单价(含税)
+                        newrow[7] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) , 4);  //物料成本(含税) 公式:物料单价*配方用量
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -487,8 +497,9 @@ namespace BomOfferOrder.UI
                         newrow[2] = rows[27];       //物料编码
                         newrow[3] = rows[28];       //物料名称
                         newrow[4] = rows[29];       //配方用量
-                        newrow[5] = rows[30];       //物料单价(含税)
-                        newrow[6] = rows[31];       //物料成本(含税)
+                        newrow[5] = rows[30];       //占比
+                        newrow[6] = rows[31];       //物料单价(含税)
+                        newrow[7] = rows[32];       //物料成本(含税)
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -510,8 +521,8 @@ namespace BomOfferOrder.UI
             gvdtl.Columns[0].Visible = false;      //EntryID
             gvdtl.Columns[1].Visible = false;     //物料ID
             gvdtl.Columns[2].ReadOnly = true;    //物料编码
-           // gvdtl.Columns[3].ReadOnly = false;  //物料名称 
-            gvdtl.Columns[6].ReadOnly = true;  //物料成本(含税)
+            gvdtl.Columns[5].ReadOnly = true;   //占比
+            gvdtl.Columns[7].ReadOnly = true;  //物料成本(含税)
         }
 
         /// <summary>
@@ -780,8 +791,8 @@ namespace BomOfferOrder.UI
                     newrow[1] = rows[1];        //物料编码ID
                     newrow[2] = rows[2];        //物料编码
                     newrow[3] = rows[3];        //物料名称
-                    newrow[5] = rows[5];        //物料单价
-                    newrow[6] = 0;              //物料成本(设置为0)
+                    newrow[6] = rows[5];        //物料单价
+                    newrow[7] = 0;              //物料成本(设置为0)
                     gridViewdt.Rows.Add(newrow);
                 }
                 //操作完成后进行刷新
@@ -821,9 +832,10 @@ namespace BomOfferOrder.UI
                     rows[1] = sourcedt.Rows[0][1];  //物料编码ID
                     rows[2] = sourcedt.Rows[0][2];  //物料编码
                     rows[3] = sourcedt.Rows[0][3];  //物料名称
-                    rows[4] = DBNull.Value;         //用量(清空)
-                    rows[5] = sourcedt.Rows[0][5];  //物料单价
-                    rows[6] = 0;                    //物料成本(设置为0)
+                    rows[4] = DBNull.Value;         //配方用量(清空)
+                    rows[5] = DBNull.Value;         //占比(清空)
+                    rows[6] = sourcedt.Rows[0][5];  //物料单价
+                    rows[7] = 0;                    //物料成本(设置为0)
                     gridViewdt.EndInit();
                 }
                 //操作完成后进行刷新
@@ -897,17 +909,18 @@ namespace BomOfferOrder.UI
                     }
                 }
                 //当修改的列是‘配方用量’或‘物料单价(含税)’时,将以下关联的值作出改变
-                else if (colindex == 4 || colindex == 5)
+                else if (colindex == 4 || colindex == 6)
                 {
-                    //获取当前行的配方用量(注:配方用量=所填配方用量*100 change date:20191031)
-                    var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value)*100;
+                    //获取当前行的配方用量
+                    var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value);
+                    //计算‘占比’=配方用量*100
+                    var ratio = peiqty*100;
                     //获取当前行的物料单价
-                    var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[5].Value);
+                    var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[6].Value == DBNull.Value ? 0 : gvdtl.Rows[e.RowIndex].Cells[6].Value);
                     //计算‘物料成本(含税)’项 公式:物料单价*配方用量
-                    //gvdtl.Rows[e.RowIndex].Cells[6].Value = decimal.Round(materialprice * peiqty, 4);
                     var qtytemp = decimal.Round(materialprice*peiqty,4);
                     //根据‘物料编码ID’更新_dtl内的对应的'物料成本(含税)' 目的:更新_dtl
-                    UpdateGridViewValue(materialprice,peiqty,Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value), qtytemp);
+                    UpdateGridViewValue(materialprice,peiqty,ratio,Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value), qtytemp);
                     //根据指定值将相关项进行改变指定文本框内的值
                     GenerateValue();
                     //操作完成后进行刷新
@@ -939,7 +952,7 @@ namespace BomOfferOrder.UI
                 newrow[1] = dtlrows[0][0];  //物料编码ID
                 newrow[2] = dtlrows[0][1];  //物料编码
                 newrow[3] = dtlrows[0][2];  //物料名称
-                newrow[5] = dtlrows[0][6];  //物料单价
+                newrow[6] = dtlrows[0][6];  //物料单价
                 resultTable.Rows.Add(newrow);
 
                 //执行插入
@@ -982,14 +995,12 @@ namespace BomOfferOrder.UI
         private decimal GernerateSumQty()
         {
             decimal result = 0;
-            //将GridView内的内容赋值到DT
-            //var gridViewdt = (DataTable)gvdtl.DataSource;
 
             foreach (DataRow rows in _dtl.Rows)
             {
-                if (rows[6] == DBNull.Value) continue;
-                //累加‘物料成本’
-                result += Convert.ToDecimal(rows[6]);
+                if (rows[7] == DBNull.Value) continue;
+                //累加‘物料成本(含税)’
+                result += Convert.ToDecimal(rows[7]);
             }
             return result;
         }
@@ -1051,13 +1062,13 @@ namespace BomOfferOrder.UI
             //获取累加的‘物料成本(含税)’之和
             var materialsumqty = GernerateSumQty();
 
-            //累加并获取‘配方用量’合计(add date:20191031)
+            //累加并获取‘配方用量’合计
             txtpeitotal.Text = GenerateSumpeitotal();
 
             //产品成本含税
             txtprice.Text = Convert.ToString(Math.Round(materialsumqty,4));
 
-            //材料成本(不含税) 公式:物料成本之和/1.13
+            //材料成本(不含税) 公式:物料成本之和(产品成本含税)/1.13
             txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
 
             //成本(元/KG) 公式:材料成本+包装成本(自填)+人工制造费用(自填)
@@ -1077,9 +1088,10 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="materialprice">物料单价</param>
         /// <param name="peiqty">配方用量</param>
+        /// <param name="ratio">占比</param>
         /// <param name="fmaterialid">物料ID</param>
         /// <param name="value">物料成本(含税) 中间值</param>
-        private void UpdateGridViewValue(decimal materialprice, decimal peiqty, int fmaterialid,decimal value)
+        private void UpdateGridViewValue(decimal materialprice, decimal peiqty, decimal ratio,int fmaterialid,decimal value)
         {
             //针对_dtl循环其内容
             foreach (DataRow rows in _dtl.Rows)
@@ -1088,8 +1100,9 @@ namespace BomOfferOrder.UI
                 {
                     _dtl.BeginInit();
                     rows[4] = peiqty;         //配方用量
-                    rows[5] = materialprice;  //物料单价
-                    rows[6] = value;          //物料成本(含税)
+                    rows[5] = ratio;          //占比
+                    rows[6] = materialprice;  //物料单价
+                    rows[7] = value;          //物料成本(含税)
                     _dtl.EndInit();
                 }
             }

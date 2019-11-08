@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Runtime.InteropServices;
 using BomOfferOrder.DB;
 
 namespace BomOfferOrder.Task
@@ -137,8 +136,9 @@ namespace BomOfferOrder.Task
                     newrow[3] = t[3];             //物料编码
                     newrow[4] = t[4];             //物料名称
                     newrow[5] = t[5];             //配方用量
-                    newrow[6] = t[6];             //物料单价(含税)
-                    newrow[7] = t[7];             //物料成本(含税)
+                    newrow[6] = t[6];             //占比
+                    newrow[7] = t[7];             //物料单价(含税)
+                    newrow[8] = t[8];             //物料成本(含税)
                     insertdtltemp.Rows.Add(newrow);
                 }
 
@@ -153,8 +153,9 @@ namespace BomOfferOrder.Task
                     newrow[3] = t[3];          //物料编码
                     newrow[4] = t[4];          //物料名称
                     newrow[5] = t[5];          //配方用量
-                    newrow[6] = t[6];          //物料单价(含税)
-                    newrow[7] = t[7];          //物料成本(含税)
+                    newrow[6] = t[6];          //占比
+                    newrow[7] = t[7];          //物料单价(含税)
+                    newrow[8] = t[8];          //物料成本(含税)
                     updatedtltemp.Rows.Add(newrow);
                 }
 
@@ -274,6 +275,7 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@MaterialCode", SqlDbType.NVarChar, 100, "MaterialCode");
                     da.UpdateCommand.Parameters.Add("@MaterialName", SqlDbType.NVarChar, 200, "MaterialName");
                     da.UpdateCommand.Parameters.Add("@PeiQty", SqlDbType.Decimal, 4, "PeiQty");
+                    da.UpdateCommand.Parameters.Add("@ratioQty", SqlDbType.Decimal, 4, "ratioQty");
                     da.UpdateCommand.Parameters.Add("@MaterialPrice", SqlDbType.Decimal, 4, "MaterialPrice");
                     da.UpdateCommand.Parameters.Add("@MaterialAmount", SqlDbType.Decimal, 4, "MaterialAmount");
                     break;
@@ -373,8 +375,9 @@ namespace BomOfferOrder.Task
             newrow[3] = sourcerow[27];      //物料编码
             newrow[4] = sourcerow[28];      //物料名称
             newrow[5] = sourcerow[29];      //配方用量
-            newrow[6] = sourcerow[30];      //物料单价(含税)
-            newrow[7] = sourcerow[31];      //物料成本(含税)
+            newrow[6] = sourcerow[30];      //占比
+            newrow[7] = sourcerow[31];      //物料单价(含税)
+            newrow[8] = sourcerow[32];      //物料成本(含税)
             dt.Rows.Add(newrow);
             return dt;
         }
@@ -462,7 +465,6 @@ namespace BomOfferOrder.Task
         {
             return generateDt.GetNewUseridValue();
         }
-
 
     }
 }

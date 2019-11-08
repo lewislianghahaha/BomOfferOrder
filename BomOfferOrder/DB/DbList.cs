@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Data;
 
 namespace BomOfferOrder.DB
@@ -103,10 +102,6 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "物料单价";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    //case 11:
-                    //    dc.ColumnName = "表头物料单价";
-                    //    dc.DataType = Type.GetType("System.Decimal");
-                    //    break;
                 }
                 dt.Columns.Add(dc);
             }
@@ -120,7 +115,7 @@ namespace BomOfferOrder.DB
         public DataTable MakeGridViewTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 7; i++)
+            for (var i = 0; i < 8; i++)
             {
                 var dc = new DataColumn();
 
@@ -148,10 +143,14 @@ namespace BomOfferOrder.DB
                         dc.DataType = Type.GetType("System.String");
                         break;
                     case 5:
-                        dc.ColumnName = "物料单价(含税)";
+                        dc.ColumnName = "占比";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     case 6:
+                        dc.ColumnName = "物料单价(含税)";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 7:
                         dc.ColumnName = "物料成本(含税)";
                         dc.DataType = Type.GetType("System.String");
                         break;
@@ -168,7 +167,7 @@ namespace BomOfferOrder.DB
         public DataTable GetBomDtlTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 32; i++)
+            for (var i = 0; i < 33; i++)
             {
                 var dc = new DataColumn();
 
@@ -326,13 +325,18 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "PeiQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    //物料单价(含税)
+                    //占比
                     case 30:
+                        dc.ColumnName = "ratioQty";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //物料单价(含税)
+                    case 31:
                         dc.ColumnName = "MaterialPrice";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //物料成本(含税)
-                    case 31:
+                    case 32:
                         dc.ColumnName = "MaterialAmount";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
@@ -517,7 +521,7 @@ namespace BomOfferOrder.DB
         public DataTable GetOfferOrderEntryTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 8; i++)
+            for (var i = 0; i < 9; i++)
             {
                 var dc = new DataColumn();
 
@@ -553,13 +557,18 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "PeiQty";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    //物料单价(含税)
+                    //占比
                     case 6:
+                        dc.ColumnName = "ratioQty";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //物料单价(含税)
+                    case 7:
                         dc.ColumnName = "MaterialPrice";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //物料成本(含税)
-                    case 7:
+                    case 8:
                         dc.ColumnName = "MaterialAmount";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;

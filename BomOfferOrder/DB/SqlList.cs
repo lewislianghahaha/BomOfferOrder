@@ -477,7 +477,7 @@
                     break;
                 case "T_OfferOrderEntry":
                     _result = @"UPDATE dbo.T_OfferOrderEntry SET @MaterialID=@MaterialID,MaterialCode=@MaterialCode,MaterialName=@MaterialName,
-                                                                 PeiQty=@PeiQty,MaterialPrice=@MaterialPrice,MaterialAmount=@MaterialAmount
+                                                                 PeiQty=@PeiQty,ratioQty=@ratioQty,MaterialPrice=@MaterialPrice,MaterialAmount=@MaterialAmount
                                 WHERE Entryid=@Entryid
                                ";
                     break;
@@ -662,7 +662,7 @@
 	                               b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
 	                               b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
 
-	                               c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.MaterialPrice,c.MaterialAmount
+	                               c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.ratioQty,c.MaterialPrice,c.MaterialAmount
 	    
                             FROM dbo.T_OfferOrder a
                             INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId

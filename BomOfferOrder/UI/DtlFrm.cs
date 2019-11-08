@@ -76,21 +76,25 @@ namespace BomOfferOrder.UI
             {
                 _confirmMarkId = false;
                 //对_typeid进行赋值(注:(0:BOM成本报价单 1:新产品成本报价单及其它单据))
-                _typeid = GlobalClasscs.Fun.FunctionName == "" ? 0 : 1;
-                //新产品成本报价单-创建使用
-                if (GlobalClasscs.Fun.FunctionName == "NewProduct")
-                {
-                    CreateNewProductDeatail(bomdt, materialdt, historydt, custinfodt);
-                }
+                _typeid = GlobalClasscs.Fun.FunctionName == "B" ? 0 : 1;
+
                 //空白报价单-创建使用
-                else if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct")
+                if (bomdt == null)
                 {
                     CreateNewProductEmptyDetail(materialdt, historydt, custinfodt);
                 }
-                //成本BOM报价单-创建使用
                 else
                 {
-                    CreateBomDetail(bomdt, materialdt, historydt, custinfodt);
+                    //新产品成本报价单-创建使用
+                    if (GlobalClasscs.Fun.FunctionName == "N") 
+                    {
+                        CreateNewProductDeatail(bomdt, materialdt, historydt, custinfodt);
+                    }
+                    //成本BOM报价单-创建使用
+                    else
+                    {
+                        CreateBomDetail(bomdt, materialdt, historydt, custinfodt);
+                    }
                 }
             }
             //单据状态:读取 R
@@ -274,8 +278,9 @@ namespace BomOfferOrder.UI
                         newrow[27] = dtlrows[i][25];               //物料编码
                         newrow[28] = dtlrows[i][26];               //物料名称
                         newrow[29] = dtlrows[i][27];               //配方用量
-                        newrow[30] = dtlrows[i][28];               //物料单价(含税)
-                        newrow[31] = dtlrows[i][29];               //物料成本(含税)
+                        newrow[30] = dtlrows[i][28];               //占比
+                        newrow[31] = dtlrows[i][29];               //物料单价(含税)
+                        newrow[32] = dtlrows[i][30];               //物料成本(含税)
                         bomdtldt.Rows.Add(newrow);
                     }
                     //将其作为数据源生成Tab Page及ShowDetailFrm
@@ -295,7 +300,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 生成Tab page及对应的ShowDetailFrm
         /// </summary>
-        void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt)
+        private void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt)
         {
             var newpage = new TabPage {Text = $"{tabname}"};
 
@@ -371,7 +376,7 @@ namespace BomOfferOrder.UI
                                 newrow[20] = Convert.ToDecimal(showdetail.txt40.Text);                      //40%报价
                                 newrow[21] = showdetail.txtremark.Text;                                     //备注
                                 newrow[22] = showdetail.txtbom.Text;                                        //对应BOM版本编号
-                                newrow[23] = Convert.ToDecimal(showdetail.txtprice.Text);                   //物料单价
+                                newrow[23] = Convert.ToDecimal(showdetail.txtprice.Text);                   //产品成本含税(物料单价)
                                 newrow[24] = showdetail.txtcust.Text;                                       //客户
 
                                 newrow[25] = rows[0];                                                       //Entryid
@@ -379,8 +384,9 @@ namespace BomOfferOrder.UI
                                 newrow[27] = rows[2];                                                       //物料编码
                                 newrow[28] = rows[3];                                                       //物料名称
                                 newrow[29] = rows[4];                                                       //配方用量
-                                newrow[30] = rows[5];                                                       //物料单价(含税)
-                                newrow[31] = rows[6];                                                       //物料成本(含税)
+                                newrow[30] = rows[5];                                                       //占比
+                                newrow[31] = rows[6];                                                       //物料单价(含税)
+                                newrow[32] = rows[7];                                                       //物料成本(含税)
                                 _bomdt.Rows.Add(newrow);
                             }
                             //将各TabPages内GridView中的需要进行删除的记录合并整理
@@ -454,7 +460,7 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void DtlFrm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var clickMessage = !_confirmMarkId ? $"提示:单据'{txtbom.Text}'没提交, \n 其记录退出后将会消失,是否确定退出?" : $"是否退出?";
+            var clickMessage = !_confirmMarkId ? $"提示:单据'{txtbom.Text}'没提交, \n 其记录退出后将会消失,是否确定退出?" : $"是否退出? \n 注:若已审核但没有提交,已填写的记录也消失";
 
             if (e.CloseReason != CloseReason.ApplicationExitCall)
             {
@@ -481,6 +487,8 @@ namespace BomOfferOrder.UI
                     }
                     //将OA流水号文本框清空
                     txtbom.Text = "";
+                    //将GlobalClasscs.Fun.EmptyFunctionName变量清空(待下一次使用‘空白报价单’功能时再对其赋值)
+                    GlobalClasscs.Fun.EmptyFunctionName = "";
                     //允许窗体关闭
                     e.Cancel = false;
                 }
@@ -623,13 +631,9 @@ namespace BomOfferOrder.UI
             else
             {
                 //当选择的窗体是‘新产品成本报价单-创建’时执行,令指定的文本框可修改
-                if (GlobalClasscs.Fun.FunctionName == "NewProduct")
+                if (GlobalClasscs.Fun.FunctionName == "N" || GlobalClasscs.Fun.EmptyFunctionName == "E")
                 {
                     ControlTabPages(1);
-                }
-                else if (GlobalClasscs.Fun.FunctionName == "NewEmptyProduct")
-                {
-                    ControlTabPages(2);
                 }
 
                 pbimg.Visible = false;
@@ -699,16 +703,20 @@ namespace BomOfferOrder.UI
                     //控制‘产品名称’及‘对应BOM版本编号’可修改
                     else if (typeid == 1)
                     {
-                        showdetail.txtname.ReadOnly = false;
-                        showdetail.txtbom.ReadOnly = false;
-                    }
-                    //控制‘生成空白报价单’指定项的操作方式
-                    else if (typeid == 2)
-                    {
-                        showdetail.txtname.ReadOnly = false;           //产品名称
-                        showdetail.txtbom.ReadOnly = false;            //对应BOM版本编号
-                        showdetail.txtbao.ReadOnly = false;            //包装规格
-                        showdetail.txtmi.ReadOnly = false;             //产品密度(KG/L)
+                        //控制‘生成空白报价单’指定项的操作方式
+                        if (GlobalClasscs.Fun.EmptyFunctionName != "")
+                        {
+                            showdetail.txtname.ReadOnly = false;           //产品名称
+                            showdetail.txtbom.ReadOnly = false;            //对应BOM版本编号
+                            showdetail.txtbao.ReadOnly = false;            //包装规格
+                            showdetail.txtmi.ReadOnly = false;             //产品密度(KG/L)
+                        }
+                        //控制‘新产品报价单’指定项的操作方式
+                        else if (GlobalClasscs.Fun.FunctionName == "N")
+                        {
+                            showdetail.txtname.ReadOnly = false;           //产品名称
+                            showdetail.txtbom.ReadOnly = false;            //对应BOM版本编号
+                        }
                     }
                 }
             }

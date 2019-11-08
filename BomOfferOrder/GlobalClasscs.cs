@@ -12,9 +12,11 @@
             public bool Addid;           //获取权限标记-能否对明细物料操作(包括:新增 替换 以及删除)
         };
 
+        //单据标记说明:N=>新产品报价单 B=>BOM成本报价单 E=>空白报价单
         public struct FunName
         {
-            public string FunctionName;  //获取所选择的功能名称
+            public string FunctionName;
+            public string EmptyFunctionName;   //空白报价单功能使用
         }
 
         public static Account User;

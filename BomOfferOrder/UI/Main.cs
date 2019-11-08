@@ -334,7 +334,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                GlobalClasscs.Fun.FunctionName = "";
                 CreateTabPages("成本BOM报价单-创建");
             }
             catch (Exception ex)
@@ -369,7 +368,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                GlobalClasscs.Fun.FunctionName = "NewProduct";
                 CreateTabPages("新产品成本报价单-创建");  
             }
             catch (Exception ex)
@@ -463,6 +461,17 @@ namespace BomOfferOrder.UI
                     //当完成‘关闭’后,将当前页设置为'关闭'页的‘前一页’(注:若不这样设置,当关闭后会返回当前页为'首页')
                     tctotalpage.SelectedTab = tctotalpage.TabPages[id - 1];
                 }
+
+                //获取当前TabPage页的Text(重)后面的权限以及功能分支会用到   
+                switch (tctotalpage.SelectedTab.Text)
+                {
+                    case "成本BOM报价单-创建":
+                        GlobalClasscs.Fun.FunctionName = "B";
+                        break;
+                    case "新产品成本报价单-创建":
+                        GlobalClasscs.Fun.FunctionName = "N";
+                        break;
+                }
             }
         }
 
@@ -487,6 +496,7 @@ namespace BomOfferOrder.UI
                             Dock = DockStyle.Fill,
                             FormBorderStyle = FormBorderStyle.None
                         };
+                        GlobalClasscs.Fun.FunctionName = tabtext == "成本BOM报价单-创建" ? "B" : "N";
                         createFrm.Bomdt = _bomdt;
                         createFrm.Show();                                      
                         newpage.Controls.Add(createFrm);    
