@@ -79,6 +79,7 @@
             this.btnCreateNew = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
+            this.btngenemptynew = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
@@ -308,14 +309,14 @@
             this.toolStripLabel5,
             this.tstotalrow});
             this.bngat.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.bngat.Location = new System.Drawing.Point(437, 0);
+            this.bngat.Location = new System.Drawing.Point(468, 0);
             this.bngat.MoveFirstItem = this.bnMoveFirstItem;
             this.bngat.MoveLastItem = this.bnMoveLastItem;
             this.bngat.MoveNextItem = this.bnMoveNextItem;
             this.bngat.MovePreviousItem = this.bnMovePreviousItem;
             this.bngat.Name = "bngat";
             this.bngat.PositionItem = this.bnPositionItem;
-            this.bngat.Size = new System.Drawing.Size(517, 24);
+            this.bngat.Size = new System.Drawing.Size(486, 24);
             this.bngat.TabIndex = 0;
             this.bngat.Text = "bindingNavigator1";
             // 
@@ -511,6 +512,7 @@
             // 
             this.panel4.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.btngenemptynew);
             this.panel4.Controls.Add(this.btnCreateNew);
             this.panel4.Controls.Add(this.btnCreate);
             this.panel4.Controls.Add(this.btnSearch);
@@ -524,7 +526,7 @@
             // btnCreateNew
             // 
             this.btnCreateNew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
-            this.btnCreateNew.Location = new System.Drawing.Point(147, -2);
+            this.btnCreateNew.Location = new System.Drawing.Point(146, -2);
             this.btnCreateNew.Name = "btnCreateNew";
             this.btnCreateNew.Size = new System.Drawing.Size(75, 93);
             this.btnCreateNew.TabIndex = 2;
@@ -547,6 +549,15 @@
             this.btnSearch.Size = new System.Drawing.Size(75, 93);
             this.btnSearch.TabIndex = 0;
             this.btnSearch.UseVisualStyleBackColor = true;
+            // 
+            // btngenemptynew
+            // 
+            this.btngenemptynew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
+            this.btngenemptynew.Location = new System.Drawing.Point(218, -2);
+            this.btngenemptynew.Name = "btngenemptynew";
+            this.btngenemptynew.Size = new System.Drawing.Size(75, 93);
+            this.btngenemptynew.TabIndex = 3;
+            this.btngenemptynew.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -636,5 +647,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comstatus;
         private System.Windows.Forms.Button btnCreateNew;
+        private System.Windows.Forms.Button btngenemptynew;
     }
 }

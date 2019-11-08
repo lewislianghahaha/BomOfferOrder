@@ -50,6 +50,7 @@ namespace BomOfferOrder.UI
             tip1.SetToolTip(btnSearch,"成本Bom报价单-查询");
             tip1.SetToolTip(btnCreate,"成本Bom报价单-创建");
             tip1.SetToolTip(btnCreateNew, "新产品成本报价单-创建");
+            tip1.SetToolTip(btngenemptynew,"空白报价单-创建");
             //初始化登入用户信息
             lbaccountmessage.Text = GlobalClasscs.User.StrUsrName;
             lbaccountmessage.ForeColor = Color.Brown;
@@ -78,6 +79,7 @@ namespace BomOfferOrder.UI
             tmchangepwd.Click += Tmchangepwd_Click;
             this.FormClosing += Main_FormClosing;
             btnCreateNew.Click += BtnCreateNew_Click;
+            btngenemptynew.Click += Btngenemptynew_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -369,6 +371,29 @@ namespace BomOfferOrder.UI
             try
             {
                 CreateTabPages("新产品成本报价单-创建");  
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 生成空白报价单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btngenemptynew_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //将功能变量设置为E-空白报价单标记
+                GlobalClasscs.Fun.EmptyFunctionName = "E";
+                //弹出对应窗体相关设置
+                dtlFrm.FunState = "C";
+                dtlFrm.OnInitialize(null);     //初始化信息
+                dtlFrm.StartPosition = FormStartPosition.CenterParent;
+                dtlFrm.ShowDialog();
             }
             catch (Exception ex)
             {

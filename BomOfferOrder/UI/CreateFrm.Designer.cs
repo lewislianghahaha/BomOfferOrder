@@ -37,7 +37,6 @@
             this.AddMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmadd = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btngenemptynew = new System.Windows.Forms.Button();
             this.btngennew = new System.Windows.Forms.Button();
             this.btngenerate = new System.Windows.Forms.Button();
             this.btnsearch = new System.Windows.Forms.Button();
@@ -130,7 +129,6 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.btngenemptynew);
             this.panel1.Controls.Add(this.btngennew);
             this.panel1.Controls.Add(this.btngenerate);
             this.panel1.Controls.Add(this.btnsearch);
@@ -141,16 +139,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(929, 28);
             this.panel1.TabIndex = 7;
-            // 
-            // btngenemptynew
-            // 
-            this.btngenemptynew.Location = new System.Drawing.Point(747, 2);
-            this.btngenemptynew.Name = "btngenemptynew";
-            this.btngenemptynew.Size = new System.Drawing.Size(100, 23);
-            this.btngenemptynew.TabIndex = 5;
-            this.btngenemptynew.Text = "生成空白报价单";
-            this.btngenemptynew.UseVisualStyleBackColor = true;
-            this.btngenemptynew.Visible = false;
             // 
             // btngennew
             // 
@@ -445,7 +433,6 @@
         private System.Windows.Forms.ToolStripMenuItem tmdel;
         private System.Windows.Forms.ToolStripMenuItem tmadd;
         private System.Windows.Forms.Button btngennew;
-        private System.Windows.Forms.Button btngenemptynew;
     }
 }
 
