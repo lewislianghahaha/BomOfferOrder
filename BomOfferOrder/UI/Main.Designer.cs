@@ -80,6 +80,7 @@
             this.btnCreateNew = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
+            this.btnreport = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
@@ -512,6 +513,7 @@
             // 
             this.panel4.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.btnreport);
             this.panel4.Controls.Add(this.btngenemptynew);
             this.panel4.Controls.Add(this.btnCreateNew);
             this.panel4.Controls.Add(this.btnCreate);
@@ -558,6 +560,15 @@
             this.btnSearch.Size = new System.Drawing.Size(75, 93);
             this.btnSearch.TabIndex = 0;
             this.btnSearch.UseVisualStyleBackColor = true;
+            // 
+            // btnreport
+            // 
+            this.btnreport.BackgroundImage = global::BomOfferOrder.Properties.Resources.Search;
+            this.btnreport.Location = new System.Drawing.Point(289, -2);
+            this.btnreport.Name = "btnreport";
+            this.btnreport.Size = new System.Drawing.Size(75, 93);
+            this.btnreport.TabIndex = 4;
+            this.btnreport.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -648,5 +659,6 @@
         private System.Windows.Forms.ComboBox comstatus;
         private System.Windows.Forms.Button btnCreateNew;
         private System.Windows.Forms.Button btngenemptynew;
+        private System.Windows.Forms.Button btnreport;
     }
 }

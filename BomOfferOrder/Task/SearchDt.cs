@@ -149,6 +149,17 @@ namespace BomOfferOrder.Task
             return UseSqlSearchIntoDt(0, _sqlscript);
         }
 
+        /// <summary>
+        /// 报表-批量成本查询
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        public DataTable SearchBomMaterial(int materialid)
+        {
+            _sqlscript = "";
+            return UseSqlSearchIntoDt(0,_sqlscript);
+        }
+
         //////////////////////////////////////////////////主窗体及查询端使用//////////////////////////////////////////////////////////
 
         /// <summary>

@@ -482,7 +482,7 @@ namespace BomOfferOrder.UI
                         newrow[4] = rows[8];                        //配方用量
                         newrow[5] = Convert.ToDecimal(rows[8])*100; //占比
                         newrow[6] = rows[10];                       //物料单价(含税)
-                        newrow[7] = decimal.Round(Convert.ToDecimal(rows[10]) * Convert.ToDecimal(rows[8]) , 4);  //物料成本(含税) 公式:物料单价*配方用量
+                        newrow[7] = decimal.Round(Convert.ToDecimal(rows[8])/100  * Convert.ToDecimal(rows[10]), 4);  //物料成本(含税) 公式:配方用量/100*物料单价
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -917,8 +917,8 @@ namespace BomOfferOrder.UI
                     var ratio = peiqty*100;
                     //获取当前行的物料单价
                     var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[6].Value == DBNull.Value ? 0 : gvdtl.Rows[e.RowIndex].Cells[6].Value);
-                    //计算‘物料成本(含税)’项 公式:物料单价*配方用量
-                    var qtytemp = decimal.Round(materialprice*peiqty,4);
+                    //计算‘物料成本(含税)’项 公式:配方用量/100*物料单价
+                    var qtytemp = decimal.Round( peiqty / 100 * materialprice,4);
                     //根据‘物料编码ID’更新_dtl内的对应的'物料成本(含税)' 目的:更新_dtl
                     UpdateGridViewValue(materialprice,peiqty,ratio,Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value), qtytemp);
                     //根据指定值将相关项进行改变指定文本框内的值

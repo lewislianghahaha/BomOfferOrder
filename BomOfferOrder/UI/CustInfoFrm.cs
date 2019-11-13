@@ -64,6 +64,12 @@ namespace BomOfferOrder.UI
         {
             //初始化生成下拉列表
             OnShowTypeList();
+            //若Readid=false,就将后面两列去掉
+            if (!GlobalClasscs.User.Readid)
+            {
+                sourcedt.Columns.Remove("客户地址");
+                sourcedt.Columns.Remove("联系电话");
+            }
             //将数据源放到GridView内显示
             LinkGridViewPageChange(sourcedt);
         }

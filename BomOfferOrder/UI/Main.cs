@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using BomOfferOrder.Task;
+using BomOfferOrder.UI.ReportFrm;
+using Stimulsoft.Report;
 
 namespace BomOfferOrder.UI
 {
@@ -13,6 +15,7 @@ namespace BomOfferOrder.UI
         TaskLogic task=new TaskLogic();
         Load load=new Load();
         ChangeAccount changeAccount=new ChangeAccount();
+        MaterialReportFrm materialReportFrm=new MaterialReportFrm();
         DtlFrm dtlFrm=new DtlFrm();
 
         #region 变量参数
@@ -51,6 +54,7 @@ namespace BomOfferOrder.UI
             tip1.SetToolTip(btnCreate,"成本Bom报价单-创建");
             tip1.SetToolTip(btnCreateNew, "新产品成本报价单-创建");
             tip1.SetToolTip(btngenemptynew,"空白报价单-创建");
+            tip1.SetToolTip(btnreport,"报表查询");
             //初始化登入用户信息
             lbaccountmessage.Text = GlobalClasscs.User.StrUsrName;
             lbaccountmessage.ForeColor = Color.Brown;
@@ -80,6 +84,7 @@ namespace BomOfferOrder.UI
             this.FormClosing += Main_FormClosing;
             btnCreateNew.Click += BtnCreateNew_Click;
             btngenemptynew.Click += Btngenemptynew_Click;
+            btnreport.Click += Btnreport_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -394,6 +399,41 @@ namespace BomOfferOrder.UI
                 dtlFrm.OnInitialize(null);     //初始化信息
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 报表查询
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btnreport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                materialReportFrm.StartPosition = FormStartPosition.CenterParent;
+                materialReportFrm.ShowDialog();
+                //todo 返回相关值
+
+                task.TaskId = "5";
+                task.Fid = 1;
+                Start();
+
+                var resultdt = task.ResultTable;
+                if (resultdt.Rows.Count == 0) throw new Exception("导出异常,请联系管理员");
+                //调用STI模板并执行导出代码
+                //加载STI模板 MaterialCostReport
+                var filepath = Application.StartupPath + "/Report/MaterialCostReport.mrt";
+                var stireport = new StiReport();
+                stireport.Load(filepath);
+                //加载DATASET 或 DATATABLE
+                stireport.RegData("Order", resultdt);
+                stireport.Compile();
+                stireport.Show();   //调用预览功能
             }
             catch (Exception ex)
             {
@@ -1036,6 +1076,5 @@ namespace BomOfferOrder.UI
                 btnCreate.Visible = false;
             }
         }
-
     }
 }

@@ -211,6 +211,12 @@ namespace BomOfferOrder.Task
                     UpdateUserNewpwd(_fid, _newpwd);
                     break;
                 #endregion
+
+                #region   报表查询
+                case "5":
+                    SearchBomMaterial(_fid);
+                    break;
+                #endregion
             }
         }
 
@@ -425,6 +431,17 @@ namespace BomOfferOrder.Task
             _resultMark = generateDt.UpdateUserNewpwd(userid,newpwd);
         }
 
+        #endregion
+
+        #region 报表查询
+
+        /// <summary>
+        ///报表-批量成本查询
+        /// </summary>
+        private void SearchBomMaterial(int materialid)
+        {
+            _resultTable = searchDt.SearchBomMaterial(materialid);
+        }
         #endregion
     }
 }
