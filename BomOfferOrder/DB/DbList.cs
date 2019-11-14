@@ -685,5 +685,39 @@ namespace BomOfferOrder.DB
             return dt;
         }
 
+        /// <summary>
+        /// 批量成本查询-报表使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable MarkMaterialReportTemp()
+        {
+            var dt=new DataTable();
+            for (var i = 0; i < 3; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    //记录每行的行ID
+                    case 0:
+                        dc.ColumnName = "FMATERIALID";
+                        dc.DataType = Type.GetType("System.Int32"); 
+                        break;
+                    //物料编码
+                    case 1:
+                        dc.ColumnName = "物料编码";
+                        dc.DataType = Type.GetType("System.String"); 
+                        break;
+                    //物料名称
+                    case 2:
+                        dc.ColumnName = "物料名称";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
     }
 }

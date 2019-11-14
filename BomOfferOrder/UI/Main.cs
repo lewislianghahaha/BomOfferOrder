@@ -415,24 +415,28 @@ namespace BomOfferOrder.UI
         {
             try
             {
-               // materialReportFrm.OnInitialize(); //初始化记录
+                //定义输出变量列表变量
+                var searchlist = string.Empty;
+                //定义结果DT
+                DataTable resultdt;
+
+                // materialReportFrm.OnInitialize(); //初始化记录
                 materialReportFrm.StartPosition = FormStartPosition.CenterParent;
                 materialReportFrm.ShowDialog();
 
-                //todo 返回相关值
                 //以下为返回相关记录回本窗体相关处理
                 //判断若返回的DT为空的话,就不需要任何效果
-                //if (custInfo.ResultTable == null || custInfo.ResultTable.Rows.Count == 0) return;
-                ////将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
-                //if (custInfo.ResultTable != null || custInfo.ResultTable.Rows.Count > 0)
-                //    InsertCustRecordToTxt(custInfo.ResultTable);
+                if (materialReportFrm.ResultTable == null || materialReportFrm.ResultTable.Rows.Count == 0) return;
+                //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
+                if (materialReportFrm.ResultTable != null || materialReportFrm.ResultTable.Rows.Count > 0)
+                    { searchlist = GetSearchList(materialReportFrm.ResultTable);}
 
                 task.TaskId = "5";
-                task.Fid = 1;
+                task.Valuelist = searchlist;
 
                 Start();
 
-                var resultdt = task.ResultTable;
+                resultdt = task.ResultTable;
                 if (resultdt.Rows.Count == 0) throw new Exception("导出异常,请联系管理员");
                 //调用STI模板并执行导出代码
                 //加载STI模板 MaterialCostReport
@@ -1086,6 +1090,25 @@ namespace BomOfferOrder.UI
             }
         }
 
+        /// <summary>
+        /// 获取报表所选取的FMATERIALID列表,如:11234,12345
+        /// </summary>
+        /// <param name="sourcedt"></param>
+        /// <returns></returns>
+        private string GetSearchList(DataTable sourcedt)
+        {
+            //FMATERIALID列表结果
+            var result = string.Empty;
+
+            foreach (DataRow rows in sourcedt.Rows)
+            {
+                if (result == "" || result != Convert.ToString(rows[0]))
+                {
+                    
+                }
+            }
+            return result;
+        }
 
     }
 }
