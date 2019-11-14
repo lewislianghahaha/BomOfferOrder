@@ -415,12 +415,21 @@ namespace BomOfferOrder.UI
         {
             try
             {
+               // materialReportFrm.OnInitialize(); //初始化记录
                 materialReportFrm.StartPosition = FormStartPosition.CenterParent;
                 materialReportFrm.ShowDialog();
+
                 //todo 返回相关值
+                //以下为返回相关记录回本窗体相关处理
+                //判断若返回的DT为空的话,就不需要任何效果
+                //if (custInfo.ResultTable == null || custInfo.ResultTable.Rows.Count == 0) return;
+                ////将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
+                //if (custInfo.ResultTable != null || custInfo.ResultTable.Rows.Count > 0)
+                //    InsertCustRecordToTxt(custInfo.ResultTable);
 
                 task.TaskId = "5";
                 task.Fid = 1;
+
                 Start();
 
                 var resultdt = task.ResultTable;
@@ -437,7 +446,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1076,5 +1085,7 @@ namespace BomOfferOrder.UI
                 btnCreate.Visible = false;
             }
         }
+
+
     }
 }

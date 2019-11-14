@@ -214,7 +214,7 @@ namespace BomOfferOrder.Task
 
                 #region   报表查询
                 case "5":
-                    SearchBomMaterial(_fid);
+                    SearchBomMaterial(_valuelist);
                     break;
                 #endregion
             }
@@ -438,9 +438,9 @@ namespace BomOfferOrder.Task
         /// <summary>
         ///报表-批量成本查询
         /// </summary>
-        private void SearchBomMaterial(int materialid)
+        private void SearchBomMaterial(string searchvalue)
         {
-            _resultTable = searchDt.SearchBomMaterial(materialid);
+            _resultTable = searchDt.SearchBomMaterial(searchvalue);
         }
         #endregion
     }

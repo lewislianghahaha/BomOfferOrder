@@ -78,8 +78,6 @@ namespace BomOfferOrder.UI
         {
             //下拉列表使用
             OnShowTypeList();
-            //判断显示生成按钮
-            //CheckShowButton();
         }
 
         /// <summary>
@@ -125,7 +123,7 @@ namespace BomOfferOrder.UI
                     _dtl = task.ResultTable;
                     panel2.Visible = true;
                     //初始化下拉框所选择的默认值
-                    tmshowrows.SelectedItem = "10";
+                    tmshowrows.SelectedItem = "10"; 
                     //定义初始化标记
                     _pageChange = _pageCurrent <= 1;
                     //GridView分页
@@ -142,7 +140,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

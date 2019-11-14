@@ -247,6 +247,7 @@
     <None Include="bin\Debug\BomOfferOrder.exe.config" />
     <None Include="bin\Debug\BomOfferOrder.vshost.exe.config" />
     <None Include="bin\Debug\BomOfferOrder.vshost.exe.manifest" />
+    <None Include="bin\Debug\Report\MaterialCostReport.mrt" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="Properties\Settings.settings">
@@ -258,6 +259,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="STI\MaterialCostReport.mrt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -287,10 +289,8 @@
     <None Include="Resources\Search.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Debug\Report\" />
     <Folder Include="bin\Release\" />
     <Folder Include="obj\Debug\TempPE\" />
-    <Folder Include="STI\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

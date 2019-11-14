@@ -80,8 +80,8 @@
             // tmGet
             // 
             this.tmGet.Name = "tmGet";
-            this.tmGet.Size = new System.Drawing.Size(44, 21);
-            this.tmGet.Text = "获取";
+            this.tmGet.Size = new System.Drawing.Size(80, 21);
+            this.tmGet.Text = "获取及打印";
             // 
             // tmclose
             // 
@@ -309,7 +309,7 @@
             this.gvdtl.Size = new System.Drawing.Size(643, 363);
             this.gvdtl.TabIndex = 0;
             // 
-            // ReportFrm
+            // MaterialReportFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -320,7 +320,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Menu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "ReportFrm";
+            this.Name = "MaterialReportFrm";
             this.Text = "报表查询";
             this.Menu.ResumeLayout(false);
             this.Menu.PerformLayout();

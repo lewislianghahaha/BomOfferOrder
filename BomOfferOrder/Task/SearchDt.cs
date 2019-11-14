@@ -152,11 +152,11 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 报表-批量成本查询
         /// </summary>
-        /// <param name="materialid"></param>
+        /// <param name="searchvalue"></param>
         /// <returns></returns>
-        public DataTable SearchBomMaterial(int materialid)
+        public DataTable SearchBomMaterial(string searchvalue)
         {
-            _sqlscript = "";
+            _sqlscript = sqlList.SearchBomMaterial(searchvalue);
             return UseSqlSearchIntoDt(0,_sqlscript);
         }
 

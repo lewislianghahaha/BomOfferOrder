@@ -732,7 +732,18 @@
             return _result;
         }
 
-
+        /// <summary>
+        /// 批量成本查询-报表使用
+        /// </summary>
+        /// <param name="searchvalue"></param>
+        /// <returns></returns>
+        public string SearchBomMaterial(string searchvalue)
+        {
+            _result = $@"
+                            
+                        ";
+            return _result;
+        }
 
 
         //////////////////////////////////////////////////权限使用////////////////////////////////////////////////////////
