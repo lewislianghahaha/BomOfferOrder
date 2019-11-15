@@ -1099,12 +1099,22 @@ namespace BomOfferOrder.UI
         {
             //FMATERIALID列表结果
             var result = string.Empty;
+            //中转比较变量
+            var temp = string.Empty;
 
             foreach (DataRow rows in sourcedt.Rows)
             {
-                if (result == "" || result != Convert.ToString(rows[0]))
+                //第一行(初始化)时,将第一行的相关值赋给对应的变量内
+                if (temp == "")
                 {
-                    
+                    temp = Convert.ToString(rows[0]);
+                    result= "'" + Convert.ToString(rows[0]) + "'";
+                }
+                //从第二行开始判断是否一致
+                else if (temp != Convert.ToString(rows[0]))
+                {
+                    temp = Convert.ToString(rows[0]);
+                    result+= ',' + "'" + Convert.ToString(rows[0]) + "'";
                 }
             }
             return result;
