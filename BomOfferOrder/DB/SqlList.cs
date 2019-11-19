@@ -735,9 +735,10 @@
         /// <summary>
         /// 批量成本查询-报表使用
         /// </summary>
+        /// <param name="searchid"></param>
         /// <param name="searchvalue"></param>
         /// <returns></returns>
-        public string SearchBomMaterial(string searchvalue)
+        public string SearchBomMaterial(int searchid,string searchvalue)
         {
             _result = $@"
                             

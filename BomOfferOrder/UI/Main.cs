@@ -55,6 +55,7 @@ namespace BomOfferOrder.UI
             tip1.SetToolTip(btnCreateNew, "新产品成本报价单-创建");
             tip1.SetToolTip(btngenemptynew,"空白报价单-创建");
             tip1.SetToolTip(btnreport,"报表查询");
+
             //初始化登入用户信息
             lbaccountmessage.Text = GlobalClasscs.User.StrUsrName;
             lbaccountmessage.ForeColor = Color.Brown;

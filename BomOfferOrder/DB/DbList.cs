@@ -719,5 +719,79 @@ namespace BomOfferOrder.DB
             return dt;
         }
 
+        /// <summary>
+        /// ‘批量成本查询’报表临时表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable ReportTempdt()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 11; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    //物料编码
+                    case 0:
+                        dc.ColumnName = "物料编码";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //品名
+                    case 1:
+                        dc.ColumnName = "品名";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //规格
+                    case 2:
+                        dc.ColumnName = "规格";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //计量单位
+                    case 3:
+                        dc.ColumnName = "计量单位";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //数量
+                    case 4:
+                        dc.ColumnName = "数量";
+                        dc.DataType = Type.GetType("System.Decimal"); 
+                        break;
+                    //标准成本单价
+                    case 5:
+                        dc.ColumnName = "标准成本单价";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //换算率
+                    case 6:
+                        dc.ColumnName = "换算率";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //重量
+                    case 7:
+                        dc.ColumnName = "重量";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //重量成本单价
+                    case 8:
+                        dc.ColumnName = "重量成本单价";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //人工及制造费用
+                    case 9:
+                        dc.ColumnName = "人工及制造费用";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //Markid(用于标记‘标准成本单价’项是否为红色显示)
+                    case 10:
+                        dc.ColumnName = "Markid";
+                        dc.DataType = Type.GetType("System.Int32"); 
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
     }
 }
