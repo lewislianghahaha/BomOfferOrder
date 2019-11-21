@@ -692,7 +692,7 @@ namespace BomOfferOrder.DB
         public DataTable MarkMaterialReportTemp()
         {
             var dt=new DataTable();
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < 6; i++)
             {
                 var dc = new DataColumn();
 
@@ -708,10 +708,25 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "物料编码";
                         dc.DataType = Type.GetType("System.String"); 
                         break;
-                    //物料名称
+                    //物料名称(品名)
                     case 2:
                         dc.ColumnName = "物料名称";
                         dc.DataType = Type.GetType("System.String");
+                        break;
+                    //规格
+                    case 3:
+                        dc.ColumnName = "规格";
+                        dc.DataType=Type.GetType("System.String");
+                        break;
+                    //换算率(密度(KG/L))
+                    case 4:
+                        dc.ColumnName = "换算率";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //重量(净重)
+                    case 5:
+                        dc.ColumnName = "重量";
+                        dc.DataType = Type.GetType("System.Decimal"); 
                         break;
                 }
                 dt.Columns.Add(dc);
@@ -720,10 +735,10 @@ namespace BomOfferOrder.DB
         }
 
         /// <summary>
-        /// ‘批量成本查询’报表临时表
+        /// ‘批量成本查询’报表最终临时表
         /// </summary>
         /// <returns></returns>
-        public DataTable ReportTempdt()
+        public DataTable ReportPrintTempdt()
         {
             var dt = new DataTable();
             for (var i = 0; i < 11; i++)
@@ -737,7 +752,7 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "物料编码";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    //品名
+                    //品名(物料名称)
                     case 1:
                         dc.ColumnName = "品名";
                         dc.DataType = Type.GetType("System.String");
@@ -782,10 +797,60 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "人工及制造费用";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    //Markid(用于标记‘标准成本单价’项是否为红色显示)
+                    //Markid(用于标记‘标准成本单价’项是否为红色显示 0:是 1:否)
                     case 10:
                         dc.ColumnName = "Markid";
                         dc.DataType = Type.GetType("System.Int32"); 
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// ‘批量成本查询’报表-中间临时表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable ReportTempdt()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 6; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    //表头物料名称
+                    case 0:
+                        dc.ColumnName = "表头物料名称";
+                        dc.DataType = Type.GetType("System.String");
+                        
+                        break;
+                    //FMATERIALID
+                    case 1:
+                        dc.ColumnName = "FMATERIALID";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //物料名称
+                    case 2:
+                        dc.ColumnName = "物料名称";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //用量
+                    case 3:
+                        dc.ColumnName = "用量";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //单价
+                    case 4:
+                        dc.ColumnName = "单价";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //子项金额
+                    case 5:
+                        dc.ColumnName = "子项金额";
+                        dc.DataType = Type.GetType("System.Decimal");
                         break;
                 }
                 dt.Columns.Add(dc);

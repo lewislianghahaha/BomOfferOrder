@@ -178,7 +178,7 @@ namespace BomOfferOrder.Task
                 #region 运算
                 //运算
                 case "1":
-                    Generatedt(_valuelist, _dt, _bomdt);
+                    Generatedt(/*_valuelist,*/ _dt, _bomdt);
                     break;
                 #endregion
                 
@@ -213,10 +213,15 @@ namespace BomOfferOrder.Task
                 #endregion
 
                 #region   报表
+                //查询-物料明细
                 case "5":
-                    SearchK3BomMaterial(_searchid,_valuelist);
+                    SearchMaterial(_searchid,_searchvalue);
                     break;
-                #endregion
+                //运算-报表生成使用
+                case "5.1":
+                    GenerateReportDt(_dt, _bomdt);
+                    break;
+                    #endregion
             }
         }
 
@@ -353,20 +358,20 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 运算
         /// </summary>
-        /// <param name="valuelist">FMATERIALID列表ID</param>
         /// <param name="sourcedt"></param>
         /// <param name="bomdt">BOM明细记录DT</param>
-        private void Generatedt(string valuelist, DataTable sourcedt, DataTable bomdt)
+        private void Generatedt(DataTable sourcedt, DataTable bomdt)
         {
             //若_resultTable有值,即先将其清空,再进行赋值
-            if (_resultTable.Rows.Count > 0)
+            if (_resultTable?.Rows.Count > 0)
             {
                 _resultTable.Rows.Clear();
                 _resultTable.Columns.Clear();
             }
-            _resultTable = generateDt.Generatedt(valuelist, sourcedt, bomdt);
+            _resultTable = generateDt.Generatedt(sourcedt, bomdt);
             _resultMark = _resultTable.Rows.Count > 0;
         }
+
         #endregion
 
         #region 提交相关方法
@@ -433,15 +438,33 @@ namespace BomOfferOrder.Task
 
         #endregion
 
-        #region 报表查询
+        #region 报表
 
         /// <summary>
-        ///报表-批量成本查询
+        ///报表-物料明细查询
         /// </summary>
-        private void SearchK3BomMaterial(int searchid,string searchvalue)
+        private void SearchMaterial(int searchid,string searchvalue)
         {
-            _resultTable = searchDt.SearchBomMaterial(searchid,searchvalue);
+            _resultTable = searchDt.SearchMaterial(searchid,searchvalue);
         }
+
+        /// <summary>
+        /// 运算-报表生成使用
+        /// </summary>
+        /// <param name="sourcedt"></param>
+        /// <param name="bomdt"></param>
+        private void GenerateReportDt(DataTable sourcedt, DataTable bomdt)
+        {
+            //若_resultTable有值,即先将其清空,再进行赋值
+            if (_resultTable?.Rows.Count > 0)
+            {
+                _resultTable.Rows.Clear();
+                _resultTable.Columns.Clear();
+            }
+            _resultTable = generateDt.GenerateReportDt(sourcedt, bomdt);
+            _resultMark = _resultTable.Rows.Count > 0;
+        }
+
         #endregion
     }
 }

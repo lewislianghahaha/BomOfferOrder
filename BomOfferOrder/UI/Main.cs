@@ -65,7 +65,7 @@ namespace BomOfferOrder.UI
 
             //初始化查询下拉列表
             OnShowSelectTypeList();
-            //初始化BOM明细DT(生成BOM明细时使用)
+            //初始化BOM明细DT(‘生成BOM明细’及‘报表查询’功能时使用)
             OnInitializeBomdt();
             //更新用户占用值 useid
             UpUseridValue(0);
@@ -416,12 +416,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                //定义输出变量列表变量
-                var searchlist = string.Empty;
-                //定义结果DT
-                DataTable resultdt;
-
-                // materialReportFrm.OnInitialize(); //初始化记录
                 materialReportFrm.StartPosition = FormStartPosition.CenterParent;
                 materialReportFrm.ShowDialog();
 
@@ -430,24 +424,26 @@ namespace BomOfferOrder.UI
                 if (materialReportFrm.ResultTable == null || materialReportFrm.ResultTable.Rows.Count == 0) return;
                 //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
                 if (materialReportFrm.ResultTable != null || materialReportFrm.ResultTable.Rows.Count > 0)
-                    { searchlist = GetSearchList(materialReportFrm.ResultTable);}
+                { //searchlist = GetSearchList(materialReportFrm.ResultTable); 
+                    task.TaskId = "5.1";
+                    task.Data = materialReportFrm.ResultTable;
+                    task.Bomdt = _bomdt;
 
-                task.TaskId = "5";
-                task.Valuelist = searchlist;
+                    new Thread(Start).Start();
+                    load.StartPosition = FormStartPosition.CenterScreen;
+                    load.ShowDialog();
 
-                Start();
-
-                resultdt = task.ResultTable;
-                if (resultdt.Rows.Count == 0) throw new Exception("导出异常,请联系管理员");
-                //调用STI模板并执行导出代码
-                //加载STI模板 MaterialCostReport
-                var filepath = Application.StartupPath + "/Report/MaterialCostReport.mrt";
-                var stireport = new StiReport();
-                stireport.Load(filepath);
-                //加载DATASET 或 DATATABLE
-                stireport.RegData("Order", resultdt);
-                stireport.Compile();
-                stireport.Show();   //调用预览功能
+                    if (task.ResultTable.Rows.Count == 0) throw new Exception("导出异常,请联系管理员");
+                    //调用STI模板并执行导出代码
+                    //加载STI模板 MaterialCostReport
+                    var filepath = Application.StartupPath + "/Report/MaterialCostReport.mrt";
+                    var stireport = new StiReport();
+                    stireport.Load(filepath);
+                    //加载DATASET 或 DATATABLE
+                    stireport.RegData("Order", task.ResultTable);
+                    stireport.Compile();
+                    stireport.Show();   //调用预览功能
+                }
             }
             catch (Exception ex)
             {

@@ -138,8 +138,9 @@
 	                               b.FMATERIALID 表体物料ID,c.FNUMBER 物料编码,d.FNAME 物料名称,
                                    CASE E.FERPCLSID WHEN 1 THEN '外购' WHEN 2 THEN '自制' ELSE '其它' END 物料属性,
                                    cast(b.FNUMERATOR/b.FDENOMINATOR*(1+b.FSCRAPRATE/100) as nvarchar(250)) 用量,
-                                   b.FNUMERATOR 分子,b.FDENOMINATOR 分母,b.FSCRAPRATE 变动损耗率,c.F_YTC_DECIMAL8 最新采购价格/*,
-                                   f.F_YTC_DECIMAL8 表头采购单价*/
+                                   b.FNUMERATOR 分子,b.FDENOMINATOR 分母,b.FSCRAPRATE 变动损耗率,c.F_YTC_DECIMAL8 物料单价,
+                                   G.FNAME 父项物料单位
+                                   /*,f.F_YTC_DECIMAL8 表头采购单价*/
 
                             FROM T_ENG_BOM A
                             INNER JOIN dbo.T_ENG_BOMCHILD b ON a.FID=b.FID
@@ -148,7 +149,9 @@
                             INNER JOIN dbo.T_BD_MATERIAL_L D ON C.FMATERIALID=D.FMATERIALID
                             INNER JOIN dbo.T_BD_MATERIALBASE E ON D.FMATERIALID=E.FMATERIALID
 
-                            INNER JOIN dbo.T_BD_MATERIAL f ON a.FMATERIALID=f.FMATERIALID
+                            --INNER JOIN dbo.T_BD_MATERIAL f ON a.FMATERIALID=f.FMATERIALID
+
+                            INNER JOIN dbo.T_BD_UNIT_L g ON a.FUNITID=g.FUNITID AND g.FLOCALEID <>1033
 
                             WHERE /*A.FFORBIDSTATUS='A' --BOM禁用状态:否
                             AND A.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
@@ -738,11 +741,62 @@
         /// <param name="searchid"></param>
         /// <param name="searchvalue"></param>
         /// <returns></returns>
-        public string SearchBomMaterial(int searchid,string searchvalue)
+        public string SearchMaterial(int searchid,string searchvalue)
         {
-            _result = $@"
-                            
-                        ";
+            //按照‘物料名称’进行查询
+            if (searchid == 1)
+            {
+                _result = $@"
+                                SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,
+                                       d.FSPECIFICATION '规格型号',a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重'
+
+                                FROM dbo.T_BD_MATERIAL a
+                                INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
+                                INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L c ON b.FENTRYID=c.FENTRYID
+                                INNER JOIN dbo.T_BD_MATERIAL_L d ON a.FMATERIALID=d.FMATERIALID
+
+                                INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
+
+                                WHERE c.FDATAVALUE IN('产成品','原漆半成品')
+                                AND a.FDOCUMENTSTATUS='C'
+                                AND a.FFORBIDSTATUS='A' --物料禁用状态:否
+                                AND d.FLOCALEID=2052
+                                AND D.FNAME LIKE '%{searchvalue}%'
+                                AND EXISTS (
+												SELECT NULL FROM T_ENG_BOM A1
+												WHERE A1.FMATERIALID=A.FMATERIALID
+											) --必须要在‘成本BOM’内存在
+                                order by a.FMATERIALID
+                            ";
+            }
+            //按照‘物料编码’进行查询
+            else
+            {
+                _result = $@"
+                                 SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,
+                                        d.FSPECIFICATION '规格型号',
+										a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重'
+
+                                FROM dbo.T_BD_MATERIAL a
+                                INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
+                                INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L c ON b.FENTRYID=c.FENTRYID
+                                INNER JOIN dbo.T_BD_MATERIAL_L d ON a.FMATERIALID=d.FMATERIALID
+
+                                INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
+
+                                WHERE c.FDATAVALUE IN('产成品','原漆半成品')
+                                AND a.FDOCUMENTSTATUS='C'
+                                AND a.FFORBIDSTATUS='A' --物料禁用状态:否
+                                AND d.FLOCALEID=2052
+								
+                                AND a.FNUMBER LIKE '%{searchvalue}%'
+                                AND EXISTS (
+												SELECT NULL FROM T_ENG_BOM A1
+												WHERE A1.FMATERIALID=A.FMATERIALID
+											)  --必须要在‘成本BOM’内存在
+                                order by a.FMATERIALID
+                            ";
+            }
             return _result;
         }
 

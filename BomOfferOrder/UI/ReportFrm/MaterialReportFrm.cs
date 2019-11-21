@@ -40,6 +40,7 @@ namespace BomOfferOrder.UI.ReportFrm
         {
             InitializeComponent();
             OnRegisterEvents();
+            OnInitialize();
         }
 
         private void OnRegisterEvents()
@@ -61,13 +62,10 @@ namespace BomOfferOrder.UI.ReportFrm
         /// <summary>
         /// 初始化记录
         /// </summary>
-        /// <param name="sourcedt"></param>
-        public void OnInitialize(DataTable sourcedt)
+        private void OnInitialize()
         {
             //初始化生成下拉列表
             OnShowTypeList();
-            //将数据源放到GridView内显示
-            LinkGridViewPageChange(sourcedt);
         }
 
         /// <summary>
@@ -90,6 +88,9 @@ namespace BomOfferOrder.UI.ReportFrm
                     newrow[0] = row.Cells[0].Value;  //FMATERIALID
                     newrow[1] = row.Cells[1].Value;  //物料编码
                     newrow[2] = row.Cells[2].Value;  //物料名称
+                    newrow[3] = row.Cells[3].Value;  //规格
+                    newrow[4] = row.Cells[4].Value;  //换算率 (密度(KG/L))
+                    newrow[5] = row.Cells[5].Value;  //重量 (净重)
                     _resultTable.Rows.Add(newrow);
                 }
                 //完成后关闭该窗体
@@ -137,7 +138,7 @@ namespace BomOfferOrder.UI.ReportFrm
                 var dvordertylelist = (DataRowView)comtype.Items[comtype.SelectedIndex];
                 var ordertypeId = Convert.ToInt32(dvordertylelist["Id"]);
 
-                task.TaskId = "0.9.5";
+                task.TaskId = "5";
                 task.SearchId = ordertypeId;
                 task.SearchValue = txtvalue.Text;
 
@@ -147,6 +148,8 @@ namespace BomOfferOrder.UI.ReportFrm
 
                 //连接GridView页面跳转功能
                 LinkGridViewPageChange(task.ResultTable);
+                //控制GridView单元格显示方式
+                ControlGridViewisShow();
             }
             catch (Exception ex)
             {
@@ -486,11 +489,11 @@ namespace BomOfferOrder.UI.ReportFrm
                 {
                     case 1:
                         dr[0] = "1";
-                        dr[1] = "物料编码";
+                        dr[1] = "物料名称";
                         break;
                     case 2:
                         dr[0] = "2";
-                        dr[1] = "物料名称";
+                        dr[1] = "物料编码";
                         break;
                 }
                 dt.Rows.Add(dr);
@@ -501,6 +504,15 @@ namespace BomOfferOrder.UI.ReportFrm
             comtype.ValueMember = "Id";    //设置默认值内码
         }
 
+        /// <summary>
+        /// 控制GridView单元格显示方式
+        /// </summary>
+        private void ControlGridViewisShow()
+        {
+            //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
+            if (gvdtl.Rows.Count > 0)
+                gvdtl.Columns[0].Visible = false;
+        }
 
     }
 }

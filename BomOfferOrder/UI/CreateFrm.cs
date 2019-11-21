@@ -232,7 +232,7 @@ namespace BomOfferOrder.UI
                 {
                     task.TaskId = "1";
                     task.Data = (DataTable)gvdtl.DataSource;
-                    task.Valuelist = Get_ValueList((DataTable)gvdtl.DataSource); //将Fmaterialid整合至List形式
+                    //task.Valuelist = Get_ValueList((DataTable)gvdtl.DataSource); //将Fmaterialid整合至List形式
                     task.Bomdt = _bomdt;                                         //获取初始化的BOM明细DT
 
                     new Thread(Start).Start();

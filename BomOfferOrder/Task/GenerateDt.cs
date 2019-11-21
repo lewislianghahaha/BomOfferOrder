@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Data.SqlClient;
 using BomOfferOrder.DB;
 
 namespace BomOfferOrder.Task
@@ -14,11 +13,10 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 运算-(将‘已添加’的物料记录生成其对应的BOM明细记录)
         /// </summary>
-        /// <param name="valuelist">FMATERIALID列表ID(如:'426464','738199')</param>
         /// <param name="sourcedt">从查询窗体添加过来的DT记录</param>
         /// <param name="bomdt">BOM明细记录DT</param>
         /// <returns></returns>
-        public DataTable Generatedt(string valuelist,DataTable sourcedt,DataTable bomdt)
+        public DataTable Generatedt(DataTable sourcedt,DataTable bomdt)
         {
             var result=new DataTable();
             //保存产品ID（从1开始）
@@ -255,6 +253,180 @@ namespace BomOfferOrder.Task
         {
             var sqlscript = sqlList.UpdateUserNewpwd(userid, newpwd);
             return searchDt.Generdt(sqlscript);
+        }
+
+        /// <summary>
+        /// 报表生成运算
+        /// </summary>
+        /// <param name="sourcedt">从查询窗体添加过来的DT记录</param>
+        /// <param name="bomdt">BOM明细记录DT</param>
+        /// <returns></returns>
+        public DataTable GenerateReportDt(DataTable sourcedt, DataTable bomdt)
+        {
+            var resultdt = new DataTable();
+
+            try
+            {
+                //定义结果临时表
+                resultdt = dbList.ReportPrintTempdt();
+                //定义Mark bool值
+                var mark=1;
+                //定义‘父项金额’
+                decimal totalamount = 0;
+
+                //循环sourcedt
+                foreach (DataRow rows in sourcedt.Rows)
+                {
+                    //获取FMATERIALID
+                    var fmaterialid = Convert.ToInt32(rows[0]);
+                    //获取物料编码
+                    var fmaterialCode = Convert.ToString(rows[1]);
+                    //获取物料名称
+                    var productname = Convert.ToString(rows[2]);
+                    //获取规格型号
+                    var spec = Convert.ToString(rows[3]);
+                    //获取密度(换算率)
+                    var mi = decimal.Round(Convert.ToDecimal(rows[4]),4);
+                    //获取净重(重量)
+                    var weight = decimal.Round(Convert.ToDecimal(rows[5]),4);
+
+                    //从bomdt内获取‘父项物料单位’
+                    var dtlrows = bomdt.Select("表头物料ID='" + Convert.ToInt32(rows[0]) + "'");
+                    var unitname = Convert.ToString(dtlrows[0][11]);
+
+                    //执行将相关信息插入至tempdt内(使用递归)
+                    var tempdt = GenerateReportDtlTemp(fmaterialid,productname,bomdt, dbList.ReportTempdt(), 0);
+
+                    //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
+                    foreach (DataRow row in tempdt.Rows)
+                    {
+                        //判断若‘物料名称’不为‘拉盖’ 并且‘子项金额’为0,就将mark=0,反之为1
+                        mark = !Convert.ToString(row[2]).Contains("拉盖") && Convert.ToDecimal(row[5]) == 0 ? 0 : 1;
+                        totalamount += Convert.ToDecimal(row[5]);
+                    }
+
+                    //将相关内容插入至resultdt内
+                    resultdt.Merge(MarkRecordToReportDt(fmaterialCode,productname,spec,mi,weight,unitname,mark,totalamount,resultdt));
+
+                    //最后将tempdt行清空以及相中间变量清空,待下一个循环使用
+                    tempdt.Rows.Clear();
+                    totalamount = 0;
+                    mark = 1;
+                }
+            }
+            catch (Exception)
+            {
+                resultdt.Rows.Clear();
+                resultdt.Columns.Clear();
+            }
+            return resultdt;
+        }
+
+        /// <summary>
+        /// 执行将相关信息插入至tempdt内
+        /// </summary>
+        /// <param name="fmaterialid">表头物料ID(循环条件)</param>
+        /// <param name="productname">表头物料名称</param>
+        /// <param name="bomdt">初始化BOM明细DT(全部Bom内容)</param>
+        /// <param name="resultdt">结果临时表</param>
+        /// <param name="qty">配方用量使用</param>
+        /// <returns></returns>
+        private DataTable GenerateReportDtlTemp(int fmaterialid,string productname,DataTable bomdt,DataTable resultdt,decimal qty)
+        {
+            //‘用量’中转值
+            decimal qtytemp = 0;
+
+            //根据fmaterialid为‘表头物料ID’为条件,查询bomdt内的明细记录
+            var dtlrows = bomdt.Select("表头物料ID='" + fmaterialid + "'");
+
+            for (var i = 0; i < dtlrows.Length; i++)
+            {
+                //循环判断物料对应的“物料属性”是不是“外购”,若是就插入至resultdt内,反之,进行递归
+                if (Convert.ToString(dtlrows[i][5]) == "外购")
+                {
+                    //判断进入的物料ID是否需要更新或是插入记录
+                    //检查若此物料ID在resultdt内已存在(注:在同一个‘表头物料名称’下),就不需要再次插入,只需要将其‘配方用量’与已存在的记录相加即可
+                    var resultrows = resultdt.Select("表头物料名称='" + productname + "' and FMATERIALID='" + dtlrows[i][2] + "'");
+
+                    //使用‘表头物料名称’以及‘物料编码(FMATERIALID)’放到resultdt内判断是否存在;若存在,就更新,不用插入新行至resultdt
+                    if (resultrows.Length > 0)
+                    {
+                        foreach (DataRow rows in resultdt.Rows)
+                        {
+                            if (rows[1].ToString() == productname && Convert.ToInt32(rows[5]) == Convert.ToInt32(dtlrows[i][2]))
+                            {
+                                //当检查到物料在resultdt存在的话,就进行更新
+                                resultdt.BeginInit();
+                                //配方用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                                qtytemp = decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+                                //累加‘用量’
+                                rows[8] = Convert.ToDecimal(rows[8]) + qtytemp;
+                                resultdt.EndInit();
+                                //当修改完成后,跳出该循环
+                                break;
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                        qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
+                            decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+
+                        var newrow = resultdt.NewRow();
+                        newrow[0] = productname;                                                  //表头物料名称
+                        newrow[1] = dtlrows[i][2];                                                //FMATERIALID
+                        newrow[2] = dtlrows[i][3];                                                //物料名称
+                        newrow[3] = qtytemp;                                                      //用量
+                        newrow[4] = dtlrows[i][10];                                               //单价
+                        newrow[5] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),6); //子项金额=用量*单价
+                        resultdt.Rows.Add(newrow);
+                    }
+                }
+                //递归调用
+                else
+                {
+                    //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                    qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
+                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+
+                    GenerateReportDtlTemp(Convert.ToInt32(dtlrows[i][2]), productname, bomdt, resultdt, qtytemp);
+                }
+            }
+            return resultdt;
+        }
+
+        /// <summary>
+        /// 合并TEMP
+        /// </summary>
+        /// <param name="fmaterialCode">物料编码</param>
+        /// <param name="productname">物料名称</param>
+        /// <param name="spec">规格型号</param>
+        /// <param name="mi">换算率</param>
+        /// <param name="weight">重时</param>
+        /// <param name="unitname">计量单位</param>
+        /// <param name="mark">是否标红标记</param>
+        /// <param name="totalamount">父项金额</param>
+        /// <param name="resultdt">整理后的临时表</param>
+        /// <returns></returns>
+        private DataTable MarkRecordToReportDt(string fmaterialCode, string productname,string spec,decimal mi,decimal weight,
+                                               string unitname,int mark,decimal totalamount,DataTable resultdt)
+        {
+            var newrow = resultdt.NewRow();
+            newrow[0] = fmaterialCode;                       //物料编码
+            newrow[1] = productname;                         //品名
+            newrow[2] = spec;                                //规格
+            newrow[3] = unitname;                            //计量单位
+            newrow[4] = DBNull.Value;                        //数量
+            newrow[5] = totalamount;                         //标准成本单价
+            newrow[6] = mi;                                  //换算率
+            newrow[7] = weight;                              //重量
+            newrow[8] = weight == 0 ? totalamount : decimal.Round(totalamount/weight, 6); //重量成本单价=标准成本单价/重量
+            newrow[9] = DBNull.Value;                        //人工用制造费用
+            newrow[10] = mark;                               //Markid
+            resultdt.Rows.Add(newrow);
+            return resultdt;
         }
 
     }
