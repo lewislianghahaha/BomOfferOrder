@@ -35,7 +35,7 @@
   <Pages isList="true" count="1">
     <Page1 Ref="3" type="Page" isKey="true">
       <Border>None;Black;2;Solid;False;4;Black</Border>
-      <Brush>Transparent</Brush>
+      <Brush>White</Brush>
       <Components isList="true" count="22">
         <PageFooterBand1 Ref="4" type="PageFooterBand" isKey="true">
           <Brush>Transparent</Brush>
@@ -463,7 +463,7 @@
             <Text11 Ref="41" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>0,0,2.6,0.6</ClientRectangle>
+              <ClientRectangle>0,0.2,2.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,9</Font>
               <Margins>0,0,0,0</Margins>
@@ -478,7 +478,7 @@
             <Text12 Ref="42" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>2.6,0,2.2,0.6</ClientRectangle>
+              <ClientRectangle>2.6,0.2,2.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,9</Font>
               <Margins>0,0,0,0</Margins>
@@ -493,7 +493,7 @@
             <Text13 Ref="43" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>4.8,0,2.4,0.6</ClientRectangle>
+              <ClientRectangle>4.8,0.2,2.4,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,9</Font>
               <Margins>0,0,0,0</Margins>
@@ -533,21 +533,7 @@
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text15>
-            <Text16 Ref="46" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>10,0,1.8,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,8</Font>
-              <HorAlignment>Right</HorAlignment>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text16</Name>
-              <Page isRef="3" />
-              <Parent isRef="40" />
-              <Text>{MaterialOrder.标准成本单价}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text16>
-            <Text17 Ref="47" type="Text" isKey="true">
+            <Text17 Ref="46" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>11.8,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -561,21 +547,7 @@
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text17>
-            <Text18 Ref="48" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>13.6,0,1.8,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,8</Font>
-              <HorAlignment>Right</HorAlignment>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text18</Name>
-              <Page isRef="3" />
-              <Parent isRef="40" />
-              <Text>{MaterialOrder.重量}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text18>
-            <Text19 Ref="49" type="Text" isKey="true">
+            <Text19 Ref="47" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>15.4,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -589,7 +561,7 @@
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text19>
-            <Text20 Ref="50" type="Text" isKey="true">
+            <Text20 Ref="48" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>17.2,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -603,6 +575,48 @@
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text20>
+            <Text16 Ref="49" type="Text" isKey="true">
+              <BeforePrintEvent>if(MaterialOrder.MarkId==0)
+			{
+				Text16.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);
+			}
+else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
+{
+	Text16.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Black);
+}</BeforePrintEvent>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>10,0,1.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,8</Font>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text16</Name>
+              <Page isRef="3" />
+              <Parent isRef="40" />
+              <Text>{MaterialOrder.标准成本单价}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text16>
+            <Text18 Ref="50" type="Text" isKey="true">
+              <BeforePrintEvent>if(MaterialOrder.重量==System.Convert.ToDecimal(0) || MaterialOrder.重量 == System.Convert.ToDecimal(0.0001) 
+	|| MaterialOrder.重量==System.Convert.ToDecimal(0.0010) || MaterialOrder.重量== System.Convert.ToDecimal(0.001))
+{
+	Text18.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);
+}</BeforePrintEvent>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>13.6,0,1.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,8</Font>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text18</Name>
+              <Page isRef="3" />
+              <Parent isRef="40" />
+              <Text>{MaterialOrder.重量}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text18>
             <StartPointPrimitive10 Ref="51" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
               <ClientRectangle>2.6,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive10</Name>
@@ -1017,10 +1031,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>11/22/2019 5:02:16 PM</ReportChanged>
+  <ReportChanged>11/22/2019 6:23:48 PM</ReportChanged>
   <ReportCreated>11/14/2019 10:55:52 AM</ReportCreated>
   <ReportFile>D:\Project\K3Cloud_成本BOM报价单相关修改_20190828\Files\STI\MaterialCostReport.mrt</ReportFile>
-  <ReportGuid>aeb62d219fe445a0b3ed88bba911f26b</ReportGuid>
+  <ReportGuid>42bebc69602f4bab9637c318fa8aabb4</ReportGuid>
   <ReportImage isNull="true" />
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
@@ -1043,26 +1057,11 @@ namespace Reports
         public Report()        
 		{
             this.InitializeComponent();
-			OnShow();
         }
 
         #region StiReport Designer generated code - do not modify
 		#endregion StiReport Designer generated code - do not modify
 		
-		private void OnShow()
-		{
-			//若Markid为0,即将标准成本单价标记为红色显示
-			if(MaterialOrder.MarkId==System.Convert.ToDecimal(0))
-			{
-				Text16.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);
-			}
-			//若重量等于以下值,即将其标记为红色显示
-			if(MaterialOrder.重量==System.Convert.ToDecimal(0) || MaterialOrder.重量 == System.Convert.ToDecimal(0.0001) 
-			   || MaterialOrder.重量==System.Convert.ToDecimal(0.0010) || MaterialOrder.重量== System.Convert.ToDecimal(0.001))
-			{
-				Text18.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);
-			}
-		}
 		
     }
 }
