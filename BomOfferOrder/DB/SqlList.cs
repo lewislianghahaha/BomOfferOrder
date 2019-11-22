@@ -38,6 +38,8 @@
                                 AND EXISTS (
 												SELECT NULL FROM T_ENG_BOM A1
 												WHERE A1.FMATERIALID=A.FMATERIALID
+                                                AND a1.FFORBIDSTATUS='A'   --BOM禁用状态:否
+												AND a1.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
 											) --必须要在‘成本BOM’内存在
                                 --AND a.FNUMBER='010-0025(P-2)-4L-00-43-CK'
                             ";
@@ -67,6 +69,8 @@
                                 AND EXISTS (
 												SELECT NULL FROM T_ENG_BOM A1
 												WHERE A1.FMATERIALID=A.FMATERIALID
+                                                AND a1.FFORBIDSTATUS='A'   --BOM禁用状态:否
+												AND a1.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
 											)  --必须要在‘成本BOM’内存在
                                 --AND a.FNUMBER='010-0025(P-2)-4L-00-43-CK'
                             ";
@@ -134,7 +138,7 @@
             #endregion
 
             _result = $@"
-                            SELECT A.FMATERIALID 表头物料ID,A.FNUMBER 'BOM编号',--a.FMODIFYDATE '修改日期',CONVERT(varchar(100), a.FMODIFYDATE, 23) '修改日期',
+                            SELECT A.FMATERIALID 表头物料ID,A.FNUMBER 'BOM编号',
 	                               b.FMATERIALID 表体物料ID,c.FNUMBER 物料编码,d.FNAME 物料名称,
                                    CASE E.FERPCLSID WHEN 1 THEN '外购' WHEN 2 THEN '自制' ELSE '其它' END 物料属性,
                                    cast(b.FNUMERATOR/b.FDENOMINATOR*(1+b.FSCRAPRATE/100) as nvarchar(250)) 用量,
@@ -153,15 +157,17 @@
 
                             INNER JOIN dbo.T_BD_UNIT_L g ON a.FUNITID=g.FUNITID AND g.FLOCALEID <>1033
 
-                            WHERE /*A.FFORBIDSTATUS='A' --BOM禁用状态:否
+                            WHERE A.FFORBIDSTATUS='A' --BOM禁用状态:否
                             AND A.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
-                            AND*/ C.FDOCUMENTSTATUS='C' --物料审核状态:已审核
+                            AND C.FDOCUMENTSTATUS='C' --物料审核状态:已审核
                             AND C.FFORBIDSTATUS='A'   --物料禁用状态:否
                             AND D.FLOCALEID='2052'
                             AND CONVERT(varchar(100), a.FMODIFYDATE, 20)= (
 												                            SELECT CONVERT(varchar(100), MAX(A1.FMODIFYDATE), 20)
 												                            FROM T_ENG_BOM A1
 												                            WHERE A1.FMATERIALID=A.FMATERIALID
+                                                                            AND a1.FFORBIDSTATUS='A'   --BOM禁用状态:否
+																			AND a1.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
 											                               )  --获取最大的‘修改日期’记录
                             --AND A.FMATERIALID='136357'
                             --AND A.FNUMBER='QQ-G5-0001_V1.7'
@@ -765,6 +771,8 @@
                                 AND EXISTS (
 												SELECT NULL FROM T_ENG_BOM A1
 												WHERE A1.FMATERIALID=A.FMATERIALID
+                                                AND a1.FFORBIDSTATUS='A'   --BOM禁用状态:否
+												AND a1.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
 											) --必须要在‘成本BOM’内存在
                                 order by a.FMATERIALID
                             ";
@@ -793,6 +801,8 @@
                                 AND EXISTS (
 												SELECT NULL FROM T_ENG_BOM A1
 												WHERE A1.FMATERIALID=A.FMATERIALID
+                                                AND a1.FFORBIDSTATUS='A'   --BOM禁用状态:否
+												AND a1.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
 											)  --必须要在‘成本BOM’内存在
                                 order by a.FMATERIALID
                             ";

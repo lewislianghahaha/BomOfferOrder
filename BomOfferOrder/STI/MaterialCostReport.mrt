@@ -6,7 +6,7 @@
     <DataSources isList="true" count="1">
       <MaterialOrder Ref="2" type="DataTableSource" isKey="true">
         <Alias>MaterialOrder</Alias>
-        <Columns isList="true" count="10">
+        <Columns isList="true" count="11">
           <value>物料编码,System.String</value>
           <value>品名,System.String</value>
           <value>规格,System.String</value>
@@ -17,6 +17,7 @@
           <value>重量,System.Decimal</value>
           <value>重量成本单价,System.Decimal</value>
           <value>人工及制造费用,System.Decimal</value>
+          <value>MarkId,System.Int32</value>
         </Columns>
         <Dictionary isRef="1" />
         <Name>MaterialOrder</Name>
@@ -464,8 +465,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,0,2.6,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Consolas,8</Font>
-              <HorAlignment>Center</HorAlignment>
+              <Font>Consolas,9</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text11</Name>
               <Page isRef="3" />
@@ -480,8 +480,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>2.6,0,2.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Consolas,8</Font>
-              <HorAlignment>Center</HorAlignment>
+              <Font>Consolas,9</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text12</Name>
               <Page isRef="3" />
@@ -496,8 +495,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>4.8,0,2.4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Consolas,8</Font>
-              <HorAlignment>Center</HorAlignment>
+              <Font>Consolas,9</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text13</Name>
               <Page isRef="3" />
@@ -511,7 +509,7 @@
               <Brush>Transparent</Brush>
               <ClientRectangle>7.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Consolas,8</Font>
+              <Font>Consolas,9</Font>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text14</Name>
@@ -540,7 +538,7 @@
               <ClientRectangle>10,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,8</Font>
-              <HorAlignment>Center</HorAlignment>
+              <HorAlignment>Right</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text16</Name>
               <Page isRef="3" />
@@ -568,7 +566,7 @@
               <ClientRectangle>13.6,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,8</Font>
-              <HorAlignment>Center</HorAlignment>
+              <HorAlignment>Right</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text18</Name>
               <Page isRef="3" />
@@ -582,7 +580,7 @@
               <ClientRectangle>15.4,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,8</Font>
-              <HorAlignment>Center</HorAlignment>
+              <HorAlignment>Right</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text19</Name>
               <Page isRef="3" />
@@ -1019,10 +1017,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>11/14/2019 11:51:49 AM</ReportChanged>
+  <ReportChanged>11/22/2019 5:02:16 PM</ReportChanged>
   <ReportCreated>11/14/2019 10:55:52 AM</ReportCreated>
-  <ReportFile />
-  <ReportGuid>47b3de46d3f24b72aa97c062f87d1156</ReportGuid>
+  <ReportFile>D:\Project\K3Cloud_成本BOM报价单相关修改_20190828\Files\STI\MaterialCostReport.mrt</ReportFile>
+  <ReportGuid>aeb62d219fe445a0b3ed88bba911f26b</ReportGuid>
   <ReportImage isNull="true" />
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
@@ -1036,17 +1034,36 @@ using Stimulsoft.Base.Drawing;
 using Stimulsoft.Report;
 using Stimulsoft.Report.Dialogs;
 using Stimulsoft.Report.Components;
+using System.Drawing;
 
 namespace Reports
 {
     public class Report : Stimulsoft.Report.StiReport
     {
-        public Report()        {
+        public Report()        
+		{
             this.InitializeComponent();
+			OnShow();
         }
 
         #region StiReport Designer generated code - do not modify
-        #endregion StiReport Designer generated code - do not modify
+		#endregion StiReport Designer generated code - do not modify
+		
+		private void OnShow()
+		{
+			//若Markid为0,即将标准成本单价标记为红色显示
+			if(MaterialOrder.MarkId==System.Convert.ToDecimal(0))
+			{
+				Text16.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);
+			}
+			//若重量等于以下值,即将其标记为红色显示
+			if(MaterialOrder.重量==System.Convert.ToDecimal(0) || MaterialOrder.重量 == System.Convert.ToDecimal(0.0001) 
+			   || MaterialOrder.重量==System.Convert.ToDecimal(0.0010) || MaterialOrder.重量== System.Convert.ToDecimal(0.001))
+			{
+				Text18.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);
+			}
+		}
+		
     }
 }
 </Script>

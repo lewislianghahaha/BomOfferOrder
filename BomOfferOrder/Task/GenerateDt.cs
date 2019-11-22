@@ -95,10 +95,12 @@ namespace BomOfferOrder.Task
                             {
                                 //当检查到物料在resultdt存在的话,就进行更新
                                 resultdt.BeginInit();
-                                //配方用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
-                                qtytemp = decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+                                //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                                qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
+                                          decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+
                                 //累加‘用量’
-                                rows[8] = Convert.ToDecimal(rows[8])+qtytemp;
+                                rows[8] = Convert.ToDecimal(rows[8]) + qtytemp;
                                 resultdt.EndInit();
                                 //当修改完成后,跳出该循环
                                 break;
@@ -150,7 +152,6 @@ namespace BomOfferOrder.Task
                         newrow[8] = qtytemp;              //配方用量
                         newrow[9] = dtlrows[i][1];        //明细行BOM编号
                         newrow[10] = dtlrows[i][10];      //物料单价
-                        //newrow[11] = dtlrows[i][11];      //表头物料单价
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -300,8 +301,14 @@ namespace BomOfferOrder.Task
                     //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
                     foreach (DataRow row in tempdt.Rows)
                     {
-                        //判断若‘物料名称’不为‘拉盖’ 并且‘子项金额’为0,就将mark=0,反之为1
+                        //判断若‘物料名称’不为‘拉盖’ 并且‘子项金额’为0,就将mark=0,反之为1 注:若mark为0即跳出循环
                         mark = !Convert.ToString(row[2]).Contains("拉盖") && Convert.ToDecimal(row[5]) == 0 ? 0 : 1;
+                        if (mark == 0)
+                           break;
+                    }
+                    //累加得出‘父项金额’
+                    foreach (DataRow row in tempdt.Rows)
+                    {
                         totalamount += Convert.ToDecimal(row[5]);
                     }
 
@@ -334,7 +341,7 @@ namespace BomOfferOrder.Task
         private DataTable GenerateReportDtlTemp(int fmaterialid,string productname,DataTable bomdt,DataTable resultdt,decimal qty)
         {
             //‘用量’中转值
-            decimal qtytemp = 0;
+            decimal qtytemp;
 
             //根据fmaterialid为‘表头物料ID’为条件,查询bomdt内的明细记录
             var dtlrows = bomdt.Select("表头物料ID='" + fmaterialid + "'");
@@ -344,52 +351,25 @@ namespace BomOfferOrder.Task
                 //循环判断物料对应的“物料属性”是不是“外购”,若是就插入至resultdt内,反之,进行递归
                 if (Convert.ToString(dtlrows[i][5]) == "外购")
                 {
-                    //判断进入的物料ID是否需要更新或是插入记录
-                    //检查若此物料ID在resultdt内已存在(注:在同一个‘表头物料名称’下),就不需要再次插入,只需要将其‘配方用量’与已存在的记录相加即可
-                    var resultrows = resultdt.Select("表头物料名称='" + productname + "' and FMATERIALID='" + dtlrows[i][2] + "'");
-
-                    //使用‘表头物料名称’以及‘物料编码(FMATERIALID)’放到resultdt内判断是否存在;若存在,就更新,不用插入新行至resultdt
-                    if (resultrows.Length > 0)
-                    {
-                        foreach (DataRow rows in resultdt.Rows)
-                        {
-                            if (rows[1].ToString() == productname && Convert.ToInt32(rows[5]) == Convert.ToInt32(dtlrows[i][2]))
-                            {
-                                //当检查到物料在resultdt存在的话,就进行更新
-                                resultdt.BeginInit();
-                                //配方用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
-                                qtytemp = decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
-                                //累加‘用量’
-                                rows[8] = Convert.ToDecimal(rows[8]) + qtytemp;
-                                resultdt.EndInit();
-                                //当修改完成后,跳出该循环
-                                break;
-                            }
-                        }
-                    }
-
-                    else
-                    {
-                        //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
-                        qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
-                            decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
-
-                        var newrow = resultdt.NewRow();
-                        newrow[0] = productname;                                                  //表头物料名称
-                        newrow[1] = dtlrows[i][2];                                                //FMATERIALID
-                        newrow[2] = dtlrows[i][3];                                                //物料名称
-                        newrow[3] = qtytemp;                                                      //用量
-                        newrow[4] = dtlrows[i][10];                                               //单价
-                        newrow[5] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),6); //子项金额=用量*单价
-                        resultdt.Rows.Add(newrow);
-                    }
+                    //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                    qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
+                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),6);
+                  
+                    var newrow = resultdt.NewRow();
+                    newrow[0] = productname;                                                  //表头物料名称
+                    newrow[1] = dtlrows[i][2];                                                //FMATERIALID
+                    newrow[2] = dtlrows[i][4];                                                //物料名称
+                    newrow[3] = qtytemp;                                                      //用量
+                    newrow[4] = dtlrows[i][10];                                               //单价
+                    newrow[5] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),7); //子项金额=用量*单价
+                    resultdt.Rows.Add(newrow);
                 }
                 //递归调用
                 else
                 {
                     //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
                     qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
-                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100), 6);
+                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),6);
 
                     GenerateReportDtlTemp(Convert.ToInt32(dtlrows[i][2]), productname, bomdt, resultdt, qtytemp);
                 }
@@ -419,8 +399,8 @@ namespace BomOfferOrder.Task
             newrow[2] = spec;                                //规格
             newrow[3] = unitname;                            //计量单位
             newrow[4] = DBNull.Value;                        //数量
-            newrow[5] = totalamount;                         //标准成本单价
-            newrow[6] = mi;                                  //换算率
+            newrow[5] = decimal.Round(totalamount,7);        //标准成本单价
+            newrow[6] = mi >= Convert.ToDecimal(0.7) && mi <= Convert.ToDecimal(1.4) ? mi : 1; //换算率                            
             newrow[7] = weight;                              //重量
             newrow[8] = weight == 0 ? totalamount : decimal.Round(totalamount/weight, 6); //重量成本单价=标准成本单价/重量
             newrow[9] = DBNull.Value;                        //人工用制造费用

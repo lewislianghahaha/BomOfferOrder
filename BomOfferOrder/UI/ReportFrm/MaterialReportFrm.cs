@@ -93,6 +93,11 @@ namespace BomOfferOrder.UI.ReportFrm
                     newrow[5] = row.Cells[5].Value;  //重量 (净重)
                     _resultTable.Rows.Add(newrow);
                 }
+                //清空文本框以前GridView值
+                var dt = (DataTable) gvdtl.DataSource;
+                dt.Rows.Clear();
+                dt.Columns.Clear();
+                gvdtl.DataSource = dt;
                 //完成后关闭该窗体
                 this.Close();
             }
@@ -117,6 +122,7 @@ namespace BomOfferOrder.UI.ReportFrm
                     _resultTable.Rows.Clear();
                     _resultTable.Columns.Clear();
                 }
+                gvdtl.DataSource = _resultTable;
                 this.Close();
             }
             catch (Exception ex)
