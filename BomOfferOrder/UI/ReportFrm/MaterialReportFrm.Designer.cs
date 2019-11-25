@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MaterialReportFrm));
             this.Menu = new System.Windows.Forms.MenuStrip();
-            this.tmGet = new System.Windows.Forms.ToolStripMenuItem();
             this.tmclose = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnsearch = new System.Windows.Forms.Button();
@@ -57,6 +56,10 @@
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.gvdtl = new System.Windows.Forms.DataGridView();
+            this.tmprint = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmExcelImportGet = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmGet = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -70,18 +73,12 @@
             // 
             this.Menu.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmGet,
+            this.tmprint,
             this.tmclose});
             this.Menu.Location = new System.Drawing.Point(0, 0);
             this.Menu.Name = "Menu";
             this.Menu.Size = new System.Drawing.Size(643, 25);
             this.Menu.TabIndex = 2;
-            // 
-            // tmGet
-            // 
-            this.tmGet.Name = "tmGet";
-            this.tmGet.Size = new System.Drawing.Size(80, 21);
-            this.tmGet.Text = "获取及打印";
             // 
             // tmclose
             // 
@@ -309,6 +306,33 @@
             this.gvdtl.Size = new System.Drawing.Size(643, 363);
             this.gvdtl.TabIndex = 0;
             // 
+            // tmprint
+            // 
+            this.tmprint.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmExcelImportGet,
+            this.toolStripSeparator1,
+            this.tmGet});
+            this.tmprint.Name = "tmprint";
+            this.tmprint.Size = new System.Drawing.Size(44, 21);
+            this.tmprint.Text = "打印";
+            // 
+            // tmExcelImportGet
+            // 
+            this.tmExcelImportGet.Name = "tmExcelImportGet";
+            this.tmExcelImportGet.Size = new System.Drawing.Size(153, 22);
+            this.tmExcelImportGet.Text = "导入Excel打印";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // tmGet
+            // 
+            this.tmGet.Name = "tmGet";
+            this.tmGet.Size = new System.Drawing.Size(152, 22);
+            this.tmGet.Text = "获取打印";
+            // 
             // MaterialReportFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -341,7 +365,6 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip Menu;
-        private System.Windows.Forms.ToolStripMenuItem tmGet;
         private System.Windows.Forms.ToolStripMenuItem tmclose;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnsearch;
@@ -367,5 +390,9 @@
         private System.Windows.Forms.ToolStripLabel tstotalrow;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.DataGridView gvdtl;
+        private System.Windows.Forms.ToolStripMenuItem tmprint;
+        private System.Windows.Forms.ToolStripMenuItem tmExcelImportGet;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tmGet;
     }
 }

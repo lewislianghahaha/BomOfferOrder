@@ -17,6 +17,8 @@ namespace BomOfferOrder.UI.ReportFrm
         #region 变量定义
         //返回DT类型
         private DataTable _resultTable;
+        //记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
+        private int reporttypeid;
 
         //保存查询出来的GridView记录（GridView页面跳转时使用）
         private DataTable _dtl;
@@ -33,6 +35,10 @@ namespace BomOfferOrder.UI.ReportFrm
         /// 返回DT
         /// </summary>
         public DataTable ResultTable => _resultTable;
+        /// <summary>
+        /// 记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
+        /// </summary>
+        public int Reporttypeid => reporttypeid;
         #endregion
 
 
@@ -46,6 +52,7 @@ namespace BomOfferOrder.UI.ReportFrm
         private void OnRegisterEvents()
         {
             tmGet.Click += TmGet_Click;
+            tmExcelImportGet.Click += TmExcelImportGet_Click;
             tmclose.Click += Tmclose_Click;
             btnsearch.Click += Btnsearch_Click;
             comtype.SelectedIndexChanged += Comtype_SelectedIndexChanged;
@@ -93,6 +100,8 @@ namespace BomOfferOrder.UI.ReportFrm
                     newrow[5] = row.Cells[5].Value;  //重量 (净重)
                     _resultTable.Rows.Add(newrow);
                 }
+                //记录生成报表方式(0:按EXCEL导入方式 1:按选取方式)
+                reporttypeid = 1;
                 //清空文本框以前GridView值
                 var dt = (DataTable) gvdtl.DataSource;
                 dt.Rows.Clear();
@@ -100,6 +109,46 @@ namespace BomOfferOrder.UI.ReportFrm
                 gvdtl.DataSource = dt;
                 //完成后关闭该窗体
                 this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 导入Excel打印
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmExcelImportGet_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var openFileDialog = new OpenFileDialog { Filter = $"Xlsx文件|*.xlsx" };
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                task.TaskId = "5.2";
+                task.FileAddress = openFileDialog.FileName;
+
+                _resultTable = task.ResultTable;
+
+                if(_resultTable.Rows.Count==0) throw new Exception("不能成功导入EXCEL内容,请检查模板是否正确.");
+                else
+                {
+                    //记录生成报表方式(0:按EXCEL导入方式 1:按选取方式)
+                    reporttypeid = 0;
+                    //若GridView有值的话,就清空相关行记录
+                    if (gvdtl?.Rows.Count > 0)
+                    {
+                        var dt = (DataTable)gvdtl.DataSource;
+                        dt.Rows.Clear();
+                        dt.Columns.Clear();
+                        gvdtl.DataSource = dt;
+                    }
+                    //完成后关闭窗体
+                    this.Close();
+                }
             }
             catch (Exception ex)
             {

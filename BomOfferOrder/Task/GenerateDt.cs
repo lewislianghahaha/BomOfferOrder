@@ -259,10 +259,11 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 报表生成运算
         /// </summary>
+        /// <param name="reporttypeid">记录报表生成方式;0:按导入EXCEL生成 1:按获取生成</param>
         /// <param name="sourcedt">从查询窗体添加过来的DT记录</param>
         /// <param name="bomdt">BOM明细记录DT</param>
         /// <returns></returns>
-        public DataTable GenerateReportDt(DataTable sourcedt, DataTable bomdt)
+        public DataTable GenerateReportDt(int reporttypeid,DataTable sourcedt, DataTable bomdt)
         {
             var resultdt = new DataTable();
 
@@ -274,6 +275,9 @@ namespace BomOfferOrder.Task
                 var mark=1;
                 //定义‘父项金额’
                 decimal totalamount = 0;
+
+                //todo 根据reporttypeid确定要不要对sourcedt进行数据转换
+
 
                 //循环sourcedt
                 foreach (DataRow rows in sourcedt.Rows)
@@ -394,17 +398,18 @@ namespace BomOfferOrder.Task
                                                string unitname,int mark,decimal totalamount,DataTable resultdt)
         {
             var newrow = resultdt.NewRow();
-            newrow[0] = fmaterialCode;                       //物料编码
-            newrow[1] = productname;                         //品名
-            newrow[2] = spec;                                //规格
-            newrow[3] = unitname;                            //计量单位
-            newrow[4] = DBNull.Value;                        //数量
-            newrow[5] = decimal.Round(totalamount,7);        //标准成本单价
-            newrow[6] = mi >= Convert.ToDecimal(0.7) && mi <= Convert.ToDecimal(1.4) ? mi : 1; //换算率                            
-            newrow[7] = weight;                              //重量
-            newrow[8] = weight == 0 ? totalamount : decimal.Round(totalamount/weight, 6); //重量成本单价=标准成本单价/重量
-            newrow[9] = DBNull.Value;                        //人工用制造费用
-            newrow[10] = mark;                               //Markid
+            newrow[0] = fmaterialCode;                                                          //物料编码
+            newrow[1] = productname;                                                            //品名
+            newrow[2] = spec;                                                                   //规格
+            newrow[3] = unitname;                                                               //计量单位
+            newrow[4] = DBNull.Value;                                                           //数量
+            newrow[5] = DBNull.Value;                                                           //旧标准成本单价
+            newrow[6] = decimal.Round(totalamount,7);                                           //标准成本单价
+            newrow[7] = mi >= Convert.ToDecimal(0.7) && mi <= Convert.ToDecimal(1.4) ? mi : 1;  //换算率                            
+            newrow[8] = weight;                                                                 //重量
+            newrow[9] = weight == 0 ? totalamount : decimal.Round(totalamount/weight, 6);       //重量成本单价=标准成本单价/重量
+            newrow[10] = DBNull.Value;                                                           //人工用制造费用
+            newrow[11] = mark;                                                                  //Markid
             resultdt.Rows.Add(newrow);
             return resultdt;
         }

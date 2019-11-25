@@ -426,6 +426,7 @@ namespace BomOfferOrder.UI
                 if (materialReportFrm.ResultTable != null || materialReportFrm.ResultTable.Rows.Count > 0)
                 { //searchlist = GetSearchList(materialReportFrm.ResultTable); 
                     task.TaskId = "5.1";
+                    task.Reporttypeid = materialReportFrm.Reporttypeid; //记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
                     task.Data = materialReportFrm.ResultTable;
                     task.Bomdt = _bomdt;
 

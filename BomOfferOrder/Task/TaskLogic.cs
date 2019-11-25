@@ -22,6 +22,8 @@ namespace BomOfferOrder.Task
         private int _fid;                   //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
         private int _type;                  //记录占用情况类型(更新单据占用情况时使用)
         private string _newpwd;             //记录用户新密码
+        private int _reporttypeid;          //记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
+        private string _fileAddress;        //导入地址
 
         private DataTable _resultTable;     //返回DT类型
         private DataTable _resultbomdt;     //返回BOM DT
@@ -93,6 +95,16 @@ namespace BomOfferOrder.Task
         /// 记录用户新密码
         /// </summary>
         public string Newpwd { set { _newpwd = value; } }
+
+        /// <summary>
+        /// 记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
+        /// </summary>
+        public int Reporttypeid { set { _reporttypeid = value; } }
+
+        /// <summary>
+        /// 导入EXCEL地址
+        /// </summary>
+        public string FileAddress { set { _fileAddress = value; }}
         #endregion
 
         #region Get
@@ -219,7 +231,11 @@ namespace BomOfferOrder.Task
                     break;
                 //运算-报表生成使用
                 case "5.1":
-                    GenerateReportDt(_dt, _bomdt);
+                    GenerateReportDt(_reporttypeid,_dt, _bomdt);
+                    break;
+                //EXCEL模板导入
+                case "5.2":
+                    ImportExcelToDt(_fileAddress);
                     break;
                     #endregion
             }
@@ -438,7 +454,7 @@ namespace BomOfferOrder.Task
 
         #endregion
 
-        #region 报表
+        #region 报表相关
 
         /// <summary>
         ///报表-物料明细查询
@@ -451,9 +467,10 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 运算-报表生成使用
         /// </summary>
-        /// <param name="sourcedt"></param>
-        /// <param name="bomdt"></param>
-        private void GenerateReportDt(DataTable sourcedt, DataTable bomdt)
+        /// <param name="reporttypeid">记录报表生成方式;0:按导入EXCEL生成 1:按获取生成</param>
+        /// <param name="sourcedt">数据源</param>
+        /// <param name="bomdt">BOM数据源DT</param>
+        private void GenerateReportDt(int reporttypeid,DataTable sourcedt, DataTable bomdt)
         {
             //若_resultTable有值,即先将其清空,再进行赋值
             if (_resultTable?.Rows.Count > 0)
@@ -461,8 +478,23 @@ namespace BomOfferOrder.Task
                 _resultTable.Rows.Clear();
                 _resultTable.Columns.Clear();
             }
-            _resultTable = generateDt.GenerateReportDt(sourcedt, bomdt);
+            _resultTable = generateDt.GenerateReportDt(reporttypeid,sourcedt, bomdt);
             _resultMark = _resultTable.Rows.Count > 0;
+        }
+
+        /// <summary>
+        /// 导入EXCEL
+        /// </summary>
+        /// <param name="fileAddress"></param>
+        private void ImportExcelToDt(string fileAddress)
+        {
+            //若_resultTable有值,即先将其清空,再进行赋值
+            if (_resultTable?.Rows.Count > 0)
+            {
+                _resultTable.Rows.Clear();
+                _resultTable.Columns.Clear();
+            }
+            _resultTable = importDt.ImportExcelToDt(fileAddress);
         }
 
         #endregion
