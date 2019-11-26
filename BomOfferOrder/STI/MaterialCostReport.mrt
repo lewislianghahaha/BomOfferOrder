@@ -215,7 +215,7 @@
             <Text5 Ref="16" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>6.6,0,1.8,1</ClientRectangle>
+              <ClientRectangle>6.6,0,1.2,1</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,204</Font>
@@ -233,7 +233,7 @@
             <Text6 Ref="17" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>10,0,1.8,1</ClientRectangle>
+              <ClientRectangle>9.8,0,2,1</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,204</Font>
@@ -326,7 +326,7 @@
             <Text21 Ref="22" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>8.4,0,1.6,1</ClientRectangle>
+              <ClientRectangle>7.8,0,2,1</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,204</Font>
@@ -399,14 +399,14 @@
               <ReferenceToGuid>7d8e28202c6a47f78c48d5d2eae39a3c</ReferenceToGuid>
             </EndPointPrimitive4>
             <StartPointPrimitive5 Ref="31" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>10,0,0,0</ClientRectangle>
+              <ClientRectangle>9.8,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive5</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
               <ReferenceToGuid>552d30beafe94e2f8f73ee3967df54f5</ReferenceToGuid>
             </StartPointPrimitive5>
             <EndPointPrimitive5 Ref="32" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>10,1,0,0</ClientRectangle>
+              <ClientRectangle>9.8,1,0,0</ClientRectangle>
               <Name>EndPointPrimitive5</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
@@ -469,14 +469,14 @@
               <ReferenceToGuid>b0f08d3ab5db4bf1ba6392fa7be458e8</ReferenceToGuid>
             </EndPointPrimitive9>
             <StartPointPrimitive19 Ref="41" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>8.4,0,0,0</ClientRectangle>
+              <ClientRectangle>7.8,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive19</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
               <ReferenceToGuid>1a8203dc61904807ad16bba651af40b5</ReferenceToGuid>
             </StartPointPrimitive19>
             <EndPointPrimitive19 Ref="42" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>8.4,1,0,0</ClientRectangle>
+              <ClientRectangle>7.8,1,0,0</ClientRectangle>
               <Name>EndPointPrimitive19</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
@@ -555,7 +555,7 @@
             </Text14>
             <Text15 Ref="48" type="Text" isKey="true">
               <Brush>Transparent</Brush>
-              <ClientRectangle>6.6,0,1.8,0.6</ClientRectangle>
+              <ClientRectangle>6.6,0,1.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,8</Font>
               <HorAlignment>Center</HorAlignment>
@@ -619,7 +619,7 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
 	Text16.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Black);
 }</BeforePrintEvent>
               <Brush>Transparent</Brush>
-              <ClientRectangle>10,0,1.8,0.6</ClientRectangle>
+              <ClientRectangle>9.8,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,8</Font>
               <HorAlignment>Center</HorAlignment>
@@ -653,7 +653,7 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
             </Text18>
             <Text22 Ref="54" type="Text" isKey="true">
               <Brush>Transparent</Brush>
-              <ClientRectangle>8.4,0,1.6,0.6</ClientRectangle>
+              <ClientRectangle>7.8,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,8</Font>
               <HorAlignment>Center</HorAlignment>
@@ -722,14 +722,14 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
               <ReferenceToGuid>ab2979b9c22d497c9b8aa23969eb9f80</ReferenceToGuid>
             </EndPointPrimitive13>
             <StartPointPrimitive14 Ref="63" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>10,0,0,0</ClientRectangle>
+              <ClientRectangle>9.8,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive14</Name>
               <Page isRef="3" />
               <Parent isRef="43" />
               <ReferenceToGuid>b868e124846042f194967669547a8962</ReferenceToGuid>
             </StartPointPrimitive14>
             <EndPointPrimitive14 Ref="64" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>10,0.6,0,0</ClientRectangle>
+              <ClientRectangle>9.8,0.6,0,0</ClientRectangle>
               <Name>EndPointPrimitive14</Name>
               <Page isRef="3" />
               <Parent isRef="43" />
@@ -792,14 +792,14 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
               <ReferenceToGuid>6c5685d7085545dbb21ec1a6d320e954</ReferenceToGuid>
             </EndPointPrimitive18>
             <StartPointPrimitive20 Ref="73" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>8.4,0,0,0</ClientRectangle>
+              <ClientRectangle>7.8,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive20</Name>
               <Page isRef="3" />
               <Parent isRef="43" />
               <ReferenceToGuid>7572eff8cccc43e7af1f5ff7a6929039</ReferenceToGuid>
             </StartPointPrimitive20>
             <EndPointPrimitive20 Ref="74" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>8.4,0.6,0,0</ClientRectangle>
+              <ClientRectangle>7.8,0.6,0,0</ClientRectangle>
               <Name>EndPointPrimitive20</Name>
               <Page isRef="3" />
               <Parent isRef="43" />
@@ -872,7 +872,7 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
           </StartCap>
         </VerticalLinePrimitive4>
         <VerticalLinePrimitive5 Ref="87" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>10,2.2,0.0254,1</ClientRectangle>
+          <ClientRectangle>9.8,2.2,0.0254,1</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="88" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -998,7 +998,7 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
           </StartCap>
         </VerticalLinePrimitive13>
         <VerticalLinePrimitive14 Ref="114" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>10,4,0.0254,0.6</ClientRectangle>
+          <ClientRectangle>9.8,4,0.0254,0.6</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="115" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1068,7 +1068,7 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
           </StartCap>
         </VerticalLinePrimitive18>
         <VerticalLinePrimitive19 Ref="129" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>8.4,2.2,0.0254,1</ClientRectangle>
+          <ClientRectangle>7.8,2.2,0.0254,1</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="130" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1082,7 +1082,7 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
           </StartCap>
         </VerticalLinePrimitive19>
         <VerticalLinePrimitive20 Ref="132" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>8.4,4,0.0254,0.6</ClientRectangle>
+          <ClientRectangle>7.8,4,0.0254,0.6</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="133" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1121,10 +1121,10 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>11/25/2019 2:28:06 PM</ReportChanged>
+  <ReportChanged>11/26/2019 11:31:46 AM</ReportChanged>
   <ReportCreated>11/14/2019 10:55:52 AM</ReportCreated>
   <ReportFile>D:\Project\K3Cloud_成本BOM报价单相关修改_20190828\Files\STI\MaterialCostReport.mrt</ReportFile>
-  <ReportGuid>87c3a6f9a3b74427ae124d6c6cb0af7a</ReportGuid>
+  <ReportGuid>6266d698c61849fe9934dbc16a5c9897</ReportGuid>
   <ReportImage isNull="true" />
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>

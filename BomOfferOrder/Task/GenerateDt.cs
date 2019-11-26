@@ -259,11 +259,10 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 报表生成运算
         /// </summary>
-        /// <param name="reporttypeid">记录报表生成方式;0:按导入EXCEL生成 1:按获取生成</param>
         /// <param name="sourcedt">从查询窗体添加过来的DT记录</param>
         /// <param name="bomdt">BOM明细记录DT</param>
         /// <returns></returns>
-        public DataTable GenerateReportDt(int reporttypeid,DataTable sourcedt, DataTable bomdt)
+        public DataTable GenerateReportDt(DataTable sourcedt, DataTable bomdt)
         {
             var resultdt = new DataTable();
 
@@ -273,11 +272,10 @@ namespace BomOfferOrder.Task
                 resultdt = dbList.ReportPrintTempdt();
                 //定义Mark bool值
                 var mark=1;
-                //定义‘父项金额’
+                //定义‘父项金额’(标准成本单价使用)
                 decimal totalamount = 0;
-
-                //todo 根据reporttypeid确定要不要对sourcedt进行数据转换
-
+                //定义‘父项金额’(旧标准成本单价使用)
+                decimal oldtotalamount = 0;
 
                 //循环sourcedt
                 foreach (DataRow rows in sourcedt.Rows)
@@ -310,14 +308,20 @@ namespace BomOfferOrder.Task
                         if (mark == 0)
                            break;
                     }
-                    //累加得出‘父项金额’
+                    //累加得出‘父项金额’(标准成本单价使用)
                     foreach (DataRow row in tempdt.Rows)
                     {
-                        totalamount += Convert.ToDecimal(row[5]);
+                        totalamount += Convert.ToDecimal(row[6]);
+                    }
+                    //累加得出‘父项金额’(旧标准成本单价使用)
+                    foreach (DataRow row in tempdt.Rows)
+                    {
+                        oldtotalamount += Convert.ToDecimal(row[7]);
                     }
 
                     //将相关内容插入至resultdt内
-                    resultdt.Merge(MarkRecordToReportDt(fmaterialCode,productname,spec,mi,weight,unitname,mark,totalamount,resultdt));
+                    resultdt.Merge(MarkRecordToReportDt(fmaterialCode,productname,spec,mi,weight,unitname,mark,
+                                                        oldtotalamount,totalamount,resultdt));
 
                     //最后将tempdt行清空以及相中间变量清空,待下一个循环使用
                     tempdt.Rows.Clear();
@@ -346,6 +350,8 @@ namespace BomOfferOrder.Task
         {
             //‘用量’中转值
             decimal qtytemp;
+            //定义‘单价’变量-旧标准成本单价使用
+            decimal oldprice;
 
             //根据fmaterialid为‘表头物料ID’为条件,查询bomdt内的明细记录
             var dtlrows = bomdt.Select("表头物料ID='" + fmaterialid + "'");
@@ -359,13 +365,18 @@ namespace BomOfferOrder.Task
                     qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
                         decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),6);
                   
+                    //计算旧标准单价
+                    oldprice = GetOldPrice(Convert.ToInt32(dtlrows[i][2]));
+
                     var newrow = resultdt.NewRow();
                     newrow[0] = productname;                                                  //表头物料名称
                     newrow[1] = dtlrows[i][2];                                                //FMATERIALID
                     newrow[2] = dtlrows[i][4];                                                //物料名称
                     newrow[3] = qtytemp;                                                      //用量
-                    newrow[4] = dtlrows[i][10];                                               //单价
-                    newrow[5] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),7); //子项金额=用量*单价
+                    newrow[4] = dtlrows[i][10];                                               //单价(标准成本单价使用)
+                    newrow[5] = oldprice;                                                     //旧标准单价(旧标准成本单价使用)
+                    newrow[6] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),7); //子项金额=用量*单价 (标准成本单价使用)
+                    newrow[7] = decimal.Round(qtytemp * oldprice);                            //旧子项金额=用量*单价 (旧标准成本单价使用)
                     resultdt.Rows.Add(newrow);
                 }
                 //递归调用
@@ -391,11 +402,12 @@ namespace BomOfferOrder.Task
         /// <param name="weight">重时</param>
         /// <param name="unitname">计量单位</param>
         /// <param name="mark">是否标红标记</param>
-        /// <param name="totalamount">父项金额</param>
+        /// <param name="oldtotalamount">父项金额-旧标准成本单价使用</param>
+        /// <param name="totalamount">父项金额-标准成本单价使用</param>
         /// <param name="resultdt">整理后的临时表</param>
         /// <returns></returns>
         private DataTable MarkRecordToReportDt(string fmaterialCode, string productname,string spec,decimal mi,decimal weight,
-                                               string unitname,int mark,decimal totalamount,DataTable resultdt)
+                                               string unitname,int mark,decimal oldtotalamount,decimal totalamount,DataTable resultdt)
         {
             var newrow = resultdt.NewRow();
             newrow[0] = fmaterialCode;                                                          //物料编码
@@ -403,15 +415,30 @@ namespace BomOfferOrder.Task
             newrow[2] = spec;                                                                   //规格
             newrow[3] = unitname;                                                               //计量单位
             newrow[4] = DBNull.Value;                                                           //数量
-            newrow[5] = DBNull.Value;                                                           //旧标准成本单价
+            newrow[5] = decimal.Round(oldtotalamount,7);                                        //旧标准成本单价
             newrow[6] = decimal.Round(totalamount,7);                                           //标准成本单价
             newrow[7] = mi >= Convert.ToDecimal(0.7) && mi <= Convert.ToDecimal(1.4) ? mi : 1;  //换算率                            
             newrow[8] = weight;                                                                 //重量
             newrow[9] = weight == 0 ? totalamount : decimal.Round(totalamount/weight, 6);       //重量成本单价=标准成本单价/重量
-            newrow[10] = DBNull.Value;                                                           //人工用制造费用
+            newrow[10] = DBNull.Value;                                                          //人工用制造费用
             newrow[11] = mark;                                                                  //Markid
             resultdt.Rows.Add(newrow);
             return resultdt;
+        }
+
+        /// <summary>
+        /// 计算旧标准单价
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        private decimal GetOldPrice(int materialid)
+        {
+            decimal result = 0;
+
+            //
+
+
+            return result;
         }
 
     }

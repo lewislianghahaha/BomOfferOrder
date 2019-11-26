@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using BomOfferOrder.DB;
 using BomOfferOrder.Task;
 using BomOfferOrder.UI.ReportFrm;
 using Stimulsoft.Report;
@@ -20,7 +21,11 @@ namespace BomOfferOrder.UI
 
         #region 变量参数
         //保存BOM明细DT(生成时使用;注:当打开录入界面时初始化执行)
-        private DataTable _bomdt = new DataTable();
+        private DataTable _bomdt;
+        //保存入库单相关DT(报表功能使用)
+        private DataTable _Instockdt;
+        //保存价目表DT(报表功能使用)
+        private DataTable _Pricelistdt;
 
         //定义关闭符号的宽
         const int CloseSize = 11;
@@ -67,6 +72,10 @@ namespace BomOfferOrder.UI
             OnShowSelectTypeList();
             //初始化BOM明细DT(‘生成BOM明细’及‘报表查询’功能时使用)
             OnInitializeBomdt();
+            //初始化入库单相关DT(报表查询功能时使用)
+            OnInitializeInstockdt();
+            //初始化价目表相关DT(报表查询功能时使用)
+            OnInitializePriceListdt();
             //更新用户占用值 useid
             UpUseridValue(0);
             //权限控制
@@ -416,6 +425,9 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                //定义‘物料相关’DT
+                var materialdt=new DataTable();
+
                 materialReportFrm.StartPosition = FormStartPosition.CenterParent;
                 materialReportFrm.ShowDialog();
 
@@ -425,10 +437,43 @@ namespace BomOfferOrder.UI
                 //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
                 if (materialReportFrm.ResultTable != null || materialReportFrm.ResultTable.Rows.Count > 0)
                 { //searchlist = GetSearchList(materialReportFrm.ResultTable); 
+
+                    //若materialReportFrm.reporttypeid为0,需要检测两点:
+                    //1)即需要检测其导入的物料是否已在BOMDT内有记录,若有就获取其对应的物料ID,反之,报出异常
+                    //2)检测其内是否有相同的物料
+
+
+
+                    if (materialReportFrm.Reporttypeid == 0)
+                    {
+                        
+                        //循环从EXCEL导入的物料DT
+                        foreach (DataRow rows in materialReportFrm.ResultTable.Rows)
+                        {
+                            //通过_bomdt获取其对应的FMATERIALID,若没有,就跳出异常
+                            var dtlrow = _bomdt.Select("");
+
+                            var newrow = materialdt.NewRow();
+                            newrow[0] = fmaterialid;    //FMATERIALID
+                            newrow[1] = rows[0];        //物料编码
+                            newrow[2] = rows[1];        //物料名称
+                            newrow[3] = rows[2];        //规格
+                            newrow[4] = rows[4];        //换算率(密度)
+                            newrow[5] = rows[5];        //重量(净重)
+                            materialdt.Rows.Add(newrow);
+                        }
+                    }
+                    else
+                    {
+                        materialdt = materialReportFrm.ResultTable;
+                    }
+                    
+
                     task.TaskId = "5.1";
                     task.Reporttypeid = materialReportFrm.Reporttypeid; //记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
-                    task.Data = materialReportFrm.ResultTable;
+                    task.Data = materialdt;
                     task.Bomdt = _bomdt;
+
 
                     new Thread(Start).Start();
                     load.StartPosition = FormStartPosition.CenterScreen;
@@ -1074,6 +1119,24 @@ namespace BomOfferOrder.UI
             task.TaskId = "0.1";
             task.StartTask();
             _bomdt = task.Resultbomdt;
+        }
+
+        /// <summary>
+        /// 初始化入库单DT
+        /// </summary>
+        private void OnInitializeInstockdt()
+        {
+
+            _Instockdt =;
+        }
+
+        /// <summary>
+        /// 初始化价目表DT
+        /// </summary>
+        private void OnInitializePriceListdt()
+        {
+
+            _Pricelistdt =;
         }
 
         /// <summary>

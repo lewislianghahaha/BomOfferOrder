@@ -19,6 +19,8 @@ namespace BomOfferOrder.UI.ReportFrm
         private DataTable _resultTable;
         //记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
         private int reporttypeid;
+        //记录初始化得出的物料DT
+        private DataTable _materialdt;
 
         //保存查询出来的GridView记录（GridView页面跳转时使用）
         private DataTable _dtl;
@@ -73,6 +75,8 @@ namespace BomOfferOrder.UI.ReportFrm
         {
             //初始化生成下拉列表
             OnShowTypeList();
+            //初始化物料DT
+            OnInitializeMaterialdt();
         }
 
         /// <summary>
@@ -130,8 +134,24 @@ namespace BomOfferOrder.UI.ReportFrm
 
                 task.TaskId = "5.2";
                 task.FileAddress = openFileDialog.FileName;
+                task.StartTask();
 
-                _resultTable = task.ResultTable;
+                //通过_materialdt循环获取其对应的FMATERIALID
+                _resultTable = dbList.MarkMaterialReportTemp();
+                foreach (DataRow row in task.ResultTable.Rows)
+                {
+                    //通过_materialdt获取其对应的FMATERIALID
+                    var dtlrow = _materialdt.Select("物料编码='"+row[0]+"'");
+
+                    var newrow = _resultTable.NewRow();
+                    newrow[0] = dtlrow[0][0];   //FMATERIALID
+                    newrow[1] = row[0];         //物料编码
+                    newrow[2] = row[1];         //物料名称
+                    newrow[3] = row[2];         //规格
+                    newrow[4] = row[4];         //换算率(密度)
+                    newrow[5] = row[5];         //重量(净重)
+                    _resultTable.Rows.Add(newrow);
+                }
 
                 if(_resultTable.Rows.Count==0) throw new Exception("不能成功导入EXCEL内容,请检查模板是否正确.");
                 else
@@ -520,15 +540,15 @@ namespace BomOfferOrder.UI.ReportFrm
             var dt = new DataTable();
 
             //创建表头
-            for (var i = 1; i < 3; i++)
+            for (var i = 0; i < 2; i++)
             {
                 var dc = new DataColumn();
                 switch (i)
                 {
-                    case 1:
+                    case 0:
                         dc.ColumnName = "Id";
                         break;
-                    case 2:
+                    case 1:
                         dc.ColumnName = "Name";
                         break;
                 }
@@ -536,17 +556,17 @@ namespace BomOfferOrder.UI.ReportFrm
             }
 
             //创建行内容
-            for (var j = 1; j < 3; j++)
+            for (var j = 0; j < 2; j++)
             {
                 var dr = dt.NewRow();
 
                 switch (j)
                 {
-                    case 1:
+                    case 0:
                         dr[0] = "1";
                         dr[1] = "物料名称";
                         break;
-                    case 2:
+                    case 1:
                         dr[0] = "2";
                         dr[1] = "物料编码";
                         break;
@@ -567,6 +587,21 @@ namespace BomOfferOrder.UI.ReportFrm
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
             if (gvdtl.Rows.Count > 0)
                 gvdtl.Columns[0].Visible = false;
+        }
+
+        /// <summary>
+        /// 初始化物料DT
+        /// </summary>
+        private void OnInitializeMaterialdt()
+        {
+            var dvordertylelist = (DataRowView)comtype.Items[comtype.SelectedIndex];
+            var ordertypeId = Convert.ToInt32(dvordertylelist["Id"]);
+
+            task.TaskId = "5";
+            task.SearchId = ordertypeId;
+            task.SearchValue = txtvalue.Text;
+            task.StartTask();
+            _materialdt = task.ResultTable;
         }
 
     }

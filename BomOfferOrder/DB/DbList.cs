@@ -820,7 +820,7 @@ namespace BomOfferOrder.DB
         public DataTable ReportTempdt()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < 8; i++)
             {
                 var dc = new DataColumn();
 
@@ -846,14 +846,24 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "用量";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    //单价
+                    //单价-标准成本单价使用
                     case 4:
                         dc.ColumnName = "单价";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    //子项金额
+                    //单价-旧标准成本单价使用
                     case 5:
+                        dc.ColumnName = "旧标准单价";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //子项金额-标准成本单价使用
+                    case 6:
                         dc.ColumnName = "子项金额";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //子项金额-旧标准成本单价使用
+                    case 7:
+                        dc.ColumnName = "旧子项金额";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                 }

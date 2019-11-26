@@ -29,7 +29,7 @@
                                 INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                                 INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                                WHERE c.FDATAVALUE IN('产成品','原漆半成品')
+                                WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
                                 AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
@@ -60,7 +60,7 @@
                                 INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                                 INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                                WHERE c.FDATAVALUE IN('产成品','原漆半成品')
+                                WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
                                 AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
@@ -763,7 +763,7 @@
 
                                 INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
 
-                                WHERE c.FDATAVALUE IN('产成品','原漆半成品')
+                                WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
                                 AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
@@ -792,7 +792,7 @@
 
                                 INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
 
-                                WHERE c.FDATAVALUE IN('产成品','原漆半成品')
+                                WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
                                 AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
@@ -807,6 +807,45 @@
                                 order by a.FMATERIALID
                             ";
             }
+            return _result;
+        }
+
+        /// <summary>
+        /// 入库单相关(报表功能使用)
+        /// </summary>
+        /// <returns></returns>
+        public string SearchInstock()
+        {
+            _result = $@"
+                            select t1.子项物料内码,t1.单价
+						    from (select ROW_NUMBER()over(partition by t2.fmaterialid order by t2.fmaterialid,t1.fdate desc) r,t1.fdate,t2.FMATERIALID 子项物料内码,t3.FTAXPRICE 单价
+								    from T_STK_INSTOCK t1
+									    inner join T_STK_INSTOCKENTRY t2 on t1.fid = t2.fid
+									    inner join T_STK_INSTOCKENTRY_F t3 on t2.fentryid = t3.fentryid
+									    left join t_bd_materialbase t4 on t2.FMATERIALID = t4.FMATERIALID
+								    where t4.FERPCLSID<>2) t1
+						    where t1.r = 1
+                        ";
+
+            return _result;
+        }
+
+        /// <summary>
+        /// 价目表(报表功能使用)
+        /// </summary>
+        /// <returns></returns>
+        public string SearchPricelist()
+        {
+            _result = $@"
+                          select t1.子项物料内码 ,t1.单价 
+						  from (select row_number()over(partition by t2.fmaterialid order by t2.fmaterialid,t2.fentryid desc) r,t2.FMATERIALID 子项物料内码,t2.FTAXPRICE 单价
+								from T_PUR_PRICELIST t1 
+									inner join t_PUR_PriceListentry t2 on t1.FID = t2.FID
+									left join t_bd_materialbase t3 on t2.FMATERIALID = t3.FMATERIALID
+								where t1.FFORBIDSTATUS='A' and t1.FDOCUMENTSTATUS='C' and t3.FERPCLSID<>2) t1
+						  where t1.r = 1
+                        ";
+
             return _result;
         }
 
