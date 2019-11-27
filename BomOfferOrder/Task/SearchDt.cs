@@ -161,6 +161,26 @@ namespace BomOfferOrder.Task
             return UseSqlSearchIntoDt(0,_sqlscript);
         }
 
+        /// <summary>
+        /// 查询入库单相关
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchInstockDt()
+        {
+            _sqlscript = sqlList.SearchInstock();
+            return UseSqlSearchIntoDt(0,_sqlscript);
+        }
+
+        /// <summary>
+        /// 查询价目表相关
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchPricelistDt()
+        {
+            _sqlscript = sqlList.SearchPricelist();
+            return UseSqlSearchIntoDt(0,_sqlscript);
+        }
+
         //////////////////////////////////////////////////主窗体及查询端使用//////////////////////////////////////////////////////////
 
         /// <summary>

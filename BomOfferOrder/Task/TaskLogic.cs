@@ -13,7 +13,6 @@ namespace BomOfferOrder.Task
         private int _searchid;              //记录查询列表ID值(查询时使用)
         private string _searchvalue;        //查询值(查询时使用)
         private DataTable _dt;              //保存需要进行生成明细记录的DT
-        private string _valuelist;          //保存Fmaterialid列表(如:'426464','738199')
         private DataTable _bomdt;           //保存BOM明细DT(生成时使用)
         private string _oaorder;            //获取OA流水号
         private DataTable _importdt;        //获取准备提交的DT(提交时使用)
@@ -22,8 +21,9 @@ namespace BomOfferOrder.Task
         private int _fid;                   //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
         private int _type;                  //记录占用情况类型(更新单据占用情况时使用)
         private string _newpwd;             //记录用户新密码
-        private int _reporttypeid;          //记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
         private string _fileAddress;        //导入地址
+        private DataTable _Instockdt;       //保存入库单相关DT(报表功能使用)
+        private DataTable _Pricelistdt;     //保存价目表DT(报表功能使用)
 
         private DataTable _resultTable;     //返回DT类型
         private DataTable _resultbomdt;     //返回BOM DT
@@ -50,11 +50,6 @@ namespace BomOfferOrder.Task
         /// 保存需要进行生成明细记录的DT
         /// </summary>
         public DataTable Data { set { _dt = value; } }
-
-        /// <summary>
-        /// 保存Fmaterialid列表(如:'426464','738199')
-        /// </summary>
-        public string Valuelist { set { _valuelist = value; } }
 
         /// <summary>
         /// 保存BOM明细DT(生成时使用)
@@ -97,14 +92,20 @@ namespace BomOfferOrder.Task
         public string Newpwd { set { _newpwd = value; } }
 
         /// <summary>
-        /// 记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
-        /// </summary>
-        public int Reporttypeid { set { _reporttypeid = value; } }
-
-        /// <summary>
         /// 导入EXCEL地址
         /// </summary>
         public string FileAddress { set { _fileAddress = value; }}
+
+        /// <summary>
+        /// 保存入库单相关DT(报表功能使用)
+        /// </summary>
+        public DataTable Instockdt { set { _Instockdt = value; } }
+
+        /// <summary>
+        /// 保存价目表DT(报表功能使用)
+        /// </summary>
+        public DataTable Pricelistdt { set { _Pricelistdt = value; } }
+
         #endregion
 
         #region Get
@@ -231,11 +232,19 @@ namespace BomOfferOrder.Task
                     break;
                 //运算-报表生成使用
                 case "5.1":
-                    GenerateReportDt(_reporttypeid,_dt, _bomdt);
+                    GenerateReportDt(_dt, _bomdt,_Instockdt,_Pricelistdt);
                     break;
                 //EXCEL模板导入
                 case "5.2":
                     ImportExcelToDt(_fileAddress);
+                    break;
+                //查询:入库单相关(报表使用)
+                case "5.3":
+                    SearchInstockDt();
+                    break;
+                //查询:价目表相关(报表使用)
+                case "5.4":
+                    SearchPricelistDt();
                     break;
                     #endregion
             }
@@ -467,10 +476,11 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 运算-报表生成使用
         /// </summary>
-        /// <param name="reporttypeid">记录报表生成方式;0:按导入EXCEL生成 1:按获取生成</param>
         /// <param name="sourcedt">数据源</param>
         /// <param name="bomdt">BOM数据源DT</param>
-        private void GenerateReportDt(int reporttypeid,DataTable sourcedt, DataTable bomdt)
+        /// <param name="instockdt">保存入库单相关DT(报表功能使用)</param>
+        /// <param name="priceListdt">保存价目表DT(报表功能使用)</param>
+        private void GenerateReportDt(DataTable sourcedt, DataTable bomdt,DataTable instockdt,DataTable priceListdt)
         {
             //若_resultTable有值,即先将其清空,再进行赋值
             if (_resultTable?.Rows.Count > 0)
@@ -478,7 +488,7 @@ namespace BomOfferOrder.Task
                 _resultTable.Rows.Clear();
                 _resultTable.Columns.Clear();
             }
-            _resultTable = generateDt.GenerateReportDt(reporttypeid,sourcedt, bomdt);
+            _resultTable = generateDt.GenerateReportDt(sourcedt, bomdt,instockdt,priceListdt);
             _resultMark = _resultTable.Rows.Count > 0;
         }
 
@@ -495,6 +505,22 @@ namespace BomOfferOrder.Task
                 _resultTable.Columns.Clear();
             }
             _resultTable = importDt.ImportExcelToDt(fileAddress);
+        }
+
+        /// <summary>
+        /// 查询入库单相关
+        /// </summary>
+        private void SearchInstockDt()
+        {
+            _resultTable = searchDt.SearchInstockDt();
+        }
+
+        /// <summary>
+        /// 查询价目表相关
+        /// </summary>
+        private void SearchPricelistDt()
+        {
+            _resultTable = searchDt.SearchPricelistDt();
         }
 
         #endregion

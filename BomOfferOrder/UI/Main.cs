@@ -439,27 +439,30 @@ namespace BomOfferOrder.UI
                 { //searchlist = GetSearchList(materialReportFrm.ResultTable); 
 
                     //若materialReportFrm.reporttypeid为0,需要检测两点:
-                    //1)即需要检测其导入的物料是否已在BOMDT内有记录,若有就获取其对应的物料ID,反之,报出异常
-                    //2)检测其内是否有相同的物料
-
-
-
+                    //1)即需要检测其导入的物料是否已在BOMDT内存在若没有,报出异常
+                    //2)检测其内是否有相同的物料,若有,报异常
                     if (materialReportFrm.Reporttypeid == 0)
                     {
-                        
                         //循环从EXCEL导入的物料DT
                         foreach (DataRow rows in materialReportFrm.ResultTable.Rows)
                         {
-                            //通过_bomdt获取其对应的FMATERIALID,若没有,就跳出异常
-                            var dtlrow = _bomdt.Select("");
+                            var dtlrow = _bomdt.Select("表头物料ID='"+rows[0]+"'");
+                            if(dtlrow.Length==0) throw new Exception($"检测到物料'{rows[1]}'不在BOM记录中存在,请检查后继续");
 
+                            materialdt = materialReportFrm.ResultTable.Clone();
+
+                            //检测导入DT内的物料是否重复
+                            if(materialdt.Select("FMATERIALID='"+rows[0]+"'").Length>0)
+                                throw new Exception($"检测到导入的EXCEL中物料'{rows[1]}'有重复记录,请检查后重新导入");
+
+                            //若没有重复即进行插入至materialdt内
                             var newrow = materialdt.NewRow();
-                            newrow[0] = fmaterialid;    //FMATERIALID
-                            newrow[1] = rows[0];        //物料编码
-                            newrow[2] = rows[1];        //物料名称
-                            newrow[3] = rows[2];        //规格
-                            newrow[4] = rows[4];        //换算率(密度)
-                            newrow[5] = rows[5];        //重量(净重)
+                            newrow[0] = rows[0];         //FMATERIALID
+                            newrow[1] = rows[0];         //物料编码
+                            newrow[2] = rows[1];         //物料名称
+                            newrow[3] = rows[2];         //规格
+                            newrow[4] = rows[4];         //换算率(密度)
+                            newrow[5] = rows[5];         //重量(净重)
                             materialdt.Rows.Add(newrow);
                         }
                     }
@@ -468,12 +471,12 @@ namespace BomOfferOrder.UI
                         materialdt = materialReportFrm.ResultTable;
                     }
                     
-
+                    //将相关值插入至对应的中转值内
                     task.TaskId = "5.1";
-                    task.Reporttypeid = materialReportFrm.Reporttypeid; //记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
                     task.Data = materialdt;
                     task.Bomdt = _bomdt;
-
+                    task.Instockdt = _Instockdt;
+                    task.Pricelistdt = _Pricelistdt;
 
                     new Thread(Start).Start();
                     load.StartPosition = FormStartPosition.CenterScreen;
@@ -1126,8 +1129,9 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void OnInitializeInstockdt()
         {
-
-            _Instockdt =;
+            task.TaskId = "5.3";
+            task.StartTask();
+            _Instockdt = task.ResultTable;
         }
 
         /// <summary>
@@ -1135,8 +1139,9 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void OnInitializePriceListdt()
         {
-
-            _Pricelistdt =;
+            task.TaskId = "5.4";
+            task.StartTask();
+            _Pricelistdt = task.ResultTable;
         }
 
         /// <summary>

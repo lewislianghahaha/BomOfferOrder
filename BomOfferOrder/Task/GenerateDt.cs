@@ -261,8 +261,10 @@ namespace BomOfferOrder.Task
         /// </summary>
         /// <param name="sourcedt">从查询窗体添加过来的DT记录</param>
         /// <param name="bomdt">BOM明细记录DT</param>
+        /// <param name="instockdt">保存入库单相关DT(报表功能使用)</param>
+        /// <param name="priceListdt">保存价目表DT(报表功能使用)</param>
         /// <returns></returns>
-        public DataTable GenerateReportDt(DataTable sourcedt, DataTable bomdt)
+        public DataTable GenerateReportDt(DataTable sourcedt, DataTable bomdt, DataTable instockdt, DataTable priceListdt)
         {
             var resultdt = new DataTable();
 
@@ -298,7 +300,7 @@ namespace BomOfferOrder.Task
                     var unitname = Convert.ToString(dtlrows[0][11]);
 
                     //执行将相关信息插入至tempdt内(使用递归)
-                    var tempdt = GenerateReportDtlTemp(fmaterialid,productname,bomdt, dbList.ReportTempdt(), 0);
+                    var tempdt = GenerateReportDtlTemp(fmaterialid,productname,bomdt, dbList.ReportTempdt(), 0,instockdt,priceListdt);
 
                     //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
                     foreach (DataRow row in tempdt.Rows)
@@ -326,6 +328,7 @@ namespace BomOfferOrder.Task
                     //最后将tempdt行清空以及相中间变量清空,待下一个循环使用
                     tempdt.Rows.Clear();
                     totalamount = 0;
+                    oldtotalamount = 0;
                     mark = 1;
                 }
             }
@@ -345,8 +348,11 @@ namespace BomOfferOrder.Task
         /// <param name="bomdt">初始化BOM明细DT(全部Bom内容)</param>
         /// <param name="resultdt">结果临时表</param>
         /// <param name="qty">配方用量使用</param>
+        /// <param name="instockdt">初始化入库单DT-计算旧标准单价使用</param>
+        /// <param name="priceListdt">初始化价目表DT-计算旧标准单价使用</param>
         /// <returns></returns>
-        private DataTable GenerateReportDtlTemp(int fmaterialid,string productname,DataTable bomdt,DataTable resultdt,decimal qty)
+        private DataTable GenerateReportDtlTemp(int fmaterialid,string productname,DataTable bomdt,DataTable resultdt,
+                                                decimal qty,DataTable instockdt,DataTable priceListdt)
         {
             //‘用量’中转值
             decimal qtytemp;
@@ -366,17 +372,17 @@ namespace BomOfferOrder.Task
                         decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),6);
                   
                     //计算旧标准单价
-                    oldprice = GetOldPrice(Convert.ToInt32(dtlrows[i][2]));
+                    oldprice = GetOldPrice(Convert.ToInt32(dtlrows[i][2]),instockdt,priceListdt);
 
                     var newrow = resultdt.NewRow();
                     newrow[0] = productname;                                                  //表头物料名称
                     newrow[1] = dtlrows[i][2];                                                //FMATERIALID
                     newrow[2] = dtlrows[i][4];                                                //物料名称
                     newrow[3] = qtytemp;                                                      //用量
-                    newrow[4] = dtlrows[i][10];                                               //单价(标准成本单价使用)
+                    newrow[4] = dtlrows[i][10];                                               //单价(标准单价使用)
                     newrow[5] = oldprice;                                                     //旧标准单价(旧标准成本单价使用)
                     newrow[6] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),7); //子项金额=用量*单价 (标准成本单价使用)
-                    newrow[7] = decimal.Round(qtytemp * oldprice);                            //旧子项金额=用量*单价 (旧标准成本单价使用)
+                    newrow[7] = decimal.Round(qtytemp * oldprice,7);                          //旧子项金额=用量*单价 (旧标准成本单价使用)
                     resultdt.Rows.Add(newrow);
                 }
                 //递归调用
@@ -386,7 +392,7 @@ namespace BomOfferOrder.Task
                     qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
                         decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),6);
 
-                    GenerateReportDtlTemp(Convert.ToInt32(dtlrows[i][2]), productname, bomdt, resultdt, qtytemp);
+                    GenerateReportDtlTemp(Convert.ToInt32(dtlrows[i][2]), productname, bomdt, resultdt, qtytemp, instockdt, priceListdt);
                 }
             }
             return resultdt;
@@ -429,15 +435,26 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 计算旧标准单价
         /// </summary>
-        /// <param name="materialid"></param>
+        /// <param name="materialid">物料ID</param>
+        /// <param name="instockdt">初始化入库单DT</param>
+        /// <param name="priceListdt">初始化价目表DT</param>
         /// <returns></returns>
-        private decimal GetOldPrice(int materialid)
+        private decimal GetOldPrice(int materialid,DataTable instockdt, DataTable priceListdt)
         {
             decimal result = 0;
 
-            //
-
-
+            //先将materialid放到instockdt内进行检测,若没有对应‘单价’,即放到priceListdt内进行检测;
+            //注:若发现两个DT都没有对应的单价,即返回空值
+            var instockrow = instockdt.Select("子项物料内码='"+materialid+"'");
+            if (instockrow.Length > 0)
+            {
+                result = Convert.ToDecimal(instockrow[0][1]);
+            }
+            else
+            {
+                var pricelistrow = priceListdt.Select("子项物料内码='"+materialid+"'");
+                result = pricelistrow.Length == 0 ? Convert.ToDecimal(null) : Convert.ToDecimal(pricelistrow[0][1]);
+            }
             return result;
         }
 
