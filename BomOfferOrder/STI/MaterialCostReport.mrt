@@ -541,7 +541,7 @@
             </Text13>
             <Text14 Ref="47" type="Text" isKey="true">
               <Brush>Transparent</Brush>
-              <ClientRectangle>5.6,0,1,0.6</ClientRectangle>
+              <ClientRectangle>5.6,0.2,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,9</Font>
               <HorAlignment>Center</HorAlignment>
@@ -1121,10 +1121,10 @@ else if(MaterialOrder.MarkId==System.Convert.ToDecimal(1))
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>11/26/2019 11:31:46 AM</ReportChanged>
+  <ReportChanged>11/27/2019 2:51:31 PM</ReportChanged>
   <ReportCreated>11/14/2019 10:55:52 AM</ReportCreated>
   <ReportFile>D:\Project\K3Cloud_成本BOM报价单相关修改_20190828\Files\STI\MaterialCostReport.mrt</ReportFile>
-  <ReportGuid>6266d698c61849fe9934dbc16a5c9897</ReportGuid>
+  <ReportGuid>56f180d650c9499d925032f85aef9501</ReportGuid>
   <ReportImage isNull="true" />
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>

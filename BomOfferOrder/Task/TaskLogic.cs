@@ -22,12 +22,13 @@ namespace BomOfferOrder.Task
         private int _type;                  //记录占用情况类型(更新单据占用情况时使用)
         private string _newpwd;             //记录用户新密码
         private string _fileAddress;        //导入地址
-        private DataTable _Instockdt;       //保存入库单相关DT(报表功能使用)
-        private DataTable _Pricelistdt;     //保存价目表DT(报表功能使用)
+        private DataTable _instockdt;       //保存入库单相关DT(报表功能使用)
+        private DataTable _pricelistdt;     //保存价目表DT(报表功能使用)
 
-        private DataTable _resultTable;     //返回DT类型
-        private DataTable _resultbomdt;     //返回BOM DT
-        private bool _resultMark;           //返回是否成功标记
+        private DataTable _resultTable;          //返回DT类型
+        private DataTable _resultbomdt;          //返回BOM DT
+        private bool _resultMark;                //返回是否成功标记
+        private DataTable _importExceldtTable;   //返回导入EXCEL的DT
         #endregion
 
         #region Set
@@ -99,12 +100,12 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 保存入库单相关DT(报表功能使用)
         /// </summary>
-        public DataTable Instockdt { set { _Instockdt = value; } }
+        public DataTable Instockdt { set { _instockdt = value; } }
 
         /// <summary>
         /// 保存价目表DT(报表功能使用)
         /// </summary>
-        public DataTable Pricelistdt { set { _Pricelistdt = value; } }
+        public DataTable Pricelistdt { set { _pricelistdt = value; } }
 
         #endregion
 
@@ -114,15 +115,20 @@ namespace BomOfferOrder.Task
         /// </summary>
         public DataTable ResultTable => _resultTable;
 
-            /// <summary>
-            /// 返回结果标记
-            /// </summary>
-            public bool ResultMark => _resultMark;
+        /// <summary>
+        /// 返回结果标记
+        /// </summary>
+        public bool ResultMark => _resultMark;
 
-            /// <summary>
-            ///返回DataTable至主窗体
-            /// </summary>
-            public DataTable Resultbomdt => _resultbomdt;
+        /// <summary>
+        ///返回DataTable至主窗体
+        /// </summary>
+        public DataTable Resultbomdt => _resultbomdt;
+
+        /// <summary>
+        /// 返回导入EXCEL的DT
+        /// </summary>
+        public DataTable ImportExceldtTable => _importExceldtTable;
         #endregion
 
         public void StartTask()
@@ -232,7 +238,7 @@ namespace BomOfferOrder.Task
                     break;
                 //运算-报表生成使用
                 case "5.1":
-                    GenerateReportDt(_dt, _bomdt,_Instockdt,_Pricelistdt);
+                    GenerateReportDt(_dt, _bomdt,_instockdt,_pricelistdt);
                     break;
                 //EXCEL模板导入
                 case "5.2":
@@ -482,12 +488,6 @@ namespace BomOfferOrder.Task
         /// <param name="priceListdt">保存价目表DT(报表功能使用)</param>
         private void GenerateReportDt(DataTable sourcedt, DataTable bomdt,DataTable instockdt,DataTable priceListdt)
         {
-            //若_resultTable有值,即先将其清空,再进行赋值
-            if (_resultTable?.Rows.Count > 0)
-            {
-                _resultTable.Rows.Clear();
-                _resultTable.Columns.Clear();
-            }
             _resultTable = generateDt.GenerateReportDt(sourcedt, bomdt,instockdt,priceListdt);
             _resultMark = _resultTable.Rows.Count > 0;
         }
@@ -499,12 +499,12 @@ namespace BomOfferOrder.Task
         private void ImportExcelToDt(string fileAddress)
         {
             //若_resultTable有值,即先将其清空,再进行赋值
-            if (_resultTable?.Rows.Count > 0)
+            if (_importExceldtTable?.Rows.Count > 0)
             {
-                _resultTable.Rows.Clear();
-                _resultTable.Columns.Clear();
+                _importExceldtTable.Rows.Clear();
+                _importExceldtTable.Columns.Clear();
             }
-            _resultTable = importDt.ImportExcelToDt(fileAddress);
+            _importExceldtTable = importDt.ImportExcelToDt(fileAddress);
         }
 
         /// <summary>

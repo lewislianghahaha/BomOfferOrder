@@ -376,7 +376,7 @@ namespace BomOfferOrder.Task
 
                     var newrow = resultdt.NewRow();
                     newrow[0] = productname;                                                  //表头物料名称
-                    newrow[1] = dtlrows[i][2];                                                //FMATERIALID
+                    newrow[1] = dtlrows[i][2];                                                //FMATERIALID(表体物料ID)
                     newrow[2] = dtlrows[i][4];                                                //物料名称
                     newrow[3] = qtytemp;                                                      //用量
                     newrow[4] = dtlrows[i][10];                                               //单价(标准单价使用)
@@ -445,14 +445,14 @@ namespace BomOfferOrder.Task
 
             //先将materialid放到instockdt内进行检测,若没有对应‘单价’,即放到priceListdt内进行检测;
             //注:若发现两个DT都没有对应的单价,即返回空值
-            var instockrow = instockdt.Select("子项物料内码='"+materialid+"'");
+            var instockrow = instockdt.Select("子项物料内码='" + materialid+"'");
             if (instockrow.Length > 0)
             {
                 result = Convert.ToDecimal(instockrow[0][1]);
             }
             else
             {
-                var pricelistrow = priceListdt.Select("子项物料内码='"+materialid+"'");
+                var pricelistrow = priceListdt.Select("子项物料内码='" + materialid+"'");
                 result = pricelistrow.Length == 0 ? Convert.ToDecimal(null) : Convert.ToDecimal(pricelistrow[0][1]);
             }
             return result;

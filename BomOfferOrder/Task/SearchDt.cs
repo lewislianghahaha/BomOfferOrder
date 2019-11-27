@@ -178,7 +178,7 @@ namespace BomOfferOrder.Task
         public DataTable SearchPricelistDt()
         {
             _sqlscript = sqlList.SearchPricelist();
-            return UseSqlSearchIntoDt(0,_sqlscript);
+            return UseSqlSearchIntoDt(0, _sqlscript);
         }
 
         //////////////////////////////////////////////////主窗体及查询端使用//////////////////////////////////////////////////////////

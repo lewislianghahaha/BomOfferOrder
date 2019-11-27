@@ -144,7 +144,6 @@
                                    cast(b.FNUMERATOR/b.FDENOMINATOR*(1+b.FSCRAPRATE/100) as nvarchar(250)) 用量,
                                    b.FNUMERATOR 分子,b.FDENOMINATOR 分母,b.FSCRAPRATE 变动损耗率,c.F_YTC_DECIMAL8 物料单价,
                                    G.FNAME 父项物料单位
-                                   /*,f.F_YTC_DECIMAL8 表头采购单价*/
 
                             FROM T_ENG_BOM A
                             INNER JOIN dbo.T_ENG_BOMCHILD b ON a.FID=b.FID
@@ -152,8 +151,6 @@
                             INNER JOIN dbo.T_BD_MATERIAL C ON B.FMATERIALID=C.FMATERIALID
                             INNER JOIN dbo.T_BD_MATERIAL_L D ON C.FMATERIALID=D.FMATERIALID
                             INNER JOIN dbo.T_BD_MATERIALBASE E ON D.FMATERIALID=E.FMATERIALID
-
-                            --INNER JOIN dbo.T_BD_MATERIAL f ON a.FMATERIALID=f.FMATERIALID
 
                             INNER JOIN dbo.T_BD_UNIT_L g ON a.FUNITID=g.FUNITID AND g.FLOCALEID <>1033
 

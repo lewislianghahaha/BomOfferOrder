@@ -75,8 +75,6 @@ namespace BomOfferOrder.UI.ReportFrm
         {
             //初始化生成下拉列表
             OnShowTypeList();
-            //初始化物料DT
-            OnInitializeMaterialdt();
         }
 
         /// <summary>
@@ -136,11 +134,15 @@ namespace BomOfferOrder.UI.ReportFrm
                 task.FileAddress = openFileDialog.FileName;
                 task.StartTask();
 
+                //初始化获取物料DT
+                OnInitializeMaterialdt();
+
                 //通过_materialdt循环获取其对应的FMATERIALID
                 _resultTable = dbList.MarkMaterialReportTemp();
-                foreach (DataRow row in task.ResultTable.Rows)
+                foreach (DataRow row in task.ImportExceldtTable.Rows)
                 {
                     //通过_materialdt获取其对应的FMATERIALID
+                    var a = _materialdt;
                     var dtlrow = _materialdt.Select("物料编码='"+row[0]+"'");
 
                     var newrow = _resultTable.NewRow();
