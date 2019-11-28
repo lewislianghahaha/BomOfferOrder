@@ -23,9 +23,9 @@ namespace BomOfferOrder.UI
         //保存BOM明细DT(生成时使用;注:当打开录入界面时初始化执行)
         private DataTable _bomdt;
         //保存入库单相关DT(报表功能使用)
-        private DataTable _Instockdt;
+        private DataTable _instockdt;
         //保存价目表DT(报表功能使用)
-        private DataTable _Pricelistdt;
+        private DataTable _pricelistdt;
 
         //定义关闭符号的宽
         const int CloseSize = 11;
@@ -426,7 +426,7 @@ namespace BomOfferOrder.UI
             try
             {
                 //定义‘物料相关’DT
-                var materialdt=new DataTable();
+                DataTable materialdt;
 
                 materialReportFrm.StartPosition = FormStartPosition.CenterParent;
                 materialReportFrm.ShowDialog();
@@ -447,8 +447,8 @@ namespace BomOfferOrder.UI
                         //循环从EXCEL导入的物料DT
                         foreach (DataRow rows in materialReportFrm.ResultTable.Rows)
                         {
-                            var dtlrow = _bomdt.Select("表头物料ID='"+rows[0]+"'");
-                            if(dtlrow.Length==0) throw new Exception($"检测到物料'{rows[1]}'不在BOM记录中存在,请检查后继续");
+                            var dtlrow = _bomdt.Select("表头物料ID='" + rows[0] + "'");
+                            if(dtlrow.Length == 0) throw new Exception($"检测到物料'{rows[1]}'不在BOM记录中存在,请检查后继续");
 
                             //检测导入DT内的物料是否重复
                             if(materialdt.Select("FMATERIALID='"+rows[0]+"'").Length>0)
@@ -474,8 +474,8 @@ namespace BomOfferOrder.UI
                     task.TaskId = "5.1";
                     task.Data = materialdt;
                     task.Bomdt = _bomdt;
-                    task.Instockdt = _Instockdt;
-                    task.Pricelistdt = _Pricelistdt;
+                    task.Instockdt = _instockdt;
+                    task.Pricelistdt = _pricelistdt;
 
                     new Thread(Start).Start();
                     load.StartPosition = FormStartPosition.CenterScreen;
@@ -1130,7 +1130,7 @@ namespace BomOfferOrder.UI
         {
             task.TaskId = "5.3";
             task.StartTask();
-            _Instockdt = task.ResultTable;
+            _instockdt = task.ResultTable;
         }
 
         /// <summary>
@@ -1140,7 +1140,7 @@ namespace BomOfferOrder.UI
         {
             task.TaskId = "5.4";
             task.StartTask();
-            _Pricelistdt = task.ResultTable;
+            _pricelistdt = task.ResultTable;
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace BomOfferOrder.UI.ReportFrm
         //返回DT类型
         private DataTable _resultTable;
         //记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
-        private int reporttypeid;
+        private int _reporttypeid;
         //记录初始化得出的物料DT
         private DataTable _materialdt;
 
@@ -40,7 +40,7 @@ namespace BomOfferOrder.UI.ReportFrm
         /// <summary>
         /// 记录报表生成方式;0:按导入EXCEL生成 1:按获取生成
         /// </summary>
-        public int Reporttypeid => reporttypeid;
+        public int Reporttypeid => _reporttypeid;
         #endregion
 
 
@@ -103,7 +103,7 @@ namespace BomOfferOrder.UI.ReportFrm
                     _resultTable.Rows.Add(newrow);
                 }
                 //记录生成报表方式(0:按EXCEL导入方式 1:按选取方式)
-                reporttypeid = 1;
+                _reporttypeid = 1;
                 //清空文本框以前GridView值
                 var dt = (DataTable) gvdtl.DataSource;
                 dt.Rows.Clear();
@@ -142,7 +142,6 @@ namespace BomOfferOrder.UI.ReportFrm
                 foreach (DataRow row in task.ImportExceldtTable.Rows)
                 {
                     //通过_materialdt获取其对应的FMATERIALID
-                    var a = _materialdt;
                     var dtlrow = _materialdt.Select("物料编码='"+row[0]+"'");
 
                     var newrow = _resultTable.NewRow();
@@ -159,7 +158,7 @@ namespace BomOfferOrder.UI.ReportFrm
                 else
                 {
                     //记录生成报表方式(0:按EXCEL导入方式 1:按选取方式)
-                    reporttypeid = 0;
+                    _reporttypeid = 0;
                     //若GridView有值的话,就清空相关行记录
                     if (gvdtl?.Rows.Count > 0)
                     {

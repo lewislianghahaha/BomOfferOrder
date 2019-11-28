@@ -444,7 +444,7 @@ namespace BomOfferOrder.Task
             decimal result = 0;
 
             //先将materialid放到instockdt内进行检测,若没有对应‘单价’,即放到priceListdt内进行检测;
-            //注:若发现两个DT都没有对应的单价,即返回空值
+            //注:若发现两个DT都没有对应的单价,即返回0
             var instockrow = instockdt.Select("子项物料内码='" + materialid+"'");
             if (instockrow.Length > 0)
             {
@@ -453,7 +453,7 @@ namespace BomOfferOrder.Task
             else
             {
                 var pricelistrow = priceListdt.Select("子项物料内码='" + materialid+"'");
-                result = pricelistrow.Length == 0 ? Convert.ToDecimal(null) : Convert.ToDecimal(pricelistrow[0][1]);
+                result = pricelistrow.Length == 0 ? Convert.ToDecimal(0) : Convert.ToDecimal(pricelistrow[0][1]);
             }
             return result;
         }
