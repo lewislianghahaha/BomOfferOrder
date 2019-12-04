@@ -143,7 +143,8 @@ namespace BomOfferOrder.UI.ReportFrm
                 {
                     //通过_materialdt获取其对应的FMATERIALID
                     var dtlrow = _materialdt.Select("物料编码='"+row[0]+"'");
-
+                    //若返回的数据为0即不继续
+                    if(dtlrow.Length ==0) continue;
                     var newrow = _resultTable.NewRow();
                     newrow[0] = dtlrow[0][0];   //FMATERIALID
                     newrow[1] = row[0];         //物料编码
