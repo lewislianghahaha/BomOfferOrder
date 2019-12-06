@@ -50,7 +50,7 @@ namespace BomOfferOrder.UI
         {
             InitializeComponent();
             OnRegisterEvents();
-            OnInitialize();
+            //OnInitialize();
         }
 
         private void OnRegisterEvents()
@@ -76,6 +76,9 @@ namespace BomOfferOrder.UI
         {
             //初始化下拉列表
             OnShowTypeList();
+            //若查询文本框不为空,即在初始化时将其清空
+            if (txtvalue.Text != "")
+                txtvalue.Text = "";
         }
 
         /// <summary>
@@ -83,6 +86,8 @@ namespace BomOfferOrder.UI
         /// </summary>
         public void OnInitializeGridView(DataTable sourcedt)
         {
+            //初始化下拉列表及查询文本框
+            OnInitialize();
             //根据_remark初始化标题名称
             OnShowTitle();
             //将数据源放到GridView内显示
@@ -493,15 +498,15 @@ namespace BomOfferOrder.UI
             var dt = new DataTable();
 
             //创建表头
-            for (var i = 1; i < 3; i++)
+            for (var i = 0; i < 2; i++)
             {
                 var dc = new DataColumn();
                 switch (i)
                 {
-                    case 1:
+                    case 0:
                         dc.ColumnName = "Id";
                         break;
-                    case 2:
+                    case 1:
                         dc.ColumnName = "Name";
                         break;
                 }
@@ -512,17 +517,17 @@ namespace BomOfferOrder.UI
             if (_remark == "A" || _remark == "U")
             {
                 //创建行内容
-                for (var j = 1; j < 3; j++)
+                for (var j = 0; j < 2; j++)
                 {
                     var dr = dt.NewRow();
 
                     switch (j)
                     {
-                        case 1:
+                        case 0:
                             dr[0] = "1";
                             dr[1] = "物料名称";
                             break;
-                        case 2:
+                        case 1:
                             dr[0] = "2";
                             dr[1] = "物料编码";
                             break;
@@ -534,21 +539,21 @@ namespace BomOfferOrder.UI
             else if (_remark == "HA" || _remark == "HU")
             {
                 //创建行内容
-                for (var j = 1; j < 3; j++)
+                for (var j = 0; j < 3; j++)
                 {
                     var dr = dt.NewRow();
 
                     switch (j)
                     {
-                        case 1:
+                        case 0:
                             dr[0] = "1";
                             dr[1] = "物料名称";
                             break;
-                        case 2:
+                        case 1:
                             dr[0] = "2";
                             dr[1] = "物料编码";
                             break;
-                        case 3:
+                        case 2:
                             dr[0] = "3";
                             dr[1] = "OA流水号";
                             break;
