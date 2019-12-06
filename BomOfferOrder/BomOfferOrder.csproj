@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +32,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
@@ -308,6 +312,7 @@
     <Content Include="DLL\Stimulsoft.Report.Helper.dll" />
     <Content Include="DLL\Stimulsoft.Report.Web.dll" />
     <Content Include="DLL\Stimulsoft.Report.Win.dll" />
+    <Content Include="Logo.ico" />
     <Content Include="obj\Debug\BomOfferOrder.csproj.FileListAbsolute.txt" />
     <None Include="Resources\Logo.ico" />
     <None Include="Resources\create.png" />
