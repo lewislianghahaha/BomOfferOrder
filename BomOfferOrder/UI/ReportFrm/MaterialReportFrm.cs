@@ -132,6 +132,7 @@ namespace BomOfferOrder.UI.ReportFrm
 
                 task.TaskId = "5.2";
                 task.FileAddress = openFileDialog.FileName;
+                task.Reporttype = "0";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
                 task.StartTask();
 
                 //初始化获取物料DT

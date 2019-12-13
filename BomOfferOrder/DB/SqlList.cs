@@ -198,11 +198,12 @@
                             INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                             INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                            WHERE c.FDATAVALUE ='原材料'
+                            WHERE c.FDATAVALUE IN('产成品','原漆半成品','原材料')
                             AND a.FDOCUMENTSTATUS='C'
                             AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                             AND d.FLOCALEID=2052
                             AND g.FLOCALEID=2052
+                            ORDER BY A.FMATERIALID
                         ";
             }
             else
@@ -223,12 +224,13 @@
                             INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                             INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                            WHERE c.FDATAVALUE ='原材料'
+                            WHERE c.FDATAVALUE IN('产成品','原漆半成品','原材料')
                             AND D.FNAME LIKE '%{searchvalue}%'
                             AND a.FDOCUMENTSTATUS='C'
                             AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                             AND d.FLOCALEID=2052
                             AND g.FLOCALEID=2052
+                            ORDER BY A.FMATERIALID
                         ";
                 }
                 //按照'物料编码'进行查询
@@ -247,12 +249,13 @@
                             INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                             INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                            WHERE c.FDATAVALUE ='原材料'
+                            WHERE c.FDATAVALUE IN('产成品','原漆半成品','原材料')
                             AND a.FNUMBER LIKE '%{searchvalue}%'
                             AND a.FDOCUMENTSTATUS='C'
                             AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                             AND d.FLOCALEID=2052
                             AND g.FLOCALEID=2052
+                            ORDER BY A.FMATERIALID
                         ";
                 }
             }

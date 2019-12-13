@@ -9,7 +9,7 @@ using NPOI.XSSF.UserModel;
 
 namespace BomOfferOrder.Task
 {
-    //提交
+    //提交及导入EXCEL使用
     public class ImportDt
     {
         SqlList sqlList=new SqlList();
@@ -475,15 +475,16 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// EXcel导入
         /// </summary>
+        /// <param name="reporttype">导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)</param>
         /// <param name="fileAddress"></param>
         /// <returns></returns>
-        public DataTable ImportExcelToDt(string fileAddress)
+        public DataTable ImportExcelToDt(string reporttype,string fileAddress)
         {
             var dt=new DataTable();
             try
             {
                 //使用NPOI技术进行导入EXCEL至DATATABLE
-                var importExcelDt = OpenExcelToDataTable(fileAddress);
+                var importExcelDt = OpenExcelToDataTable(reporttype,fileAddress);
                 //将从EXCEL过来的记录集为空的行清除
                 dt = RemoveEmptyRows(importExcelDt);
             }
@@ -495,9 +496,17 @@ namespace BomOfferOrder.Task
             return dt;
         }
 
-        private DataTable OpenExcelToDataTable(string fileAddress)
+        /// <summary>
+        /// 打开EXCEL并获取其内容
+        /// </summary>
+        /// <param name="reporttype">导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)</param>
+        /// <param name="fileAddress"></param>
+        /// <returns></returns>
+        private DataTable OpenExcelToDataTable(string reporttype,string fileAddress)
         {
             IWorkbook wk;
+            //根据reporttype判断所导入的列数
+            int colnum;
 
             //创建表标题
             var dt = dbList.ImportExcelTempdt();
@@ -509,6 +518,7 @@ namespace BomOfferOrder.Task
                 var sheet = wk.GetSheetAt(0);
                 //获取第一行
                 //var hearRow = sheet.GetRow(0);
+                colnum = reporttype == "0" ? 6 : 2;
 
                 //创建完标题后,开始从第二行起读取对应列的值
                 for (var r = 1; r <= sheet.LastRowNum; r++)
@@ -518,7 +528,7 @@ namespace BomOfferOrder.Task
                     var row = sheet.GetRow(r);
                     if (row == null) continue;
 
-                    for (var j = 0; j < 6; j++)
+                    for (var j = 0; j < colnum; j++)
                     {
                         //循环获取行中的单元格
                         var cell = row.GetCell(j);

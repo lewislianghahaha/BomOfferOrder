@@ -26,6 +26,8 @@ namespace BomOfferOrder.UI
         private DataTable _bomdt;
         //收集TabContol内各Tab Pages内的GridView要删除的内容(注:单据状态为R时使用)
         private DataTable _deldt;
+        //记录物料明细信息(导入BOM物料明细EXCEL时使用)
+        private DataTable _materialdt;
 
         //记录读取过来的FID值
         private int _fid;
@@ -56,6 +58,7 @@ namespace BomOfferOrder.UI
         {
             tmConfirm.Click += TmConfirm_Click;
             tmsave.Click += Tmsave_Click;
+            tmimportexcel.Click += Tmimportexcel_Click;
             this.FormClosing += DtlFrm_FormClosing;
         }
 
@@ -64,8 +67,10 @@ namespace BomOfferOrder.UI
         /// </summary>
         public void OnInitialize(DataTable bomdt)
         {
-            //初始化获取‘原材料’物料明细信息(注:添加物料明细窗体使用)
+            //初始化获取‘原材料’‘原漆半成品’‘产成品’物料明细信息(注:添加物料明细窗体使用)
             var materialdt = OnInitializeMaterialDt();
+            //将所获取到的materialdt记录赋值至_materialdt内(注:导入BOM物料明细EXCEL时使用)
+            _materialdt = materialdt;
             //初始化获取‘新产品报价单历史记录’
             var historydt = OnInitializeHistoryDt();
             //初始化获取K3客户信息
@@ -319,6 +324,8 @@ namespace BomOfferOrder.UI
             tctotalpage.SelectedIndex = 0;          //必须要指定当前页是首页或某一页
         }
 
+
+
         /// <summary>
         /// 审核
         /// </summary>
@@ -497,6 +504,33 @@ namespace BomOfferOrder.UI
                     //将Cancel属性设置为 true 可以“阻止”窗体关闭
                     e.Cancel = true;
                 }
+            }
+        }
+
+        /// <summary>
+        /// 导入物料明细
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmimportexcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var openFileDialog = new OpenFileDialog { Filter = $"Xlsx文件|*.xlsx" };
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                task.TaskId = "6";
+                task.FileAddress = openFileDialog.FileName;
+                task.Reporttype = "1";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
+                task.StartTask();
+
+                //将从EXCEL获取的记录传送至ShowDetailFrm.ImportExcelRecordToBom内
+                var showDetailFrm = new ShowDetailFrm();
+                showDetailFrm.ImportExcelRecordToBom(_materialdt, task.ImportExceldtTable);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

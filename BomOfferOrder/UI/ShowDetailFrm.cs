@@ -26,8 +26,6 @@ namespace BomOfferOrder.UI
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
-        //保存查询出来的角色权限记录
-        private DataTable _userdt;
         //返回所记录的Headid
         private int _headid;
 
@@ -87,7 +85,9 @@ namespace BomOfferOrder.UI
                 _dtl = gridViewdt;
                 panel2.Visible = true;
                 //初始化下拉框所选择的默认值
-                tmshowrows.SelectedItem = "10";
+                tmshowrows.SelectedItem = Convert.ToInt32(tmshowrows.SelectedItem) == 0
+                    ? (object) "10"
+                    : Convert.ToInt32(tmshowrows.SelectedItem);
                 //定义初始化标记
                 _pageChange = true;
                 //GridView分页
@@ -357,8 +357,93 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// 导入物料明细记录
+        /// </summary>
+        /// <param name="materialdt">K3物料明细-数据源与‘物料’</param>
+        /// <param name="exceldt"></param>
+        public void ImportExcelRecordToBom(DataTable materialdt,DataTable exceldt)
+        {
+            try
+            {
+                //获取临时表(GridView控件时使用)
+                var resultdt = dbList.MakeGridViewTemp();
+                //将相关记录集放至方法内并进行整理,完成后放至GridView内进行显示
+                OnInitialize(GetExceldtToBomDetail(materialdt,exceldt,resultdt));
+                //累加并获取‘配方用量’合计
+                txtpeitotal.Text = GenerateSumpeitotal();
+                //计算物料成本(含税)之和
+                var materialsumqty = GernerateSumQty();
+                //产品成本含税(物料单价)
+                txtprice.Text = Convert.ToString(Math.Round(materialsumqty, 4));
+                //材料成本(不含税)
+                txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }   
+        }
+
+        /// <summary>
+        /// 对导入的EXCEL记录进行整理并返回插入的记录
+        /// 注:若导入的‘物料名称’不在materialdt存在,即FMATERIALID从‘0’开始,并且‘物料编码’为空
+        /// </summary>
+        /// <param name="materialdt">K3物料明细DT</param>
+        /// <param name="sourcedt">EXCEL导入过来DT</param>
+        /// <param name="resultdt">返回结果DT</param>
+        /// <returns></returns>
+        private DataTable GetExceldtToBomDetail(DataTable materialdt,DataTable sourcedt, DataTable resultdt)
+        {
+            try
+            {
+                //定义各变量
+                var fmaterialid = 0;               //物料编码ID
+                var fmaterialcode = string.Empty;  //物料编码
+                var fmaterialname = string.Empty;  //物料名称
+                decimal peiqty = 0;                //配方用量
+
+                foreach (DataRow rows in sourcedt.Rows)
+                {
+
+                    //使用‘物料名称’为条件,在materialdt内查询对应的
+                    var dtlrow = materialdt.Select("物料名称='"+rows[0]+"'");
+                    //若为空,就需要将FMATERIALID (从0开始) 物料编码为空
+                    if (dtlrow.Length == 0)
+                    {
+                        
+                    }
+                    //若存在就执行以下语句
+                    else
+                    {
+                        //todo
+
+                    }
+
+                    var newrow = resultdt.NewRow();
+                    newrow[0] = DBNull.Value;                    //EntryId
+                    newrow[1] = fmaterialid;                     //物料编码ID
+                    newrow[2] = fmaterialcode;                   //物料编码
+                    newrow[3] = fmaterialname;                   //物料名称
+                    newrow[4] = peiqty;                          //配方用量
+                    newrow[5] = Convert.ToDecimal(peiqty) * 100; //占比=配方用量*100
+                    newrow[6] = DBNull.Value;                    //物料单价(含税)
+                    newrow[7] = DBNull.Value;                    //物料成本(含税)
+                    resultdt.Rows.Add(newrow);
+                    //
+
+                }
+            }
+            catch (Exception)
+            {
+                resultdt.Rows.Clear();
+                resultdt.Columns.Clear();
+            }
+            return resultdt;
         }
 
         /// <summary>
@@ -482,7 +567,7 @@ namespace BomOfferOrder.UI
                         newrow[4] = rows[8];                        //配方用量
                         newrow[5] = Convert.ToDecimal(rows[8])*100; //占比
                         newrow[6] = rows[10];                       //物料单价(含税)
-                        newrow[7] = decimal.Round(Convert.ToDecimal(rows[8])/100  * Convert.ToDecimal(rows[10]), 4);  //物料成本(含税) 公式:配方用量/100*物料单价
+                        newrow[7] = decimal.Round(Convert.ToDecimal(rows[8]) /100  * Convert.ToDecimal(rows[10]), 4);  //物料成本(含税) 公式:配方用量/100*物料单价
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -864,7 +949,7 @@ namespace BomOfferOrder.UI
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);
                     throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除并通过右键菜单进行添加新物料");
                 }
-                //当修改的列是‘物料名称’时,执行以下语句
+                //当修改的列是‘物料名称’时,执行以下语句 //todo bug
                 if (colindex == 3)
                 {
                     //获取该行的‘物料ID’,更新使用

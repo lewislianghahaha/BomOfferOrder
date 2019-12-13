@@ -24,6 +24,7 @@ namespace BomOfferOrder.Task
         private string _fileAddress;        //导入地址
         private DataTable _instockdt;       //保存入库单相关DT(报表功能使用)
         private DataTable _pricelistdt;     //保存价目表DT(报表功能使用)
+        private string _reporttype;         //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
 
         private DataTable _resultTable;          //返回DT类型
         private DataTable _resultbomdt;          //返回BOM DT
@@ -106,6 +107,11 @@ namespace BomOfferOrder.Task
         /// 保存价目表DT(报表功能使用)
         /// </summary>
         public DataTable Pricelistdt { set { _pricelistdt = value; } }
+
+        /// <summary>
+        /// 导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
+        /// </summary>
+        public string Reporttype { set { _reporttype = value; } }
 
         #endregion
 
@@ -231,7 +237,7 @@ namespace BomOfferOrder.Task
                     break;
                 #endregion
 
-                #region   报表
+                #region 报表
                 //查询-物料明细
                 case "5":
                     SearchMaterial(_searchid,_searchvalue);
@@ -239,10 +245,6 @@ namespace BomOfferOrder.Task
                 //运算-报表生成使用
                 case "5.1":
                     GenerateReportDt(_dt, _bomdt,_instockdt,_pricelistdt);
-                    break;
-                //EXCEL模板导入
-                case "5.2":
-                    ImportExcelToDt(_fileAddress);
                     break;
                 //查询:入库单相关(报表使用)
                 case "5.3":
@@ -252,7 +254,18 @@ namespace BomOfferOrder.Task
                 case "5.4":
                     SearchPricelistDt();
                     break;
-                    #endregion
+                #endregion
+
+                #region 导入(包括:报表EXCEL导入 以及 BOM物料明细导入)
+                //EXCEL模板导入-报表使用
+                case "5.2":
+                    ImportExcelToDt(_reporttype,_fileAddress);
+                    break;
+                //EXCEL模板导入-BOM明细记录使用
+                case "6":
+                    ImportExcelToBomDt(_reporttype,_fileAddress);
+                    break;
+                #endregion
             }
         }
 
@@ -493,21 +506,6 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 导入EXCEL
-        /// </summary>
-        /// <param name="fileAddress"></param>
-        private void ImportExcelToDt(string fileAddress)
-        {
-            //若_resultTable有值,即先将其清空,再进行赋值
-            if (_importExceldtTable?.Rows.Count > 0)
-            {
-                _importExceldtTable.Rows.Clear();
-                _importExceldtTable.Columns.Clear();
-            }
-            _importExceldtTable = importDt.ImportExcelToDt(fileAddress);
-        }
-
-        /// <summary>
         /// 查询入库单相关
         /// </summary>
         private void SearchInstockDt()
@@ -521,6 +519,42 @@ namespace BomOfferOrder.Task
         private void SearchPricelistDt()
         {
             _resultTable = searchDt.SearchPricelistDt();
+        }
+
+        #endregion
+
+        #region 导入(包括:报表EXCEL导入 以及 BOM物料明细导入)
+
+        /// <summary>
+        /// 导入EXCEL-报表使用
+        /// </summary>
+        /// <param name="reporttype">导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)</param>
+        /// <param name="fileAddress"></param>
+        private void ImportExcelToDt(string reporttype,string fileAddress)
+        {
+            //若_resultTable有值,即先将其清空,再进行赋值
+            if (_importExceldtTable?.Rows.Count > 0)
+            {
+                _importExceldtTable.Rows.Clear();
+                _importExceldtTable.Columns.Clear();
+            }
+            _importExceldtTable = importDt.ImportExcelToDt(reporttype,fileAddress);
+        }
+
+        /// <summary>
+        /// EXCEL模板导入-BOM明细记录使用
+        /// </summary>
+        /// <param name="reporttype"></param>
+        /// <param name="fileAddress"></param>
+        private void ImportExcelToBomDt(string reporttype, string fileAddress)
+        {
+            //若_resultTable有值,即先将其清空,再进行赋值
+            if (_importExceldtTable?.Rows.Count > 0)
+            {
+                _importExceldtTable.Rows.Clear();
+                _importExceldtTable.Columns.Clear();
+            }
+            _importExceldtTable = importDt.ImportExcelToDt(reporttype, fileAddress);
         }
 
         #endregion
