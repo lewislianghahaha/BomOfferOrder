@@ -3,6 +3,7 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using BomOfferOrder.DB;
+using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI
 {
@@ -11,11 +12,12 @@ namespace BomOfferOrder.UI
         DbList dbList=new DbList();
         ShowMaterialDetailFrm showMaterial=new ShowMaterialDetailFrm();
         CustInfoFrm custInfo=new CustInfoFrm();
+        TaskLogic task=new TaskLogic();
 
         #region 变量参数
         //定义单据状态(C:创建 R:读取)
         private string _funState;
-        //获取‘原材料’DT
+        //获取‘原材料’‘原漆半成品’‘产成品’DT
         private DataTable _materialdt;
         //获取‘新产品报价单历史记录’DT
         private DataTable _historydt;
@@ -65,6 +67,7 @@ namespace BomOfferOrder.UI
             tmHAdd.Click += TmHAdd_Click;
             tmHReplace.Click += TmHReplace_Click;
             llcust.Click += Llcust_Click;
+            tmimportexcel.Click += Tmimportexcel_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -320,16 +323,44 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 导入物料明细Excel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmimportexcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var openFileDialog = new OpenFileDialog { Filter = $"Xlsx文件|*.xlsx" };
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                task.TaskId = "6";
+                task.FileAddress = openFileDialog.FileName;
+                task.Reporttype = "1";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
+                task.StartTask();
+
+                //将从EXCEL获取的记录传送至ShowDetailFrm.ImportExcelRecordToBom内
+                ImportExcelRecordToBom(_materialdt, task.ImportExceldtTable);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+        /// <summary>
         /// 将相关值根据获取过来的DT填充至对应的项内
         /// </summary>
         /// <param name="funState"></param>
         /// <param name="dt"></param>
-        /// <param name="materialdt">原材料DT</param>
+        /// <param name="materialdt">原材料 ‘原漆半成品’‘产成品’DT</param>
         /// <param name="historydt">新产品报价单历史记录DT</param>
         /// <param name="custinfodt">记录K3客户列表DT</param>
         public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt)
         {
-            //将‘原材料’DT赋值至变量内
+            //将‘原材料’‘原漆半成品’‘产成品’DT赋值至变量内
             _materialdt = materialdt;
             //将‘新产品报价单历史记录’DT赋值至变量内
             _historydt = historydt;
@@ -366,14 +397,28 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="materialdt">K3物料明细-数据源与‘物料’</param>
         /// <param name="exceldt"></param>
-        public void ImportExcelRecordToBom(DataTable materialdt,DataTable exceldt)
+        private void ImportExcelRecordToBom(DataTable materialdt,DataTable exceldt)
         {
             try
             {
+                //定义importdt(用于最终输出)
+                DataTable importdt;
                 //获取临时表(GridView控件时使用)
                 var resultdt = dbList.MakeGridViewTemp();
                 //将相关记录集放至方法内并进行整理,完成后放至GridView内进行显示
-                OnInitialize(GetExceldtToBomDetail(materialdt,exceldt,resultdt));
+                //若_dtl原来是有记录的,就将整理后的DT与_dtl原来的记录进行合并
+                var dt = GetExceldtToBomDetail(materialdt, exceldt, resultdt);
+                if (_dtl.Rows.Count > 0)
+                {
+                    _dtl.Merge(dt);
+                    importdt = _dtl;
+                }
+                else
+                {
+                    importdt = dt;
+                }
+
+                OnInitialize(importdt);
                 //累加并获取‘配方用量’合计
                 txtpeitotal.Text = GenerateSumpeitotal();
                 //计算物料成本(含税)之和
@@ -403,25 +448,42 @@ namespace BomOfferOrder.UI
             {
                 //定义各变量
                 var fmaterialid = 0;               //物料编码ID
-                var fmaterialcode = string.Empty;  //物料编码
-                var fmaterialname = string.Empty;  //物料名称
+                string fmaterialcode;              //物料编码
+                string fmaterialname;              //物料名称
                 decimal peiqty = 0;                //配方用量
+                //定义‘物料编码’为空对应的FMATERIALID最大值
+                var maxFmaterialid = 0;
 
                 foreach (DataRow rows in sourcedt.Rows)
                 {
-
                     //使用‘物料名称’为条件,在materialdt内查询对应的
                     var dtlrow = materialdt.Select("物料名称='"+rows[0]+"'");
                     //若为空,就需要将FMATERIALID (从0开始) 物料编码为空
                     if (dtlrow.Length == 0)
                     {
-                        
+                        //利用maxFmaterialid为累加FMATERIALID值,没有记录时从0开始,其它情况为累加
+                        var dtrows = resultdt.Select("物料编码 is null").Length;
+                        if (dtrows == 0)
+                        {
+                            maxFmaterialid = 0;
+                        }
+                        else
+                        {
+                            maxFmaterialid += 1;
+                        }
+
+                        fmaterialid = maxFmaterialid;
+                        fmaterialcode = null;
+                        fmaterialname = Convert.ToString(rows[0]);
+                        peiqty = Convert.ToDecimal(rows[1]);
                     }
                     //若存在就执行以下语句
                     else
                     {
-                        //todo
-
+                        fmaterialid = Convert.ToInt32(dtlrow[0][0]);
+                        fmaterialcode = Convert.ToString(dtlrow[0][1]);
+                        fmaterialname = Convert.ToString(rows[0]);
+                        peiqty = Convert.ToDecimal(rows[1]);
                     }
 
                     var newrow = resultdt.NewRow();
@@ -434,8 +496,6 @@ namespace BomOfferOrder.UI
                     newrow[6] = DBNull.Value;                    //物料单价(含税)
                     newrow[7] = DBNull.Value;                    //物料成本(含税)
                     resultdt.Rows.Add(newrow);
-                    //
-
                 }
             }
             catch (Exception)
@@ -949,7 +1009,7 @@ namespace BomOfferOrder.UI
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);
                     throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除并通过右键菜单进行添加新物料");
                 }
-                //当修改的列是‘物料名称’时,执行以下语句 //todo bug
+                //当修改的列是‘物料名称’时,执行以下语句
                 if (colindex == 3)
                 {
                     //获取该行的‘物料ID’,更新使用
@@ -960,21 +1020,27 @@ namespace BomOfferOrder.UI
                     var dtlrows = _materialdt.Select("物料名称 like '%" + materialname + "%'");
 
                     //若没有记录的话,就执行如下
+                    //->change date:20191214:当发现所输入的物料名称没有在_materialdt存在时,不作异常提示,而是可正常输入,但FMATERIALID从0开始,并且‘物料名称’为空
                     if (dtlrows.Length == 0)
                     {
-                        if (_dtl.Rows.Count == 0)
-                        {
-                            gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
-                        }
-                        else
-                        {
-                            //刷新记录,将原来填写的值还原
-                            OnInitialize(_dtl);
-                        }
-                        throw new Exception($"找不到关于'{materialname}'物料名称的相关记录, \n 请重新进行填写");
+                        //
+
+
+                        #region Hide
+                        //if (_dtl.Rows.Count == 0)
+                        //{
+                        //    gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
+                        //}
+                        //else
+                        //{
+                        //    //刷新记录,将原来填写的值还原
+                        //    OnInitialize(_dtl);
+                        //}
+                        //throw new Exception($"找不到关于'{materialname}'物料名称的相关记录, \n 请重新进行填写");
+                        #endregion
                     }
                     //若只有一行的话,就执行以下语句
-                    if(dtlrows.Length == 1)
+                    if (dtlrows.Length == 1)
                     {
                         GetMaterialDeatail(materialid,materialname,dtlrows);
                     }

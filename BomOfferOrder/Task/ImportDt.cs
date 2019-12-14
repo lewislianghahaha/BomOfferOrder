@@ -507,9 +507,11 @@ namespace BomOfferOrder.Task
             IWorkbook wk;
             //根据reporttype判断所导入的列数
             int colnum;
+            //定义TEMPDT
+            var dt=new DataTable();
 
-            //创建表标题
-            var dt = dbList.ImportExcelTempdt();
+            //创建表标题-根据reporttype不同而改变
+            dt = reporttype == "0" ? dbList.ImportExcelTempdt() : dbList.ImportBomExcelTempdt();
 
             using (var fsRead = File.OpenRead(fileAddress))
             {

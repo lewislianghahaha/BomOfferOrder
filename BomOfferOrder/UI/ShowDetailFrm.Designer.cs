@@ -94,6 +94,8 @@
             this.tmHAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tmHReplace = new System.Windows.Forms.ToolStripMenuItem();
+            this.ts4 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmimportexcel = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
@@ -603,9 +605,11 @@
             this.ts2,
             this.tmdel,
             this.ts3,
-            this.tmshowhistory});
+            this.tmshowhistory,
+            this.ts4,
+            this.tmimportexcel});
             this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(185, 110);
+            this.Menu.Size = new System.Drawing.Size(185, 160);
             // 
             // tmReplace
             // 
@@ -653,19 +657,30 @@
             // tmHAdd
             // 
             this.tmHAdd.Name = "tmHAdd";
-            this.tmHAdd.Size = new System.Drawing.Size(152, 22);
+            this.tmHAdd.Size = new System.Drawing.Size(100, 22);
             this.tmHAdd.Text = "新增";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(97, 6);
             // 
             // tmHReplace
             // 
             this.tmHReplace.Name = "tmHReplace";
-            this.tmHReplace.Size = new System.Drawing.Size(152, 22);
+            this.tmHReplace.Size = new System.Drawing.Size(100, 22);
             this.tmHReplace.Text = "替换";
+            // 
+            // ts4
+            // 
+            this.ts4.Name = "ts4";
+            this.ts4.Size = new System.Drawing.Size(181, 6);
+            // 
+            // tmimportexcel
+            // 
+            this.tmimportexcel.Name = "tmimportexcel";
+            this.tmimportexcel.Size = new System.Drawing.Size(184, 22);
+            this.tmimportexcel.Text = "导入BOM物料明细";
             // 
             // ShowDetailFrm
             // 
@@ -757,5 +772,7 @@
         private System.Windows.Forms.ToolStripMenuItem tmHAdd;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem tmHReplace;
+        public System.Windows.Forms.ToolStripSeparator ts4;
+        public System.Windows.Forms.ToolStripMenuItem tmimportexcel;
     }
 }

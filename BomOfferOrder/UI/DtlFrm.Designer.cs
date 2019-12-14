@@ -32,7 +32,6 @@
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.tmConfirm = new System.Windows.Forms.ToolStripMenuItem();
             this.tmsave = new System.Windows.Forms.ToolStripMenuItem();
-            this.tmimportexcel = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pbimg = new System.Windows.Forms.PictureBox();
             this.txtbom = new System.Windows.Forms.TextBox();
@@ -49,8 +48,7 @@
             this.MainMenu.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tmConfirm,
-            this.tmsave,
-            this.tmimportexcel});
+            this.tmsave});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Size = new System.Drawing.Size(854, 25);
@@ -67,12 +65,6 @@
             this.tmsave.Name = "tmsave";
             this.tmsave.Size = new System.Drawing.Size(44, 21);
             this.tmsave.Text = "提交";
-            // 
-            // tmimportexcel
-            // 
-            this.tmimportexcel.Name = "tmimportexcel";
-            this.tmimportexcel.Size = new System.Drawing.Size(122, 21);
-            this.tmimportexcel.Text = "导入BOM物料明细";
             // 
             // panel1
             // 
@@ -163,6 +155,5 @@
         private System.Windows.Forms.ToolStripMenuItem tmsave;
         private System.Windows.Forms.PictureBox pbimg;
         private System.Windows.Forms.Label lblmessage;
-        private System.Windows.Forms.ToolStripMenuItem tmimportexcel;
     }
 }

@@ -873,7 +873,7 @@ namespace BomOfferOrder.DB
         }
 
         /// <summary>
-        ///  导入EXCEL临时表
+        ///  导入EXCEL临时表-报表使用
         /// </summary>
         /// <returns></returns>
         public DataTable ImportExcelTempdt()
@@ -913,6 +913,35 @@ namespace BomOfferOrder.DB
                     //净重
                     case 5:
                         dc.ColumnName = "净重";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// 导入EXCEL临时表-BOM物料明细使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable ImportBomExcelTempdt()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 2; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    //物料名称
+                    case 0:
+                        dc.ColumnName = "物料名称";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //配方用量
+                    case 1:
+                        dc.ColumnName = "配方用量";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                 }
