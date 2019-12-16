@@ -609,40 +609,40 @@
             this.ts4,
             this.tmimportexcel});
             this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(185, 160);
+            this.Menu.Size = new System.Drawing.Size(202, 138);
             // 
             // tmReplace
             // 
             this.tmReplace.Name = "tmReplace";
-            this.tmReplace.Size = new System.Drawing.Size(184, 22);
+            this.tmReplace.Size = new System.Drawing.Size(201, 22);
             this.tmReplace.Text = "替换此行记录";
             // 
             // ts1
             // 
             this.ts1.Name = "ts1";
-            this.ts1.Size = new System.Drawing.Size(181, 6);
+            this.ts1.Size = new System.Drawing.Size(198, 6);
             // 
             // tmAdd
             // 
             this.tmAdd.Name = "tmAdd";
-            this.tmAdd.Size = new System.Drawing.Size(184, 22);
+            this.tmAdd.Size = new System.Drawing.Size(201, 22);
             this.tmAdd.Text = "新增记录";
             // 
             // ts2
             // 
             this.ts2.Name = "ts2";
-            this.ts2.Size = new System.Drawing.Size(181, 6);
+            this.ts2.Size = new System.Drawing.Size(198, 6);
             // 
             // tmdel
             // 
             this.tmdel.Name = "tmdel";
-            this.tmdel.Size = new System.Drawing.Size(184, 22);
+            this.tmdel.Size = new System.Drawing.Size(201, 22);
             this.tmdel.Text = "删除明细行";
             // 
             // ts3
             // 
             this.ts3.Name = "ts3";
-            this.ts3.Size = new System.Drawing.Size(181, 6);
+            this.ts3.Size = new System.Drawing.Size(198, 6);
             // 
             // tmshowhistory
             // 
@@ -651,7 +651,7 @@
             this.toolStripSeparator1,
             this.tmHReplace});
             this.tmshowhistory.Name = "tmshowhistory";
-            this.tmshowhistory.Size = new System.Drawing.Size(184, 22);
+            this.tmshowhistory.Size = new System.Drawing.Size(201, 22);
             this.tmshowhistory.Text = "获取报价单历史记录";
             // 
             // tmHAdd
@@ -674,13 +674,13 @@
             // ts4
             // 
             this.ts4.Name = "ts4";
-            this.ts4.Size = new System.Drawing.Size(181, 6);
+            this.ts4.Size = new System.Drawing.Size(198, 6);
             // 
             // tmimportexcel
             // 
             this.tmimportexcel.Name = "tmimportexcel";
-            this.tmimportexcel.Size = new System.Drawing.Size(184, 22);
-            this.tmimportexcel.Text = "导入BOM物料明细";
+            this.tmimportexcel.Size = new System.Drawing.Size(201, 22);
+            this.tmimportexcel.Text = "通过Excel导入物料明细";
             // 
             // ShowDetailFrm
             // 

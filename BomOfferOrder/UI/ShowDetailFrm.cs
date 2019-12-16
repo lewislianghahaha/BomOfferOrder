@@ -406,10 +406,31 @@ namespace BomOfferOrder.UI
                 //获取临时表(GridView控件时使用)
                 var resultdt = dbList.MakeGridViewTemp();
                 //将相关记录集放至方法内并进行整理,完成后放至GridView内进行显示
-                //若_dtl原来是有记录的,就将整理后的DT与_dtl原来的记录进行合并
+                //若_dtl原来是有记录的,就判断其内的‘物料名称’是否在dt内存在,若有就更新此行的‘配方用量’;最后将dt内的此行物料记录删除
                 var dt = GetExceldtToBomDetail(materialdt, exceldt, resultdt);
                 if (_dtl.Rows.Count > 0)
                 {
+                    //循环_dtl,并判断其‘物料名称’(3)是否在dt内存在,若存在,即更新‘配方用量’
+                    foreach (DataRow rows in _dtl.Rows)
+                    {
+                        for (var i = dt.Rows.Count; i >0; i--)
+                        {
+                            //若'物料名称'相同,即更新‘配方用量’,在更新完成后,将dt此行记录删除
+                            if (Convert.ToString(dt.Rows[i - 1][3]) == Convert.ToString(rows[3]))
+                            {
+                                //更新‘配方用量’
+                                _dtl.BeginInit();
+                                rows[4] = dt.Rows[i - 1][4];                           //配方用量
+                                rows[5] = Convert.ToDecimal(dt.Rows[i - 1][4]) * 100;  //占比=配方用量*100
+                                rows[6] = DBNull.Value;                                //物料单价(含税)
+                                rows[7] = DBNull.Value;                                //物料成本(含税)
+                                _dtl.EndInit();
+                                //删除dt行
+                                dt.Rows.RemoveAt(i-1);
+                            }
+                        }
+                    }
+                    //最后将记录整合
                     _dtl.Merge(dt);
                     importdt = _dtl;
                 }
@@ -1012,8 +1033,8 @@ namespace BomOfferOrder.UI
                 //当修改的列是‘物料名称’时,执行以下语句
                 if (colindex == 3)
                 {
-                    //获取该行的‘物料ID’,更新使用
-                    var materialid = gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value);
+                    //获取该行的‘物料ID’,更新使用(当为null时表示新行插入,其它为更新)
+                    var materialid = gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value ? Convert.ToInt32(null) : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value);
                     //获取所填写的‘物料名称’记录
                     var materialname = Convert.ToString(gvdtl.Rows[e.RowIndex].Cells[3].Value);
                     //根据‘物料名称’放到_materialdt进行查询
@@ -1021,11 +1042,9 @@ namespace BomOfferOrder.UI
 
                     //若没有记录的话,就执行如下
                     //->change date:20191214:当发现所输入的物料名称没有在_materialdt存在时,不作异常提示,而是可正常输入,但FMATERIALID从0开始,并且‘物料名称’为空
-                    if (dtlrows.Length == 0)
+                    if (dtlrows.Length == 0 )
                     {
-                        //
-
-
+                        GetMaterialDeatail(materialid,materialname,dtlrows);
                         #region Hide
                         //if (_dtl.Rows.Count == 0)
                         //{
@@ -1042,7 +1061,7 @@ namespace BomOfferOrder.UI
                     //若只有一行的话,就执行以下语句
                     if (dtlrows.Length == 1)
                     {
-                        GetMaterialDeatail(materialid,materialname,dtlrows);
+                        GetMaterialDeatail(materialid, materialname, dtlrows);
                     }
                     //当发现有多行的话,就作出提示并执行以下语句
                     else if (dtlrows.Length > 1)
@@ -1096,9 +1115,37 @@ namespace BomOfferOrder.UI
         {
             var resultTable = dbList.MakeGridViewTemp();
             
-            if (dtlrows.Length == 1)
+            //当dtlrows为0时,表示所输入的‘物料名称’不在K3里存在
+            if (dtlrows.Length == 0)
             {
-                //将相关结果插入至_resultTable内
+                //根据_dtl查询出‘物料编码’为空的Length,然后自增获取其最新的fmaterialid值
+                var fmaterialid = _dtl.Select("物料编码 is null").Length+1;
+
+                var newrow = resultTable.NewRow();
+                newrow[1] = fmaterialid;     //物料编码ID
+                newrow[2] = DBNull.Value;    //物料编码
+                newrow[3] = materialname;    //物料名称
+                newrow[6] = DBNull.Value;    //物料单价
+                resultTable.Rows.Add(newrow);
+
+                //执行插入
+                if (materialid == Convert.ToInt32(null))
+                {
+                    //先将在GridView内填写的行删除
+                    gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
+                    //再进行插入操作
+                    InsertDtToGridView(resultTable);
+                }
+                //执行更新
+                else
+                {
+                    UpdateDtToGridView(materialid,resultTable);
+                }
+            }
+            //当dtlrows为1时,表示将K3记录插入
+            else if (dtlrows.Length == 1)
+            {
+                //将相关结果插入至resultTable内
                 var newrow = resultTable.NewRow();
                 newrow[1] = dtlrows[0][0];  //物料编码ID
                 newrow[2] = dtlrows[0][1];  //物料编码
@@ -1106,8 +1153,8 @@ namespace BomOfferOrder.UI
                 newrow[6] = dtlrows[0][6];  //物料单价
                 resultTable.Rows.Add(newrow);
 
-                //执行插入
-                if (materialid == 0)
+                //执行插入(FMATERIALID为空时表示新行,需插入)
+                if (materialid == Convert.ToInt32(null))
                 {
                     //先将在GridView内填写的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
@@ -1123,8 +1170,8 @@ namespace BomOfferOrder.UI
             //多行结果时执行
             else
             {
-                //执行插入
-                if (materialid == 0)
+                //执行插入(FMATERIALID为空时表示新行,需插入)
+                if (materialid == Convert.ToInt32(null))
                 {
                     ////先将在GridView内填写的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
@@ -1260,7 +1307,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 新增记录至GridView
+        /// 新增记录至GridView(注:支持materialname不填的情况)
         /// </summary>
         /// <param name="remark">标记 A:新增 HI:历史记录新增</param>
         /// <param name="materialname">物料名称</param>
