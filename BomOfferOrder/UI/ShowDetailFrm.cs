@@ -1119,7 +1119,7 @@ namespace BomOfferOrder.UI
             if (dtlrows.Length == 0)
             {
                 //根据_dtl查询出‘物料编码’为空的Length,然后自增获取其最新的fmaterialid值
-                var fmaterialid = _dtl.Select("物料编码 is null").Length+1;
+                var fmaterialid = _dtl.Select("物料编码 is null").Length+1; 
 
                 var newrow = resultTable.NewRow();
                 newrow[1] = fmaterialid;     //物料编码ID
@@ -1138,7 +1138,7 @@ namespace BomOfferOrder.UI
                 }
                 //执行更新
                 else
-                {
+                { 
                     UpdateDtToGridView(materialid,resultTable);
                 }
             }
