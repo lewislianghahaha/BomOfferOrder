@@ -148,7 +148,10 @@ namespace BomOfferOrder.UI
                 _dtl = task.ResultTable;
                 panel8.Visible = true;
                 //初始化下拉框所选择的默认值
-                tmshowrows.SelectedItem = "10";
+                //tmshowrows.SelectedItem = "10";
+                tmshowrows.SelectedItem = Convert.ToInt32(tmshowrows.SelectedItem) == 0
+                    ? (object)"10"
+                    : Convert.ToInt32(tmshowrows.SelectedItem);
                 //定义初始化标记(设置为不初始化)
                 _pageChange = _pageCurrent <= 1;
                 //GridView分页

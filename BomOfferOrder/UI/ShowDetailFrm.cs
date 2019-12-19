@@ -92,7 +92,7 @@ namespace BomOfferOrder.UI
                     ? (object) "10"
                     : Convert.ToInt32(tmshowrows.SelectedItem);
                 //定义初始化标记
-                _pageChange = true;
+                _pageChange = _pageCurrent <= 1;
                 //GridView分页
                 GridViewPageChange();
             }
