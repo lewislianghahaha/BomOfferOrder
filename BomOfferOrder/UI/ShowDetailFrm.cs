@@ -42,6 +42,8 @@ namespace BomOfferOrder.UI
 
         //记录从EXCEL导入的DT
         private DataTable _exceldt;
+        //记录整理后的导入DT
+        private DataTable _importdt;
         #endregion
 
         #region Get
@@ -344,10 +346,26 @@ namespace BomOfferOrder.UI
                 task.Reporttype = "1";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
                 task.StartTask();
 
+                //将整理过后的DT存放至_exceldt内
+                _exceldt = task.ImportExceldtTable;
                 //将从EXCEL获取的记录传送至ShowDetailFrm.ImportExcelRecordToBom内
                 new Thread(ImportExcelRecordToBom).Start();
                 load.StartPosition = FormStartPosition.CenterScreen;
                 load.ShowDialog();
+
+                //若整理的DT行数大于0,就执行
+                if (_importdt.Rows.Count > 0)
+                {
+                    OnInitialize(_importdt);
+                    //累加并获取‘配方用量’合计
+                    txtpeitotal.Text = GenerateSumpeitotal();
+                    //计算物料成本(含税)之和
+                    var materialsumqty = GernerateSumQty();
+                    //产品成本含税(物料单价)
+                    txtprice.Text = Convert.ToString(Math.Round(materialsumqty, 4));
+                    //材料成本(不含税)
+                    txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
+                }
             }
             catch (Exception ex)
             {
@@ -406,8 +424,6 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                //定义importdt(用于最终输出)
-                DataTable importdt;
                 //获取临时表(GridView控件时使用)
                 var resultdt = dbList.MakeGridViewTemp();
                 //将相关记录集放至方法内并进行整理,完成后放至GridView内进行显示
@@ -437,22 +453,12 @@ namespace BomOfferOrder.UI
                     }
                     //最后将记录整合
                     _dtl.Merge(dt);
-                    importdt = _dtl;
+                    _importdt = _dtl;
                 }
                 else
                 {
-                    importdt = dt;
+                    _importdt = dt;
                 }
-
-                OnInitialize(importdt);
-                //累加并获取‘配方用量’合计
-                txtpeitotal.Text = GenerateSumpeitotal();
-                //计算物料成本(含税)之和
-                var materialsumqty = GernerateSumQty();
-                //产品成本含税(物料单价)
-                txtprice.Text = Convert.ToString(Math.Round(materialsumqty, 4));
-                //材料成本(不含税)
-                txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
 
                 //当完成后将Load子窗体关闭
                 this.Invoke((ThreadStart)(() =>

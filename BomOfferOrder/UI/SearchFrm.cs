@@ -526,7 +526,7 @@ namespace BomOfferOrder.UI
         {
             task.StartTask();
 
-            //当完成后将Form2子窗体关闭
+            //当完成后将Load子窗体关闭
             this.Invoke((ThreadStart)(() =>
             {
                 load.Close();
