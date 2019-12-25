@@ -76,11 +76,11 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnreport = new System.Windows.Forms.Button();
             this.btngenemptynew = new System.Windows.Forms.Button();
             this.btnCreateNew = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.btnreport = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
@@ -221,9 +221,9 @@
             this.panel5.Controls.Add(this.panel7);
             this.panel5.Controls.Add(this.panel6);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(3, 93);
+            this.panel5.Location = new System.Drawing.Point(3, 126);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(956, 436);
+            this.panel5.Size = new System.Drawing.Size(956, 403);
             this.panel5.TabIndex = 1;
             // 
             // panel9
@@ -232,7 +232,7 @@
             this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel9.Location = new System.Drawing.Point(0, 50);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(956, 360);
+            this.panel9.Size = new System.Drawing.Size(956, 327);
             this.panel9.TabIndex = 4;
             // 
             // gvdtl
@@ -246,7 +246,7 @@
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.ReadOnly = true;
             this.gvdtl.RowTemplate.Height = 23;
-            this.gvdtl.Size = new System.Drawing.Size(956, 360);
+            this.gvdtl.Size = new System.Drawing.Size(956, 327);
             this.gvdtl.TabIndex = 0;
             // 
             // Menu
@@ -280,7 +280,7 @@
             this.panel8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel8.Controls.Add(this.bngat);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel8.Location = new System.Drawing.Point(0, 410);
+            this.panel8.Location = new System.Drawing.Point(0, 377);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(956, 26);
             this.panel8.TabIndex = 3;
@@ -522,53 +522,57 @@
             this.panel4.ForeColor = System.Drawing.SystemColors.ControlText;
             this.panel4.Location = new System.Drawing.Point(3, 3);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(956, 90);
+            this.panel4.Size = new System.Drawing.Size(956, 123);
             this.panel4.TabIndex = 0;
+            // 
+            // btnreport
+            // 
+            this.btnreport.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnreport.BackgroundImage")));
+            this.btnreport.Location = new System.Drawing.Point(358, -1);
+            this.btnreport.Name = "btnreport";
+            this.btnreport.Size = new System.Drawing.Size(90, 123);
+            this.btnreport.TabIndex = 4;
+            this.btnreport.UseVisualStyleBackColor = true;
             // 
             // btngenemptynew
             // 
-            this.btngenemptynew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
-            this.btngenemptynew.Location = new System.Drawing.Point(217, -2);
+            this.btngenemptynew.BackgroundImage = global::BomOfferOrder.Properties.Resources.OrderEmpty;
+            this.btngenemptynew.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btngenemptynew.Location = new System.Drawing.Point(271, -1);
             this.btngenemptynew.Name = "btngenemptynew";
-            this.btngenemptynew.Size = new System.Drawing.Size(75, 93);
+            this.btngenemptynew.Size = new System.Drawing.Size(90, 123);
             this.btngenemptynew.TabIndex = 3;
             this.btngenemptynew.UseVisualStyleBackColor = true;
             // 
             // btnCreateNew
             // 
-            this.btnCreateNew.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
-            this.btnCreateNew.Location = new System.Drawing.Point(146, -2);
+            this.btnCreateNew.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnCreateNew.BackgroundImage")));
+            this.btnCreateNew.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnCreateNew.Location = new System.Drawing.Point(183, 0);
             this.btnCreateNew.Name = "btnCreateNew";
-            this.btnCreateNew.Size = new System.Drawing.Size(75, 93);
+            this.btnCreateNew.Size = new System.Drawing.Size(90, 121);
             this.btnCreateNew.TabIndex = 2;
             this.btnCreateNew.UseVisualStyleBackColor = true;
             // 
             // btnCreate
             // 
-            this.btnCreate.BackgroundImage = global::BomOfferOrder.Properties.Resources.create;
-            this.btnCreate.Location = new System.Drawing.Point(73, -2);
+            this.btnCreate.BackgroundImage = global::BomOfferOrder.Properties.Resources.OrderCreate;
+            this.btnCreate.Location = new System.Drawing.Point(95, -1);
             this.btnCreate.Name = "btnCreate";
-            this.btnCreate.Size = new System.Drawing.Size(75, 93);
+            this.btnCreate.Size = new System.Drawing.Size(90, 122);
             this.btnCreate.TabIndex = 1;
             this.btnCreate.UseVisualStyleBackColor = true;
             // 
             // btnSearch
             // 
-            this.btnSearch.BackgroundImage = global::BomOfferOrder.Properties.Resources.Search;
+            this.btnSearch.BackColor = System.Drawing.SystemColors.Control;
+            this.btnSearch.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnSearch.BackgroundImage")));
+            this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnSearch.Location = new System.Drawing.Point(-1, -1);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(75, 93);
+            this.btnSearch.Size = new System.Drawing.Size(99, 122);
             this.btnSearch.TabIndex = 0;
-            this.btnSearch.UseVisualStyleBackColor = true;
-            // 
-            // btnreport
-            // 
-            this.btnreport.BackgroundImage = global::BomOfferOrder.Properties.Resources.Search;
-            this.btnreport.Location = new System.Drawing.Point(289, -2);
-            this.btnreport.Name = "btnreport";
-            this.btnreport.Size = new System.Drawing.Size(75, 93);
-            this.btnreport.TabIndex = 4;
-            this.btnreport.UseVisualStyleBackColor = true;
+            this.btnSearch.UseVisualStyleBackColor = false;
             // 
             // Main
             // 

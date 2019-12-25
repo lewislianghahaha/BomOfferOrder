@@ -314,9 +314,14 @@
     <Content Include="DLL\Stimulsoft.Report.Win.dll" />
     <Content Include="Logo.ico" />
     <Content Include="obj\Debug\BomOfferOrder.csproj.FileListAbsolute.txt" />
+    <None Include="Resources\Report.png" />
+    <None Include="Resources\OrderNewCreate.png" />
+    <None Include="Resources\OrderEmpty.png" />
+    <None Include="Resources\OrderCreate.png" />
+    <None Include="Resources\Search.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Logo.ico" />
-    <None Include="Resources\create.png" />
-    <None Include="Resources\Search.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Release\" />

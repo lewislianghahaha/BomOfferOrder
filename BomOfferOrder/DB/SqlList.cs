@@ -6,7 +6,7 @@
         private string _result;
 
         /// <summary>
-        /// 查询窗体使用
+        /// 查询窗体使用-Bom窗体查询使用
         /// </summary>
         /// <param name="searchid">查询ID</param>
         /// <param name="searchvalue">查询值</param>
@@ -198,7 +198,7 @@
                             INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                             INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                            WHERE c.FDATAVALUE IN('产成品','原漆半成品','原材料')
+                            WHERE c.FDATAVALUE IN('原漆半成品','原材料','原漆')
                             AND a.FDOCUMENTSTATUS='C'
                             AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                             AND d.FLOCALEID=2052
@@ -224,7 +224,7 @@
                             INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                             INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                            WHERE c.FDATAVALUE IN('产成品','原漆半成品','原材料')
+                            WHERE c.FDATAVALUE IN('原漆半成品','原材料','原漆')
                             AND D.FNAME LIKE '%{searchvalue}%'
                             AND a.FDOCUMENTSTATUS='C'
                             AND a.FFORBIDSTATUS='A' --物料禁用状态:否
@@ -249,7 +249,7 @@
                             INNER JOIN dbo.T_BD_UNIT f ON e.FBASEUNITID=f.FUNITID
                             INNER JOIN dbo.T_BD_UNIT_L g ON f.FUNITID=g.FUNITID
 
-                            WHERE c.FDATAVALUE IN('产成品','原漆半成品','原材料')
+                            WHERE c.FDATAVALUE IN('原漆半成品','原材料','原漆')
                             AND a.FNUMBER LIKE '%{searchvalue}%'
                             AND a.FDOCUMENTSTATUS='C'
                             AND a.FFORBIDSTATUS='A' --物料禁用状态:否

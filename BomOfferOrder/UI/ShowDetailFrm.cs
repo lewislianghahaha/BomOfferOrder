@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using BomOfferOrder.DB;
 using BomOfferOrder.Task;
@@ -13,6 +14,7 @@ namespace BomOfferOrder.UI
         ShowMaterialDetailFrm showMaterial=new ShowMaterialDetailFrm();
         CustInfoFrm custInfo=new CustInfoFrm();
         TaskLogic task=new TaskLogic();
+        Load load=new Load();
 
         #region 变量参数
         //定义单据状态(C:创建 R:读取)
@@ -37,6 +39,9 @@ namespace BomOfferOrder.UI
         private int _totalpagecount;
         //记录初始化标记(GridView页面跳转 初始化时使用)
         private bool _pageChange;
+
+        //记录从EXCEL导入的DT
+        private DataTable _exceldt;
         #endregion
 
         #region Get
@@ -340,7 +345,9 @@ namespace BomOfferOrder.UI
                 task.StartTask();
 
                 //将从EXCEL获取的记录传送至ShowDetailFrm.ImportExcelRecordToBom内
-                ImportExcelRecordToBom(_materialdt, task.ImportExceldtTable);
+                new Thread(ImportExcelRecordToBom).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -395,9 +402,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 导入物料明细记录
         /// </summary>
-        /// <param name="materialdt">K3物料明细-数据源与‘物料’</param>
-        /// <param name="exceldt"></param>
-        private void ImportExcelRecordToBom(DataTable materialdt,DataTable exceldt)
+        private void ImportExcelRecordToBom()
         {
             try
             {
@@ -407,7 +412,7 @@ namespace BomOfferOrder.UI
                 var resultdt = dbList.MakeGridViewTemp();
                 //将相关记录集放至方法内并进行整理,完成后放至GridView内进行显示
                 //若_dtl原来是有记录的,就判断其内的‘物料名称’是否在dt内存在,若有就更新此行的‘配方用量’;最后将dt内的此行物料记录删除
-                var dt = GetExceldtToBomDetail(materialdt, exceldt, resultdt);
+                var dt = GetExceldtToBomDetail(_materialdt, _exceldt, resultdt);
                 if (_dtl.Rows.Count > 0)
                 {
                     //循环_dtl,并判断其‘物料名称’(3)是否在dt内存在,若存在,即更新‘配方用量’
@@ -448,6 +453,12 @@ namespace BomOfferOrder.UI
                 txtprice.Text = Convert.ToString(Math.Round(materialsumqty, 4));
                 //材料成本(不含税)
                 txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
+
+                //当完成后将Load子窗体关闭
+                this.Invoke((ThreadStart)(() =>
+                {
+                    load.Close();
+                }));
             }
             catch (Exception ex)
             {
