@@ -469,6 +469,8 @@ namespace BomOfferOrder.UI
                         //审核成功后操作 =>1)审核图片显示 2)将控件设为不可修改 3)弹出成功信息窗体 4)将_confirmMarkid标记设为True
                         MessageBox.Show($"审核成功,请进行提交操作", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         _confirmMarkId = true;
+                        //审核成功后将‘新增页’按钮设置为不可用
+                        tmaddpage.Enabled = false;
                         //若单据状态为R时,_backconfirm为TRUE
                         if (_funState == "R")
                             _backconfirm = true;
