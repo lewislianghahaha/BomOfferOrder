@@ -35,6 +35,13 @@ namespace BomOfferOrder.UI
         private DateTime _createtime;
         //(单据类型ID=>0:BOM成本报价单 1:新产品成本报价单及其它单据)
         private int _typeid;
+
+        //获取‘原材料’‘原漆半成品’‘原漆’等物料明细信息(注:添加物料明细窗体使用)
+        private DataTable _materialdt;
+        //获取‘新产品报价单历史记录’
+        private DataTable _historydt;
+        //获取K3客户信息
+        private DataTable _custinfodt;
         #endregion
 
         #region Set
@@ -57,6 +64,8 @@ namespace BomOfferOrder.UI
             tmConfirm.Click += TmConfirm_Click;
             tmsave.Click += Tmsave_Click;
             this.FormClosing += DtlFrm_FormClosing;
+            tmaddpage.Click += Tmaddpage_Click;
+            tctotalpage.SelectedIndexChanged += Tctotalpage_SelectedIndexChanged;
         }
 
         /// <summary>
@@ -64,12 +73,12 @@ namespace BomOfferOrder.UI
         /// </summary>
         public void OnInitialize(DataTable bomdt)
         {
-            //初始化获取‘原材料’‘原漆半成品’‘产成品’物料明细信息(注:添加物料明细窗体使用)
-            var materialdt = OnInitializeMaterialDt();
+            //初始化获取‘原材料’‘原漆半成品’‘原漆’等物料明细信息(注:添加物料明细窗体使用)
+            _materialdt = OnInitializeMaterialDt();
             //初始化获取‘新产品报价单历史记录’
-            var historydt = OnInitializeHistoryDt();
+            _historydt = OnInitializeHistoryDt();
             //初始化获取K3客户信息
-            var custinfodt = OnInitializeK3CustinfoDt();
+            _custinfodt = OnInitializeK3CustinfoDt();
 
             //单据状态:创建 C
             if (_funState=="C")
@@ -81,19 +90,21 @@ namespace BomOfferOrder.UI
                 //空白报价单-创建使用
                 if (bomdt == null)
                 {
-                    CreateNewProductEmptyDetail(materialdt, historydt, custinfodt);
+                    //将‘添加新页’按钮显示
+                    tmaddpage.Visible = true;
+                    CreateNewProductEmptyDetail();
                 }
                 else
                 {
                     //新产品成本报价单-创建使用
                     if (GlobalClasscs.Fun.FunctionName == "N") 
                     {
-                        CreateNewProductDeatail(bomdt, materialdt, historydt, custinfodt);
+                        CreateNewProductDeatail(bomdt);
                     }
                     //成本BOM报价单-创建使用
                     else
                     {
-                        CreateBomDetail(bomdt, materialdt, historydt, custinfodt);
+                        CreateBomDetail(bomdt);
                     }
                 }
             }
@@ -107,7 +118,7 @@ namespace BomOfferOrder.UI
                 //更新_useid及username值
                 UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]),0,"");
                 //执行读取记录
-                ReadDetail(bomdt, materialdt, historydt, custinfodt);
+                ReadDetail(bomdt);
             }
             //权限控制
             PrivilegeControl();
@@ -116,7 +127,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 新产品成本报价单-创建使用
         /// </summary>
-        private void CreateNewProductDeatail(DataTable sourcedt,DataTable materialdt,DataTable historydt, DataTable custinfodt)
+        private void CreateNewProductDeatail(DataTable sourcedt)
         {
             //获取临时表
             var dt = dbList.MakeTemp();
@@ -135,7 +146,7 @@ namespace BomOfferOrder.UI
                     dt.Rows.Add(newrow);
                     tabname = Convert.ToString(rows[2]);
                     //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, dt, materialdt,historydt,custinfodt);
+                    CreateDetailFrm(tabname, dt, _materialdt,_historydt,_custinfodt);
                     //当生成完成后将dt清空内容,待下一次使用
                     dt.Rows.Clear();
                 }
@@ -149,15 +160,12 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 空白报价单-创建使用
         /// </summary>
-        /// <param name="materialdt"></param>
-        /// <param name="historydt"></param>
-        /// <param name="custinfodt"></param>
-        private void CreateNewProductEmptyDetail(DataTable materialdt,DataTable historydt,DataTable custinfodt)
+        private void CreateNewProductEmptyDetail()
         {
             try
             {
                 //生成Tab Page及ShowDetailFrm
-                CreateDetailFrm("",null,materialdt,historydt,custinfodt);
+                CreateDetailFrm("",null,_materialdt,_historydt,_custinfodt);
             }
             catch (Exception ex)
             {
@@ -168,7 +176,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 成本BOM报价单-创建使用
         /// </summary>
-        private void CreateBomDetail(DataTable sourcedt,DataTable materialdt,DataTable historydt, DataTable custinfodt)
+        private void CreateBomDetail(DataTable sourcedt)
         {
             //获取临时表
             var dt = dbList.MakeTemp();
@@ -202,7 +210,7 @@ namespace BomOfferOrder.UI
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                        CreateDetailFrm(tabname,dt,materialdt,historydt,custinfodt);
+                        CreateDetailFrm(tabname,dt,_materialdt,_historydt,_custinfodt);
                         //当生成完成后将dt清空内容,待下一次使用
                         dt.Rows.Clear();
                     }
@@ -218,10 +226,7 @@ namespace BomOfferOrder.UI
         /// 读取记录时使用
         /// </summary>
         /// <param name="sourcedt">数据源DT</param>
-        /// <param name="materialdt">原材料 ‘原漆半成品’‘产成品’ 物料DT</param>
-        /// <param name="historydt"></param>
-        /// <param name="custinfodt"></param>
-        void ReadDetail(DataTable sourcedt, DataTable materialdt,DataTable historydt, DataTable custinfodt)
+        void ReadDetail(DataTable sourcedt)
         {
             //创建产成品名称临时表
             var bomproductorderdt = dbList.CreateBomProductTemp();
@@ -284,7 +289,7 @@ namespace BomOfferOrder.UI
                         bomdtldt.Rows.Add(newrow);
                     }
                     //将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, bomdtldt, materialdt,historydt,custinfodt);
+                    CreateDetailFrm(tabname, bomdtldt, _materialdt,_historydt,_custinfodt);
                     //当生成完成后将bomdtldtdt清空内容,待下一次使用
                     bomdtldt.Rows.Clear();
                 }
@@ -316,10 +321,68 @@ namespace BomOfferOrder.UI
             showDetailFrm.Show();                   //只能使用Show()
             newpage.Controls.Add(showDetailFrm);    //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);      //将新创建的Tab Page添加至TabControl控件内
-            tctotalpage.SelectedIndex = 0;          //必须要指定当前页是首页或某一页
+            //若使用的功能是‘空白报价单’,就以最后一页为最新页,其它就是首页为最新页
+            tctotalpage.SelectedIndex = GlobalClasscs.Fun.EmptyFunctionName != "" ? 
+                                        tctotalpage.TabCount - 1 : 0;
         }
 
+        /// <summary>
+        /// 新增新页-空白报价单使用
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmaddpage_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //循环已添加的Tabpage,并利用该页的产品名称更新至对应的PAGE.TEXT属性内
+                for (var i = 0; i < tctotalpage.TabCount; i++)
+                {
+                    //循环获取TabPages内各页的内容
+                    var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
+                    if (showdetail != null && showdetail.txtname.Text != "")
+                    {
+                        tctotalpage.TabPages[i].Text = showdetail.txtname.Text;
+                    }
+                }
 
+                //执行新增
+                var tabname = "新页" + Convert.ToString(tctotalpage.TabCount+1);
+                CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt);
+                //权限控制
+                PrivilegeControl();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Tab page页改变时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tctotalpage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                //循环已添加的Tabpage,并利用该页的产品名称更新至对应的PAGE.TEXT属性内
+                for (var i = 0; i < tctotalpage.TabCount; i++)
+                {
+                    //循环获取TabPages内各页的内容
+                    var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
+                    if (showdetail != null && showdetail.txtname.Text != "")
+                    {
+                        tctotalpage.TabPages[i].Text = showdetail.txtname.Text;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         /// <summary>
         /// 审核

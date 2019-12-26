@@ -38,6 +38,7 @@
             this.lblmessage = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
+            this.tmaddpage = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
@@ -48,7 +49,8 @@
             this.MainMenu.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tmConfirm,
-            this.tmsave});
+            this.tmsave,
+            this.tmaddpage});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Size = new System.Drawing.Size(854, 25);
@@ -122,6 +124,13 @@
             this.tctotalpage.Size = new System.Drawing.Size(854, 497);
             this.tctotalpage.TabIndex = 2;
             // 
+            // tmaddpage
+            // 
+            this.tmaddpage.Name = "tmaddpage";
+            this.tmaddpage.Size = new System.Drawing.Size(68, 21);
+            this.tmaddpage.Text = "添加新页";
+            this.tmaddpage.Visible = false;
+            // 
             // DtlFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -155,5 +164,6 @@
         private System.Windows.Forms.ToolStripMenuItem tmsave;
         private System.Windows.Forms.PictureBox pbimg;
         private System.Windows.Forms.Label lblmessage;
+        private System.Windows.Forms.ToolStripMenuItem tmaddpage;
     }
 }

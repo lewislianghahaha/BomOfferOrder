@@ -1050,8 +1050,8 @@ namespace BomOfferOrder.UI
                 //当修改的列是‘物料名称’时,执行以下语句
                 if (colindex == 3)
                 {
-                    //获取该行的‘物料ID’,更新使用(当为null时表示新行插入,其它为更新)
-                    var materialid = gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value ? Convert.ToInt32(null) : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value);
+                    //获取该行的‘物料ID’,更新使用(当为-1时表示新行插入,其它为更新)
+                    var materialid = gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value ? Convert.ToInt32(-1) : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value);
                     //获取所填写的‘物料名称’记录
                     var materialname = Convert.ToString(gvdtl.Rows[e.RowIndex].Cells[3].Value);
                     //根据‘物料名称’放到_materialdt进行查询
@@ -1059,7 +1059,7 @@ namespace BomOfferOrder.UI
 
                     //若没有记录的话,就执行如下
                     //->change date:20191214:当发现所输入的物料名称没有在_materialdt存在时,不作异常提示,而是可正常输入,但FMATERIALID从0开始,并且‘物料名称’为空
-                    if (dtlrows.Length == 0 )
+                    if (dtlrows.Length == 0)
                     {
                         GetMaterialDeatail(materialid,materialname,dtlrows);
                         #region Hide
@@ -1131,12 +1131,12 @@ namespace BomOfferOrder.UI
         private void GetMaterialDeatail(int materialid,string materialname,DataRow[] dtlrows)
         {
             var resultTable = dbList.MakeGridViewTemp();
-            
+
             //当dtlrows为0时,表示所输入的‘物料名称’不在K3里存在
             if (dtlrows.Length == 0)
             {
-                //根据_dtl查询出‘物料编码’为空的Length,然后自增获取其最新的fmaterialid值
-                var fmaterialid = _dtl.Select("物料编码 is null").Length+1; 
+                //根据_dtl查询出‘物料编码’为空的Length,然后作为其最新的fmaterialid值
+                var fmaterialid = _dtl.Select("物料编码 is null").Length;
 
                 var newrow = resultTable.NewRow();
                 newrow[1] = fmaterialid;     //物料编码ID
@@ -1146,7 +1146,7 @@ namespace BomOfferOrder.UI
                 resultTable.Rows.Add(newrow);
 
                 //执行插入
-                if (materialid == Convert.ToInt32(null))
+                if (materialid == Convert.ToInt32(-1))
                 {
                     //先将在GridView内填写的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
@@ -1171,7 +1171,7 @@ namespace BomOfferOrder.UI
                 resultTable.Rows.Add(newrow);
 
                 //执行插入(FMATERIALID为空时表示新行,需插入)
-                if (materialid == Convert.ToInt32(null))
+                if (materialid == Convert.ToInt32(-1))
                 {
                     //先将在GridView内填写的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
@@ -1188,7 +1188,7 @@ namespace BomOfferOrder.UI
             else
             {
                 //执行插入(FMATERIALID为空时表示新行,需插入)
-                if (materialid == Convert.ToInt32(null))
+                if (materialid == Convert.ToInt32(-1))
                 {
                     ////先将在GridView内填写的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount - 2);
