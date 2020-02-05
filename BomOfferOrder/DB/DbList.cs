@@ -908,7 +908,7 @@ namespace BomOfferOrder.DB
                     //密度
                     case 4:
                         dc.ColumnName = "密度";
-                        dc.DataType = Type.GetType("System.Decimal");
+                        dc.DataType = Type.GetType("System.Double"); 
                         break;
                     //净重
                     case 5:
