@@ -318,7 +318,7 @@ namespace BomOfferOrder.UI
             };
             //对ShowDetailFrm赋值
             showDetailFrm.AddDbToFrm(_funState,dt,materialdt, historydt,custinfodt);
-            showDetailFrm.Show();                   //只能使用Show()
+            showDetailFrm.Show();                   //注:只能使用Show()
             newpage.Controls.Add(showDetailFrm);    //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);      //将新创建的Tab Page添加至TabControl控件内
             //若使用的功能是‘空白报价单’,就以最后一页为最新页,其它就是首页为最新页
@@ -359,7 +359,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// Tab page页改变时执行
+        /// Tab page页改变时执行(注:目的是将对应的‘产品名称’信息更新至PAGE.TEXT属性内)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -380,7 +380,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -680,6 +680,8 @@ namespace BomOfferOrder.UI
                 pbimg.BackgroundImage = Image.FromFile(Application.StartupPath + @"\PIC\1.png");
                 //对相关控件设为不可改或只读
                 txtbom.ReadOnly = true;
+                //将‘添加新页’按钮设置为不显示
+                tmaddpage.Visible = false;
                 //循环TabPages内的控件
                 ControlTabPages(0);
 

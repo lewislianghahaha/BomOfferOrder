@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using BomOfferOrder.DB;
 using BomOfferOrder.Task;
 using BomOfferOrder.UI.ReportFrm;
 using Stimulsoft.Report;
