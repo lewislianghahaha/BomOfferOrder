@@ -157,7 +157,7 @@
                             WHERE A.FFORBIDSTATUS='A' --BOM禁用状态:否
                             AND A.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
                             AND C.FDOCUMENTSTATUS='C' --物料审核状态:已审核
-                           -- AND C.FFORBIDSTATUS='A'   --物料禁用状态:否
+                            AND C.FFORBIDSTATUS='A'   --物料禁用状态:否
                             AND D.FLOCALEID='2052'
                             AND CONVERT(varchar(100), a.FMODIFYDATE, 20)= (
 												                            SELECT CONVERT(varchar(100), MAX(A1.FMODIFYDATE), 20)
