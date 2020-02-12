@@ -166,6 +166,12 @@
                                                                             AND a1.FFORBIDSTATUS='A'   --BOM禁用状态:否
 																			AND a1.FDOCUMENTSTATUS='C' --BOM审核状态:已审核
 											                               )  --获取最大的‘修改日期’记录
+                            --检测获取最大的BOM编码
+							AND A.FNUMBER= (
+											SELECT  MAX(X.FNUMBER)
+											FROM T_ENG_BOM X
+											WHERE X.FMATERIALID=A.FMATERIALID
+										)
                             --AND A.FMATERIALID='136357'
                             --AND A.FNUMBER='QQ-G5-0001_V1.7'
                             ORDER BY a.FMATERIALID,e.FERPCLSID--,a.FMODIFYDATE DESC
