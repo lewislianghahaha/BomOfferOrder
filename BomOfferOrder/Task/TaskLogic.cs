@@ -521,6 +521,8 @@ namespace BomOfferOrder.Task
             _resultTable = searchDt.SearchPricelistDt();
         }
 
+
+
         #endregion
 
         #region 导入(包括:报表EXCEL导入 以及 BOM物料明细导入)

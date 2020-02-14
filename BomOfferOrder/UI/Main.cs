@@ -472,13 +472,13 @@ namespace BomOfferOrder.UI
                     {
                         materialdt = materialReportFrm.ResultTable;
                     }
-                    var dt = materialdt;
+
                     //将相关值插入至对应的中转值内
                     task.TaskId = "5.1";
                     task.Data = materialdt;
                     task.Bomdt = _bomdt;
-                    task.Instockdt = _instockdt;
-                    task.Pricelistdt = _pricelistdt;
+                    task.Instockdt = _instockdt;         //初始化采购入库单DT
+                    task.Pricelistdt = _pricelistdt;     //初始化采购价目表DT
 
                     new Thread(Start).Start();
                     load.StartPosition = FormStartPosition.CenterScreen;

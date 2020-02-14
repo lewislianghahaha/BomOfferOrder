@@ -58,6 +58,7 @@ namespace BomOfferOrder.UI.ReportFrm
             tmclose.Click += Tmclose_Click;
             btnsearch.Click += Btnsearch_Click;
             comtype.SelectedIndexChanged += Comtype_SelectedIndexChanged;
+            tmExcelImport.Click += TmExcelImport_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -119,7 +120,7 @@ namespace BomOfferOrder.UI.ReportFrm
         }
 
         /// <summary>
-        /// 导入Excel打印
+        /// 导入Excel打印(批量成本报表使用)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -172,6 +173,34 @@ namespace BomOfferOrder.UI.ReportFrm
                     //完成后关闭窗体
                     this.Close();
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 导入Excel打印(产品成本毛利润表使用)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmExcelImport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var openFileDialog = new OpenFileDialog { Filter = $"Xlsx文件|*.xlsx" };
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                task.TaskId = "";
+                task.FileAddress = openFileDialog.FileName;
+                task.Reporttype = "0";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
+                task.StartTask();
+
+                //初始化获取物料DT
+                OnInitializeMaterialdt();
+
+                //
             }
             catch (Exception ex)
             {

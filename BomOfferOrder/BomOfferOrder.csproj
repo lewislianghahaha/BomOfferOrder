@@ -284,6 +284,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="STI\MaterialCostReport.mrt" />
+    <None Include="STI\MaterialProfitReport.mrt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

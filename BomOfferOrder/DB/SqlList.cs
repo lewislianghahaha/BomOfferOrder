@@ -760,7 +760,8 @@
             {
                 _result = $@"
                                 SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,
-                                       d.FSPECIFICATION '规格型号',a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重'
+                                       d.FSPECIFICATION '规格型号',a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重',
+                                       a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类
 
                                 FROM dbo.T_BD_MATERIAL a
                                 INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -768,6 +769,12 @@
                                 INNER JOIN dbo.T_BD_MATERIAL_L d ON a.FMATERIALID=d.FMATERIALID
 
                                 INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
+
+                                LEFT JOIN dbo.T_BAS_ASSISTANTDATAENTRY x0 ON a.F_YTC_ASSISTANT=x0.FENTRYID
+                                LEFT JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L x1 ON x0.FENTRYID=x1.FENTRYID
+
+                                LEFT JOIN T_BAS_ASSISTANTDATAENTRY y0 ON a.f_ytc_assistant1=y0.FENTRYID
+                                LEFT JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L y1 ON y0.FENTRYID=y1.FENTRYID
 
                                 WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
@@ -789,7 +796,8 @@
                 _result = $@"
                                  SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,
                                         d.FSPECIFICATION '规格型号',
-										a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重'
+										a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重',
+                                        a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类
 
                                 FROM dbo.T_BD_MATERIAL a
                                 INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -797,6 +805,12 @@
                                 INNER JOIN dbo.T_BD_MATERIAL_L d ON a.FMATERIALID=d.FMATERIALID
 
                                 INNER JOIN dbo.T_BD_MATERIALBASE e ON a.FMATERIALID=e.FMATERIALID
+
+                                LEFT JOIN dbo.T_BAS_ASSISTANTDATAENTRY x0 ON a.F_YTC_ASSISTANT=x0.FENTRYID
+                                LEFT JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L x1 ON x0.FENTRYID=x1.FENTRYID
+
+                                LEFT JOIN T_BAS_ASSISTANTDATAENTRY y0 ON a.f_ytc_assistant1=y0.FENTRYID
+                                LEFT JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L y1 ON y0.FENTRYID=y1.FENTRYID
 
                                 WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
@@ -817,7 +831,7 @@
         }
 
         /// <summary>
-        /// 入库单相关(报表功能使用)
+        /// 采购入库单相关(报表功能使用)
         /// </summary>
         /// <returns></returns>
         public string SearchInstock()
@@ -837,7 +851,7 @@
         }
 
         /// <summary>
-        /// 价目表(报表功能使用)
+        /// 采购价目表(报表功能使用)
         /// </summary>
         /// <returns></returns>
         public string SearchPricelist()
@@ -854,6 +868,19 @@
 
             return _result;
         }
+
+        /// <summary>
+        /// 销售价目表相关(产品成本毛利润报表使用)
+        /// </summary>
+        /// <returns></returns>
+        public string SearchSalesInstock()
+        {
+            _result = @"
+                            
+                        ";
+            return _result;
+        }
+
 
 
         //////////////////////////////////////////////////权限使用////////////////////////////////////////////////////////

@@ -31,6 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MaterialReportFrm));
             this.Menu = new System.Windows.Forms.MenuStrip();
+            this.tmprint = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmExcelImportGet = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmGet = new System.Windows.Forms.ToolStripMenuItem();
             this.tmclose = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnsearch = new System.Windows.Forms.Button();
@@ -56,10 +60,8 @@
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.gvdtl = new System.Windows.Forms.DataGridView();
-            this.tmprint = new System.Windows.Forms.ToolStripMenuItem();
-            this.tmExcelImportGet = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tmGet = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmExcelImport = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.Menu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -79,6 +81,35 @@
             this.Menu.Name = "Menu";
             this.Menu.Size = new System.Drawing.Size(643, 25);
             this.Menu.TabIndex = 2;
+            // 
+            // tmprint
+            // 
+            this.tmprint.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmExcelImportGet,
+            this.toolStripSeparator1,
+            this.tmExcelImport,
+            this.toolStripSeparator2,
+            this.tmGet});
+            this.tmprint.Name = "tmprint";
+            this.tmprint.Size = new System.Drawing.Size(44, 21);
+            this.tmprint.Text = "打印";
+            // 
+            // tmExcelImportGet
+            // 
+            this.tmExcelImportGet.Name = "tmExcelImportGet";
+            this.tmExcelImportGet.Size = new System.Drawing.Size(281, 22);
+            this.tmExcelImportGet.Text = "导入Excel打印(批量成本报表使用)";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(278, 6);
+            // 
+            // tmGet
+            // 
+            this.tmGet.Name = "tmGet";
+            this.tmGet.Size = new System.Drawing.Size(281, 22);
+            this.tmGet.Text = "获取打印";
             // 
             // tmclose
             // 
@@ -306,32 +337,16 @@
             this.gvdtl.Size = new System.Drawing.Size(643, 363);
             this.gvdtl.TabIndex = 0;
             // 
-            // tmprint
+            // tmExcelImport
             // 
-            this.tmprint.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmExcelImportGet,
-            this.toolStripSeparator1,
-            this.tmGet});
-            this.tmprint.Name = "tmprint";
-            this.tmprint.Size = new System.Drawing.Size(44, 21);
-            this.tmprint.Text = "打印";
+            this.tmExcelImport.Name = "tmExcelImport";
+            this.tmExcelImport.Size = new System.Drawing.Size(281, 22);
+            this.tmExcelImport.Text = "导入Excel打印(产品成本毛利润表使用)";
             // 
-            // tmExcelImportGet
+            // toolStripSeparator2
             // 
-            this.tmExcelImportGet.Name = "tmExcelImportGet";
-            this.tmExcelImportGet.Size = new System.Drawing.Size(153, 22);
-            this.tmExcelImportGet.Text = "导入Excel打印";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
-            // 
-            // tmGet
-            // 
-            this.tmGet.Name = "tmGet";
-            this.tmGet.Size = new System.Drawing.Size(152, 22);
-            this.tmGet.Text = "获取打印";
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(278, 6);
             // 
             // MaterialReportFrm
             // 
@@ -394,5 +409,7 @@
         private System.Windows.Forms.ToolStripMenuItem tmExcelImportGet;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem tmGet;
+        private System.Windows.Forms.ToolStripMenuItem tmExcelImport;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
