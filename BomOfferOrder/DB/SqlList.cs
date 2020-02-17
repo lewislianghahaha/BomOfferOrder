@@ -171,6 +171,8 @@
 											SELECT  MAX(X.FNUMBER)
 											FROM T_ENG_BOM X
 											WHERE X.FMATERIALID=A.FMATERIALID
+											AND X.FFORBIDSTATUS='A'     --BOM禁用状态:否
+											AND x.FDOCUMENTSTATUS='C'   --BOM审核状态:已审核
 										)
                             --AND A.FMATERIALID='136357'
                             --AND A.FNUMBER='QQ-G5-0001_V1.7'
@@ -851,7 +853,7 @@
         }
 
         /// <summary>
-        /// 采购价目表(报表功能使用)
+        /// 采购价目表(报表功能中旧准成本单价使用)
         /// </summary>
         /// <returns></returns>
         public string SearchPricelist()
@@ -876,12 +878,57 @@
         public string SearchSalesInstock()
         {
             _result = @"
+                            SELECT a.FID,B.FMATERIALID,B.FPRICE
+                            FROM dbo.T_SAL_PRICELIST A
+                            INNER JOIN dbo.T_SAL_PRICELISTENTRY B ON A.FID=B.FID
+                            WHERE A.FDOCUMENTSTATUS='C'  --'已审核' 
+                            AND a.FFORBIDSTATUS='A'      --末失效
+                            AND (a.FNUMBER NOT LIKE '%Z%' and a.FNUMBER NOT LIKE '%z%')  --编号不能包含Z
+                            AND NOT EXISTS(
+                                             SELECT NULL 
+				                             FROM dbo.T_SAL_APPLYCUSTOMER X
+				                             INNER JOIN dbo.T_BD_CUSTOMER X1 ON X.FCUSTID=X1.FCUSTID
+				                             INNER JOIN dbo.T_BD_CUSTOMER_L x2 ON x1.FCUSTID=x2.FCUSTID
+				                             WHERE A.FID=X.FID
+				                             AND x2.FLOCALEID=2052
+				                             AND (X1.FNUMBER LIKE 'INT-%' OR x2.FNAME LIKE '%晶创%') --将晶创国内及海外的客户排除
+			                              ) 
+                            AND NOT EXISTS (
+				                              SELECT NULL FROM (
+                                                SELECT COUNT(*) NUM FROM dbo.T_SAL_APPLYCUSTOMER Y
+					                            WHERE A.FID=Y.FID)Z
+				                              WHERE Z.NUM=1
+                                           )   --当‘适用客户’记录行数只有一行时排除
+                            --AND B.FMATERIALID='124439'--'420210'--'830727'--'126340'--'123816'--'126340'
+                            ORDER BY a.FID DESC
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 采购入库单(产品成本毛利润报表使用)
+        /// </summary>
+        /// <returns></returns>
+        public string SearchPurchase()
+        {
+            _result = @"
                             
                         ";
             return _result;
         }
 
-
+        /// <summary>
+        /// 人工制造费用(产品成本毛利润报表使用)
+        /// </summary>
+        /// <returns></returns>
+        public string SearchRenCost()
+        {
+            _result = @"
+                            SELECT a.classtype 品类,a.sorttype 分类,a.SalaryTotal 人工制造费用
+                            FROM dbo.T_BD_RenCost a
+                        ";
+            return _result;
+        }
 
         //////////////////////////////////////////////////权限使用////////////////////////////////////////////////////////
 

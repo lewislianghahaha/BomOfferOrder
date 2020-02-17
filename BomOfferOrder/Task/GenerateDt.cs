@@ -256,8 +256,12 @@ namespace BomOfferOrder.Task
             return searchDt.Generdt(sqlscript);
         }
 
+        ////////////////////////////////////////////////报表运算部份////////////////////////////////////////////////////////////////
+        
+        
+
         /// <summary>
-        /// 报表生成运算
+        /// 报表生成运算-批量成本报表
         /// </summary>
         /// <param name="sourcedt">从查询窗体添加过来的DT记录</param>
         /// <param name="bomdt">BOM明细记录DT</param>
@@ -367,9 +371,9 @@ namespace BomOfferOrder.Task
                 //循环判断物料对应的“物料属性”是不是“外购”,若是就插入至resultdt内,反之,进行递归
                 if (Convert.ToString(dtlrows[i][5]) == "外购")
                 {
-                    //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                    //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留12位小数
                     qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
-                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),6);
+                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),12);
                   
                     //计算旧标准单价
                     oldprice = GetOldPrice(Convert.ToInt32(dtlrows[i][2]),instockdt,priceListdt);
@@ -388,9 +392,9 @@ namespace BomOfferOrder.Task
                 //递归调用
                 else
                 {
-                    //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留6位小数
+                    //若是第一层级的‘外购’物料，其‘用量’就是取SQL内的‘用量’;反之用量的公式为:‘总用量’*分子/分母*(1+变动损耗率/100) 保留12位小数
                     qtytemp = qty == 0 ? Convert.ToDecimal(dtlrows[i][6]) :
-                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),6);
+                        decimal.Round(qty * Convert.ToDecimal(dtlrows[i][7]) / Convert.ToDecimal(dtlrows[i][8]) * (1 + Convert.ToDecimal(dtlrows[i][9]) / 100),12);
 
                     GenerateReportDtlTemp(Convert.ToInt32(dtlrows[i][2]), productname, bomdt, resultdt, qtytemp, instockdt, priceListdt);
                 }
