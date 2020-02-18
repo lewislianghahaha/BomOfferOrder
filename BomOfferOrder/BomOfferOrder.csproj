@@ -272,6 +272,7 @@
     <None Include="bin\Debug\BomOfferOrder.vshost.exe.config" />
     <None Include="bin\Debug\BomOfferOrder.vshost.exe.manifest" />
     <None Include="bin\Debug\Report\MaterialCostReport.mrt" />
+    <None Include="bin\Debug\Report\MaterialProfitReport.mrt" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="Properties\Settings.settings">

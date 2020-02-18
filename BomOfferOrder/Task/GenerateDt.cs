@@ -257,15 +257,218 @@ namespace BomOfferOrder.Task
         }
 
         ////////////////////////////////////////////////报表运算部份////////////////////////////////////////////////////////////////
-        
-        
+
+        /// <summary>
+        /// 报表生成运算-毛利润报表
+        /// </summary>
+        /// <param name="sourcedt">从查询窗体添加过来的DT记录</param>
+        /// <param name="bomdt">BOM明细记录DT</param>
+        /// <param name="instockdt">保存采购入库单相关DT(报表功能-旧标准成本单价使用)</param>
+        /// <param name="priceListdt">保存价目表DT(报表功能使用)</param>
+        /// <param name="salespricedt">保存销售价目表相关</param>
+        /// <param name="purchaseinstockdt">保存采购入库单相关-(毛利润报表生成使用)</param>
+        /// <param name="rencostdt">保存人工制造费用相关</param>
+        /// <returns></returns>
+        public DataTable GenerateProfitReportDt(DataTable sourcedt, DataTable bomdt, DataTable instockdt, DataTable priceListdt,
+                                      DataTable salespricedt, DataTable purchaseinstockdt, DataTable rencostdt)
+        {
+            var resultdt = new DataTable();
+
+            try
+            {
+                //定义结果临时表
+                resultdt = dbList.PrintProfitReportTempdt();
+                //定义‘销售价目表售价’
+                decimal salesprice = 0;
+                //定义‘包装罐’
+                var guan = string.Empty;
+                //定义‘包装罐单价’
+                decimal guanprice = 0;
+                //定义‘纸箱’
+                var box = string.Empty;
+                //定义‘纸箱单价’
+                decimal boxprice = 0;
+                //定义‘人工及制造费用’
+                decimal rencost = 0;
+                //定义‘标准成本单价’
+                decimal totalamount = 0;
+                //定义‘旧标准成本单价’
+                decimal oldtotalamount = 0;
+
+                //调用GenerateReportDt()用于获取‘标准成本单价’以及‘旧标准成本单价’
+                var tempdt = GenerateReportDt(sourcedt,bomdt,instockdt,priceListdt);
+
+                //循环sourcedt
+                foreach (DataRow rows in sourcedt.Rows)
+                {
+                    //计算‘销售价目表售价’
+                    salesprice = GetSalesPrice(Convert.ToInt32(rows[0]),salespricedt);
+
+                    //计算‘包装罐’
+                    guan = GuanBoxName(0,Convert.ToInt32(rows[0]),bomdt);
+
+                    //计算‘包装罐单价’
+                    guanprice = GuanBoxPrice(0,Convert.ToInt32(rows[0]),bomdt,purchaseinstockdt);
+
+                    //计算‘纸箱’
+                    box = GuanBoxName(1,Convert.ToInt32(rows[0]),bomdt);
+
+                    //计算‘纸箱单价’
+                    boxprice = GuanBoxPrice(1,Convert.ToInt32(rows[0]),bomdt,purchaseinstockdt);
+
+                    //计算‘人工及制造费用’
+                    rencost = GetRenCost(Convert.ToString(rows[8]),Convert.ToString(rows[7]),rencostdt);
+
+                    //以rows.物料编码为条件,查询tempdt内的‘标准成本单价’以及‘旧标准成本单价’值
+                    var dtlrows = tempdt.Select("物料编码='" + rows[1] + "'");
+                    oldtotalamount = Convert.ToDecimal(dtlrows[0][5]);
+                    totalamount = Convert.ToDecimal(dtlrows[0][6]);
+
+                    //最后将所有结果插入至resultdt内
+                    var newrow = resultdt.NewRow();
+                    newrow[0] = rows[1];                    //物料编码
+                    newrow[1] = rows[2];                    //产品名称
+                    newrow[2] = rows[3];                    //规格型号
+                    newrow[3] = rows[6];                    //罐箱
+                    newrow[4] = oldtotalamount;             //旧标准成本单价
+                    newrow[5] = totalamount;                //标准成本单价
+                    newrow[6] = rows[9];                    //销售计价单位
+                    newrow[7] = salesprice;                 //销售价目表售价
+                    newrow[8] = DBNull.Value;               //毛利润率
+                    newrow[9] = DBNull.Value;               //计价成本
+                    newrow[10] = DBNull.Value;              //计价单位单位成本
+                    newrow[11] = DBNull.Value;              //计价单位单位成本(千克)
+                    newrow[12] = rows[4];                   //换算率
+                    newrow[13] = rows[5];                   //重量(净重)
+                    newrow[14] = DBNull.Value;              //每公斤含税成本小计
+                    newrow[15] = DBNull.Value;              //每公斤材料成本单价
+                    newrow[16] = rencost;                   //人工制造费用
+                    newrow[17] = guan;                      //包装罐
+                    newrow[18] = guanprice;                 //包装罐单价
+                    newrow[19] = box;                       //纸箱
+                    newrow[20] = boxprice;                  //纸箱单价
+                    newrow[21] = rows[7];                   //分类
+                    newrow[22] = rows[8];                   //品类
+                    resultdt.Rows.Add(newrow);
+                }
+            }
+            catch (Exception)
+            {
+                resultdt.Rows.Clear();
+                resultdt.Columns.Clear();
+            }
+            return resultdt;
+        }
+
+        /// <summary>
+        /// 计算销售价目表售价
+        /// 根据FMATERIALID查找出销售价目表‘价格’
+        /// </summary>
+        /// <param name="fmaterialid"></param>
+        /// <param name="salespricedt"></param>
+        /// <returns></returns>
+        private decimal GetSalesPrice(int fmaterialid,DataTable salespricedt)
+        {
+            decimal result = 0;
+            //以fmaterialid为条件,查找salespricedt内的‘价格’信息
+            var dtlrow = salespricedt.Select("FMATERIALID='" + fmaterialid + "'");
+            if (dtlrow.Length == 0)
+            {
+                result = 0;
+            }
+            //注:当行数超过1行时,就要取第一行的值
+            else if (dtlrow.Length >=1)
+            {
+                result = Convert.ToDecimal(dtlrow[0][2]);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取‘罐’‘箱’对应的‘物料名称’
+        /// 罐-T WSX  纸箱-WZX ZX
+        /// </summary>
+        /// <param name="typeid">0:罐 1:纸箱</param>
+        /// <param name="fmaterialid"></param>
+        /// <param name="bomdt"></param>
+        /// <returns></returns>
+        private string GuanBoxName(int typeid,int fmaterialid,DataTable bomdt)
+        {
+            var result = string.Empty;
+            //typeid=0 获取罐信息 1 获取包装箱信息
+            if (typeid == 0)
+            {
+                //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'T','WSX'就获取其对应的‘物料名称’
+                var dtlrows = bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%T%' or 物料编码 like '%WSX%') ");
+                result = dtlrows.Length == 0 ? "" : Convert.ToString(dtlrows[0][4]);
+            }
+            else
+            {
+                //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'ZX','WZX'就获取其对应的‘物料名称’
+                var dtlrows = bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%ZX%' or 物料编码 like '%WZX%') ");
+                result = dtlrows.Length == 0 ? "" : Convert.ToString(dtlrows[0][4]);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取‘罐’‘箱’对应的‘净价’
+        /// 纸箱-WZX ZX
+        /// </summary>
+        /// <param name="typeid">0:罐 1:纸箱</param>
+        /// <param name="fmaterialid"></param>
+        /// <param name="bomdt"></param>
+        /// <param name="purchaseinstockdt"></param>
+        /// <returns></returns>
+        private decimal GuanBoxPrice(int typeid, int fmaterialid, DataTable bomdt, DataTable purchaseinstockdt)
+        {
+            decimal result = 0;
+            //定义‘表体物料ID’
+            var detailfmaterialid = 0;
+
+            //typeid=0 获取罐信息 1 获取包装箱信息
+            //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'T','WSX'就获取其对应的‘表体物料ID’
+            //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'ZX','WZX'就获取其对应的‘表体物料ID’
+            var dtlrows = typeid==0 ? bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%T%' or 物料编码 like '%WSX%') ") : 
+                                  bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%ZX%' or 物料编码 like '%WZX%') ");
+
+            if (dtlrows.Length == 0)
+            {
+                result = 0;
+            }
+            else
+            {
+                detailfmaterialid = Convert.ToInt32(dtlrows[0][2]);
+                //将获取到的‘表体物料ID’放到purchaseinstockdt内,将获取其对应的‘净价’;注:若出现多个的话就取第一行的记录
+                var dtlrow = purchaseinstockdt.Select("FMATERIALID='" + detailfmaterialid + "'");
+                result = dtlrow.Length == 0 ? 0 : Convert.ToDecimal(dtlrow[0][1]);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 计算人工制造费用
+        /// </summary>
+        /// <param name="classtype">品类</param>
+        /// <param name="sorttype">分类</param>
+        /// <param name="rencostdt">人工及制造费用DT</param>
+        /// <returns></returns>
+        private decimal GetRenCost(string classtype,string sorttype,DataTable rencostdt)
+        {
+            decimal result = 0;
+            //以‘品类’及‘分类’为条件并使用人工及制造费用DT进行查询
+            var dtlrow = rencostdt.Select("品类='" + classtype + "' and 分类='" + sorttype + "'");
+            result = dtlrow.Length == 0 ? 0 : Convert.ToDecimal(dtlrow[0][2]);
+            return result;
+        }
+
 
         /// <summary>
         /// 报表生成运算-批量成本报表
         /// </summary>
         /// <param name="sourcedt">从查询窗体添加过来的DT记录</param>
         /// <param name="bomdt">BOM明细记录DT</param>
-        /// <param name="instockdt">保存入库单相关DT(报表功能使用)</param>
+        /// <param name="instockdt">保存采购入库单相关DT(报表功能-旧标准成本单价使用)</param>
         /// <param name="priceListdt">保存价目表DT(报表功能使用)</param>
         /// <returns></returns>
         public DataTable GenerateReportDt(DataTable sourcedt, DataTable bomdt, DataTable instockdt, DataTable priceListdt)
@@ -329,7 +532,7 @@ namespace BomOfferOrder.Task
                     resultdt.Merge(MarkRecordToReportDt(fmaterialCode,productname,spec,mi,weight,unitname,mark,
                                                         oldtotalamount,totalamount,resultdt));
 
-                    //最后将tempdt行清空以及相中间变量清空,待下一个循环使用
+                    //最后将tempdt行清空以及相中间变量清空,待下一次循环使用
                     tempdt.Rows.Clear();
                     totalamount = 0;
                     oldtotalamount = 0;

@@ -76,6 +76,8 @@ namespace BomOfferOrder.UI.ReportFrm
         {
             //初始化生成下拉列表
             OnShowTypeList();
+            //初始化获取物料DT
+            OnInitializeMaterialdt();
         }
 
         /// <summary>
@@ -136,16 +138,13 @@ namespace BomOfferOrder.UI.ReportFrm
                 task.Reporttype = "0";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
                 task.StartTask();
 
-                //初始化获取物料DT
-                OnInitializeMaterialdt();
-
                 //通过_materialdt循环获取其对应的FMATERIALID
                 _resultTable = dbList.MarkMaterialReportTemp();
                 foreach (DataRow row in task.ImportExceldtTable.Rows)
                 {
                     //通过_materialdt获取其对应的FMATERIALID
                     var dtlrow = _materialdt.Select("物料编码='"+row[0]+"'");
-                    //若返回的数据为0即不继续
+                    //若返回的数据为0即跳过
                     if(dtlrow.Length ==0) continue;
                     var newrow = _resultTable.NewRow();
                     newrow[0] = dtlrow[0][0];   //FMATERIALID
@@ -192,15 +191,50 @@ namespace BomOfferOrder.UI.ReportFrm
                 var openFileDialog = new OpenFileDialog { Filter = $"Xlsx文件|*.xlsx" };
                 if (openFileDialog.ShowDialog() != DialogResult.OK) return;
 
-                task.TaskId = "";
+                task.TaskId = "6.1";
                 task.FileAddress = openFileDialog.FileName;
-                task.Reporttype = "0";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
+                task.Reporttype = "2";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用  2:毛利润报表使用)
                 task.StartTask();
 
-                //初始化获取物料DT
-                OnInitializeMaterialdt();
+                //通过_materialdt循环获取其对应的FMATERIALID
+                _resultTable = dbList.MarkMaterialReportTemp();
 
-                //
+                foreach (DataRow row in task.ImportExceldtTable.Rows)
+                {
+                    //通过_materialdt获取其对应的FMATERIALID
+                    var dtlrow = _materialdt.Select("物料编码='" + row[0] + "'");
+                    //若返回的数据为0即跳过
+                    if (dtlrow.Length == 0) continue;
+                    var newrow = _resultTable.NewRow();
+                    newrow[0] = dtlrow[0][0];   //FMATERIALID
+                    newrow[1] = row[0];         //物料编码
+                    newrow[2] = row[1];         //物料名称
+                    newrow[3] = dtlrow[0][3];   //规格
+                    newrow[4] = dtlrow[0][4];   //换算率(密度)
+                    newrow[5] = dtlrow[0][5];   //重量(净重)
+                    newrow[6] = dtlrow[0][6];   //罐箱
+                    newrow[7] = dtlrow[0][7];   //分类
+                    newrow[8] = dtlrow[0][8];   //品类
+                    newrow[9] = dtlrow[0][9];   //销售计价单位
+                    _resultTable.Rows.Add(newrow);
+                }
+
+                if (_resultTable.Rows.Count == 0) throw new Exception("不能成功导入EXCEL内容,请检查模板是否正确.");
+                else
+                {
+                    //记录生成报表方式(0:按EXCEL-批量成本报表使用导入方式 1:按选取方式 2:按EXCEL-毛利润报表使用导入方式)
+                    _reporttypeid = 2;
+                    //若GridView有值的话,就清空相关行记录
+                    if (gvdtl?.Rows.Count > 0)
+                    {
+                        var dt = (DataTable)gvdtl.DataSource;
+                        dt.Rows.Clear();
+                        dt.Columns.Clear();
+                        gvdtl.DataSource = dt;
+                    }
+                    //完成后关闭窗体
+                    this.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -635,6 +669,8 @@ namespace BomOfferOrder.UI.ReportFrm
             task.StartTask();
             _materialdt = task.ResultTable;
         }
+
+
 
     }
 }

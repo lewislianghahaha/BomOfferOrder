@@ -763,7 +763,8 @@
                 _result = $@"
                                 SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,
                                        d.FSPECIFICATION '规格型号',a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重',
-                                       a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类
+                                       a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类,
+                                       z2.FNAME 销售计价单位
 
                                 FROM dbo.T_BD_MATERIAL a
                                 INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -778,10 +779,15 @@
                                 LEFT JOIN T_BAS_ASSISTANTDATAENTRY y0 ON a.f_ytc_assistant1=y0.FENTRYID
                                 LEFT JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L y1 ON y0.FENTRYID=y1.FENTRYID
 
+                                INNER JOIN dbo.T_BD_MATERIALSALE z0 ON a.FMATERIALID=z0.FMATERIALID
+								INNER JOIN dbo.T_BD_UNIT z1 ON z0.FSALEPRICEUNITID=z1.FUNITID
+								INNER JOIN dbo.T_BD_UNIT_L z2 ON z1.FUNITID=z2.FUNITID
+
                                 WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
                                 AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
+                                AND z2.FLOCALEID=2052
                                 AND D.FNAME LIKE '%{searchvalue}%'
                                 AND EXISTS (
 												SELECT NULL FROM T_ENG_BOM A1
@@ -799,7 +805,8 @@
                                  SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,
                                         d.FSPECIFICATION '规格型号',
 										a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重',
-                                        a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类
+                                        a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类,
+                                        z2.FNAME 销售计价单位
 
                                 FROM dbo.T_BD_MATERIAL a
                                 INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -814,11 +821,15 @@
                                 LEFT JOIN T_BAS_ASSISTANTDATAENTRY y0 ON a.f_ytc_assistant1=y0.FENTRYID
                                 LEFT JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L y1 ON y0.FENTRYID=y1.FENTRYID
 
+                                INNER JOIN dbo.T_BD_MATERIALSALE z0 ON a.FMATERIALID=z0.FMATERIALID
+								INNER JOIN dbo.T_BD_UNIT z1 ON z0.FSALEPRICEUNITID=z1.FUNITID
+								INNER JOIN dbo.T_BD_UNIT_L z2 ON z1.FUNITID=z2.FUNITID
+
                                 WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
                                 AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
-								
+								AND z2.FLOCALEID=2052
                                 AND a.FNUMBER LIKE '%{searchvalue}%'
                                 AND EXISTS (
 												SELECT NULL FROM T_ENG_BOM A1
@@ -833,7 +844,7 @@
         }
 
         /// <summary>
-        /// 采购入库单相关(报表功能使用)
+        /// 采购入库单相关(报表功能中旧准成本单价使用)
         /// </summary>
         /// <returns></returns>
         public string SearchInstock()
@@ -867,7 +878,6 @@
 								where t1.FFORBIDSTATUS='A' and t1.FDOCUMENTSTATUS='C' and t3.FERPCLSID<>2) t1
 						  where t1.r = 1
                         ";
-
             return _result;
         }
 
@@ -912,7 +922,12 @@
         public string SearchPurchase()
         {
             _result = @"
-                            
+                            SELECT b.FMATERIALID,c.FTAXNETPRICE 净价
+                            FROM dbo.T_STK_INSTOCK a
+                            INNER JOIN dbo.T_STK_INSTOCKENTRY b ON a.FID=b.FID
+                            INNER JOIN dbo.T_STK_INSTOCKENTRY_F c ON b.FENTRYID=c.FENTRYID
+                            AND a.FDOCUMENTSTATUS='C'  --已审核
+                            ORDER BY a.FDATE DESC
                         ";
             return _result;
         }

@@ -475,7 +475,7 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// EXcel导入
         /// </summary>
-        /// <param name="reporttype">导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)</param>
+        /// <param name="reporttype">导入EXCEL时的类型(0:批量成本报表功能使用  1:BOM物料明细使用 2:毛利润报表使用)</param>
         /// <param name="fileAddress"></param>
         /// <returns></returns>
         public DataTable ImportExcelToDt(string reporttype,string fileAddress)
@@ -499,7 +499,7 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 打开EXCEL并获取其内容
         /// </summary>
-        /// <param name="reporttype">导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)</param>
+        /// <param name="reporttype">导入EXCEL时的类型(0:批量成本报表功能使用  1:BOM物料明细使用 2:毛利润报表使用)</param>
         /// <param name="fileAddress"></param>
         /// <returns></returns>
         private DataTable OpenExcelToDataTable(string reporttype,string fileAddress)
@@ -520,6 +520,7 @@ namespace BomOfferOrder.Task
                 var sheet = wk.GetSheetAt(0);
                 //获取第一行
                 //var hearRow = sheet.GetRow(0);
+                //定义列数
                 colnum = reporttype == "0" ? 6 : 2;
 
                 //创建完标题后,开始从第二行起读取对应列的值

@@ -22,9 +22,12 @@ namespace BomOfferOrder.Task
         private int _type;                  //记录占用情况类型(更新单据占用情况时使用)
         private string _newpwd;             //记录用户新密码
         private string _fileAddress;        //导入地址
-        private DataTable _instockdt;       //保存入库单相关DT(报表功能使用)
-        private DataTable _pricelistdt;     //保存价目表DT(报表功能使用)
-        private string _reporttype;         //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
+        private DataTable _instockdt;       //保存采购入库单相关DT(报表-旧标准成本单价功能使用)
+        private DataTable _pricelistdt;     //保存采购价目表DT(报表功能使用)
+        private string _reporttype;         //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用 2:)
+        private DataTable _salespricedt;     //保存销售价目表相关DT
+        private DataTable _purchaseinstockdt;//保存采购入库单相关DT-(毛利润报表生成使用)
+        private DataTable _rencostdt;        //保存人工制造费用相关DT
 
         private DataTable _resultTable;          //返回DT类型
         private DataTable _resultbomdt;          //返回BOM DT
@@ -112,6 +115,21 @@ namespace BomOfferOrder.Task
         /// 导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)
         /// </summary>
         public string Reporttype { set { _reporttype = value; } }
+
+        /// <summary>
+        /// 保存销售价目表相关DT
+        /// </summary>
+        public DataTable Salespricedt { set { _salespricedt = value; } }
+
+        /// <summary>
+        /// 保存采购入库单相关DT-(毛利润报表生成使用)
+        /// </summary>
+        public DataTable Purchaseinstockdt { set { _purchaseinstockdt = value; } }
+
+        /// <summary>
+        /// 保存人工制造费用相关DT
+        /// </summary>
+        public DataTable Rencostdt { set { _rencostdt = value; } }
 
         #endregion
 
@@ -242,7 +260,7 @@ namespace BomOfferOrder.Task
                 case "5":
                     SearchMaterial(_searchid,_searchvalue);
                     break;
-                //运算-报表生成使用
+                //运算-批量报表生成使用
                 case "5.1":
                     GenerateReportDt(_dt, _bomdt,_instockdt,_pricelistdt);
                     break;
@@ -250,10 +268,28 @@ namespace BomOfferOrder.Task
                 case "5.3":
                     SearchInstockDt();
                     break;
-                //查询:价目表相关(报表使用)
+                //查询:采购价目表相关(报表使用)
                 case "5.4":
                     SearchPricelistDt();
                     break;
+
+                //运算-毛利润报表生成使用
+                case "5.5":
+                    GenerateProfitDt(_dt, _bomdt, _instockdt, _pricelistdt,_salespricedt,_purchaseinstockdt,_rencostdt);
+                    break;
+                //查询-销售价目表DT
+                case "5.6":
+                    SearchSalesPriceDt();
+                    break;
+                //查询-采购入库单DT(毛利润报表使用)
+                case "5.7":
+                    SearchPurchaseInstockDt();
+                    break;
+                //查询-人工制造费用DT
+                case "5.8":
+                    SearchRenCostDt();
+                    break;
+
                 #endregion
 
                 #region 导入(包括:报表EXCEL导入 以及 BOM物料明细导入)
@@ -264,6 +300,10 @@ namespace BomOfferOrder.Task
                 //EXCEL模板导入-BOM明细记录使用
                 case "6":
                     ImportExcelToBomDt(_reporttype,_fileAddress);
+                    break;
+                //EXCEL模板导入-毛利润报表使用
+                case "6.1":
+                    ImportExcelToProfitDt(_reporttype,_fileAddress);
                     break;
                 #endregion
             }
@@ -396,6 +436,8 @@ namespace BomOfferOrder.Task
             _resultTable = searchDt.SearchK3CustomerList(searchid, searchvalue);
         }
 
+
+
         #endregion
 
         #region 运算相关方法
@@ -493,11 +535,11 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 运算-报表生成使用
+        /// 运算-批量成本报表生成使用
         /// </summary>
-        /// <param name="sourcedt">数据源</param>
+        /// <param name="sourcedt">EXCEL数据源</param>
         /// <param name="bomdt">BOM数据源DT</param>
-        /// <param name="instockdt">保存入库单相关DT(报表功能使用)</param>
+        /// <param name="instockdt">保存采购入库单相关DT(报表功能-旧标准成本单价使用)</param>
         /// <param name="priceListdt">保存价目表DT(报表功能使用)</param>
         private void GenerateReportDt(DataTable sourcedt, DataTable bomdt,DataTable instockdt,DataTable priceListdt)
         {
@@ -506,7 +548,7 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 查询入库单相关
+        /// 查询采购入库单相关
         /// </summary>
         private void SearchInstockDt()
         {
@@ -514,13 +556,53 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 查询价目表相关
+        /// 查询采购价目表相关-旧标准成本单价使用
         /// </summary>
         private void SearchPricelistDt()
         {
             _resultTable = searchDt.SearchPricelistDt();
         }
 
+        /// <summary>
+        /// 运算-毛利润所表生成使用
+        /// </summary>
+        /// <param name="sourcedt">EXCEL数据源</param>
+        /// <param name="bomdt">BOM数据源DT</param>
+        /// <param name="instockdt">保存采购入库单相关DT(报表功能-旧标准成本单价使用)</param>
+        /// <param name="priceListdt">保存价目表DT(报表功能使用)</param>
+        /// <param name="salespricedt">保存销售价目表相关</param>
+        /// <param name="purchaseinstockdt">保存采购入库单相关-(毛利润报表生成使用)</param>
+        /// <param name="rencostdt">保存人工制造费用相关</param>
+        private void GenerateProfitDt(DataTable sourcedt, DataTable bomdt, DataTable instockdt, DataTable priceListdt,
+                                      DataTable salespricedt,DataTable purchaseinstockdt,DataTable rencostdt)
+        {
+            _resultTable = generateDt.GenerateProfitReportDt(sourcedt,bomdt,instockdt,priceListdt,salespricedt,purchaseinstockdt,rencostdt);
+            _resultMark = _resultTable.Rows.Count > 0;
+        }
+
+        /// <summary>
+        /// 查询销售价目表相关
+        /// </summary>
+        private void SearchSalesPriceDt()
+        {
+            _resultTable = searchDt.SearchSalesPriceDt();
+        }
+
+        /// <summary>
+        /// 查询采购入库单相关-(毛利润报表生成使用)
+        /// </summary>
+        private void SearchPurchaseInstockDt()
+        {
+            _resultTable = searchDt.SearchPurchaseInstockDt();
+        }
+
+        /// <summary>
+        /// 查询人工制造费用相关
+        /// </summary>
+        private void SearchRenCostDt()
+        {
+            _resultTable = searchDt.SearchRenCostDt();
+        }
 
 
         #endregion
@@ -528,9 +610,9 @@ namespace BomOfferOrder.Task
         #region 导入(包括:报表EXCEL导入 以及 BOM物料明细导入)
 
         /// <summary>
-        /// 导入EXCEL-报表使用
+        /// 导入EXCEL-批量成本报表使用
         /// </summary>
-        /// <param name="reporttype">导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用)</param>
+        /// <param name="reporttype">导入EXCEL时的类型(0:批量成本报表功能使用  1:BOM物料明细使用 2:毛利润报表使用)</param>
         /// <param name="fileAddress"></param>
         private void ImportExcelToDt(string reporttype,string fileAddress)
         {
@@ -549,6 +631,22 @@ namespace BomOfferOrder.Task
         /// <param name="reporttype"></param>
         /// <param name="fileAddress"></param>
         private void ImportExcelToBomDt(string reporttype, string fileAddress)
+        {
+            //若_resultTable有值,即先将其清空,再进行赋值
+            if (_importExceldtTable?.Rows.Count > 0)
+            {
+                _importExceldtTable.Rows.Clear();
+                _importExceldtTable.Columns.Clear();
+            }
+            _importExceldtTable = importDt.ImportExcelToDt(reporttype, fileAddress);
+        }
+
+        /// <summary>
+        /// 导入EXCEL-毛利润报表使用
+        /// </summary>
+        /// <param name="reporttype">导入EXCEL时的类型(0:批量成本报表功能使用  1:BOM物料明细使用 2:毛利润报表使用)</param>
+        /// <param name="fileAddress"></param>
+        private void ImportExcelToProfitDt(string reporttype, string fileAddress)
         {
             //若_resultTable有值,即先将其清空,再进行赋值
             if (_importExceldtTable?.Rows.Count > 0)

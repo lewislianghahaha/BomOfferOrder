@@ -21,10 +21,16 @@ namespace BomOfferOrder.UI
         #region 变量参数
         //保存BOM明细DT(生成时使用;注:当打开录入界面时初始化执行)
         private DataTable _bomdt;
-        //保存入库单相关DT(报表功能使用)
+        //保存采购入库单相关DT(报表-旧标准成本单价使用)
         private DataTable _instockdt;
-        //保存价目表DT(报表功能使用)
+        //保存采购价目表DT(报表功能使用)
         private DataTable _pricelistdt;
+        //保存销售价目表DT(毛利润报表使用)
+        private DataTable _salesPricedt;
+        //保存采购入库单相关DT(毛利润报表使用)
+        private DataTable _purchaseInstockDt;
+        //保存人工制造费用DT(毛利润报表使用)
+        private DataTable _renCostDt;
 
         //定义关闭符号的宽
         const int CloseSize = 11;
@@ -71,10 +77,16 @@ namespace BomOfferOrder.UI
             OnShowSelectTypeList();
             //初始化BOM明细DT(‘生成BOM明细’及‘报表查询’功能时使用)
             OnInitializeBomdt();
-            //初始化入库单相关DT(报表查询功能时使用)
+            //初始化入库单相关DT(报表旧标准成本单价功能时使用)
             OnInitializeInstockdt();
             //初始化价目表相关DT(报表查询功能时使用)
             OnInitializePriceListdt();
+            //初始化销售价目表DT
+            OnInitializeSalesPricedt();
+            //初始化采购入库单DT-(毛利润报表使用)
+            OnInitializePurchaseInstockDt();
+            //初始化人工制造费用DT
+            OnInitializeRenCostDt();
             //更新用户占用值 useid
             UpUseridValue(0);
             //权限控制
@@ -427,6 +439,10 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                //定义'输出报表地址'
+                var printadd = string.Empty;
+                //定义'输出类型ID'
+                var printtaskid=string.Empty;
                 //定义‘物料相关’DT
                 DataTable materialdt;
 
@@ -440,10 +456,11 @@ namespace BomOfferOrder.UI
                 if (materialReportFrm.ResultTable != null || materialReportFrm.ResultTable.Rows.Count > 0)
                 { //searchlist = GetSearchList(materialReportFrm.ResultTable); 
 
-                    //若materialReportFrm.reporttypeid为0,需要检测两点:
+                    //若materialReportFrm.reporttypeid为0或2,需要检测两点:
                     //1)即需要检测其导入的物料是否已在BOMDT内存在若没有,跳过此行,不作异常处理
                     //2)检测其内是否有相同的物料,若有,报异常
                     materialdt = materialReportFrm.ResultTable.Clone();
+                    //当reporttypeid=0时,表示执行生成‘批量成本报表’
                     if (materialReportFrm.Reporttypeid == 0)
                     {
                         //循环从EXCEL导入的物料DT
@@ -468,26 +485,66 @@ namespace BomOfferOrder.UI
                             materialdt.Rows.Add(newrow);
                         }
                     }
+                    //表示执行生成'毛利润报表'
+                    else if (materialReportFrm.Reporttypeid==2)
+                    {
+                        //循环从EXCEL导入的物料DT
+                        foreach (DataRow rows in materialReportFrm.ResultTable.Rows)
+                        {
+                            //检测若EXCEL导入的物料不在_bomdt存在,即跳过不作异常处理
+                            var dtlrow = _bomdt.Select("表头物料ID='" + rows[0] + "'");
+                            if (dtlrow.Length == 0) continue;
+
+                            //检测导入DT内的物料是否重复
+                            if (materialdt.Select("FMATERIALID='" + rows[0] + "'").Length > 0)
+                                throw new Exception($"检测到导入的EXCEL中物料'{rows[1]}'有重复记录,请检查后重新导入");
+
+                            //若没有重复即进行插入至materialdt内
+                            var newrow = materialdt.NewRow();
+                            newrow[0] = rows[0];         //FMATERIALID
+                            newrow[1] = rows[1];         //物料编码
+                            newrow[2] = rows[2];         //物料名称
+                            newrow[3] = rows[3];         //规格
+                            newrow[4] = rows[4];         //换算率(密度)
+                            newrow[5] = rows[5];         //重量(净重)
+                            newrow[6] = rows[6];         //罐箱
+                            newrow[7] = rows[7];         //分类
+                            newrow[8] = rows[8];         //品类
+                            materialdt.Rows.Add(newrow);
+                        }
+                    }
+                    //表示不用导入方式生成报表,但也是以‘批量成本’模板方式导出
                     else
                     {
                         materialdt = materialReportFrm.ResultTable;
                     }
 
+
+                    //分类运算
+                    //毛利润报表使用
+                    printtaskid = materialReportFrm.Reporttypeid == 2 ? "5.5" : "5.1";
+
                     //将相关值插入至对应的中转值内
-                    task.TaskId = "5.1";
+                    task.TaskId = printtaskid;
                     task.Data = materialdt;
                     task.Bomdt = _bomdt;
-                    task.Instockdt = _instockdt;         //初始化采购入库单DT
-                    task.Pricelistdt = _pricelistdt;     //初始化采购价目表DT
+                    task.Instockdt = _instockdt;                  //初始化采购入库单DT-旧标准成本单价使用
+                    task.Pricelistdt = _pricelistdt;              //初始化采购价目表DT
+                    task.Salespricedt = _salesPricedt;            //初始化销售价目表DT-(产品成本毛利润报表专用)
+                    task.Purchaseinstockdt = _purchaseInstockDt;  //初始化采购入库单DT-(产品成本毛利润报表专用)
+                    task.Rencostdt = _renCostDt;                  //初始化人工制造费用DT-(产品成本毛利润报表专用)
 
                     new Thread(Start).Start();
                     load.StartPosition = FormStartPosition.CenterScreen;
                     load.ShowDialog();
 
+
                     if (task.ResultTable.Rows.Count == 0) throw new Exception("导出异常,请联系管理员");
                     //调用STI模板并执行导出代码
-                    //加载STI模板 MaterialCostReport
-                    var filepath = Application.StartupPath + "/Report/MaterialCostReport.mrt";
+                    //加载STI模板
+                    //定义模板地址
+                    printadd = materialReportFrm.Reporttypeid == 2 ? "/Report/MaterialProfitReport.mrt" : "/Report/MaterialCostReport.mrt";
+                    var filepath = Application.StartupPath + printadd;
                     var stireport = new StiReport();
                     stireport.Load(filepath);
                     //加载DATASET 或 DATATABLE
@@ -1127,7 +1184,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 初始化入库单DT
+        /// 初始化采购入库单DT
         /// </summary>
         private void OnInitializeInstockdt()
         {
@@ -1137,13 +1194,43 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 初始化价目表DT
+        /// 初始化采购价目表DT
         /// </summary>
         private void OnInitializePriceListdt()
         {
             task.TaskId = "5.4";
             task.StartTask();
             _pricelistdt = task.ResultTable;
+        }
+
+        /// <summary>
+        /// 初始化销售价目表DT
+        /// </summary>
+        private void OnInitializeSalesPricedt()
+        {
+            task.TaskId = "5.6";
+            task.StartTask();
+            _salesPricedt = task.ResultTable;
+        }
+
+        /// <summary>
+        /// 初始化采购入库单DT-(毛利润报表使用)
+        /// </summary>
+        private void OnInitializePurchaseInstockDt()
+        {
+            task.TaskId = "5.7";
+            task.StartTask();
+            _purchaseInstockDt = task.ResultTable;
+        }
+
+        /// <summary>
+        /// 初始化人工制造费用DT
+        /// </summary>
+        private void OnInitializeRenCostDt()
+        {
+            task.TaskId = "5.8";
+            task.StartTask();
+            _renCostDt = task.ResultTable;
         }
 
         /// <summary>

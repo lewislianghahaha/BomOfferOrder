@@ -181,6 +181,36 @@ namespace BomOfferOrder.Task
             return UseSqlSearchIntoDt(0, _sqlscript);
         }
 
+        /// <summary>
+        /// 查询销售价目表相关
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchSalesPriceDt()
+        {
+            _sqlscript = sqlList.SearchSalesInstock();
+            return UseSqlSearchIntoDt(0, _sqlscript);
+        }
+
+        /// <summary>
+        /// 查询采购入库单相关-(毛利润报表生成使用)
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchPurchaseInstockDt()
+        {
+            _sqlscript = sqlList.SearchPurchase();
+            return UseSqlSearchIntoDt(0, _sqlscript);
+        }
+
+        /// <summary>
+        /// 查询人工制造费用相关
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchRenCostDt()
+        {
+            _sqlscript = sqlList.SearchRenCost();
+            return UseSqlSearchIntoDt(1,_sqlscript);
+        }
+
         //////////////////////////////////////////////////主窗体及查询端使用//////////////////////////////////////////////////////////
 
         /// <summary>

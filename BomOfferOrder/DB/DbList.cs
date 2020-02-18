@@ -692,7 +692,7 @@ namespace BomOfferOrder.DB
         public DataTable MarkMaterialReportTemp()
         {
             var dt=new DataTable();
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var dc = new DataColumn();
 
@@ -727,6 +727,26 @@ namespace BomOfferOrder.DB
                     case 5:
                         dc.ColumnName = "重量";
                         dc.DataType = Type.GetType("System.Decimal"); 
+                        break;
+                    //罐/箱
+                    case 6:
+                        dc.ColumnName = "罐箱";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //分类
+                    case 7:
+                        dc.ColumnName = "分类";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //品类
+                    case 8:
+                        dc.ColumnName = "品类";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //销售计价单位
+                    case 9:
+                        dc.ColumnName = "销售计价单位";
+                        dc.DataType = Type.GetType("System.String");
                         break;
                 }
                 dt.Columns.Add(dc);
@@ -943,6 +963,142 @@ namespace BomOfferOrder.DB
                     case 1:
                         dc.ColumnName = "配方用量";
                         dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
+
+
+        /// <summary>
+        /// '产品成本毛利润表'最终输出临时表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable PrintProfitReportTempdt()
+        {
+            var dt=new DataTable();
+            for (var i = 0; i < 23; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    //物料编码
+                    case 0:
+                        dc.ColumnName = "物料编码";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //产品名称
+                    case 1:
+                        dc.ColumnName = "产品名称";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //规格型号
+                    case 2:
+                        dc.ColumnName = "规格型号";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //罐/箱
+                    case 3:
+                        dc.ColumnName = "罐箱";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //旧标准成本单价
+                    case 4:
+                        dc.ColumnName = "旧标准成本单价";
+                        dc.DataType = Type.GetType("System.Decimal"); 
+                        break;
+                    //标准成本单价
+                    case 5:
+                        dc.ColumnName = "标准成本单价";
+                        dc.DataType=Type.GetType("System.Decimal");
+                        break;
+                    //销售计价单位
+                    case 6:
+                        dc.ColumnName = "销售计价单位";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //销售价目表售价
+                    case 7:
+                        dc.ColumnName = "销售价目表售价";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //毛利润率
+                    case 8:
+                        dc.ColumnName = "毛利润率";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //计价成本
+                    case 9:
+                        dc.ColumnName = "计价成本";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //计价单位单位成本
+                    case 10:
+                        dc.ColumnName = "计价单位单位成本";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //计价单位单位成本(千克)
+                    case 11:
+                        dc.ColumnName = "计价单位单位成本(千克)";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //换算率(密度)
+                    case 12:
+                        dc.ColumnName = "换算率";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //重量
+                    case 13:
+                        dc.ColumnName = "重量";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //每公斤含税成本小计
+                    case 14:
+                        dc.ColumnName = "每公斤含税成本小计";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //每公斤材料成本单价
+                    case 15:
+                        dc.ColumnName = "每公斤材料成本单价";
+                        dc.DataType=Type.GetType("System.Decimal");
+                        break;
+                    //人工制造费用
+                    case 16:
+                        dc.ColumnName = "人工制造费用";
+                        dc.DataType=Type.GetType("System.Decimal");
+                        break;
+                    //包装罐
+                    case 17:
+                        dc.ColumnName = "包装罐";
+                        dc.DataType=Type.GetType("System.String");
+                        break;
+                    //包装罐单价
+                    case 18:
+                        dc.ColumnName = "包装罐单价";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //纸箱
+                    case 19:
+                        dc.ColumnName = "纸箱";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //纸箱单价
+                    case 20:
+                        dc.ColumnName = "纸箱单价";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //分类
+                    case 21:
+                        dc.ColumnName = "分类";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //品类
+                    case 22:
+                        dc.ColumnName = "品类";
+                        dc.DataType = Type.GetType("System.String");
                         break;
                 }
                 dt.Columns.Add(dc);
