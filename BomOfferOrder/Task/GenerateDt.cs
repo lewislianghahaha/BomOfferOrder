@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using BomOfferOrder.DB;
+using NPOI.SS.Formula.Functions;
 
 namespace BomOfferOrder.Task
 {
@@ -295,6 +296,20 @@ namespace BomOfferOrder.Task
                 //定义‘旧标准成本单价’
                 decimal oldtotalamount = 0;
 
+                //定义‘毛利润率’
+                string mao = string.Empty;
+                //定义‘计价成本’
+                decimal zichenbin = 0;
+                //定义‘每公斤含税成本小计’
+                decimal kgtotal = 0;
+                //定义‘计价单位成本(套/升/罐/桶)’
+                decimal price = 0;
+                //定义‘计价单位成本(KG)’
+                decimal pricekg = 0;
+                //定义‘每公斤材料成本单价’
+                decimal materialprice = 0;
+
+
                 //调用GenerateReportDt()用于获取‘标准成本单价’以及‘旧标准成本单价’
                 var tempdt = GenerateReportDt(sourcedt,bomdt,instockdt,priceListdt);
 
@@ -321,34 +336,56 @@ namespace BomOfferOrder.Task
 
                     //以rows.物料编码为条件,查询tempdt内的‘标准成本单价’以及‘旧标准成本单价’值
                     var dtlrows = tempdt.Select("物料编码='" + rows[1] + "'");
-                    oldtotalamount = Convert.ToDecimal(dtlrows[0][5]);
-                    totalamount = Convert.ToDecimal(dtlrows[0][6]);
+                    oldtotalamount = Convert.ToDecimal(dtlrows[0][5]);  //旧标准成本单价
+                    totalamount = Convert.ToDecimal(dtlrows[0][6]);     //标准成本单价
+
+                    //计算‘每公斤材料成本单价’=('旧标准成本单价'/'人工及制造费用')
+                    materialprice = rencost == Convert.ToDecimal(0)
+                        ? 0 : Convert.ToDecimal(decimal.Round(decimal.Round(oldtotalamount, 4) / decimal.Round(rencost, 4), 4));
+
+                    //计算‘每公斤含税成本小计’=('每公斤材料成本单价'+'人工及制造费用')
+                    kgtotal = materialprice + rencost;
+
+                    //计算‘计价单位单位成本(千克)’=(若计价单位为KG,使用‘人工及制造费用’;反之为空)
+                    pricekg = Convert.ToString(rows[9]) == "千克" ? rencost : Convert.ToDecimal(null);
+
+                    //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空,反之,使用‘换算率’*‘每公斤材料成本单价’)
+                    price = Convert.ToString(rows[9]) == "千克"
+                        ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4) * materialprice;
+
+                    //计算‘计价成本’=(若计价单位为KG,就取‘每公斤含税成本小计’值;反之,取'计价单位单位成本(套/升/罐/桶)'值)
+                    zichenbin = Convert.ToString(rows[9]) == "千克" ? kgtotal : price;
+
+                    //计算‘毛利润率’=((销售价目表售价-计价成本)/销售价目表售价*100)
+                    mao = salesprice == 0
+                        ? "" : Convert.ToString((decimal.Round(decimal.Round(salesprice, 4) - zichenbin / decimal.Round(salesprice, 4)*100,2))) + "%";
 
                     //最后将所有结果插入至resultdt内
                     var newrow = resultdt.NewRow();
-                    newrow[0] = rows[1];                    //物料编码
-                    newrow[1] = rows[2];                    //产品名称
-                    newrow[2] = rows[3];                    //规格型号
-                    newrow[3] = rows[6];                    //罐箱
-                    newrow[4] = oldtotalamount;             //旧标准成本单价
-                    newrow[5] = totalamount;                //标准成本单价
-                    newrow[6] = rows[9];                    //销售计价单位
-                    newrow[7] = salesprice;                 //销售价目表售价
-                    newrow[8] = DBNull.Value;               //毛利润率
-                    newrow[9] = DBNull.Value;               //计价成本
-                    newrow[10] = DBNull.Value;              //计价单位单位成本
-                    newrow[11] = DBNull.Value;              //计价单位单位成本(千克)
-                    newrow[12] = rows[4];                   //换算率
-                    newrow[13] = rows[5];                   //重量(净重)
-                    newrow[14] = DBNull.Value;              //每公斤含税成本小计
-                    newrow[15] = DBNull.Value;              //每公斤材料成本单价
-                    newrow[16] = rencost;                   //人工制造费用
-                    newrow[17] = guan;                      //包装罐
-                    newrow[18] = guanprice;                 //包装罐单价
-                    newrow[19] = box;                       //纸箱
-                    newrow[20] = boxprice;                  //纸箱单价
-                    newrow[21] = rows[7];                   //分类
-                    newrow[22] = rows[8];                   //品类
+                    newrow[0] = rows[1];                                       //物料编码
+                    newrow[1] = rows[2];                                       //产品名称
+                    newrow[2] = rows[3];                                       //规格型号
+                    newrow[3] = decimal.Round(Convert.ToDecimal(rows[6]),4);   //罐箱
+                    newrow[4] = oldtotalamount;                                //旧标准成本单价
+                    newrow[5] = totalamount;                                   //标准成本单价
+                    newrow[6] = rows[9];                                       //销售计价单位
+                    newrow[7] = decimal.Round(salesprice,4);                   //销售价目表售价
+                    newrow[8] = mao;                                           //毛利润率
+                    newrow[9] = zichenbin;                                     //计价成本
+                    newrow[10] = price;                                        //计价单位单位成本(套/升/罐/桶)
+                    newrow[11] = pricekg;                                      //计价单位单位成本(千克)
+
+                    newrow[12] = decimal.Round(Convert.ToDecimal(rows[4]),4);  //换算率
+                    newrow[13] = decimal.Round(Convert.ToDecimal(rows[5]),4);  //重量(净重)
+                    newrow[14] = kgtotal;                                      //每公斤含税成本小计
+                    newrow[15] = materialprice;                                //每公斤材料成本单价
+                    newrow[16] = decimal.Round(rencost,4);                     //人工及制造费用
+                    newrow[17] = guan;                                         //包装罐
+                    newrow[18] = decimal.Round(Convert.ToDecimal(guanprice),4);//包装罐单价
+                    newrow[19] = box;                                          //纸箱
+                    newrow[20] = decimal.Round(Convert.ToDecimal(boxprice),4); //纸箱单价
+                    newrow[21] = rows[7];                                      //分类
+                    newrow[22] = rows[8];                                      //品类
                     resultdt.Rows.Add(newrow);
                 }
             }
@@ -362,7 +399,7 @@ namespace BomOfferOrder.Task
 
         /// <summary>
         /// 计算销售价目表售价
-        /// 根据FMATERIALID查找出销售价目表‘价格’
+        /// 根据FMATERIALID查找出销售价目表‘价格’ 保留四位小数
         /// </summary>
         /// <param name="fmaterialid"></param>
         /// <param name="salespricedt"></param>
@@ -429,7 +466,7 @@ namespace BomOfferOrder.Task
             //typeid=0 获取罐信息 1 获取包装箱信息
             //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'T','WSX'就获取其对应的‘表体物料ID’
             //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'ZX','WZX'就获取其对应的‘表体物料ID’
-            var dtlrows = typeid==0 ? bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%T%' or 物料编码 like '%WSX%') ") : 
+            var dtlrows = typeid == 0 ? bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%T%' or 物料编码 like '%WSX%') ") : 
                                   bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%ZX%' or 物料编码 like '%WZX%') ");
 
             if (dtlrows.Length == 0)

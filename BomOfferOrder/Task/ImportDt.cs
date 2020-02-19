@@ -511,7 +511,19 @@ namespace BomOfferOrder.Task
             var dt=new DataTable();
 
             //创建表标题-根据reporttype不同而改变
-            dt = reporttype == "0" ? dbList.ImportExcelTempdt() : dbList.ImportBomExcelTempdt();
+            switch (reporttype)
+            {
+                case "0":
+                    dt = dbList.ImportExcelTempdt();
+                    break;
+                case "1":
+                    dt = dbList.ImportBomExcelTempdt();
+                    break;
+                default:
+                    dt = dbList.ImportProfitExcelTempdt();
+                    break;
+            }
+            //dt = reporttype == "0" ? dbList.ImportExcelTempdt() : dbList.ImportBomExcelTempdt();
 
             using (var fsRead = File.OpenRead(fileAddress))
             {

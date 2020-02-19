@@ -893,7 +893,7 @@ namespace BomOfferOrder.DB
         }
 
         /// <summary>
-        ///  导入EXCEL临时表-报表使用
+        ///  导入EXCEL临时表-批量成本报表使用
         /// </summary>
         /// <returns></returns>
         public DataTable ImportExcelTempdt()
@@ -970,7 +970,34 @@ namespace BomOfferOrder.DB
             return dt;
         }
 
+        /// <summary>
+        /// 导入EXCEL临时表-毛利润报表使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable ImportProfitExcelTempdt()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 2; i++)
+            {
+                var dc=new DataColumn();
 
+                switch (i)
+                {
+                    //物料编码
+                    case 0:
+                        dc.ColumnName = "物料编码";
+                        dc.DataType=Type.GetType("System.String");
+                        break;
+                    //物料名称
+                    case 1:
+                        dc.ColumnName = "物料名称";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
 
         /// <summary>
         /// '产品成本毛利润表'最终输出临时表
@@ -990,9 +1017,9 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "物料编码";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    //产品名称
+                    //物料名称
                     case 1:
-                        dc.ColumnName = "产品名称";
+                        dc.ColumnName = "物料名称";
                         dc.DataType = Type.GetType("System.String");
                         break;
                     //规格型号
@@ -1042,7 +1069,7 @@ namespace BomOfferOrder.DB
                         break;
                     //计价单位单位成本(千克)
                     case 11:
-                        dc.ColumnName = "计价单位单位成本(千克)";
+                        dc.ColumnName = "计价单位单位成本KG";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     //换算率(密度)
@@ -1065,9 +1092,9 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "每公斤材料成本单价";
                         dc.DataType=Type.GetType("System.Decimal");
                         break;
-                    //人工制造费用
+                    //人工及制造费用
                     case 16:
-                        dc.ColumnName = "人工制造费用";
+                        dc.ColumnName = "人工及制造费用";
                         dc.DataType=Type.GetType("System.Decimal");
                         break;
                     //包装罐

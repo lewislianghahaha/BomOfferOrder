@@ -510,6 +510,7 @@ namespace BomOfferOrder.UI
                             newrow[6] = rows[6];         //罐箱
                             newrow[7] = rows[7];         //分类
                             newrow[8] = rows[8];         //品类
+                            newrow[9] = rows[9];         //销售计价单位
                             materialdt.Rows.Add(newrow);
                         }
                     }
@@ -537,7 +538,6 @@ namespace BomOfferOrder.UI
                     new Thread(Start).Start();
                     load.StartPosition = FormStartPosition.CenterScreen;
                     load.ShowDialog();
-
 
                     if (task.ResultTable.Rows.Count == 0) throw new Exception("导出异常,请联系管理员");
                     //调用STI模板并执行导出代码

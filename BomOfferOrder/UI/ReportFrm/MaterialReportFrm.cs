@@ -193,7 +193,7 @@ namespace BomOfferOrder.UI.ReportFrm
 
                 task.TaskId = "6.1";
                 task.FileAddress = openFileDialog.FileName;
-                task.Reporttype = "2";  //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用  2:毛利润报表使用)
+                task.Reporttype = "2";  //导入EXCEL时的类型(0:批量成本报表功能使用  1:BOM物料明细使用  2:毛利润报表使用)
                 task.StartTask();
 
                 //通过_materialdt循环获取其对应的FMATERIALID
