@@ -344,21 +344,21 @@ namespace BomOfferOrder.Task
                         ? 0 : Convert.ToDecimal(decimal.Round(decimal.Round(oldtotalamount, 4) / decimal.Round(rencost, 4), 4));
 
                     //计算‘每公斤含税成本小计’=('每公斤材料成本单价'+'人工及制造费用')
-                    kgtotal = materialprice + rencost;
+                    kgtotal = decimal.Round(materialprice + rencost,4);
 
                     //计算‘计价单位单位成本(千克)’=(若计价单位为KG,使用‘人工及制造费用’;反之为空)
                     pricekg = Convert.ToString(rows[9]) == "千克" ? rencost : Convert.ToDecimal(null);
 
                     //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空,反之,使用‘换算率’*‘每公斤材料成本单价’)
                     price = Convert.ToString(rows[9]) == "千克"
-                        ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4) * materialprice;
+                        ? 0 : decimal.Round(decimal.Round(Convert.ToDecimal(rows[4]), 4) * materialprice,4);
 
                     //计算‘计价成本’=(若计价单位为KG,就取‘每公斤含税成本小计’值;反之,取'计价单位单位成本(套/升/罐/桶)'值)
                     zichenbin = Convert.ToString(rows[9]) == "千克" ? kgtotal : price;
 
                     //计算‘毛利润率’=((销售价目表售价-计价成本)/销售价目表售价*100)
                     mao = salesprice == 0
-                        ? "" : Convert.ToString((decimal.Round(decimal.Round(salesprice, 4) - zichenbin / decimal.Round(salesprice, 4)*100,2))) + "%";
+                        ? "" : Convert.ToString(decimal.Round((salesprice - zichenbin) / salesprice * 100,2)) + "%";
 
                     //最后将所有结果插入至resultdt内
                     var newrow = resultdt.NewRow();
@@ -373,7 +373,7 @@ namespace BomOfferOrder.Task
                     newrow[8] = mao;                                           //毛利润率
                     newrow[9] = zichenbin;                                     //计价成本
                     newrow[10] = price;                                        //计价单位单位成本(套/升/罐/桶)
-                    newrow[11] = pricekg;                                      //计价单位单位成本(千克)
+                    newrow[11] = decimal.Round(pricekg,4);                     //计价单位单位成本(千克)
 
                     newrow[12] = decimal.Round(Convert.ToDecimal(rows[4]),4);  //换算率
                     newrow[13] = decimal.Round(Convert.ToDecimal(rows[5]),4);  //重量(净重)
@@ -416,7 +416,7 @@ namespace BomOfferOrder.Task
             //注:当行数超过1行时,就要取第一行的值
             else if (dtlrow.Length >=1)
             {
-                result = Convert.ToDecimal(dtlrow[0][2]);
+                result = decimal.Round(Convert.ToDecimal(dtlrow[0][2]),4);
             }
             return result;
         }
@@ -494,8 +494,26 @@ namespace BomOfferOrder.Task
         {
             decimal result = 0;
             //以‘品类’及‘分类’为条件并使用人工及制造费用DT进行查询
-            var dtlrow = rencostdt.Select("品类='" + classtype + "' and 分类='" + sorttype + "'");
-            result = dtlrow.Length == 0 ? 0 : Convert.ToDecimal(dtlrow[0][2]);
+            //注:判断顺序=>1)将‘品类’以及‘分类’进行合并判断 2)若第一点没有的话再使用‘品类’进行判断 3)若第二点没有的话再用‘分类’进行判断,没有就为0显示
+            //注:若出现多行,取第一行值
+            var dtlrows = rencostdt.Select("品类='" + classtype + "' and 分类='" + sorttype + "'");
+            if (dtlrows.Length == 0)
+            {
+                var dtclassrows = rencostdt.Select("品类='" + classtype + "'");
+                if (dtclassrows.Length == 0)
+                {
+                    var dtfenrows = rencostdt.Select("分类='" + sorttype + "'");
+                    result = dtfenrows.Length == 0 ? 0 : Convert.ToDecimal(dtfenrows[0][2]);
+                }
+                else
+                {
+                    result = Convert.ToDecimal(dtclassrows[0][2]);
+                }
+            }
+            else
+            {
+                result = Convert.ToDecimal(dtlrows[0][2]);
+            }
             return result;
         }
 
