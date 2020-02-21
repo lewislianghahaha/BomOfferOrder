@@ -686,7 +686,6 @@ namespace BomOfferOrder.UI
                         resultdt.Rows.Add(newrow);
                     }
                 }
-                
             }
             catch (Exception)
             {
@@ -704,7 +703,7 @@ namespace BomOfferOrder.UI
             gvdtl.Columns[0].Visible = false;      //EntryID
             gvdtl.Columns[1].Visible = false;     //物料ID
             gvdtl.Columns[2].ReadOnly = true;    //物料编码
-            gvdtl.Columns[5].ReadOnly = true;   //占比
+            gvdtl.Columns[5].Visible = false;   //占比(不显示)
             gvdtl.Columns[7].ReadOnly = true;  //物料成本(含税)
         }
 

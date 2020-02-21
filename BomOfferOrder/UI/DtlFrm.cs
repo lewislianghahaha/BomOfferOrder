@@ -42,6 +42,8 @@ namespace BomOfferOrder.UI
         private DataTable _historydt;
         //获取K3客户信息
         private DataTable _custinfodt;
+        //定义关闭符号的宽
+        const int CloseSize = 11;
         #endregion
 
         #region Set
@@ -66,6 +68,8 @@ namespace BomOfferOrder.UI
             this.FormClosing += DtlFrm_FormClosing;
             tmaddpage.Click += Tmaddpage_Click;
             tctotalpage.SelectedIndexChanged += Tctotalpage_SelectedIndexChanged;
+            tctotalpage.DrawItem += Tctotalpage_DrawItem;
+            tctotalpage.MouseDown += Tctotalpage_MouseDown;
         }
 
         /// <summary>
@@ -322,7 +326,7 @@ namespace BomOfferOrder.UI
             newpage.Controls.Add(showDetailFrm);    //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);      //将新创建的Tab Page添加至TabControl控件内
             //若使用的功能是‘空白报价单’,就以最后一页为最新页,其它就是首页为最新页
-            tctotalpage.SelectedIndex = GlobalClasscs.Fun.EmptyFunctionName != "" ? 
+            tctotalpage.SelectedIndex = GlobalClasscs.Fun.EmptyFunctionName == "E" ? 
                                         tctotalpage.TabCount - 1 : 0;
         }
 
@@ -345,9 +349,9 @@ namespace BomOfferOrder.UI
                         tctotalpage.TabPages[i].Text = showdetail.txtname.Text;
                     }
                 }
-
                 //执行新增
                 var tabname = "新页" + Convert.ToString(tctotalpage.TabCount+1);
+                //生成Tab page及对应的ShowDetailFrm
                 CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt);
                 //权限控制
                 PrivilegeControl();
@@ -355,6 +359,100 @@ namespace BomOfferOrder.UI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 对TABPAGE页画‘关闭’按钮(注:当TabControl需要绘制它的每一个选项卡时发生,直至跳出整个应用程序)
+        /// 注:只有在‘空白报价单’功能时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tctotalpage_DrawItem(object sender, DrawItemEventArgs e)
+        {
+
+            //执行顺序:先画一个矩形框,再填充矩形框,最后画关闭符号
+            var myTab = tctotalpage.GetTabRect(e.Index);
+
+            //设置当读取至Index=0 即首页时,就不需要画‘X’关闭图标,其它就需要(注:除‘空白报价单’外的功能不需画‘X’)
+            if (e.Index == 0 && GlobalClasscs.Fun.EmptyFunctionName != "E")
+            {
+                //先添加TabPage属性
+                var sf = new StringFormat
+                {
+                    LineAlignment = StringAlignment.Center, //设置选项卡名称 垂直居中
+                    Alignment = StringAlignment.Center      //设置选项卡名称 水平居中 
+                };
+                e.Graphics.DrawString(tctotalpage.TabPages[e.Index].Text, Font, SystemBrushes.ControlText, myTab, sf);
+            }
+            else
+            {
+                //先添加TabPage属性
+                e.Graphics.DrawString(tctotalpage.TabPages[e.Index].Text, Font, SystemBrushes.ControlText, myTab.X + 3, myTab.Y + 3);
+
+                    //再画一个矩形框
+                    using (Pen p = new Pen(Color.White))
+                    {
+                        myTab.Offset((myTab.Width - (CloseSize + 3)), 2);
+                        myTab.Width = CloseSize;
+                        myTab.Height = CloseSize;
+                        e.Graphics.DrawRectangle(p, myTab);
+                    }
+                    //填充
+                    Color recColor = e.State == DrawItemState.Selected ? Color.Brown : Color.Beige;
+                    using (Brush b = new SolidBrush(recColor))
+                    {
+                        e.Graphics.FillRectangle(b, myTab);
+                    }
+
+                    //画关闭符号
+                    using (Pen objpen = new Pen(Color.Black))
+                    {
+                        //'\'线
+                        Point p1 = new Point(myTab.X + 3, myTab.Y + 3);
+                        Point p2 = new Point(myTab.X + myTab.Width - 3, myTab.Y + myTab.Height - 3);
+                        e.Graphics.DrawLine(objpen, p1, p2);
+                        //'/'线
+                        Point p3 = new Point(myTab.X + 3, myTab.Y + myTab.Height - 3);
+                        Point p4 = new Point(myTab.X + myTab.Width - 3, myTab.Y + 3);
+                        e.Graphics.DrawLine(objpen, p3, p4);
+                    }
+                }
+                e.Graphics.Dispose();
+        }
+
+        /// <summary>
+        /// 控制当点击‘关闭’按钮时将TABPAGE 页面关闭
+        /// 注:只有在‘空白报价单’功能时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tctotalpage_MouseDown(object sender, MouseEventArgs e)
+        {
+            //当使用Mouse左键点击 及只有在‘空白报价单’功能时执行
+            if (e.Button == MouseButtons.Left && GlobalClasscs.Fun.EmptyFunctionName == "E")
+            {
+                int x = e.X, y = e.Y;
+                //计算关闭区域
+                Rectangle mytab = this.tctotalpage.GetTabRect(this.tctotalpage.SelectedIndex);
+
+                mytab.Offset(mytab.Width - (CloseSize + 3), 2);
+                mytab.Width = CloseSize;
+                mytab.Height = CloseSize;
+
+                //如果Mouse在区域内就关闭选项卡
+                var isClose = x > mytab.X && x < mytab.Right && y > mytab.Y && y < mytab.Bottom;
+
+                if (isClose)
+                {
+                    var id = tctotalpage.SelectedIndex;
+                    this.tctotalpage.TabPages.Remove(this.tctotalpage.SelectedTab);
+                    //当完成‘关闭’后,将当前页设置为'关闭'页的‘前一页’(注:若不这样设置,当关闭后会返回当前页为'首页',当id>0时才执行)
+                    if (id > 0)
+                    {
+                        tctotalpage.SelectedTab = tctotalpage.TabPages[id - 1];
+                    }
+                }
             }
         }
 

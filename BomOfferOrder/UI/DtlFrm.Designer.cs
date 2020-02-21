@@ -32,13 +32,13 @@
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.tmConfirm = new System.Windows.Forms.ToolStripMenuItem();
             this.tmsave = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmaddpage = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pbimg = new System.Windows.Forms.PictureBox();
             this.txtbom = new System.Windows.Forms.TextBox();
             this.lblmessage = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
-            this.tmaddpage = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
@@ -67,6 +67,13 @@
             this.tmsave.Name = "tmsave";
             this.tmsave.Size = new System.Drawing.Size(44, 21);
             this.tmsave.Text = "提交";
+            // 
+            // tmaddpage
+            // 
+            this.tmaddpage.Name = "tmaddpage";
+            this.tmaddpage.Size = new System.Drawing.Size(68, 21);
+            this.tmaddpage.Text = "添加新页";
+            this.tmaddpage.Visible = false;
             // 
             // panel1
             // 
@@ -118,18 +125,12 @@
             // tctotalpage
             // 
             this.tctotalpage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tctotalpage.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tctotalpage.Location = new System.Drawing.Point(0, 54);
             this.tctotalpage.Name = "tctotalpage";
             this.tctotalpage.SelectedIndex = 0;
             this.tctotalpage.Size = new System.Drawing.Size(854, 497);
             this.tctotalpage.TabIndex = 2;
-            // 
-            // tmaddpage
-            // 
-            this.tmaddpage.Name = "tmaddpage";
-            this.tmaddpage.Size = new System.Drawing.Size(68, 21);
-            this.tmaddpage.Text = "添加新页";
-            this.tmaddpage.Visible = false;
             // 
             // DtlFrm
             // 

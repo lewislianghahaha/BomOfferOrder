@@ -486,7 +486,7 @@ namespace BomOfferOrder.UI
                         }
                     }
                     //表示执行生成'毛利润报表'
-                    else if (materialReportFrm.Reporttypeid==2)
+                    else if (materialReportFrm.Reporttypeid == 2)
                     {
                         //循环从EXCEL导入的物料DT
                         foreach (DataRow rows in materialReportFrm.ResultTable.Rows)
