@@ -374,8 +374,8 @@ namespace BomOfferOrder.UI
             //执行顺序:先画一个矩形框,再填充矩形框,最后画关闭符号
             var myTab = tctotalpage.GetTabRect(e.Index);
 
-            //设置当读取至Index=0 即首页时,就不需要画‘X’关闭图标,其它就需要(注:除‘空白报价单’外的功能不需画‘X’)
-            if (e.Index == 0 && GlobalClasscs.Fun.EmptyFunctionName != "E")
+            //设置除‘空白报价单’外的功能就不需要画‘X’关闭图标
+            if (/*e.Index == 0 &&*/ GlobalClasscs.Fun.EmptyFunctionName != "E")
             {
                 //先添加TabPage属性
                 var sf = new StringFormat
@@ -399,7 +399,7 @@ namespace BomOfferOrder.UI
                         e.Graphics.DrawRectangle(p, myTab);
                     }
                     //填充
-                    Color recColor = e.State == DrawItemState.Selected ? Color.Brown : Color.Beige;
+                    Color recColor = e.State == DrawItemState.Selected ? Color.CornflowerBlue : Color.Beige;
                     using (Brush b = new SolidBrush(recColor))
                     {
                         e.Graphics.FillRectangle(b, myTab);
