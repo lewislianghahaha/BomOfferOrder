@@ -27,6 +27,8 @@ namespace BomOfferOrder.UI
         private DataTable _custinfo;
         //保存需要进行删除的行记录(提交时使用) 注:状态为R读取时才适用
         private DataTable _deldt;
+        //获取采购价目表DT
+        private DataTable _pricelistdt;
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
@@ -374,7 +376,6 @@ namespace BomOfferOrder.UI
         }
 
 
-
         /// <summary>
         /// 将相关值根据获取过来的DT填充至对应的项内
         /// </summary>
@@ -383,7 +384,8 @@ namespace BomOfferOrder.UI
         /// <param name="materialdt">原材料 ‘原漆半成品’‘产成品’DT</param>
         /// <param name="historydt">新产品报价单历史记录DT</param>
         /// <param name="custinfodt">记录K3客户列表DT</param>
-        public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt)
+        /// <param name="pricelistdt">采购价目表DT-BOM物料-物料单价使用</param>
+        public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt,DataTable pricelistdt)
         {
             //将‘原材料’‘原漆半成品’‘产成品’DT赋值至变量内
             _materialdt = materialdt;
@@ -391,6 +393,8 @@ namespace BomOfferOrder.UI
             _historydt = historydt;
             //将‘K3-客户信息’DT赋值至变量内
             _custinfo = custinfodt;
+            //初始化获取采购价目表DT
+            _pricelistdt = pricelistdt;
 
             try
             {
@@ -418,6 +422,19 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 计算BOM物料明细内的‘物料单价’
+        /// </summary>
+        /// <param name="fmaterialid"></param>
+        /// <returns></returns>
+        private decimal GenerateMaterialPrice(int fmaterialid)
+        {
+            //使用_pricelistdt查询出对应的‘单价’值
+            var dtlrows = _pricelistdt.Select("子项物料内码='" + fmaterialid + "'");
+            var result = dtlrows.Length == 0 ? 0 : decimal.Round(Convert.ToDecimal(dtlrows[0][1]),4);
+            return result;
+        }
+
+        /// <summary>
         /// 导入物料明细记录
         /// </summary>
         private void ImportExcelRecordToBom()
@@ -436,15 +453,15 @@ namespace BomOfferOrder.UI
                     {
                         for (var i = dt.Rows.Count; i >0; i--)
                         {
-                            //若'物料名称'相同,即更新‘配方用量’,在更新完成后,将dt此行记录删除
+                            //若'物料名称'相同,即更新‘配方用量’‘物料单价()’‘物料成本()’,在更新完成后,将dt此行记录删除
                             if (Convert.ToString(dt.Rows[i - 1][3]) == Convert.ToString(rows[3]))
                             {
-                                //更新‘配方用量’
+                                //更新‘配方用量’及'物料'
                                 _dtl.BeginInit();
                                 rows[4] = dt.Rows[i - 1][4];                           //配方用量
-                                rows[5] = Convert.ToDecimal(dt.Rows[i - 1][4]) * 100;  //占比=配方用量*100
-                                rows[6] = DBNull.Value;                                //物料单价(含税)
-                                rows[7] = DBNull.Value;                                //物料成本(含税)
+                                rows[5] = Convert.ToDecimal(dt.Rows[i - 1][5]);        //占比=配方用量*100
+                                rows[6] = Convert.ToDecimal(dt.Rows[i - 1][6]);        //物料单价(含税)
+                                rows[7] = Convert.ToDecimal(dt.Rows[i - 1][7]);        //物料成本(含税)
                                 _dtl.EndInit();
                                 //删除dt行
                                 dt.Rows.RemoveAt(i-1);
@@ -489,6 +506,7 @@ namespace BomOfferOrder.UI
                 string fmaterialcode;              //物料编码
                 string fmaterialname;              //物料名称
                 decimal peiqty = 0;                //配方用量
+                decimal price = 0;                 //物料单价
                 //定义‘物料编码’为空对应的FMATERIALID最大值
                 var maxFmaterialid = 0;
 
@@ -522,17 +540,19 @@ namespace BomOfferOrder.UI
                         fmaterialcode = Convert.ToString(dtlrow[0][1]);
                         fmaterialname = Convert.ToString(rows[0]);
                         peiqty = Convert.ToDecimal(rows[1]);
+                        //根据FMATERIALID计算其对应的‘物料单价’
+                        price = GenerateMaterialPrice(fmaterialid);
                     }
 
                     var newrow = resultdt.NewRow();
-                    newrow[0] = DBNull.Value;                    //EntryId
-                    newrow[1] = fmaterialid;                     //物料编码ID
-                    newrow[2] = fmaterialcode;                   //物料编码
-                    newrow[3] = fmaterialname;                   //物料名称
-                    newrow[4] = peiqty;                          //配方用量
-                    newrow[5] = Convert.ToDecimal(peiqty) * 100; //占比=配方用量*100
-                    newrow[6] = DBNull.Value;                    //物料单价(含税)
-                    newrow[7] = DBNull.Value;                    //物料成本(含税)
+                    newrow[0] = DBNull.Value;                           //EntryId
+                    newrow[1] = fmaterialid;                            //物料编码ID
+                    newrow[2] = fmaterialcode;                          //物料编码
+                    newrow[3] = fmaterialname;                          //物料名称
+                    newrow[4] = peiqty;                                 //配方用量
+                    newrow[5] = Convert.ToDecimal(peiqty) * 100;        //占比=配方用量*100
+                    newrow[6] = price;                                  //物料单价(含税)
+                    newrow[7] = decimal.Round(peiqty / 100 * price,4);  //物料成本(含税) 公式:配方用量/100*物料单价
                     resultdt.Rows.Add(newrow);
                 }
             }
@@ -961,7 +981,7 @@ namespace BomOfferOrder.UI
             try
             {
                 //将GridView内的内容赋值到DT
-                var gridViewdt = _dtl;//(DataTable)gvdtl.DataSource;
+                var gridViewdt = _dtl;   //(DataTable)gvdtl.DataSource;
 
                 //循环将获取过来的值插入至GridView内
                 foreach (DataRow rows in sourcedt.Rows)
@@ -970,11 +990,11 @@ namespace BomOfferOrder.UI
                     if(gridViewdt.Select("物料编码ID='" + rows[1] + "'").Length>0) continue;
 
                     var newrow = gridViewdt.NewRow();
-                    newrow[1] = rows[1];        //物料编码ID
-                    newrow[2] = rows[2];        //物料编码
-                    newrow[3] = rows[3];        //物料名称
-                    newrow[6] = rows[5];        //物料单价
-                    newrow[7] = 0;              //物料成本(设置为0)
+                    newrow[1] = rows[1];                                          //物料编码ID
+                    newrow[2] = rows[2];                                          //物料编码
+                    newrow[3] = rows[3];                                          //物料名称
+                    newrow[6] = GenerateMaterialPrice(Convert.ToInt32(rows[1]));  //物料单价 rows[5]
+                    newrow[7] = 0;                                                //物料成本(设置为0)
                     gridViewdt.Rows.Add(newrow);
                 }
                 //操作完成后进行刷新
@@ -1016,7 +1036,7 @@ namespace BomOfferOrder.UI
                     rows[3] = sourcedt.Rows[0][3];  //物料名称
                     rows[4] = DBNull.Value;         //配方用量(清空)
                     rows[5] = DBNull.Value;         //占比(清空)
-                    rows[6] = sourcedt.Rows[0][5];  //物料单价
+                    rows[6] = GenerateMaterialPrice(Convert.ToInt32(sourcedt.Rows[0][1])); //物料单价 sourcedt.Rows[0][5];
                     rows[7] = 0;                    //物料成本(设置为0)
                     gridViewdt.EndInit();
                 }
@@ -1060,7 +1080,7 @@ namespace BomOfferOrder.UI
                     //->change date:20191214:当发现所输入的物料名称没有在_materialdt存在时,不作异常提示,而是可正常输入,但FMATERIALID从0开始,并且‘物料名称’为空
                     if (dtlrows.Length == 0)
                     {
-                        GetMaterialDeatail(materialid,materialname,dtlrows);
+                        GetMaterialDeatail(materialid , materialname , dtlrows);
                         #region Hide
                         //if (_dtl.Rows.Count == 0)
                         //{
@@ -1163,10 +1183,10 @@ namespace BomOfferOrder.UI
             {
                 //将相关结果插入至resultTable内
                 var newrow = resultTable.NewRow();
-                newrow[1] = dtlrows[0][0];  //物料编码ID
-                newrow[2] = dtlrows[0][1];  //物料编码
-                newrow[3] = dtlrows[0][2];  //物料名称
-                newrow[6] = dtlrows[0][6];  //物料单价
+                newrow[1] = dtlrows[0][0];   //物料编码ID
+                newrow[2] = dtlrows[0][1];   //物料编码
+                newrow[3] = dtlrows[0][2];   //物料名称
+                newrow[6] = dtlrows[0][6];   //物料单价 
                 resultTable.Rows.Add(newrow);
 
                 //执行插入(FMATERIALID为空时表示新行,需插入)

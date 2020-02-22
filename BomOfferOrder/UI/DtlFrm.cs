@@ -42,6 +42,8 @@ namespace BomOfferOrder.UI
         private DataTable _historydt;
         //获取K3客户信息
         private DataTable _custinfodt;
+        ///保存采购价目表DT(BOM明细中各物料的‘物料单价’使用)
+        private DataTable _pricelistdt;
         //定义关闭符号的宽
         const int CloseSize = 11;
         #endregion
@@ -75,7 +77,9 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 初始化记录
         /// </summary>
-        public void OnInitialize(DataTable bomdt)
+        /// <param name="bomdt">BOM DT</param>
+        /// <param name="priceListdt">采购价目表DT</param>
+        public void OnInitialize(DataTable bomdt,DataTable priceListdt)
         {
             //初始化获取‘原材料’‘原漆半成品’‘原漆’等物料明细信息(注:添加物料明细窗体使用)
             _materialdt = OnInitializeMaterialDt();
@@ -83,6 +87,8 @@ namespace BomOfferOrder.UI
             _historydt = OnInitializeHistoryDt();
             //初始化获取K3客户信息
             _custinfodt = OnInitializeK3CustinfoDt();
+            //初始化获取采购价目表DT
+            _pricelistdt = priceListdt;
 
             //单据状态:创建 C
             if (_funState=="C")
@@ -150,7 +156,7 @@ namespace BomOfferOrder.UI
                     dt.Rows.Add(newrow);
                     tabname = Convert.ToString(rows[2]);
                     //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, dt, _materialdt,_historydt,_custinfodt);
+                    CreateDetailFrm(tabname, dt, _materialdt,_historydt,_custinfodt, _pricelistdt);
                     //当生成完成后将dt清空内容,待下一次使用
                     dt.Rows.Clear();
                 }
@@ -169,11 +175,11 @@ namespace BomOfferOrder.UI
             try
             {
                 //生成Tab Page及ShowDetailFrm
-                CreateDetailFrm("",null,_materialdt,_historydt,_custinfodt);
+                CreateDetailFrm("",null,_materialdt,_historydt,_custinfodt, _pricelistdt);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -214,7 +220,7 @@ namespace BomOfferOrder.UI
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                        CreateDetailFrm(tabname,dt,_materialdt,_historydt,_custinfodt);
+                        CreateDetailFrm(tabname,dt,_materialdt,_historydt,_custinfodt, _pricelistdt);
                         //当生成完成后将dt清空内容,待下一次使用
                         dt.Rows.Clear();
                     }
@@ -230,7 +236,7 @@ namespace BomOfferOrder.UI
         /// 读取记录时使用
         /// </summary>
         /// <param name="sourcedt">数据源DT</param>
-        void ReadDetail(DataTable sourcedt)
+        private void ReadDetail(DataTable sourcedt)
         {
             //创建产成品名称临时表
             var bomproductorderdt = dbList.CreateBomProductTemp();
@@ -293,7 +299,7 @@ namespace BomOfferOrder.UI
                         bomdtldt.Rows.Add(newrow);
                     }
                     //将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, bomdtldt, _materialdt,_historydt,_custinfodt);
+                    CreateDetailFrm(tabname, bomdtldt, _materialdt,_historydt,_custinfodt,null);
                     //当生成完成后将bomdtldtdt清空内容,待下一次使用
                     bomdtldt.Rows.Clear();
                 }
@@ -309,7 +315,7 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 生成Tab page及对应的ShowDetailFrm
         /// </summary>
-        private void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt)
+        private void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt,DataTable pricelistdt)
         {
             var newpage = new TabPage {Text = $"{tabname}"};
 
@@ -321,7 +327,7 @@ namespace BomOfferOrder.UI
                 FormBorderStyle = FormBorderStyle.None
             };
             //对ShowDetailFrm赋值
-            showDetailFrm.AddDbToFrm(_funState,dt,materialdt, historydt,custinfodt);
+            showDetailFrm.AddDbToFrm(_funState,dt,materialdt, historydt,custinfodt, pricelistdt);
             showDetailFrm.Show();                   //注:只能使用Show()
             newpage.Controls.Add(showDetailFrm);    //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);      //将新创建的Tab Page添加至TabControl控件内
@@ -352,7 +358,7 @@ namespace BomOfferOrder.UI
                 //执行新增
                 var tabname = "新页" + Convert.ToString(tctotalpage.TabCount+1);
                 //生成Tab page及对应的ShowDetailFrm
-                CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt);
+                CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt,_pricelistdt);
                 //权限控制
                 PrivilegeControl();
             }

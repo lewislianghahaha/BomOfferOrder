@@ -17,10 +17,13 @@ namespace BomOfferOrder.UI
 
         #region 变量参数
         //保存BOM明细DT(生成时使用)
-        private DataTable _bomdt = new DataTable();
+        private DataTable _bomdt;
 
         //保存GridView内需要进行添加的临时表
-        private DataTable _adddt = new DataTable();
+        private DataTable _adddt;
+
+        //保存采购价目表DT
+        private DataTable _pricelistdt;
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
@@ -40,6 +43,10 @@ namespace BomOfferOrder.UI
             /// 保存BOM明细DT(生成时使用)
             /// </summary>
             public DataTable Bomdt { set { _bomdt = value; } }
+            /// <summary>
+            /// 保存采购价目表DT
+            /// </summary>
+            public DataTable Pricelistdt { set { _pricelistdt = value; } }
         #endregion
 
 
@@ -244,7 +251,7 @@ namespace BomOfferOrder.UI
                     {
                         //弹出对应窗体相关设置
                         dtlFrm.FunState = "C";
-                        dtlFrm.OnInitialize(task.ResultTable);     //初始化信息
+                        dtlFrm.OnInitialize(task.ResultTable,_pricelistdt);     //初始化信息
                         dtlFrm.StartPosition = FormStartPosition.CenterParent;
                         dtlFrm.ShowDialog();
                     }
@@ -277,7 +284,7 @@ namespace BomOfferOrder.UI
                 {
                     //弹出对应窗体相关设置
                     dtlFrm.FunState = "C";
-                    dtlFrm.OnInitialize((DataTable)gvdtl.DataSource);     //初始化信息
+                    dtlFrm.OnInitialize((DataTable)gvdtl.DataSource,_pricelistdt);     //初始化信息
                     dtlFrm.StartPosition = FormStartPosition.CenterParent;
                     dtlFrm.ShowDialog();
                 }

@@ -23,7 +23,7 @@ namespace BomOfferOrder.UI
         private DataTable _bomdt;
         //保存采购入库单相关DT(报表-旧标准成本单价使用)
         private DataTable _instockdt;
-        //保存采购价目表DT(报表功能使用)
+        //保存采购价目表DT(报表功能及BOM明细中各物料的‘物料单价’使用)
         private DataTable _pricelistdt;
         //保存销售价目表DT(毛利润报表使用)
         private DataTable _salesPricedt;
@@ -291,7 +291,7 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                dtlFrm.OnInitialize(task.ResultTable);     
+                dtlFrm.OnInitialize(task.ResultTable, null);     
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }
@@ -420,7 +420,7 @@ namespace BomOfferOrder.UI
                 GlobalClasscs.Fun.EmptyFunctionName = "E";
                 //弹出对应窗体相关设置
                 dtlFrm.FunState = "C";
-                dtlFrm.OnInitialize(null);     //初始化信息
+                dtlFrm.OnInitialize(null, _pricelistdt);     //初始化信息
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }
@@ -681,6 +681,7 @@ namespace BomOfferOrder.UI
                         };
                         GlobalClasscs.Fun.FunctionName = tabtext == "成本BOM报价单-创建" ? "B" : "N";
                         createFrm.Bomdt = _bomdt;
+                        createFrm.Pricelistdt = _pricelistdt;
                         createFrm.Show();                                      
                         newpage.Controls.Add(createFrm);    
                         break;
