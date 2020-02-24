@@ -107,7 +107,7 @@ namespace BomOfferOrder.Task
         private void GetDtToDb(string funState,string tablename,DataTable tempdt)
         {
             //若tablename是T_OfferOrder 或 T_OfferOrderHead,其操作中心:若单据状态为C就插入,若为R就更新
-            if (tablename == "T_OfferOrder" || tablename == "T_OfferOrderHead")
+            if (tablename == "T_OfferOrder" /*|| tablename == "T_OfferOrderHead"*/)
             {
                 //执行插入
                 if (funState == "C")
@@ -119,6 +119,46 @@ namespace BomOfferOrder.Task
                 {
                     UpdateDbFromDt(tablename,tempdt);
                 }
+            }
+            //使用Headid放到T_OfferOrderHead表内作判断,若有的,就作更新处理,反之按插入处理
+            else if (tablename== "T_OfferOrderHead")
+            {
+                //获取T_OfferOrderHead表的数据
+                var dt = SearchOfferOrderHeadDt();
+                //分别设置 插入 更新的临时表
+                var inserttemp = tempdt.Clone();
+                var updatetemp = tempdt.Clone();
+                //循环tempdt
+                foreach (DataRow rows in tempdt.Rows)
+                {
+                    var dtlrows = dt.Select("Headid='"+Convert.ToInt32(rows[1])+"'").Length;
+                    //将不存在的数据插入至inserttemp内
+                    if (dtlrows == 0)
+                    {
+                        var newrow = inserttemp.NewRow();
+                        for (var i = 0; i < inserttemp.Columns.Count; i++)
+                        {
+                            newrow[i] = rows[i];
+                        }
+                        inserttemp.Rows.Add(newrow);
+                    }
+                    //反之将存在的数据插入至updatetemp内
+                    else
+                    {
+                        var newrow = updatetemp.NewRow();
+                        for (var j = 0; j < updatetemp.Columns.Count; j++)
+                        {
+                            newrow[j] = rows[j];
+                        }
+                        updatetemp.Rows.Add(newrow);
+                    }
+                }
+
+                //最后将得出的结果进行插入或更新
+                if (inserttemp.Rows.Count > 0)
+                    ImportDtToDb(tablename, inserttemp);
+                if (updatetemp.Rows.Count > 0)
+                    UpdateDbFromDt(tablename, updatetemp);
             }
             //若tablename是T_OfferOrderEntry,其操作中心:就需要使用Entryid进行判断,若为空,为插入,反之为更新
             else
@@ -169,6 +209,17 @@ namespace BomOfferOrder.Task
                 if(updatedtltemp.Rows.Count>0)
                     UpdateDbFromDt(tablename,updatedtltemp);
             }
+        }
+
+        /// <summary>
+        /// 判断数据是否在T_OfferOrderHead表插入或更新使用
+        /// </summary>
+        /// <returns></returns>
+        private DataTable SearchOfferOrderHeadDt()
+        {
+            var dt=new DataTable();
+            dt = searchDt.SearchOfferHeadDt();
+            return dt;
         }
 
         /// <summary>
@@ -341,11 +392,15 @@ namespace BomOfferOrder.Task
         private DataTable GetDataToOfferOrderHeadDt(int fid,string funState, DataTable dt, DataRow sourcerow)
         {
             //必须‘产成品名称’不在dt内,才将数据插入
+            //
             if (dt.Select("ProductName='"+ sourcerow[10] +"'").Length == 0)
             {
                 var newrow = dt.NewRow();
                 newrow[0] = fid;                                               //FID
-                newrow[1] = funState == "C" ? GetHeadidKey() : sourcerow[9];   //Headid 
+                //注:若出现FunState为R 并且Heaid=0时,就需要通过GetHeadidKey()进行获取新的ID值,而其它情况与原来的一样
+                newrow[1] = funState == "R" && Convert.ToInt32(sourcerow[9]) == 0
+                    ? GetHeadidKey()
+                    : (funState == "C" ? GetHeadidKey() : sourcerow[9]);       //Headid 
                 newrow[2] = sourcerow[10];                                     //产品名称(物料名称)
                 newrow[3] = sourcerow[11];                                     //包装规格
                 newrow[4] = sourcerow[12];                                     //产品密度(KG/L)

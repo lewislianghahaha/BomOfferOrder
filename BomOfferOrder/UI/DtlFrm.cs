@@ -94,14 +94,15 @@ namespace BomOfferOrder.UI
             if (_funState=="C")
             {
                 _confirmMarkId = false;
-                //对_typeid进行赋值(注:(0:BOM成本报价单 1:新产品成本报价单及其它单据))
-                _typeid = GlobalClasscs.Fun.FunctionName == "B" ? 0 : 1;
+                //对_typeid进行赋值(注:(0:BOM成本报价单 1:新产品成本报价单及其它单据 2:空白报价单))
+                _typeid = GlobalClasscs.Fun.EmptyFunctionName == "E"
+                    ? 2 : (GlobalClasscs.Fun.FunctionName == "B" ? 0 : 1);
 
                 //空白报价单-创建使用
                 if (bomdt == null)
                 {
                     //将‘添加新页’按钮显示
-                    tmaddpage.Visible = true;
+                    //tmaddpage.Visible = true;
                     CreateNewProductEmptyDetail();
                 }
                 else
@@ -267,7 +268,7 @@ namespace BomOfferOrder.UI
                             _fid = Convert.ToInt32(dtlrows[i][0]);              //fid主键
                             _createtime = Convert.ToDateTime(dtlrows[i][3]);    //创建日期
                             _creatname = Convert.ToString(dtlrows[i][5]);       //创建人
-                            _typeid = Convert.ToInt32(dtlrows[i][6]);           //单据类型ID=>0:BOM成本报价单 1:新产品成本报价单及其它单据
+                            _typeid = Convert.ToInt32(dtlrows[i][6]);           //单据类型ID=>0:BOM成本报价单 1:新产品成本报价单 2:空白报价单
                         }
                         //将记录赋值给bomdtldt内
                         var newrow = bomdtldt.NewRow();
@@ -327,12 +328,12 @@ namespace BomOfferOrder.UI
                 FormBorderStyle = FormBorderStyle.None
             };
             //对ShowDetailFrm赋值
-            showDetailFrm.AddDbToFrm(_funState,dt,materialdt, historydt,custinfodt, pricelistdt);
+            showDetailFrm.AddDbToFrm(_funState,_typeid,dt,materialdt, historydt,custinfodt, pricelistdt);
             showDetailFrm.Show();                   //注:只能使用Show()
             newpage.Controls.Add(showDetailFrm);    //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);      //将新创建的Tab Page添加至TabControl控件内
             //若使用的功能是‘空白报价单’,就以最后一页为最新页,其它就是首页为最新页
-            tctotalpage.SelectedIndex = GlobalClasscs.Fun.EmptyFunctionName == "E" ? 
+            tctotalpage.SelectedIndex = _typeid == 2 ? 
                                         tctotalpage.TabCount - 1 : 0;
         }
 
@@ -358,13 +359,13 @@ namespace BomOfferOrder.UI
                 //执行新增
                 var tabname = "新页" + Convert.ToString(tctotalpage.TabCount+1);
                 //生成Tab page及对应的ShowDetailFrm
-                CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt,_pricelistdt);
+                CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt, _pricelistdt);
                 //权限控制
                 PrivilegeControl();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -381,7 +382,7 @@ namespace BomOfferOrder.UI
             var myTab = tctotalpage.GetTabRect(e.Index);
 
             //设置除‘空白报价单’外的功能就不需要画‘X’关闭图标
-            if (/*e.Index == 0 &&*/ GlobalClasscs.Fun.EmptyFunctionName != "E")
+            if (/*e.Index == 0 && GlobalClasscs.Fun.EmptyFunctionName != "E"*/ _typeid==2)
             {
                 //先添加TabPage属性
                 var sf = new StringFormat
@@ -436,7 +437,7 @@ namespace BomOfferOrder.UI
         private void Tctotalpage_MouseDown(object sender, MouseEventArgs e)
         {
             //当使用Mouse左键点击 及只有在‘空白报价单’功能时执行
-            if (e.Button == MouseButtons.Left && GlobalClasscs.Fun.EmptyFunctionName == "E")
+            if (e.Button == MouseButtons.Left && /*GlobalClasscs.Fun.EmptyFunctionName == "E"*/ _typeid==2)
             {
                 int x = e.X, y = e.Y;
                 //计算关闭区域
@@ -527,7 +528,7 @@ namespace BomOfferOrder.UI
                                 newrow[3] = _funState == "C" ? DateTime.Now : _createtime;                  //创建日期
                                 newrow[4] = DateTime.Now;                                                   //审核日期
                                 newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
-                                newrow[6] = _typeid;                                                        //单据类型ID(0:BOM成本报价单 1:新产品成本报价单及其它单据)
+                                newrow[6] = _typeid;                                                        //单据类型ID(0:BOM成本报价单 1:新产品成本报价单 2:空白报价单)
                                 newrow[7] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
                                 newrow[8] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
 
@@ -571,7 +572,7 @@ namespace BomOfferOrder.UI
                     else
                     {
                         //审核成功后操作 =>1)审核图片显示 2)将控件设为不可修改 3)弹出成功信息窗体 4)将_confirmMarkid标记设为True
-                        MessageBox.Show($"审核成功,请进行提交操作", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"审核成功,请进行提交操作", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         _confirmMarkId = true;
                         //审核成功后将‘新增页’按钮设置为不可用
                         tmaddpage.Enabled = false;
@@ -611,7 +612,7 @@ namespace BomOfferOrder.UI
                 load.StartPosition = FormStartPosition.CenterScreen;
                 load.ShowDialog();
 
-                if(!task.ResultMark)throw new Exception("提交异常,请联系管理员");
+                if(!task.ResultMark) throw new Exception("提交异常,请联系管理员");
                 else
                 {
                     MessageBox.Show($"单据'{txtbom.Text}'提交成功,可关闭此单据", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -784,11 +785,17 @@ namespace BomOfferOrder.UI
                 pbimg.BackgroundImage = Image.FromFile(Application.StartupPath + @"\PIC\1.png");
                 //对相关控件设为不可改或只读
                 txtbom.ReadOnly = true;
-                //将‘添加新页’按钮设置为不显示
-                tmaddpage.Visible = false;
+                //将‘添加新页’按钮设置为显示但不启用(注:‘空白报价单’功能使用)
+                if (_typeid==2)
+                {
+                    tmaddpage.Visible = true;
+                    tmaddpage.Enabled = false;
+                }
+
                 //循环TabPages内的控件
                 ControlTabPages(0);
 
+                //"反审核"标记只是用于区别在R状态下,当状态为审核 或 非审核时‘审核’及‘提交’按钮的显示方式
                 //若单据状态为R并且不为‘反审核’时执行
                 if (_funState == "R" && !_backconfirm)
                 {
@@ -801,11 +808,12 @@ namespace BomOfferOrder.UI
                     tmConfirm.Enabled = false;
                 }
             }
-            //若为“非审核”状态的,就执行以下语句
+            //若为“非审核”状态时,就执行以下语句
             else
             {
                 //当选择的窗体是‘新产品成本报价单-创建’时执行,令指定的文本框可修改
-                if (GlobalClasscs.Fun.FunctionName == "N" || GlobalClasscs.Fun.EmptyFunctionName == "E")
+                //注:_typeid=2 时为‘空白报价单’ 1时为‘新产品成本报价单’
+                if (_typeid == 1 || _typeid == 2)
                 {
                     ControlTabPages(1);
                 }
@@ -814,6 +822,13 @@ namespace BomOfferOrder.UI
                 txtbom.ReadOnly = false;
                 tmsave.Enabled = true;
                 tmConfirm.Enabled = true;
+
+                //当检测到当前功能为‘空白报价单’时,将‘添加新页’按钮设置为显示
+                if (_typeid == 2)
+                {
+                    tmaddpage.Visible = true;
+                    tmaddpage.Enabled = true;
+                }
             }
         }
 

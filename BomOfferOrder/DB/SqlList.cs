@@ -524,6 +524,16 @@
         /////////////////////////////////////查询端使用//////////////////////////////////////////////////////
 
         /// <summary>
+        /// 查询T_OfferOrderHead表的Headid值(ImportDt.cs判断是否插入时使用)
+        /// </summary>
+        /// <returns></returns>
+        public string SearchOfferHeadDt()
+        {
+            _result = @"SELECT Headid FROM dbo.T_OfferOrderHead";
+            return _result;
+        }
+        
+        /// <summary>
         /// Main查询及查询端使用(注:当createname为空时,就表示查询端使用,反之是Main主窗体页使用)
         /// </summary>
         /// <returns></returns>
@@ -537,7 +547,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE a.OAorderno LIKE '%{value}%'
                             ";
@@ -548,7 +559,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE EXISTS (
 				                                SELECT NULL
@@ -564,7 +576,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
@@ -575,7 +588,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
@@ -586,7 +600,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE a.Fstatus='{value}'
                             ";
@@ -601,7 +616,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE a.OAorderno LIKE '%{value}%'
                                 and A.CreateName='{cratename}'
@@ -613,7 +629,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE EXISTS (
 				                                SELECT NULL
@@ -630,7 +647,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                                 and A.CreateName='{cratename}'
@@ -642,7 +660,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                                 and A.CreateName='{cratename}'
@@ -654,7 +673,8 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
-                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人
+                                       CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
                                 FROM dbo.T_OfferOrder A
                                 WHERE a.Fstatus='{value}'
                                 and A.CreateName='{cratename}'

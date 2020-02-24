@@ -380,12 +380,13 @@ namespace BomOfferOrder.UI
         /// 将相关值根据获取过来的DT填充至对应的项内
         /// </summary>
         /// <param name="funState"></param>
+        /// <param name="typeid">单据类型 0:BOM成本报价单 1:新产品成本报价单 2:空白报价单 </param>
         /// <param name="dt"></param>
         /// <param name="materialdt">原材料 ‘原漆半成品’‘产成品’DT</param>
         /// <param name="historydt">新产品报价单历史记录DT</param>
         /// <param name="custinfodt">记录K3客户列表DT</param>
         /// <param name="pricelistdt">采购价目表DT-BOM物料-物料单价使用</param>
-        public void AddDbToFrm(string funState,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt,DataTable pricelistdt)
+        public void AddDbToFrm(string funState,int typeid,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt,DataTable pricelistdt)
         {
             //将‘原材料’‘原漆半成品’‘产成品’DT赋值至变量内
             _materialdt = materialdt;
@@ -410,7 +411,20 @@ namespace BomOfferOrder.UI
                 {
                     //将单据状态获取至_funState变量内
                     _funState = funState;
-                    FunStateRUse(funState,dt);
+                    //若funstate为‘读取’状态 并且 单据类型为‘空白报价单’ 及 DT为NULL时,就执行,
+                    //注:执行这个目的环境在=>R状态 并且 在‘空白报价单’功能上需要‘新增新页’时使用
+                    if (funState == "R" && typeid == 2 && dt == null)
+                    {
+                        txtmi.Text = Convert.ToString(0);          //产品密度
+                        txtren.Text = "0";                         //人工制造费用(自填)
+                        txtbaochenben.Text = "0";                  //包装成本(自填)
+                        OnInitialize(dbList.MakeGridViewTemp());   //将临时表(空行记录)插入到GridView内
+                    }
+                    else
+                    {
+                        FunStateRUse(funState, dt);
+                    }
+
                     //初始化定义删除临时表(单据状态为R,并且执行‘删除明细行’时才使用)
                     _deldt = dbList.MakeGridViewTemp();
                 }

@@ -81,7 +81,15 @@ namespace BomOfferOrder.Task
             return resultdt;
         }
 
-
+        /// <summary>
+        /// 查询T_OfferOrderHead表的Headid值(ImportDt.cs判断是否插入时使用)
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchOfferHeadDt()
+        {
+            _sqlscript = sqlList.SearchOfferHeadDt();
+            return UseSqlSearchIntoDt(1, _sqlscript);
+        }
 
         /// <summary>
         /// 查询功能使用

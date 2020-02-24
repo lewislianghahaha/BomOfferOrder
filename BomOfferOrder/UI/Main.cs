@@ -291,7 +291,7 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                dtlFrm.OnInitialize(task.ResultTable, null);     
+                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt);     
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }

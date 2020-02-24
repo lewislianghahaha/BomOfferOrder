@@ -193,6 +193,7 @@
             // 
             // txtprice
             // 
+            this.txtprice.BackColor = System.Drawing.SystemColors.Control;
             this.txtprice.Location = new System.Drawing.Point(472, 29);
             this.txtprice.Name = "txtprice";
             this.txtprice.ReadOnly = true;
