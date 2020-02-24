@@ -39,14 +39,14 @@ namespace BomOfferOrder.UI
         #endregion
 
         #region Set
-            /// <summary>
-            /// 保存BOM明细DT(生成时使用)
-            /// </summary>
-            public DataTable Bomdt { set { _bomdt = value; } }
-            /// <summary>
-            /// 保存采购价目表DT
-            /// </summary>
-            public DataTable Pricelistdt { set { _pricelistdt = value; } }
+        /// <summary>
+        /// 保存BOM明细DT(生成时使用)
+        /// </summary>
+        public DataTable Bomdt { set { _bomdt = value; } }
+        /// <summary>
+        /// 保存采购价目表DT
+        /// </summary>
+        public DataTable Pricelistdt { set { _pricelistdt = value; } }
         #endregion
 
 
@@ -160,6 +160,9 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                //定义‘_adddt’临时表的行数
+                var addcount = 0;
+
                 if(gvsearchdtl.RowCount==0)throw new Exception("没有查询结果,不能添加");
 
                 //获取临时表
@@ -175,10 +178,14 @@ namespace BomOfferOrder.UI
                     newrow[4] = row.Cells[6].Value;  //密度(KG/L)
                     temp.Rows.Add(newrow);
                 }
+                //若_adddt为空,即返回0
+                addcount = _adddt?.Rows.Count ?? 0;
+                //若_addit为空的话,就将temp.Clone() 给它
+                if (_adddt == null) _adddt = temp.Clone();
                 //若_adddt+temp.rowscount得出的总行数>10行时,即提示异常
-                if(_adddt.Rows.Count+temp.Rows.Count>10)throw new Exception("添加行数已超过10行,不能继续");
+                if(addcount + temp.Rows.Count>10) throw new Exception("添加行数已超过10行,不能继续");
                 //判断若需要添加的记录,已在_adddt存在,即提示异常
-                if(!CheckRecord(temp))throw new Exception("已添加,不能再次进行添加");
+                if(!CheckRecord(temp)) throw new Exception("已添加,不能再次进行添加");
                 //将要添加的记录添加至‘添加明细记录’GridView内
                 gvdtl.DataSource=AddsoucetoDt(temp);
                 //控制GridView单元格显示方式
@@ -235,7 +242,7 @@ namespace BomOfferOrder.UI
                 if (gvdtl.RowCount==0)throw new Exception("没有明细记录,不能执行运算");
                 var clickMessage = $"您所选择进行生成的物料有:'{gvdtl.RowCount}'行物料记录 \n 是否继续生成?";
 
-                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     task.TaskId = "1";
                     task.Data = (DataTable)gvdtl.DataSource;

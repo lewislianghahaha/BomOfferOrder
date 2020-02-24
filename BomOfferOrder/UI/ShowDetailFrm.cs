@@ -1117,8 +1117,8 @@ namespace BomOfferOrder.UI
                 //当修改的列是‘配方用量’或‘物料单价(含税)’时,将以下关联的值作出改变
                 else if (colindex == 4 || colindex == 6)
                 {
-                    //获取当前行的配方用量
-                    var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value);
+                    //获取当前行的配方用量(注:若为空就为0)
+                    var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value == DBNull.Value ? 0 : gvdtl.Rows[e.RowIndex].Cells[4].Value);
                     //计算‘占比’=配方用量*100
                     var ratio = peiqty*100;
                     //获取当前行的物料单价
