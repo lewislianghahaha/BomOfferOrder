@@ -29,6 +29,8 @@ namespace BomOfferOrder.UI
         private DataTable _deldt;
         //获取采购价目表DT
         private DataTable _pricelistdt;
+        //获取采购入库表DT
+        private DataTable _purchaseinstockdt;
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
@@ -77,6 +79,7 @@ namespace BomOfferOrder.UI
             tmHReplace.Click += TmHReplace_Click;
             llcust.Click += Llcust_Click;
             tmimportexcel.Click += Tmimportexcel_Click;
+            txtmi.Leave += Txtmi_Leave;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -165,6 +168,30 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// '产品密度(KG/L)文本框修改时执行'
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Txtmi_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                //检测所输入的数字必须为数字(包括小数)
+                if (!Regex.IsMatch(txtmi.Text, @"^-?\d+$|^(-?\d+)(\.\d+)?$"))
+                {
+                    txtmi.Text = "";
+                    throw new Exception("不能输入非数字外的值,请输入数字后再继续");
+                }
+                //根据指定值将相关项进行改变指定文本框内的值
+                GenerateValue();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
         /// 新增记录
         /// </summary>
         /// <param name="sender"></param>
@@ -213,8 +240,9 @@ namespace BomOfferOrder.UI
             {
                 if(gvdtl.SelectedRows.Count==0) throw new Exception("没有选择行,不能继续");
                 if(_dtl.Rows.Count==0)throw new Exception("没有明细记录,不能进行删除");
-
+                
                 var clickMessage = $"您所选择需删除的行数为:{gvdtl.SelectedRows.Count}行 \n 是否继续?";
+
                 if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     //注:执行方式:当判断到_funState变量为R时,将要进行删除的行保存至_deldt内,(供保存时使用),完成后再删除GridView指定行;反之,只需将GridView进行指定行删除即可
@@ -237,23 +265,26 @@ namespace BomOfferOrder.UI
                     }
 
                     //先根据GridView所选择的行将_dtl对应的行删除
+                    //注:使用‘物料名称’进行循环对比
                     for (var i = _dtl.Rows.Count; i > 0; i--)
                     {
                         for (var j = 0; j < gvdtl.SelectedRows.Count; j++)
                         {
-                            if (Convert.ToInt32(_dtl.Rows[i - 1][1]) == Convert.ToInt32(gvdtl.SelectedRows[j].Cells[1].Value))
+                            if (Convert.ToString(_dtl.Rows[i - 1][2]) == Convert.ToString(gvdtl.SelectedRows[j].Cells[2].Value))
                             {
-                                _dtl.Rows.RemoveAt(i-1);
+                                _dtl.Rows.RemoveAt(i - 1);
+                                break;
                             }
                         }
                     }
 
-                    //完成后将GridView内的指定行进行删除
-                    for (var i = gvdtl.SelectedRows.Count; i > 0; i--)
-                    {
-                        gvdtl.Rows.RemoveAt(gvdtl.SelectedRows[i - 1].Index);
-                    }
-                    
+                    #region 完成后将GridView内的指定行进行删除(目前已不需要,只需将_dtl相关的记录删除即可)
+                    //for (var i = gvdtl.SelectedRows.Count; i > 0; i--)
+                    //{
+                    //    gvdtl.Rows.RemoveAt(gvdtl.SelectedRows[i - 1].Index);
+                    //}
+                    #endregion
+
                     //根据指定值将相关项进行改变指定文本框内的值
                     GenerateValue();
                     //操作完成后进行刷新
@@ -386,7 +417,9 @@ namespace BomOfferOrder.UI
         /// <param name="historydt">新产品报价单历史记录DT</param>
         /// <param name="custinfodt">记录K3客户列表DT</param>
         /// <param name="pricelistdt">采购价目表DT-BOM物料-物料单价使用</param>
-        public void AddDbToFrm(string funState,int typeid,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt,DataTable pricelistdt)
+        /// <param name="purchaseInstockdt">采购入库单DT-BOM物料-物料单价使用</param>
+        public void AddDbToFrm(string funState,int typeid,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt,
+                               DataTable pricelistdt,DataTable purchaseInstockdt)
         {
             //将‘原材料’‘原漆半成品’‘产成品’DT赋值至变量内
             _materialdt = materialdt;
@@ -396,6 +429,8 @@ namespace BomOfferOrder.UI
             _custinfo = custinfodt;
             //初始化获取采购价目表DT
             _pricelistdt = pricelistdt;
+            //初始化获取采购入库表DT
+            _purchaseinstockdt = purchaseInstockdt;
 
             try
             {
@@ -418,6 +453,7 @@ namespace BomOfferOrder.UI
                         txtmi.Text = Convert.ToString(0);          //产品密度
                         txtren.Text = "0";                         //人工制造费用(自填)
                         txtbaochenben.Text = "0";                  //包装成本(自填)
+                        txtmi.Text = "0";                          //产品密度(KG/L)
                         OnInitialize(dbList.MakeGridViewTemp());   //将临时表(空行记录)插入到GridView内
                     }
                     else
@@ -442,9 +478,21 @@ namespace BomOfferOrder.UI
         /// <returns></returns>
         private decimal GenerateMaterialPrice(int fmaterialid)
         {
-            //使用_pricelistdt查询出对应的‘单价’值
+            //定义结果变量
+            decimal result = 0;
+            //检测若fmaterialid在_pricelistdt内不存在,就继续在_purchaseinstockdt内查找是否存在
             var dtlrows = _pricelistdt.Select("子项物料内码='" + fmaterialid + "'");
-            var result = dtlrows.Length == 0 ? 0 : decimal.Round(Convert.ToDecimal(dtlrows[0][1]),4);
+
+            if (dtlrows.Length > 0)
+            {
+                result = decimal.Round(Convert.ToDecimal(dtlrows[0][1]), 4);
+            }
+            //若没有就在_purchaseinstockdt查询,若还是没有就返回0
+            else
+            {
+                var dtlrow = _purchaseinstockdt.Select("FMATERIALID='" + fmaterialid + "'");
+                result = dtlrow.Length == 0 ? 0 : decimal.Round(Convert.ToDecimal(dtlrow[0][1]), 4);
+            }
             return result;
         }
 
@@ -546,6 +594,7 @@ namespace BomOfferOrder.UI
                         fmaterialcode = null;
                         fmaterialname = Convert.ToString(rows[0]);
                         peiqty = Convert.ToDecimal(rows[1]);
+                        price = 0;
                     }
                     //若存在就执行以下语句
                     else
@@ -1320,7 +1369,9 @@ namespace BomOfferOrder.UI
             txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
 
             //成本(元/KG) 公式:材料成本+包装成本(自填)+人工制造费用(自填)
-            txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text),4));
+            //change date:20200225:成本(元/KG)=产品成本含税+包装成本(自填)+人工制造费用(自填)
+            //txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text),4));
+            txtkg.Text= Convert.ToString(Math.Round(Convert.ToDecimal(txtprice.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text), 4));
             //成本(元/L) 公式:成本(元/KG)*产品密度(KG/L)
             txtl.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtkg.Text) * Convert.ToDecimal(txtmi.Text),4));
             //50%报价   公式:成本(元/KG)/(1-50/100)

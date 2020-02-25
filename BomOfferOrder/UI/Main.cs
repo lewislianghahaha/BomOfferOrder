@@ -291,13 +291,13 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt);     
+                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt,_purchaseInstockDt);     
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -420,7 +420,7 @@ namespace BomOfferOrder.UI
                 GlobalClasscs.Fun.EmptyFunctionName = "E";
                 //弹出对应窗体相关设置
                 dtlFrm.FunState = "C";
-                dtlFrm.OnInitialize(null, _pricelistdt);     //初始化信息
+                dtlFrm.OnInitialize(null, _pricelistdt,_purchaseInstockDt);     //初始化信息
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }
@@ -682,6 +682,7 @@ namespace BomOfferOrder.UI
                         GlobalClasscs.Fun.FunctionName = tabtext == "成本BOM报价单-创建" ? "B" : "N";
                         createFrm.Bomdt = _bomdt;
                         createFrm.Pricelistdt = _pricelistdt;
+                        createFrm.PurchaseInstockdt = _purchaseInstockDt;
                         createFrm.Show();                                      
                         newpage.Controls.Add(createFrm);    
                         break;
@@ -694,6 +695,8 @@ namespace BomOfferOrder.UI
                             Dock = DockStyle.Fill,
                             FormBorderStyle = FormBorderStyle.None
                         };
+                        searchFrm.Pricelistdt = _pricelistdt;
+                        searchFrm.PurchaseInstockdt = _purchaseInstockDt;
                         searchFrm.Show();                    
                         newpage.Controls.Add(searchFrm); 
                         break;

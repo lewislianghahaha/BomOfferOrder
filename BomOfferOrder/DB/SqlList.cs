@@ -942,12 +942,21 @@
         public string SearchPurchase()
         {
             _result = @"
-                            SELECT b.FMATERIALID,c.FTAXNETPRICE 净价
+                            SELECT T1.FMATERIALID,T1.净价 
+                            FROM (
+                                    SELECT ROW_NUMBER()OVER(PARTITION BY b.FMATERIALID ORDER BY b.FMATERIALID,a.FDATE DESC) r, b.FMATERIALID,c.FTAXNETPRICE 净价
+                                    FROM dbo.T_STK_INSTOCK a
+                                    INNER JOIN dbo.T_STK_INSTOCKENTRY b ON a.FID=b.FID
+                                    INNER JOIN dbo.T_STK_INSTOCKENTRY_F c ON b.FENTRYID=c.FENTRYID
+                                    AND a.FDOCUMENTSTATUS='C')T1 
+                            WHERE T1.r=1
+
+                            /*SELECT b.FMATERIALID,c.FTAXNETPRICE 净价
                             FROM dbo.T_STK_INSTOCK a
                             INNER JOIN dbo.T_STK_INSTOCKENTRY b ON a.FID=b.FID
                             INNER JOIN dbo.T_STK_INSTOCKENTRY_F c ON b.FENTRYID=c.FENTRYID
                             AND a.FDOCUMENTSTATUS='C'  --已审核
-                            ORDER BY a.FDATE DESC
+                            ORDER BY a.FDATE DESC*/
                         ";
             return _result;
         }

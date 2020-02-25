@@ -44,6 +44,9 @@ namespace BomOfferOrder.UI
         private DataTable _custinfodt;
         ///保存采购价目表DT(BOM明细中各物料的‘物料单价’使用)
         private DataTable _pricelistdt;
+        //保存采购入库单表DT(BOM明细中各物料的‘物料单价’使用)
+        private DataTable _purchaseInstockdt;
+
         //定义关闭符号的宽
         const int CloseSize = 11;
         #endregion
@@ -79,7 +82,8 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="bomdt">BOM DT</param>
         /// <param name="priceListdt">采购价目表DT</param>
-        public void OnInitialize(DataTable bomdt,DataTable priceListdt)
+        /// <param name="purchaseInstockdt"></param>
+        public void OnInitialize(DataTable bomdt,DataTable priceListdt,DataTable purchaseInstockdt)
         {
             //初始化获取‘原材料’‘原漆半成品’‘原漆’等物料明细信息(注:添加物料明细窗体使用)
             _materialdt = OnInitializeMaterialDt();
@@ -89,6 +93,8 @@ namespace BomOfferOrder.UI
             _custinfodt = OnInitializeK3CustinfoDt();
             //初始化获取采购价目表DT
             _pricelistdt = priceListdt;
+            //初始化获取采购入库表DT
+            _purchaseInstockdt = purchaseInstockdt;
 
             //单据状态:创建 C
             if (_funState=="C")
@@ -108,7 +114,7 @@ namespace BomOfferOrder.UI
                 else
                 {
                     //新产品成本报价单-创建使用
-                    if (GlobalClasscs.Fun.FunctionName == "N") 
+                    if (_typeid == 1) 
                     {
                         CreateNewProductDeatail(bomdt);
                     }
@@ -157,7 +163,7 @@ namespace BomOfferOrder.UI
                     dt.Rows.Add(newrow);
                     tabname = Convert.ToString(rows[2]);
                     //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, dt, _materialdt,_historydt,_custinfodt, _pricelistdt);
+                    CreateDetailFrm(tabname, dt, _materialdt,_historydt,_custinfodt, _pricelistdt, _purchaseInstockdt);
                     //当生成完成后将dt清空内容,待下一次使用
                     dt.Rows.Clear();
                 }
@@ -176,7 +182,7 @@ namespace BomOfferOrder.UI
             try
             {
                 //生成Tab Page及ShowDetailFrm
-                CreateDetailFrm("",null,_materialdt,_historydt,_custinfodt, _pricelistdt);
+                CreateDetailFrm("",null,_materialdt,_historydt,_custinfodt, _pricelistdt, _purchaseInstockdt);
             }
             catch (Exception ex)
             {
@@ -221,7 +227,7 @@ namespace BomOfferOrder.UI
                             dt.Rows.Add(newrow);
                         }
                         //当循环完一个DT的时候,将其作为数据源生成Tab Page及ShowDetailFrm
-                        CreateDetailFrm(tabname,dt,_materialdt,_historydt,_custinfodt, _pricelistdt);
+                        CreateDetailFrm(tabname,dt,_materialdt,_historydt,_custinfodt, _pricelistdt, _purchaseInstockdt);
                         //当生成完成后将dt清空内容,待下一次使用
                         dt.Rows.Clear();
                     }
@@ -300,7 +306,7 @@ namespace BomOfferOrder.UI
                         bomdtldt.Rows.Add(newrow);
                     }
                     //将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, bomdtldt, _materialdt,_historydt,_custinfodt,_pricelistdt);
+                    CreateDetailFrm(tabname, bomdtldt, _materialdt,_historydt,_custinfodt,_pricelistdt, _purchaseInstockdt);
                     //当生成完成后将bomdtldtdt清空内容,待下一次使用
                     bomdtldt.Rows.Clear();
                 }
@@ -316,7 +322,8 @@ namespace BomOfferOrder.UI
         /// <summary>
         /// 生成Tab page及对应的ShowDetailFrm
         /// </summary>
-        private void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt,DataTable pricelistdt)
+        private void CreateDetailFrm(string tabname,DataTable dt,DataTable materialdt,DataTable historydt,DataTable custinfodt,
+                                     DataTable pricelistdt,DataTable purchaseInstockdt)
         {
             var newpage = new TabPage {Text = $"{tabname}"};
 
@@ -328,7 +335,7 @@ namespace BomOfferOrder.UI
                 FormBorderStyle = FormBorderStyle.None
             };
             //对ShowDetailFrm赋值
-            showDetailFrm.AddDbToFrm(_funState,_typeid,dt,materialdt, historydt,custinfodt, pricelistdt);
+            showDetailFrm.AddDbToFrm(_funState,_typeid,dt,materialdt, historydt,custinfodt, pricelistdt, purchaseInstockdt);
             showDetailFrm.Show();                   //注:只能使用Show()
             newpage.Controls.Add(showDetailFrm);    //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);      //将新创建的Tab Page添加至TabControl控件内
@@ -359,7 +366,7 @@ namespace BomOfferOrder.UI
                 //执行新增
                 var tabname = "新页" + Convert.ToString(tctotalpage.TabCount+1);
                 //生成Tab page及对应的ShowDetailFrm
-                CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt, _pricelistdt);
+                CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt, _pricelistdt, _purchaseInstockdt);
                 //权限控制
                 PrivilegeControl();
             }
@@ -897,7 +904,7 @@ namespace BomOfferOrder.UI
                     else if (typeid == 1)
                     {
                         //控制‘生成空白报价单’指定项的操作方式
-                        if (GlobalClasscs.Fun.EmptyFunctionName != "")
+                        if (_typeid==2)
                         {
                             showdetail.txtname.ReadOnly = false;           //产品名称
                             showdetail.txtbom.ReadOnly = false;            //对应BOM版本编号
@@ -905,7 +912,7 @@ namespace BomOfferOrder.UI
                             showdetail.txtmi.ReadOnly = false;             //产品密度(KG/L)
                         }
                         //控制‘新产品报价单’指定项的操作方式
-                        else if (GlobalClasscs.Fun.FunctionName == "N")
+                        else if (_typeid==1)
                         {
                             showdetail.txtname.ReadOnly = false;           //产品名称
                             showdetail.txtbom.ReadOnly = false;            //对应BOM版本编号
