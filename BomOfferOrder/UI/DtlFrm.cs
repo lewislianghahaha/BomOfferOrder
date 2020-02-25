@@ -300,7 +300,7 @@ namespace BomOfferOrder.UI
                         bomdtldt.Rows.Add(newrow);
                     }
                     //将其作为数据源生成Tab Page及ShowDetailFrm
-                    CreateDetailFrm(tabname, bomdtldt, _materialdt,_historydt,_custinfodt,null);
+                    CreateDetailFrm(tabname, bomdtldt, _materialdt,_historydt,_custinfodt,_pricelistdt);
                     //当生成完成后将bomdtldtdt清空内容,待下一次使用
                     bomdtldt.Rows.Clear();
                 }
@@ -382,7 +382,7 @@ namespace BomOfferOrder.UI
             var myTab = tctotalpage.GetTabRect(e.Index);
 
             //设置除‘空白报价单’外的功能就不需要画‘X’关闭图标
-            if (/*e.Index == 0 && GlobalClasscs.Fun.EmptyFunctionName != "E"*/ _typeid==2)
+            if (/*e.Index == 0 && GlobalClasscs.Fun.EmptyFunctionName != "E"*/ _typeid!=2)
             {
                 //先添加TabPage属性
                 var sf = new StringFormat
@@ -436,8 +436,8 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void Tctotalpage_MouseDown(object sender, MouseEventArgs e)
         {
-            //当使用Mouse左键点击 及只有在‘空白报价单’功能时执行
-            if (e.Button == MouseButtons.Left && /*GlobalClasscs.Fun.EmptyFunctionName == "E"*/ _typeid==2)
+            //当使用Mouse左键点击 及只有在‘空白报价单’功能时执行(注:在‘审核’后也不能操作)
+            if (e.Button == MouseButtons.Left && /*GlobalClasscs.Fun.EmptyFunctionName == "E"*/ _typeid==2 && !_confirmMarkId)
             {
                 int x = e.X, y = e.Y;
                 //计算关闭区域
