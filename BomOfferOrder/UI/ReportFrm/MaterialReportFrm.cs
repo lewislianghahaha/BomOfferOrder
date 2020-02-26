@@ -517,10 +517,10 @@ namespace BomOfferOrder.UI.ReportFrm
                     //初始化时判断;若“总页数”=1，四个按钮不可用；若>1,“下一页” “末页”按钮可用
                     if (_totalpagecount == 1)
                     {
-                        bnMoveNextItem.Enabled = false;
-                        bnMoveLastItem.Enabled = false;
-                        bnMoveNextItem.Enabled = false;
-                        bnMoveLastItem.Enabled = false;
+                        bnMoveFirstItem.Enabled = false;                            //'首页'按钮
+                        bnMovePreviousItem.Enabled = false;                         //'上一页'按钮
+                        bnMoveNextItem.Enabled = false;                             //'下一页'按钮
+                        bnMoveLastItem.Enabled = false;                             //'末页'按钮
                         bnPositionItem.Enabled = false;                             //跳转页文本框
                     }
                     else
@@ -555,7 +555,7 @@ namespace BomOfferOrder.UI.ReportFrm
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -570,7 +570,10 @@ namespace BomOfferOrder.UI.ReportFrm
                 _dtl = dt;
                 panel2.Visible = true;
                 //初始化下拉框所选择的默认值
-                tmshowrows.SelectedItem = "10";
+                //tmshowrows.SelectedItem = "10";
+                tmshowrows.SelectedItem = Convert.ToInt32(tmshowrows.SelectedItem) == 0
+                   ? (object)"10"
+                   : Convert.ToInt32(tmshowrows.SelectedItem);
                 //定义初始化标记
                 _pageChange = _pageCurrent <= 1;
                 //GridView分页
@@ -669,8 +672,5 @@ namespace BomOfferOrder.UI.ReportFrm
             task.StartTask();
             _materialdt = task.ResultTable;
         }
-
-
-
     }
 }
