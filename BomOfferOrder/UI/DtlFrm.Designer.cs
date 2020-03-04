@@ -39,6 +39,7 @@
             this.lblmessage = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
+            this.tmCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
@@ -50,7 +51,8 @@
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tmConfirm,
             this.tmsave,
-            this.tmaddpage});
+            this.tmaddpage,
+            this.tmCopy});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Size = new System.Drawing.Size(854, 25);
@@ -132,6 +134,13 @@
             this.tctotalpage.Size = new System.Drawing.Size(854, 497);
             this.tctotalpage.TabIndex = 2;
             // 
+            // tmCopy
+            // 
+            this.tmCopy.Name = "tmCopy";
+            this.tmCopy.Size = new System.Drawing.Size(44, 21);
+            this.tmCopy.Text = "复制";
+            this.tmCopy.Visible = false;
+            // 
             // DtlFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -166,5 +175,6 @@
         private System.Windows.Forms.PictureBox pbimg;
         private System.Windows.Forms.Label lblmessage;
         private System.Windows.Forms.ToolStripMenuItem tmaddpage;
+        private System.Windows.Forms.ToolStripMenuItem tmCopy;
     }
 }

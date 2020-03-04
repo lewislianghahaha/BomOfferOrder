@@ -435,18 +435,17 @@ namespace BomOfferOrder.UI
 
             try
             {
+                //将单据状态获取至_funState变量内
+                _funState = funState;
+
                 //单据状态:创建 C
-                if (funState == "C")
+                if (_funState == "C")
                 {
-                    //将单据状态获取至_funState变量内
-                    _funState = funState;
                     FunStateCUse(funState,dt);
                 }
                 //单据状态:读取 R
                 else
                 {
-                    //将单据状态获取至_funState变量内
-                    _funState = funState;
                     //若funstate为‘读取’状态 并且 单据类型为‘空白报价单’ 及 DT为NULL时,就执行,
                     //注:执行这个目的环境在=>R状态 并且 在‘空白报价单’功能上需要‘新增新页’时使用
                     if (funState == "R" && typeid == 2 && dt == null)
@@ -525,6 +524,7 @@ namespace BomOfferOrder.UI
                                 rows[5] = Convert.ToDecimal(dt.Rows[i - 1][5]);        //占比=配方用量*100
                                 rows[6] = Convert.ToDecimal(dt.Rows[i - 1][6]);        //物料单价(含税)
                                 rows[7] = Convert.ToDecimal(dt.Rows[i - 1][7]);        //物料成本(含税)
+                                rows[8] = DBNull.Value;                                //备注
                                 _dtl.EndInit();
                                 //删除dt行
                                 dt.Rows.RemoveAt(i-1);
@@ -750,6 +750,7 @@ namespace BomOfferOrder.UI
                         newrow[5] = Convert.ToDecimal(rows[8])*100; //占比
                         newrow[6] = rows[10];                       //物料单价(含税)
                         newrow[7] = decimal.Round(Convert.ToDecimal(rows[8]) /100  * Convert.ToDecimal(rows[10]), 4);  //物料成本(含税) 公式:配方用量/100*物料单价
+                        newrow[8] = DBNull.Value;                   //备注
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -767,6 +768,7 @@ namespace BomOfferOrder.UI
                         newrow[5] = rows[30];       //占比
                         newrow[6] = rows[31];       //物料单价(含税)
                         newrow[7] = rows[32];       //物料成本(含税)
+                        newrow[8] = rows[33];       //备注
                         resultdt.Rows.Add(newrow);
                     }
                 }
@@ -1059,6 +1061,7 @@ namespace BomOfferOrder.UI
                     newrow[3] = rows[3];                                          //物料名称
                     newrow[6] = GenerateMaterialPrice(Convert.ToInt32(rows[1]));  //物料单价 rows[5]
                     newrow[7] = 0;                                                //物料成本(设置为0)
+                    newrow[8] = DBNull.Value;                                     //备注
                     gridViewdt.Rows.Add(newrow);
                 }
                 //操作完成后进行刷新
@@ -1102,6 +1105,7 @@ namespace BomOfferOrder.UI
                     rows[5] = DBNull.Value;         //占比(清空)
                     rows[6] = GenerateMaterialPrice(Convert.ToInt32(sourcedt.Rows[0][1])); //物料单价 sourcedt.Rows[0][5];
                     rows[7] = 0;                    //物料成本(设置为0)
+                    rows[8] = DBNull.Value;         //备注
                     gridViewdt.EndInit();
                 }
                 //操作完成后进行刷新
@@ -1109,7 +1113,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

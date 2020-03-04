@@ -115,7 +115,7 @@ namespace BomOfferOrder.DB
         public DataTable MakeGridViewTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 8; i++)
+            for (var i = 0; i < 9; i++)
             {
                 var dc = new DataColumn();
 
@@ -154,6 +154,10 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "物料成本(含税)";
                         dc.DataType = Type.GetType("System.String");
                         break;
+                    case 8:
+                        dc.ColumnName = "备注";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
                 }
                 dt.Columns.Add(dc);
             }
@@ -167,7 +171,7 @@ namespace BomOfferOrder.DB
         public DataTable GetBomDtlTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 33; i++)
+            for (var i = 0; i < 34; i++)
             {
                 var dc = new DataColumn();
 
@@ -339,6 +343,11 @@ namespace BomOfferOrder.DB
                     case 32:
                         dc.ColumnName = "MaterialAmount";
                         dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //备注
+                    case 33:
+                        dc.ColumnName = "Remark";
+                        dc.DataType = Type.GetType("System.String");
                         break;
                 }
                 dt.Columns.Add(dc);
@@ -521,7 +530,7 @@ namespace BomOfferOrder.DB
         public DataTable GetOfferOrderEntryTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 9; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var dc = new DataColumn();
 
@@ -571,6 +580,11 @@ namespace BomOfferOrder.DB
                     case 8:
                         dc.ColumnName = "MaterialAmount";
                         dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    //备注
+                    case 9:
+                        dc.ColumnName = "Remark";
+                        dc.DataType=Type.GetType("System.String");
                         break;
                 }
                 dt.Columns.Add(dc);

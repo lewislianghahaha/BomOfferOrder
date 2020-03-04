@@ -75,6 +75,7 @@ namespace BomOfferOrder.UI
             tctotalpage.SelectedIndexChanged += Tctotalpage_SelectedIndexChanged;
             tctotalpage.DrawItem += Tctotalpage_DrawItem;
             tctotalpage.MouseDown += Tctotalpage_MouseDown;
+            tmCopy.Click += TmCopy_Click;
         }
 
         /// <summary>
@@ -303,6 +304,7 @@ namespace BomOfferOrder.UI
                         newrow[30] = dtlrows[i][28];               //占比
                         newrow[31] = dtlrows[i][29];               //物料单价(含税)
                         newrow[32] = dtlrows[i][30];               //物料成本(含税)
+                        newrow[33] = dtlrows[i][31];               //备注
                         bomdtldt.Rows.Add(newrow);
                     }
                     //将其作为数据源生成Tab Page及ShowDetailFrm
@@ -369,6 +371,30 @@ namespace BomOfferOrder.UI
                 CreateDetailFrm(tabname, null, _materialdt, _historydt, _custinfodt, _pricelistdt, _purchaseInstockdt);
                 //权限控制
                 PrivilegeControl();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// ‘复制’-将表头信息复制至新PAGE内,(注:1)只针对空白报价单使用 2)只复制表头信息 表体信息不需要)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmCopy_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //提示信息
+                var clickMessage = $"您所选择的信息为:\n 单据名称:{txtbom.Text} \n 是否继续? \n 注:审核后需反审核才能对该单据的记录进行修改, \n 请谨慎处理.";
+                //
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    //获取当前页的表体信息
+
+                }
             }
             catch (Exception ex)
             {
@@ -564,6 +590,7 @@ namespace BomOfferOrder.UI
                                 newrow[30] = rows[5];                                                       //占比
                                 newrow[31] = rows[6];                                                       //物料单价(含税)
                                 newrow[32] = rows[7];                                                       //物料成本(含税)
+                                newrow[33] = rows[8];                                                       //备注
                                 _bomdt.Rows.Add(newrow);
                             }
                             //将各TabPages内GridView中的需要进行删除的记录合并整理
@@ -793,10 +820,13 @@ namespace BomOfferOrder.UI
                 //对相关控件设为不可改或只读
                 txtbom.ReadOnly = true;
                 //将‘添加新页’按钮设置为显示但不启用(注:‘空白报价单’功能使用)
+                //将‘复制’按钮设置为显示但不启用(注:‘空白报价单’功能使用)
                 if (_typeid==2)
                 {
                     tmaddpage.Visible = true;
                     tmaddpage.Enabled = false;
+                    tmCopy.Visible = true;
+                    tmCopy.Enabled = false;
                 }
 
                 //循环TabPages内的控件
@@ -830,11 +860,14 @@ namespace BomOfferOrder.UI
                 tmsave.Enabled = true;
                 tmConfirm.Enabled = true;
 
-                //当检测到当前功能为‘空白报价单’时,将‘添加新页’按钮设置为显示
+                //当检测到当前功能为‘空白报价单’时,将‘添加新页’按钮设置为显示并启用
+                //当检测到当前功能为‘空白报价单’时,将‘复制’按钮设置为显示并启用
                 if (_typeid == 2)
                 {
                     tmaddpage.Visible = true;
                     tmaddpage.Enabled = true;
+                    tmCopy.Visible = true;
+                    tmCopy.Enabled = true;
                 }
             }
         }

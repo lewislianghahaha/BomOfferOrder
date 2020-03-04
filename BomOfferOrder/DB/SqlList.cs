@@ -493,8 +493,9 @@
                                 ";
                     break;
                 case "T_OfferOrderEntry":
-                    _result = @"UPDATE dbo.T_OfferOrderEntry SET @MaterialID=@MaterialID,MaterialCode=@MaterialCode,MaterialName=@MaterialName,
-                                                                 PeiQty=@PeiQty,ratioQty=@ratioQty,MaterialPrice=@MaterialPrice,MaterialAmount=@MaterialAmount
+                    _result = @"UPDATE dbo.T_OfferOrderEntry SET MaterialID=@MaterialID,MaterialCode=@MaterialCode,MaterialName=@MaterialName,
+                                                                 PeiQty=@PeiQty,ratioQty=@ratioQty,MaterialPrice=@MaterialPrice,MaterialAmount=@MaterialAmount,
+                                                                 Remark=@Remark
                                 WHERE Entryid=@Entryid
                                ";
                     break;
@@ -548,8 +549,20 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'
+
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE a.OAorderno LIKE '%{value}%'
                             ";
                 }
@@ -560,8 +573,20 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'                                       
+
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE EXISTS (
 				                                SELECT NULL
 				                                FROM dbo.T_OfferOrderHead b 
@@ -577,8 +602,20 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'
+       
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
                 }
@@ -589,8 +626,20 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'                                       
+
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
                 }
@@ -601,8 +650,19 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%' 
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE a.Fstatus='{value}'
                             ";
                 }
@@ -617,8 +677,19 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%' 
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE a.OAorderno LIKE '%{value}%'
                                 and A.CreateName='{cratename}'
                             ";
@@ -630,8 +701,19 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE EXISTS (
 				                                SELECT NULL
 				                                FROM dbo.T_OfferOrderHead b 
@@ -648,8 +730,19 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                                 and A.CreateName='{cratename}'
                             ";
@@ -661,8 +754,19 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                                 and A.CreateName='{cratename}'
                             ";
@@ -674,8 +778,19 @@
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
-                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型
+                                       CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+                                       x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+									   ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+									   b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'
                                 FROM dbo.T_OfferOrder A
+                                INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
+								INNER JOIN (
+												SELECT x.FId,SUM(x2.MaterialAmount) 物料成本和
+												FROM dbo.T_OfferOrder x
+												INNER JOIN dbo.T_OfferOrderHead x1 ON x.FId=x1.FId
+												INNER JOIN dbo.T_OfferOrderEntry x2 ON x1.Headid=x2.Headid
+												GROUP BY x.FId
+											)x ON x.FId=a.FId
                                 WHERE a.Fstatus='{value}'
                                 and A.CreateName='{cratename}'
                             ";
@@ -699,7 +814,8 @@
 	                               b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
 	                               b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
 
-	                               c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.ratioQty,c.MaterialPrice,c.MaterialAmount
+	                               c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.ratioQty,c.MaterialPrice,c.MaterialAmount,
+                                   c.Remark
 	    
                             FROM dbo.T_OfferOrder a
                             INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId

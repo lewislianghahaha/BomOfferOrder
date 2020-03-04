@@ -346,7 +346,7 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 查询端使用
+        /// 查询端窗体使用
         /// </summary>
         private void SearchBomOrder(int typeid, string value)
         {

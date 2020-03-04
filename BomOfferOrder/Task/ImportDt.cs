@@ -121,7 +121,7 @@ namespace BomOfferOrder.Task
                 }
             }
             //使用Headid放到T_OfferOrderHead表内作判断,若有的,就作更新处理,反之按插入处理
-            else if (tablename== "T_OfferOrderHead")
+            else if (tablename == "T_OfferOrderHead")
             {
                 //获取T_OfferOrderHead表的数据
                 var dt = SearchOfferOrderHeadDt();
@@ -183,6 +183,7 @@ namespace BomOfferOrder.Task
                     newrow[6] = t[6];             //占比
                     newrow[7] = t[7];             //物料单价(含税)
                     newrow[8] = t[8];             //物料成本(含税)
+                    newrow[9] = t[9];             //备注
                     insertdtltemp.Rows.Add(newrow);
                 }
 
@@ -200,6 +201,7 @@ namespace BomOfferOrder.Task
                     newrow[6] = t[6];          //占比
                     newrow[7] = t[7];          //物料单价(含税)
                     newrow[8] = t[8];          //物料成本(含税)
+                    newrow[9] = t[9];          //备注
                     updatedtltemp.Rows.Add(newrow);
                 }
 
@@ -333,6 +335,7 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@ratioQty", SqlDbType.Decimal, 4, "ratioQty");
                     da.UpdateCommand.Parameters.Add("@MaterialPrice", SqlDbType.Decimal, 4, "MaterialPrice");
                     da.UpdateCommand.Parameters.Add("@MaterialAmount", SqlDbType.Decimal, 4, "MaterialAmount");
+                    da.UpdateCommand.Parameters.Add("@Remark", SqlDbType.VarChar,500,"Remark");
                     break;
                 case "T_AD_User":
                     da.UpdateCommand.Parameters.Add("@Userid", SqlDbType.Int, 8, "Userid");
@@ -392,7 +395,6 @@ namespace BomOfferOrder.Task
         private DataTable GetDataToOfferOrderHeadDt(int fid,string funState, DataTable dt, DataRow sourcerow)
         {
             //必须‘产成品名称’不在dt内,才将数据插入
-            //
             if (dt.Select("ProductName='"+ sourcerow[10] +"'").Length == 0)
             {
                 var newrow = dt.NewRow();
@@ -437,6 +439,7 @@ namespace BomOfferOrder.Task
             newrow[6] = sourcerow[30];      //占比
             newrow[7] = sourcerow[31];      //物料单价(含税)
             newrow[8] = sourcerow[32];      //物料成本(含税)
+            newrow[9] =sourcerow[33];       //备注
             dt.Rows.Add(newrow);
             return dt;
         }

@@ -64,7 +64,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(288, 27);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Bom 成本报价单修改工具";
+            this.label1.Text = "Bom 成本报价单修改系统";
             // 
             // pbimg
             // 
