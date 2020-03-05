@@ -413,7 +413,7 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="funState"></param>
         /// <param name="typeid">单据类型 0:BOM成本报价单 1:新产品成本报价单 2:空白报价单 </param>
-        /// <param name="dt"></param>
+        /// <param name="dt">数据源</param>
         /// <param name="materialdt">原材料 ‘原漆半成品’‘产成品’DT</param>
         /// <param name="historydt">新产品报价单历史记录DT</param>
         /// <param name="custinfodt">记录K3客户列表DT</param>
@@ -441,7 +441,15 @@ namespace BomOfferOrder.UI
                 //单据状态:创建 C
                 if (_funState == "C")
                 {
-                    FunStateCUse(funState,dt);
+                    //此为‘空白报价单’复制功能使用
+                    if (typeid == 2 && dt != null)
+                    {
+                        FunStateEmptyOrder(dt);
+                    }
+                    else
+                    {
+                        FunStateCUse(funState,dt);
+                    }
                 }
                 //单据状态:读取 R
                 else
@@ -456,6 +464,18 @@ namespace BomOfferOrder.UI
                         txtmi.Text = "0";                          //产品密度(KG/L)
                         OnInitialize(dbList.MakeGridViewTemp());   //将临时表(空行记录)插入到GridView内
                     }
+                    //此为‘空白报价单’复制功能使用
+                    else if (funState == "R" && typeid == 2 && dt != null)
+                    {
+                        //若dt.rows[25]为空的话,就执行
+                        if (dt.Rows[0][25] == null)
+                        {
+                            FunStateEmptyOrder(dt);
+                        }
+                        //读取
+                        FunStateRUse(funState,dt);
+                    }
+                    //将从数据库获取的数据读取
                     else
                     {
                         FunStateRUse(funState, dt);
@@ -626,6 +646,33 @@ namespace BomOfferOrder.UI
                 resultdt.Columns.Clear();
             }
             return resultdt;
+        }
+
+        /// <summary>
+        /// '空白报价单'=>‘复制’功能使用
+        /// </summary>
+        /// <param name="sourcedt"></param>
+        private void FunStateEmptyOrder(DataTable sourcedt)
+        {
+            //将相关值插入至对应的文本框内
+            _headid = Convert.ToInt32(sourcedt.Rows[0][9]);                                                  //Headid
+            txtname.Text = Convert.ToString(sourcedt.Rows[0][10]);                                           //产品名称
+            txtbao.Text = Convert.ToString(sourcedt.Rows[0][11]);                                            //包装规格
+
+            txtmi.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][12]), 4));            //产品密度(KG/L)
+            txtbaochenben.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][14]), 4));    //包装成本
+            txtren.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][15]), 4));           //人工及制造费用
+            txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][16]), 4));            //成本(元/KG)
+            txtl.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][17]), 4));             //成本(元/L)
+            txt50.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][18]), 4));            //50%报价
+            txt45.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][19]), 4));            //45%报价
+            txt40.Text = Convert.ToString(Math.Round(Convert.ToDecimal(sourcedt.Rows[0][20]), 4));            //40%报价
+
+            txtremark.Text = Convert.ToString(sourcedt.Rows[0][21]);                                         //备注
+            txtbom.Text = Convert.ToString(sourcedt.Rows[0][22]);                                            //对应BOM版本编号
+            txtcust.Text = Convert.ToString(sourcedt.Rows[0][24]);                                           //客户名称
+            //将临时表(空行记录)插入到GridView内
+            OnInitialize(dbList.MakeGridViewTemp());   
         }
 
         /// <summary>

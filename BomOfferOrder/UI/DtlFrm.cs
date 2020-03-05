@@ -387,13 +387,51 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                //提示信息
-                var clickMessage = $"您所选择的信息为:\n 单据名称:{txtbom.Text} \n 是否继续? \n 注:审核后需反审核才能对该单据的记录进行修改, \n 请谨慎处理.";
-                //
-                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-                {
-                    //获取当前页的表体信息
+                //获取当前页的TabPageId
+                var tabpagesid = tctotalpage.SelectedIndex;
+                //利用PageId获取其对应的PAGE内容
+                var showdetail = tctotalpage.TabPages[tabpagesid].Controls[0] as ShowDetailFrm;
 
+                //提示信息
+                if (showdetail != null)
+                {
+                    var clickMessage = $"您所选择的信息为:\n 产品名称:{showdetail.txtname.Text} \n 是否将其相关的信息复制并创建新页? " +
+                                       $"\n 注:此复制操作不包括物料明细信息, \n 请谨慎处理.";
+                    //提示信息
+                    if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        //若‘产品名称’为空就不能进行复制
+                        if(showdetail.txtname.Text=="") throw new Exception("'产品名称'为空,不能进行复制, \n 请填写后再继续");
+
+                        //获取showdetail内表头的各项值,注:'产品成本含税'及'材料成本'除外，此两项为0
+                        //获取BOM报价单临时表
+                        var resultdt= dbList.GetBomDtlTemp();
+                        var newrow = resultdt.NewRow();
+                        newrow[9] =  0;                                                             //Headid
+                        newrow[10] = "复制_"+showdetail.txtname.Text;                               //产品名称(物料名称)
+                        newrow[11] = showdetail.txtbao.Text;                                        //包装规格
+                        newrow[12] = Convert.ToDecimal(showdetail.txtmi.Text);                      //产品密度(KG/L)
+                        newrow[13] = 0;                                                             //材料成本(不含税)
+                        newrow[14] = Convert.ToDecimal(showdetail.txtbaochenben.Text);              //包装成本
+                        newrow[15] = Convert.ToDecimal(showdetail.txtren.Text);                     //人工及制造费用
+                        newrow[16] = Convert.ToDecimal(showdetail.txtkg.Text);                      //成本(元/KG)
+                        newrow[17] = Convert.ToDecimal(showdetail.txtl.Text);                       //成本(元/L)
+                        newrow[18] = Convert.ToDecimal(showdetail.txt50.Text);                      //50%报价
+                        newrow[19] = Convert.ToDecimal(showdetail.txt45.Text);                      //45%报价
+                        newrow[20] = Convert.ToDecimal(showdetail.txt40.Text);                      //40%报价
+                        newrow[21] = showdetail.txtremark.Text;                                     //备注
+                        newrow[22] = showdetail.txtbom.Text;                                        //对应BOM版本编号
+                        newrow[23] = 0;                                                             //产品成本含税(物料单价)
+                        newrow[24] = showdetail.txtcust.Text;                                       //客户
+                        resultdt.Rows.Add(newrow);
+
+                        //定义新页名称
+                        var tabname = "";
+                        //将相关值放至中转方法内进行创建新页
+                        CreateDetailFrm(tabname, resultdt, _materialdt, _historydt, _custinfodt, _pricelistdt, _purchaseInstockdt);
+                        //权限控制
+                        PrivilegeControl();
+                    }
                 }
             }
             catch (Exception ex)
