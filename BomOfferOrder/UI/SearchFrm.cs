@@ -253,7 +253,7 @@ namespace BomOfferOrder.UI
                 //根据所选择的行获取其fid值
                 var fid = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
                 //根据所选择的行获取其单据状态
-                var orderstatus = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[2].Value);
+                var orderstatus = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[3].Value);
 
                 //判断若所选的行中的‘单据状态’不为已审核,即跳出异常
                 if (orderstatus != "已审核") throw new Exception($"单据'{oaorder}'的单据状态不为已审核,不能进行反审核操作");

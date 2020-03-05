@@ -468,12 +468,15 @@ namespace BomOfferOrder.UI
                     else if (funState == "R" && typeid == 2 && dt != null)
                     {
                         //若dt.rows[25]为空的话,就执行
-                        if (dt.Rows[0][25] == null)
+                        if (dt.Rows[0][25] == DBNull.Value)
                         {
                             FunStateEmptyOrder(dt);
                         }
-                        //读取
-                        FunStateRUse(funState,dt);
+                        else
+                        {
+                            //若dt.rows[25]不为空的话,就表示为读取数据
+                            FunStateRUse(funState,dt);
+                        }
                     }
                     //将从数据库获取的数据读取
                     else
