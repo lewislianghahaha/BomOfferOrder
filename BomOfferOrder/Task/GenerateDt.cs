@@ -339,9 +339,9 @@ namespace BomOfferOrder.Task
                     oldtotalamount = Convert.ToDecimal(dtlrows[0][5]);  //旧标准成本单价
                     totalamount = Convert.ToDecimal(dtlrows[0][6]);     //标准成本单价
 
-                    //计算‘每公斤材料成本单价’=('旧标准成本单价'/'人工及制造费用')
-                    materialprice = rencost == Convert.ToDecimal(0)
-                        ? 0 : Convert.ToDecimal(decimal.Round(decimal.Round(oldtotalamount, 4) / decimal.Round(rencost, 4), 4));
+                    //计算‘每公斤材料成本单价’=('旧标准成本单价'/'重量')
+                    materialprice = decimal.Round(Convert.ToDecimal(rows[5]), 4) == Convert.ToDecimal(0)
+                        ? 0 : Convert.ToDecimal(decimal.Round(decimal.Round(oldtotalamount, 4) / decimal.Round(Convert.ToDecimal(rows[5]), 4), 4));
 
                     //计算‘每公斤含税成本小计’=('每公斤材料成本单价'+'人工及制造费用')
                     kgtotal = decimal.Round(materialprice + rencost,4);
