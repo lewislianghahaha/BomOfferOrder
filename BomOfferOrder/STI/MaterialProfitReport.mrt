@@ -15,7 +15,7 @@
           <value>标准成本单价,System.Decimal</value>
           <value>销售计价单位,System.String</value>
           <value>销售价目表售价,System.Decimal</value>
-          <value>毛利润率,System.Decimal</value>
+          <value>毛利润率,System.String</value>
           <value>计价成本,System.Decimal</value>
           <value>计价单位单位成本,System.Decimal</value>
           <value>计价单位单位成本KG,System.Decimal</value>
@@ -467,8 +467,8 @@
               <Name>Text33</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
-              <Text>人工制造
-费用</Text>
+              <Text>人工及
+制造费用</Text>
               <TextBrush>White</TextBrush>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
@@ -476,7 +476,7 @@
             <Text36 Ref="29" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>29,0,2,1.2</ClientRectangle>
+              <ClientRectangle>29,0,2.4,1.2</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,0</Font>
@@ -494,7 +494,7 @@
             <Text39 Ref="30" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>31,0,1.6,1.2</ClientRectangle>
+              <ClientRectangle>31.4,0,1.6,1.2</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,0</Font>
@@ -513,7 +513,7 @@
             <Text41 Ref="31" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>32.6,0,1.8,1.2</ClientRectangle>
+              <ClientRectangle>33,0,2.2,1.2</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,0</Font>
@@ -531,7 +531,7 @@
             <Text43 Ref="32" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>34.4,0,1.6,1.2</ClientRectangle>
+              <ClientRectangle>35.2,0,1.6,1.2</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,0</Font>
@@ -550,7 +550,7 @@
             <Text45 Ref="33" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>36,0,2,1.2</ClientRectangle>
+              <ClientRectangle>36.8,0,1.6,1.2</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,0</Font>
@@ -568,7 +568,7 @@
             <Text46 Ref="34" type="Text" isKey="true">
               <Border>Top, Bottom;Black;1;Solid;False;4;Black</Border>
               <Brush>DodgerBlue</Brush>
-              <ClientRectangle>38,0,2,1.2</ClientRectangle>
+              <ClientRectangle>38.4,0,1.6,1.2</ClientRectangle>
               <ComponentStyle>样式1</ComponentStyle>
               <Conditions isList="true" count="0" />
               <Font>Arial Narrow,9,Bold,Point,False,0</Font>
@@ -703,35 +703,35 @@
               <ReferenceToGuid>b97ab510228b416f90775ecd609cfa83</ReferenceToGuid>
             </StartPointPrimitive33>
             <StartPointPrimitive35 Ref="52" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>31,0,0,0</ClientRectangle>
+              <ClientRectangle>31.4,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive35</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
               <ReferenceToGuid>d3cb50b2fd674aedb437034673dd3b44</ReferenceToGuid>
             </StartPointPrimitive35>
             <StartPointPrimitive37 Ref="53" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>32.6,0,0,0</ClientRectangle>
+              <ClientRectangle>33,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive37</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
               <ReferenceToGuid>6fb8565fd540426d808b5bcb186e3459</ReferenceToGuid>
             </StartPointPrimitive37>
             <StartPointPrimitive39 Ref="54" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>34.4,0,0,0</ClientRectangle>
+              <ClientRectangle>35.2,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive39</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
               <ReferenceToGuid>b4dde28cb2ee4232a65bec8df17581b8</ReferenceToGuid>
             </StartPointPrimitive39>
             <StartPointPrimitive42 Ref="55" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>36,0,0,0</ClientRectangle>
+              <ClientRectangle>36.8,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive42</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
               <ReferenceToGuid>ddc7764054134c4f8ac812108e898efd</ReferenceToGuid>
             </StartPointPrimitive42>
             <StartPointPrimitive43 Ref="56" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>38,0,0,0</ClientRectangle>
+              <ClientRectangle>38.4,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive43</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
@@ -744,6 +744,7 @@
           <Parent isRef="3" />
         </HeaderBand1>
         <DataBand1 Ref="57" type="DataBand" isKey="true">
+          <Border>All;Black;1;Solid;False;4;Black</Border>
           <Brush>Transparent</Brush>
           <BusinessObjectGuid isNull="true" />
           <ClientRectangle>0,4,40,0.6</ClientRectangle>
@@ -763,27 +764,13 @@
               <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
               <VertAlignment>Center</VertAlignment>
             </Text2>
-            <Text4 Ref="59" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>2.2,0,2.4,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,6</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text4</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.物料名称}</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <VertAlignment>Center</VertAlignment>
-            </Text4>
-            <Text5 Ref="60" type="Text" isKey="true">
+            <Text5 Ref="59" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>4.6,0,1.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,6</Font>
+              <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text5</Name>
               <Page isRef="3" />
@@ -793,22 +780,21 @@
               <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
               <VertAlignment>Center</VertAlignment>
             </Text5>
-            <Text8 Ref="61" type="Text" isKey="true">
+            <Text8 Ref="60" type="Text" isKey="true">
               <Brush>Transparent</Brush>
-              <CanGrow>True</CanGrow>
               <ClientRectangle>5.8,0,1.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,6</Font>
+              <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text8</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <Text>{MaterialProfit.罐箱}</Text>
               <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
               <VertAlignment>Center</VertAlignment>
             </Text8>
-            <Text10 Ref="62" type="Text" isKey="true">
+            <Text10 Ref="61" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>7,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -822,7 +808,7 @@
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text10>
-            <Text12 Ref="63" type="Text" isKey="true">
+            <Text12 Ref="62" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>8.8,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -836,9 +822,8 @@
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text12>
-            <Text14 Ref="64" type="Text" isKey="true">
+            <Text14 Ref="63" type="Text" isKey="true">
               <Brush>Transparent</Brush>
-              <CanGrow>True</CanGrow>
               <ClientRectangle>10.6,0,1.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,7</Font>
@@ -849,14 +834,14 @@
               <Parent isRef="57" />
               <Text>{MaterialProfit.销售计价单位}</Text>
               <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
               <VertAlignment>Center</VertAlignment>
             </Text14>
-            <Text16 Ref="65" type="Text" isKey="true">
+            <Text16 Ref="64" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>11.8,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text16</Name>
               <Page isRef="3" />
@@ -865,16 +850,199 @@
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text16>
-            <Text18 Ref="66" type="Text" isKey="true">
-              <BeforePrintEvent>if(Text16.Text!="")
-{	
-	Text18.Text=System.Convert.ToString(System.Math.Round((System.Convert.ToInt32(Text16.Text)-System.Convert.ToInt32(Text20.Text))/System.Convert.ToInt32(Text16.Text)*100),0)+"%";
-}</BeforePrintEvent>
+            <Text22 Ref="65" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>16.8,0,2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text22</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.计价单位单位成本}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text22>
+            <Text24 Ref="66" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>18.8,0,1.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text24</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.计价单位单位成本KG}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text24>
+            <Text28 Ref="67" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>22,0,1.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text28</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.重量}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>DataColumn</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text28>
+            <Text35 Ref="68" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>27.4,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text35</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.人工及制造费用}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>DataColumn</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text35>
+            <Text37 Ref="69" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>29,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text37</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.包装罐}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+              <VertAlignment>Center</VertAlignment>
+            </Text37>
+            <Text40 Ref="70" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>31.4,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text40</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.包装罐单价}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text40>
+            <Text42 Ref="71" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>33,0,2.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text42</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.纸箱}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+              <VertAlignment>Center</VertAlignment>
+            </Text42>
+            <Text44 Ref="72" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>35.2,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text44</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.纸箱单价}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text44>
+            <Text26 Ref="73" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>20.6,0,1.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text26</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.换算率}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text26>
+            <Text47 Ref="74" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>36.8,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text47</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.分类}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text47>
+            <Text48 Ref="75" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>38.4,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text48</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.品类}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text48>
+            <Text4 Ref="76" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>2.2,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text4</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.物料名称}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+              <VertAlignment>Center</VertAlignment>
+            </Text4>
+            <Text32 Ref="77" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>25.4,0,2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text32</Name>
+              <Page isRef="3" />
+              <Parent isRef="57" />
+              <Text>{MaterialProfit.每公斤材料成本单价}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text32>
+            <Text18 Ref="78" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>13.8,0,1.4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,7</Font>
-              <HorAlignment>Right</HorAlignment>
+              <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text18</Name>
               <Page isRef="3" />
@@ -883,15 +1051,7 @@
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text18>
-            <Text19 Ref="67" type="Text" isKey="true">
-              <BeforePrintEvent>if(Text14.Text=="千克")
-{
-	Text20.Text=Text30.Text;
-}
-else
-{
-	Text20.Text=Text22.Text;
-}</BeforePrintEvent>
+            <Text19 Ref="79" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>15.2,0,1.6,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -905,67 +1065,12 @@ else
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text19>
-            <Text22 Ref="68" type="Text" isKey="true">
-              <BeforePrintEvent>if(Text14.Text=="千克")
-{
-	Text22.Text="";
-}
-else
-{	
-	Text22.Text=System.Convert.ToString(System.Math.Round(ToInt32(Text26.Text)*System.Convert.ToInt32(Text32.Text),0));
-}</BeforePrintEvent>
-              <Brush>Transparent</Brush>
-              <ClientRectangle>16.8,0,2,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text22</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.计价单位单位成本}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text22>
-            <Text24 Ref="69" type="Text" isKey="true">
-              <BeforePrintEvent>if(Text14.Text=="千克")
-{	
-	Text24.Text=Text35.Text;
-}
-else
-{
-	Text24.Text="";
-}</BeforePrintEvent>
-              <Brush>Transparent</Brush>
-              <ClientRectangle>18.8,0,1.8,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text24</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.计价单位单位成本KG}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text24>
-            <Text28 Ref="70" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>22,0,1.4,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text28</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.重量}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text28>
-            <Text30 Ref="71" type="Text" isKey="true">
-              <BeforePrintEvent>Text30.Text=System.Math.Round(System.Convert.ToInt32(Text32.Text)+System.Convert.ToInt32(Text35.Text),0);</BeforePrintEvent>
+            <Text30 Ref="80" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>23.4,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Consolas,7</Font>
+              <HorAlignment>Right</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text30</Name>
               <Page isRef="3" />
@@ -974,135 +1079,6 @@ else
               <TextBrush>Black</TextBrush>
               <VertAlignment>Center</VertAlignment>
             </Text30>
-            <Text32 Ref="72" type="Text" isKey="true">
-              <BeforePrintEvent>if(Text35.Text!="")
-{
-	Text32.Text=System.Convert.ToString(System.Math.Round(System.Convert.ToInt32(Text10.Text)/System.Convert.ToInt32(Text35.Text),0));
-}</BeforePrintEvent>
-              <Brush>Transparent</Brush>
-              <ClientRectangle>25.4,0,2,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text32</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.每公斤材料成本单价}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text32>
-            <Text35 Ref="73" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>27.4,0,1.6,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text35</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.人工及制造费用}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text35>
-            <Text37 Ref="74" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>29,0,2,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text37</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.包装罐}</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <VertAlignment>Center</VertAlignment>
-            </Text37>
-            <Text40 Ref="75" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>31,0,1.6,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text40</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.包装罐单价}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text40>
-            <Text42 Ref="76" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>32.6,0,1.8,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text42</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.纸箱}</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <VertAlignment>Center</VertAlignment>
-            </Text42>
-            <Text44 Ref="77" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>34.4,0,1.6,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text44</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.纸箱单价}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text44>
-            <Text26 Ref="78" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>20.6,0,1.4,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text26</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.换算率}</Text>
-              <TextBrush>Black</TextBrush>
-              <VertAlignment>Center</VertAlignment>
-            </Text26>
-            <Text47 Ref="79" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>36,0,2,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text47</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.分类}</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <VertAlignment>Center</VertAlignment>
-            </Text47>
-            <Text48 Ref="80" type="Text" isKey="true">
-              <Brush>Transparent</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>38,0,2,0.6</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Consolas,7</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text48</Name>
-              <Page isRef="3" />
-              <Parent isRef="57" />
-              <Text>{MaterialProfit.品类}</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <VertAlignment>Center</VertAlignment>
-            </Text48>
             <StartPointPrimitive1 Ref="81" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
               <ClientRectangle>2.2,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive1</Name>
@@ -1342,70 +1318,70 @@ else
               <ReferenceToGuid>73b2e25b308948f893014ea95c81eb8c</ReferenceToGuid>
             </EndPointPrimitive34>
             <StartPointPrimitive36 Ref="115" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>31,0,0,0</ClientRectangle>
+              <ClientRectangle>31.4,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive36</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>260639353a3b4320945518fa97675296</ReferenceToGuid>
             </StartPointPrimitive36>
             <EndPointPrimitive36 Ref="116" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>31,0.6,0,0</ClientRectangle>
+              <ClientRectangle>31.4,0.6,0,0</ClientRectangle>
               <Name>EndPointPrimitive36</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>260639353a3b4320945518fa97675296</ReferenceToGuid>
             </EndPointPrimitive36>
             <StartPointPrimitive38 Ref="117" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>32.6,0,0,0</ClientRectangle>
+              <ClientRectangle>33,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive38</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>881fd574472c446da450e754672651cb</ReferenceToGuid>
             </StartPointPrimitive38>
             <EndPointPrimitive38 Ref="118" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>32.6,0.6,0,0</ClientRectangle>
+              <ClientRectangle>33,0.6,0,0</ClientRectangle>
               <Name>EndPointPrimitive38</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>881fd574472c446da450e754672651cb</ReferenceToGuid>
             </EndPointPrimitive38>
             <StartPointPrimitive40 Ref="119" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>34.4,0,0,0</ClientRectangle>
+              <ClientRectangle>35.2,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive40</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>84017b33856048de938cbda1e67b8c13</ReferenceToGuid>
             </StartPointPrimitive40>
             <EndPointPrimitive40 Ref="120" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>34.4,0.6,0,0</ClientRectangle>
+              <ClientRectangle>35.2,0.6,0,0</ClientRectangle>
               <Name>EndPointPrimitive40</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>84017b33856048de938cbda1e67b8c13</ReferenceToGuid>
             </EndPointPrimitive40>
             <StartPointPrimitive41 Ref="121" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>36,0,0,0</ClientRectangle>
+              <ClientRectangle>36.8,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive41</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>ad1350e057d64255b22278ffc1e820d8</ReferenceToGuid>
             </StartPointPrimitive41>
             <EndPointPrimitive41 Ref="122" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>36,0.6,0,0</ClientRectangle>
+              <ClientRectangle>36.8,0.6,0,0</ClientRectangle>
               <Name>EndPointPrimitive41</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>ad1350e057d64255b22278ffc1e820d8</ReferenceToGuid>
             </EndPointPrimitive41>
             <StartPointPrimitive44 Ref="123" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
-              <ClientRectangle>38,0,0,0</ClientRectangle>
+              <ClientRectangle>38.4,0,0,0</ClientRectangle>
               <Name>StartPointPrimitive44</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
               <ReferenceToGuid>8270346c9cbe410ca4d209cfff745da6</ReferenceToGuid>
             </StartPointPrimitive44>
             <EndPointPrimitive44 Ref="124" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-              <ClientRectangle>38,0.6,0,0</ClientRectangle>
+              <ClientRectangle>38.4,0.6,0,0</ClientRectangle>
               <Name>EndPointPrimitive44</Name>
               <Page isRef="3" />
               <Parent isRef="57" />
@@ -1898,7 +1874,7 @@ else
           </StartCap>
         </VerticalLinePrimitive34>
         <VerticalLinePrimitive35 Ref="227" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>31,2.2,0.0254,1.2</ClientRectangle>
+          <ClientRectangle>31.4,2.2,0.0254,1.2</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="228" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1912,7 +1888,7 @@ else
           </StartCap>
         </VerticalLinePrimitive35>
         <VerticalLinePrimitive36 Ref="230" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>31,4,0.0254,0.6</ClientRectangle>
+          <ClientRectangle>31.4,4,0.0254,0.6</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="231" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1926,7 +1902,7 @@ else
           </StartCap>
         </VerticalLinePrimitive36>
         <VerticalLinePrimitive37 Ref="233" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>32.6,2.2,0.0254,1.2</ClientRectangle>
+          <ClientRectangle>33,2.2,0.0254,1.2</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="234" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1940,7 +1916,7 @@ else
           </StartCap>
         </VerticalLinePrimitive37>
         <VerticalLinePrimitive38 Ref="236" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>32.6,4,0.0254,0.6</ClientRectangle>
+          <ClientRectangle>33,4,0.0254,0.6</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="237" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1954,7 +1930,7 @@ else
           </StartCap>
         </VerticalLinePrimitive38>
         <VerticalLinePrimitive39 Ref="239" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>34.4,2.2,0.0254,1.2</ClientRectangle>
+          <ClientRectangle>35.2,2.2,0.0254,1.2</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="240" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1968,7 +1944,7 @@ else
           </StartCap>
         </VerticalLinePrimitive39>
         <VerticalLinePrimitive40 Ref="242" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>34.4,4,0.0254,0.6</ClientRectangle>
+          <ClientRectangle>35.2,4,0.0254,0.6</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="243" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1982,7 +1958,7 @@ else
           </StartCap>
         </VerticalLinePrimitive40>
         <VerticalLinePrimitive41 Ref="245" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>36,4,0.0254,0.6</ClientRectangle>
+          <ClientRectangle>36.8,4,0.0254,0.6</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="246" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -1996,7 +1972,7 @@ else
           </StartCap>
         </VerticalLinePrimitive41>
         <VerticalLinePrimitive42 Ref="248" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>36,2.2,0.0254,1.2</ClientRectangle>
+          <ClientRectangle>36.8,2.2,0.0254,1.2</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="249" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -2129,35 +2105,35 @@ else
           <ReferenceToGuid>b97ab510228b416f90775ecd609cfa83</ReferenceToGuid>
         </EndPointPrimitive33>
         <EndPointPrimitive35 Ref="268" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-          <ClientRectangle>31,3.4,0,0</ClientRectangle>
+          <ClientRectangle>31.4,3.4,0,0</ClientRectangle>
           <Name>EndPointPrimitive35</Name>
           <Page isRef="3" />
           <Parent isRef="3" />
           <ReferenceToGuid>d3cb50b2fd674aedb437034673dd3b44</ReferenceToGuid>
         </EndPointPrimitive35>
         <EndPointPrimitive37 Ref="269" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-          <ClientRectangle>32.6,3.4,0,0</ClientRectangle>
+          <ClientRectangle>33,3.4,0,0</ClientRectangle>
           <Name>EndPointPrimitive37</Name>
           <Page isRef="3" />
           <Parent isRef="3" />
           <ReferenceToGuid>6fb8565fd540426d808b5bcb186e3459</ReferenceToGuid>
         </EndPointPrimitive37>
         <EndPointPrimitive39 Ref="270" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-          <ClientRectangle>34.4,3.4,0,0</ClientRectangle>
+          <ClientRectangle>35.2,3.4,0,0</ClientRectangle>
           <Name>EndPointPrimitive39</Name>
           <Page isRef="3" />
           <Parent isRef="3" />
           <ReferenceToGuid>b4dde28cb2ee4232a65bec8df17581b8</ReferenceToGuid>
         </EndPointPrimitive39>
         <EndPointPrimitive42 Ref="271" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-          <ClientRectangle>36,3.4,0,0</ClientRectangle>
+          <ClientRectangle>36.8,3.4,0,0</ClientRectangle>
           <Name>EndPointPrimitive42</Name>
           <Page isRef="3" />
           <Parent isRef="3" />
           <ReferenceToGuid>ddc7764054134c4f8ac812108e898efd</ReferenceToGuid>
         </EndPointPrimitive42>
         <VerticalLinePrimitive43 Ref="272" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>38,2.2,0.0254,1.2</ClientRectangle>
+          <ClientRectangle>38.4,2.2,0.0254,1.2</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="273" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -2171,14 +2147,14 @@ else
           </StartCap>
         </VerticalLinePrimitive43>
         <EndPointPrimitive43 Ref="275" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
-          <ClientRectangle>38,3.4,0,0</ClientRectangle>
+          <ClientRectangle>38.4,3.4,0,0</ClientRectangle>
           <Name>EndPointPrimitive43</Name>
           <Page isRef="3" />
           <Parent isRef="3" />
           <ReferenceToGuid>fdbcaba8ffda44908172cfd59743ecb7</ReferenceToGuid>
         </EndPointPrimitive43>
         <VerticalLinePrimitive44 Ref="276" type="VerticalLinePrimitive" isKey="true">
-          <ClientRectangle>38,4,0.0254,0.6</ClientRectangle>
+          <ClientRectangle>38.4,4,0.0254,0.6</ClientRectangle>
           <Color>Black</Color>
           <EndCap Ref="277" type="Cap" isKey="true">
             <Color>Black</Color>
@@ -2219,10 +2195,10 @@ else
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>2/14/2020 2:59:13 PM</ReportChanged>
+  <ReportChanged>3/13/2020 2:44:52 PM</ReportChanged>
   <ReportCreated>2/13/2020 1:56:13 PM</ReportCreated>
   <ReportFile>D:\Project\K3Cloud_成本BOM报价单相关修改_20190828\Files\STI\MaterialProfitReport.mrt</ReportFile>
-  <ReportGuid>4995dec974ca442291595e0da55b9253</ReportGuid>
+  <ReportGuid>ed0a37254b794257bb5dd8678473edf7</ReportGuid>
   <ReportImage isNull="true" />
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
@@ -2241,10 +2217,14 @@ namespace Reports
 {
     public class Report : Stimulsoft.Report.StiReport
     {
-        public Report()        {
+        public Report()        
+		{
             this.InitializeComponent();
         }
+		
+		
 
+		
         #region StiReport Designer generated code - do not modify
 		#endregion StiReport Designer generated code - do not modify
     }
