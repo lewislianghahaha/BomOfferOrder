@@ -1423,7 +1423,7 @@ namespace BomOfferOrder.UI
             //材料成本(不含税) 公式:物料成本之和(产品成本含税)/1.13
             txtmaterial.Text = Convert.ToString(Math.Round(materialsumqty / Convert.ToDecimal(1.13), 4));
 
-            //成本(元/KG) 公式:材料成本+包装成本(自填)+人工制造费用(自填)
+            //成本(元/KG) 公式:材料成本+包装成本(自填)+人工制造费用(自填)=>已取消
             //change date:20200225:成本(元/KG)=产品成本含税+包装成本(自填)+人工制造费用(自填)
             //txtkg.Text = Convert.ToString(Math.Round(Convert.ToDecimal(txtmaterial.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text),4));
             txtkg.Text= Convert.ToString(Math.Round(Convert.ToDecimal(txtprice.Text) + Convert.ToDecimal(txtbaochenben.Text) + Convert.ToDecimal(txtren.Text), 4));

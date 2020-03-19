@@ -354,7 +354,21 @@ namespace BomOfferOrder.Task
                         ? 0 : decimal.Round(decimal.Round(Convert.ToDecimal(rows[4]), 4) * materialprice,4);
 
                     //计算‘计价成本’=(若计价单位为KG,就取‘每公斤含税成本小计’值;反之,取'计价单位单位成本(套/升/罐/桶)'值)
-                    zichenbin = Convert.ToString(rows[9]) == "千克" ? kgtotal : price;
+                    //change date:若计价单位为套,公式为:净重*每公斤含税成本小计
+                    switch (Convert.ToString(rows[9]))
+                    {
+                        case "千克":
+                            zichenbin = kgtotal;
+                            break;
+                        case "套":
+                            zichenbin = kgtotal * decimal.Round(Convert.ToDecimal(rows[5]), 4);
+                            break;
+                        default:
+                            zichenbin = price;
+                            break;
+                    }
+
+                    //zichenbin = Convert.ToString(rows[9]) == "千克" ? kgtotal : price;
 
                     //计算‘毛利润率’=((销售价目表售价-计价成本)/销售价目表售价*100)
                     mao = salesprice == 0
