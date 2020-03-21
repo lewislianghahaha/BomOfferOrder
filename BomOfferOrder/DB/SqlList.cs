@@ -898,7 +898,9 @@
             {
                 _result = $@"
                                 SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,
-                                       d.FSPECIFICATION '规格型号',a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重',
+                                       d.FSPECIFICATION '规格型号',
+                                       CASE A.F_YTC_DECIMAL7 WHEN 0 THEN a.F_YTC_DECIMAL1 ELSE E.FNETWEIGHT/A.F_YTC_DECIMAL7 END '密度(KG/L)', /*a.F_YTC_DECIMAL1*/
+                                       e.FNETWEIGHT '净重',
                                        a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类,
                                        z2.FNAME 销售计价单位
 
@@ -940,7 +942,8 @@
                 _result = $@"
                                  SELECT a.FMATERIALID,a.FNUMBER 物料编码,d.FNAME 物料名称,
                                         d.FSPECIFICATION '规格型号',
-										a.F_YTC_DECIMAL1 '密度(KG/L)',e.FNETWEIGHT '净重',
+										CASE A.F_YTC_DECIMAL7 WHEN 0 THEN a.F_YTC_DECIMAL1 ELSE E.FNETWEIGHT/A.F_YTC_DECIMAL7 END '密度(KG/L)', /*a.F_YTC_DECIMAL1*/
+                                        e.FNETWEIGHT '净重',
                                         a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类,
                                         z2.FNAME 销售计价单位
 
