@@ -349,9 +349,9 @@ namespace BomOfferOrder.Task
                     //计算‘计价单位单位成本(千克)’=(若计价单位为KG,使用‘人工及制造费用’;反之为空)
                     pricekg = Convert.ToString(rows[9]) == "千克" ? rencost : Convert.ToDecimal(null);
 
-                    //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空,反之,使用‘换算率’*‘每公斤材料成本单价’)
+                    //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空,反之,使用‘换算率’*‘每公斤含税成本小计’)
                     price = Convert.ToString(rows[9]) == "千克"
-                        ? 0 : decimal.Round(decimal.Round(Convert.ToDecimal(rows[4]), 4) * materialprice,4);
+                        ? 0 : decimal.Round(decimal.Round(Convert.ToDecimal(rows[4]), 4) * kgtotal, 4);
 
                     //计算‘计价成本’=(若计价单位为KG,就取‘每公斤含税成本小计’值;反之,取'计价单位单位成本(套/升/罐/桶)'值)
                     //change date:若计价单位为套,公式为:净重*每公斤含税成本小计
