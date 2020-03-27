@@ -763,7 +763,6 @@
         public System.Windows.Forms.ToolStripMenuItem tmAdd;
         public System.Windows.Forms.ToolStripSeparator ts2;
         public System.Windows.Forms.ToolStripMenuItem tmdel;
-        private System.Windows.Forms.TextBox txtpeitotal;
         private System.Windows.Forms.Label label15;
         public System.Windows.Forms.TextBox txtcust;
         public System.Windows.Forms.DataGridView gvdtl;
@@ -775,5 +774,6 @@
         private System.Windows.Forms.ToolStripMenuItem tmHReplace;
         public System.Windows.Forms.ToolStripSeparator ts4;
         public System.Windows.Forms.ToolStripMenuItem tmimportexcel;
+        public System.Windows.Forms.TextBox txtpeitotal;
     }
 }

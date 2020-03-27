@@ -49,6 +49,8 @@ namespace BomOfferOrder.UI
 
         //定义关闭符号的宽
         const int CloseSize = 11;
+        //定义是否继续审核标记
+        private bool _continuemark = true;
         #endregion
 
         #region Set
@@ -569,11 +571,12 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                var clickMessage = string.Empty;
                 //检测所审核的TabPages内是否有GridView行没有一行也没有填的情况,若发现,跳出异常
-                if(!CheckTabPagesGridView()) throw new Exception($"检测到单据'{txtbom.Text}' 内有物料明细行没有填写,请至少填写一行再进行审核");
+                if (!CheckTabPagesGridView()) throw new Exception($"检测到单据'{txtbom.Text}' 内有物料明细行没有填写,请至少填写一行再进行审核");
 
-                var clickMessage = $"您所选择的信息为:\n 单据名称:{txtbom.Text} \n 是否继续? \n 注:审核后需反审核才能对该单据的记录进行修改, \n 请谨慎处理.";
-                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                clickMessage = $"您所选择的信息为:\n 单据名称:{txtbom.Text} \n 是否继续? \n 注:审核后需反审核才能对该单据的记录进行修改, \n 请谨慎处理.";
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     //获取BOM报价单临时表
                     _bomdt = dbList.GetBomDtlTemp();
@@ -585,81 +588,57 @@ namespace BomOfferOrder.UI
                     {
                         //循环获取TabPages内各页的内容
                         var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
+
                         if (showdetail != null)
                         {
                             var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
 
-                            //根据明细项循环获取其内部值
-                            foreach (DataRow rows in bomdtldt.Rows)
+                            //检测‘配方用量合计’是否小于99,就作出提示(注:只要有一个物料页签不满足条件,就会跳出整出循环)
+                            if (Convert.ToInt32(showdetail.txtpeitotal.Text) < 99)
                             {
-                                var newrow = _bomdt.NewRow();
-                                newrow[0] = _funState == "C" ? 0: _fid;                                     //Fid
-                                newrow[1] = txtbom.Text;                                                    //流水号
-                                newrow[2] = 0;                                                              //单据状态(0:已审核 1:反审核)
-                                newrow[3] = _funState == "C" ? DateTime.Now : _createtime;                  //创建日期
-                                newrow[4] = DateTime.Now;                                                   //审核日期
-                                newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
-                                newrow[6] = _typeid;                                                        //单据类型ID(0:BOM成本报价单 1:新产品成本报价单 2:空白报价单)
-                                newrow[7] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
-                                newrow[8] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
-
-                                newrow[9] = _funState == "C" ? 0 : showdetail.Headid;                       //Headid
-                                newrow[10] = showdetail.txtname.Text;                                       //产品名称(物料名称)
-                                newrow[11] = showdetail.txtbao.Text;                                        //包装规格
-                                newrow[12] = Convert.ToDecimal(showdetail.txtmi.Text);                      //产品密度(KG/L)
-                                newrow[13] = Convert.ToDecimal(showdetail.txtmaterial.Text);                //材料成本(不含税)
-                                newrow[14] = Convert.ToDecimal(showdetail.txtbaochenben.Text);              //包装成本
-                                newrow[15] = Convert.ToDecimal(showdetail.txtren.Text);                     //人工及制造费用
-                                newrow[16] = Convert.ToDecimal(showdetail.txtkg.Text);                      //成本(元/KG)
-                                newrow[17] = Convert.ToDecimal(showdetail.txtl.Text);                       //成本(元/L)
-                                newrow[18] = Convert.ToDecimal(showdetail.txt50.Text);                      //50%报价
-                                newrow[19] = Convert.ToDecimal(showdetail.txt45.Text);                      //45%报价
-                                newrow[20] = Convert.ToDecimal(showdetail.txt40.Text);                      //40%报价
-                                newrow[21] = showdetail.txtremark.Text;                                     //备注
-                                newrow[22] = showdetail.txtbom.Text;                                        //对应BOM版本编号
-                                newrow[23] = Convert.ToDecimal(showdetail.txtprice.Text);                   //产品成本含税(物料单价)
-                                newrow[24] = showdetail.txtcust.Text;                                       //客户
-
-                                newrow[25] = rows[0];                                                       //Entryid
-                                newrow[26] = rows[1];                                                       //物料编码ID
-                                newrow[27] = rows[2];                                                       //物料编码
-                                newrow[28] = rows[3];                                                       //物料名称
-                                newrow[29] = rows[4];                                                       //配方用量
-                                newrow[30] = rows[5];                                                       //占比
-                                newrow[31] = rows[6];                                                       //物料单价(含税)
-                                newrow[32] = rows[7];                                                       //物料成本(含税)
-                                newrow[33] = rows[8];                                                       //备注
-                                _bomdt.Rows.Add(newrow);
+                                clickMessage = $"检测到产品名称为'{showdetail.txtname.Text}'中的‘配方用量合计’小于99,是否继续?";
+                                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                                {
+                                    GenerateDt(bomdtldt,showdetail);
+                                }
+                                else
+                                {
+                                    _continuemark = false;
+                                    break;
+                                }
                             }
-                            //将各TabPages内GridView中的需要进行删除的记录合并整理
-                            if (_funState == "R" && showdetail.Deldt.Rows.Count>0)
+                            //正常操作
+                            else
                             {
-                                _deldt.Merge(showdetail.Deldt);
+                                GenerateDt(bomdtldt, showdetail);
                             }
                         }
                     }
-
-                    //获取后进行检测是否填写正确(正常:1)关闭整体窗体不能修改 2)显示审核图标 异常:跳出错误信息) 注:CheckDetail方法只在单据状态为‘创建’时执行
-                    if (!CheckDetail()) throw new Exception($"审核不通过,原因:OA流水号为空或已存在, \n 请检查是否填写正确,再进行审核");
-                    else
+                    //注:当出现不需要继续审核时使用
+                    if (_continuemark)
                     {
-                        //审核成功后操作 =>1)审核图片显示 2)将控件设为不可修改 3)弹出成功信息窗体 4)将_confirmMarkid标记设为True
-                        MessageBox.Show($"审核成功,请进行提交操作", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        _confirmMarkId = true;
-                        //审核成功后将‘新增页’按钮设置为不可用
-                        tmaddpage.Enabled = false;
-                        //若单据状态为R时,_backconfirm为TRUE
-                        if (_funState == "R")
-                            _backconfirm = true;
-                        //权限控制
-                        PrivilegeControl();
+                        //获取后进行检测是否填写正确(正常:1)关闭整体窗体不能修改 2)显示审核图标 异常:跳出错误信息) 注:CheckDetail方法只在单据状态为‘创建’时执行
+                        if (!CheckDetail()) throw new Exception($"审核不通过,原因:OA流水号为空或已存在, \n 请检查是否填写正确,再进行审核");
+                        else
+                        {
+                            //审核成功后操作 =>1)审核图片显示 2)将控件设为不可修改 3)弹出成功信息窗体 4)将_confirmMarkid标记设为True
+                            MessageBox.Show($"审核成功,请进行提交操作", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            _confirmMarkId = true;
+                            //审核成功后将‘新增页’按钮设置为不可用
+                            tmaddpage.Enabled = false;
+                            //若单据状态为R时,_backconfirm为TRUE
+                            if (_funState == "R")
+                                _backconfirm = true;
+                            //权限控制
+                            PrivilegeControl();
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
                 var exmessage = ex.Message.Contains("输入字符串的格式不正确") ? $"'人工及制造费用'项必须填写数字,请重新填写再继续" : ex.Message;
-                MessageBox.Show(exmessage, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exmessage, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -694,6 +673,62 @@ namespace BomOfferOrder.UI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 将相关记录插入至_bomdt内
+        /// </summary>
+        /// <param name="bomdtldt"></param>
+        /// <param name="showdetail"></param>
+        private void GenerateDt(DataTable bomdtldt, ShowDetailFrm showdetail)
+        {
+            //根据明细项循环获取其内部值
+            foreach (DataRow rows in bomdtldt.Rows)
+            {
+                var newrow = _bomdt.NewRow();
+                newrow[0] = _funState == "C" ? 0 : _fid;                                     //Fid
+                newrow[1] = txtbom.Text;                                                    //流水号
+                newrow[2] = 0;                                                              //单据状态(0:已审核 1:反审核)
+                newrow[3] = _funState == "C" ? DateTime.Now : _createtime;                  //创建日期
+                newrow[4] = DateTime.Now;                                                   //审核日期
+                newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
+                newrow[6] = _typeid;                                                        //单据类型ID(0:BOM成本报价单 1:新产品成本报价单 2:空白报价单)
+                newrow[7] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
+                newrow[8] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
+
+                newrow[9] = _funState == "C" ? 0 : showdetail.Headid;                       //Headid
+                newrow[10] = showdetail.txtname.Text;                                       //产品名称(物料名称)
+                newrow[11] = showdetail.txtbao.Text;                                        //包装规格
+                newrow[12] = Convert.ToDecimal(showdetail.txtmi.Text);                      //产品密度(KG/L)
+                newrow[13] = Convert.ToDecimal(showdetail.txtmaterial.Text);                //材料成本(不含税)
+                newrow[14] = Convert.ToDecimal(showdetail.txtbaochenben.Text);              //包装成本
+                newrow[15] = Convert.ToDecimal(showdetail.txtren.Text);                     //人工及制造费用
+                newrow[16] = Convert.ToDecimal(showdetail.txtkg.Text);                      //成本(元/KG)
+                newrow[17] = Convert.ToDecimal(showdetail.txtl.Text);                       //成本(元/L)
+                newrow[18] = Convert.ToDecimal(showdetail.txt50.Text);                      //50%报价
+                newrow[19] = Convert.ToDecimal(showdetail.txt45.Text);                      //45%报价
+                newrow[20] = Convert.ToDecimal(showdetail.txt40.Text);                      //40%报价
+                newrow[21] = showdetail.txtremark.Text;                                     //备注
+                newrow[22] = showdetail.txtbom.Text;                                        //对应BOM版本编号
+                newrow[23] = Convert.ToDecimal(showdetail.txtprice.Text);                   //产品成本含税(物料单价)
+                newrow[24] = showdetail.txtcust.Text;                                       //客户
+
+                newrow[25] = rows[0];                                                       //Entryid
+                newrow[26] = rows[1];                                                       //物料编码ID
+                newrow[27] = rows[2];                                                       //物料编码
+                newrow[28] = rows[3];                                                       //物料名称
+                newrow[29] = rows[4];                                                       //配方用量
+                newrow[30] = rows[5];                                                       //占比
+                newrow[31] = rows[6];                                                       //物料单价(含税)
+                newrow[32] = rows[7];                                                       //物料成本(含税)
+                newrow[33] = rows[8];                                                       //备注
+                _bomdt.Rows.Add(newrow);
+            }
+            //将各TabPages内GridView中的需要进行删除的记录合并整理
+            if (_funState == "R" && showdetail.Deldt.Rows.Count > 0)
+            {
+                _deldt.Merge(showdetail.Deldt);
             }
         }
 
