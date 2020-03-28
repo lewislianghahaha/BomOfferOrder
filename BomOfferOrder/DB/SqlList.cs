@@ -1111,6 +1111,48 @@
             return _result;
         }
 
+        /// <summary>
+        /// 暂存表相关查询
+        /// </summary>
+        /// <returns></returns>
+        public string SearchTempOrder()
+        {
+            _result = $@"
+                            SELECT a.FId,a.OAorderno OA流水号,b.ProductName 产品名称,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+	                               a.CreateName 创建人,
+	                               CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
+	                               b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
+	                               ROUND(b.KGQty/(1-30/100),4) '30%',ROUND(b.KGQty/(1-38/100),4) '38%',
+	                               b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'
+                            FROM dbo.T_TempOrder a
+                            INNER JOIN dbo.T_TempOrderHead b ON a.FId=b.FId
+                            ORDER BY a.CreateDt DESC
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 查询‘暂存’功能明细记录
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <returns></returns>
+        public string SearchTempOrderDetail(int fid)
+        {
+            _result = $@"
+                            SELECT a.FId,a.OAorderno,a.CreateDt,a.CreateName,a.Typeid,
+	                        b.Headid,b.ProductName,b.Bao,b.ProductMi,b.MaterialQty,b.BaoQty,
+	                        b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
+	                        b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
+
+		                    c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.ratioQty,c.MaterialPrice,c.MaterialAmount,
+		                    c.Remark
+                            FROM dbo.T_TempOrder a
+                            INNER JOIN dbo.T_TempOrderHead b ON a.FId=b.FId
+                            INNER JOIN dbo.T_TempOrderEntry c ON b.Headid=c.Headid
+                            WHERE a.FId='{fid}'";
+            return _result;
+        }
+
         //////////////////////////////////////////////////权限使用////////////////////////////////////////////////////////
 
         /// <summary>

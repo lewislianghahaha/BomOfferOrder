@@ -78,6 +78,7 @@ namespace BomOfferOrder.UI
             tctotalpage.DrawItem += Tctotalpage_DrawItem;
             tctotalpage.MouseDown += Tctotalpage_MouseDown;
             tmCopy.Click += TmCopy_Click;
+            tmfresh.Click += Tmfresh_Click;
         }
 
         /// <summary>
@@ -319,7 +320,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -435,6 +436,23 @@ namespace BomOfferOrder.UI
                         PrivilegeControl();
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 暂存
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmfresh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
             }
             catch (Exception ex)
             {

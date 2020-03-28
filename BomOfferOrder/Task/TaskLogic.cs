@@ -216,6 +216,14 @@ namespace BomOfferOrder.Task
                 case "0.9.4":
                     SearchK3CustomerList(_searchid, _searchvalue);
                     break;
+                //查询:主窗体-暂存使用
+                case "0.9.5":
+                    SearchTempOrder();
+                    break;
+                //查询:‘暂存’单据明细记录使用
+                case "0.9.6":
+                    SearchTempOrderDetail(_fid);
+                    break;
                 #endregion
 
                 #region 运算
@@ -436,6 +444,22 @@ namespace BomOfferOrder.Task
             _resultTable = searchDt.SearchK3CustomerList(searchid, searchvalue);
         }
 
+        /// <summary>
+        /// '暂存'查询使用
+        /// </summary>
+        private void SearchTempOrder()
+        {
+            _resultTable = searchDt.SearchTempOrder();
+        }
+
+        /// <summary>
+        /// '暂存'单据明细使用
+        /// </summary>
+        /// <param name="fid"></param>
+        private void SearchTempOrderDetail(int fid)
+        {
+            _resultTable = searchDt.SearchTempOrderDetail(fid);
+        }
 
 
         #endregion

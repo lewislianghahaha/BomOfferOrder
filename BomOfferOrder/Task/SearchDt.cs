@@ -269,6 +269,27 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
+        /// '暂存'功能查询
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchTempOrder()
+        {
+            _sqlscript = sqlList.SearchTempOrder();
+            return UseSqlSearchIntoDt(1,_sqlscript);
+        }
+
+        /// <summary>
+        /// '暂存'单据明细使用
+        /// </summary>
+        /// <param name="fid"></param>
+        /// <returns></returns>
+        public DataTable SearchTempOrderDetail(int fid)
+        {
+            _sqlscript = sqlList.SearchTempOrderDetail(fid);
+            return UseSqlSearchIntoDt(1, _sqlscript);
+        }
+
+        /// <summary>
         /// 权限查询-用户权限主窗体使用
         /// </summary>
         /// <param name="typeid"></param>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -44,6 +45,18 @@ namespace BomOfferOrder.UI
         private int _totalpagecount;
         //记录初始化标记(GridView页面跳转 初始化时使用)
         private bool _pageChange;
+
+        #region 暂存功能模块
+        //保存查询出来的GridViewTemp记录(注:暂存功能使用)
+        private DataTable _tempdtl;
+        //记录当前页数(GridView页面跳转使用)
+        private int _pageCurrentTemp = 1;
+        //记录计算出来的总页数(GridView页面跳转使用)
+        private int _totalpagecountTemp;
+        //记录初始化标记(GridView页面跳转 初始化时使用)
+        private bool _pageChangeTemp;
+        #endregion
+
         #endregion
 
         public Main()
@@ -119,6 +132,18 @@ namespace BomOfferOrder.UI
             tctotalpage.DrawItem += Tctotalpage_DrawItem;
             tctotalpage.MouseDown += Tctotalpage_MouseDown;
             tctotalpage.Padding = new Point(CloseSize, CloseSize - 8);   //初始化时添加Tab Control控件各Page选项卡的额外宽与高(重)
+
+            /////////暂存功能页///////////
+            bnMoveFirstItemtemp.Click += BnMoveFirstItemtemp_Click; ;
+            bnMovePreviousItemtemp.Click += BnMovePreviousItemtemp_Click; ;
+            bnMoveNextItemtemp.Click += BnMoveNextItemtemp_Click; ;
+            bnMoveLastItemtemp.Click += BnMoveLastItemtemp_Click; ;
+            bnPositionItemtemp.Leave += BnPositionItemtemp_Leave; ;
+            tmshowrowstemp.DropDownClosed += Tmshowrowstemp_DropDownClosed; ;
+            panel10.Visible = false;
+            btnrefresh.Click += Btnrefresh_Click;
+            tmshowtempdetail.Click += Tmshowtempdetail_Click;
+            tmdel.Click += Tmdel_Click;
         }
 
         /// <summary>
@@ -141,7 +166,7 @@ namespace BomOfferOrder.UI
                     break;
                 case 2:
                 case 3:
-                    task.SearchValue = Convert.ToString(dtpdt.Value.Date);
+                    task.SearchValue = Convert.ToString(dtpdt.Value.Date, CultureInfo.InvariantCulture);
                     break;
                 default:
                     var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
@@ -258,7 +283,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -332,7 +357,7 @@ namespace BomOfferOrder.UI
                     throw new Exception($"所选单据'{oaorder}'不能进入, \n 原因:已被用户'{Convert.ToString(usedt.Rows[0][1])}'占用,需用户'{Convert.ToString(usedt.Rows[0][1])}'退出才能继续操作");
 
                 var clickMessage = $"您所选择的单据为:\n '{oaorder}' \n 是否进行反审核?";
-                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     task.TaskId = "3";
                     task.Fid = fid;
@@ -344,7 +369,7 @@ namespace BomOfferOrder.UI
                     if(!task.ResultMark)throw new Exception("反审核操作出现异常,请联系管理员.");
                     else
                     {
-                        MessageBox.Show($"反审核成功,请右键选择‘查询明细’进入", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"反审核成功,请右键选择‘查询明细’进入", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         //根据所选的选择条件刷新GridView
                         OnSearch();
                     }
@@ -352,7 +377,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -369,7 +394,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -386,7 +411,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -403,7 +428,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -426,7 +451,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -440,7 +465,7 @@ namespace BomOfferOrder.UI
             try
             {
                 //定义'输出报表地址'
-                var printadd = string.Empty;
+                string printadd;
                 //定义'输出类型ID'
                 var printtaskid=string.Empty;
                 //定义‘物料相关’DT
@@ -1277,6 +1302,379 @@ namespace BomOfferOrder.UI
             }
             return result;
         }
+
+        #region 暂存功能模块
+
+        /// <summary>
+        /// 暂存功能-查询使用
+        /// </summary>
+        private void OnSearchTempDt()
+        {
+            task.TaskId = "0.9.5";
+
+            new Thread(Start).Start();
+            load.StartPosition = FormStartPosition.CenterScreen;
+            load.ShowDialog();
+
+            if (task.ResultTable.Rows.Count > 0)
+            {
+                _tempdtl = task.ResultTable;
+                panel10.Visible = true;
+                //初始化下拉框所选择的默认值
+                //tmshowrows.SelectedItem = "10";
+                tmshowrowstemp.SelectedItem = Convert.ToInt32(tmshowrowstemp.SelectedItem) == 0
+                    ? (object)"10"
+                    : Convert.ToInt32(tmshowrowstemp.SelectedItem);
+                //定义初始化标记(设置为不初始化)
+                _pageChangeTemp = _pageCurrentTemp <= 1;
+                //GridView分页
+                GridViewPageChangeTemp();
+            }
+            //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
+            else
+            {
+                gvtempdtl.DataSource = task.ResultTable;
+                panel10.Visible = false;
+            }
+            //控制GridView单元格显示方式
+            ControlGridViewisShowTemp();
+        }
+
+        /// <summary>
+        /// 删除单据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmdel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (gvtempdtl.SelectedRows.Count == 0) throw new Exception("没有明细记录,不能继续操作");
+                //根据所选择的行获取其fid值
+                var fid = Convert.ToInt32(gvtempdtl.Rows[gvtempdtl.CurrentCell.RowIndex].Cells[0].Value);
+
+
+
+                new Thread(Start).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
+
+
+
+                //成功删除后进行刷新
+                OnSearchTempDt();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 查阅明细
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmshowtempdetail_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(gvtempdtl.SelectedRows.Count==0)throw new Exception("没有明细记录,不能继续操作");
+                //根据所选择的行获取其fid值
+                var fid = Convert.ToInt32(gvtempdtl.Rows[gvtempdtl.CurrentCell.RowIndex].Cells[0].Value);
+
+                task.TaskId = "0.9.6";
+                task.Fid = fid;
+
+                new Thread(Start).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
+
+                //弹出对应窗体相关设置
+                //初始化信息
+                dtlFrm.FunState = "R";
+                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt, _purchaseInstockDt);
+                dtlFrm.StartPosition = FormStartPosition.CenterParent;
+                dtlFrm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 刷新
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btnrefresh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OnSearchTempDt();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 首页按钮(GridView页面跳转时使用)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BnMoveFirstItemtemp_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //1)将当前页变量PageCurrent=1; 2)并将“首页” 及 “上一页”按钮设置为不可用 将“下一页” “末页”按设置为可用
+                _pageCurrentTemp = 1;
+                bnMoveFirstItemtemp.Enabled = false;
+                bnMovePreviousItemtemp.Enabled = false;
+
+                bnMoveNextItemtemp.Enabled = true;
+                bnMoveLastItemtemp.Enabled = true;
+                GridViewPageChangeTemp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 上一页(GridView页面跳转时使用)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BnMovePreviousItemtemp_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //1)将PageCurrent自减 2)将“下一页” “末页”按钮设置为可用
+                _pageCurrentTemp--;
+                bnMoveNextItemtemp.Enabled = true;
+                bnMoveLastItemtemp.Enabled = true;
+                //判断若PageCurrent=1的话,就将“首页” “上一页”按钮设置为不可用
+                if (_pageCurrentTemp == 1)
+                {
+                    bnMoveFirstItemtemp.Enabled = false;
+                    bnMovePreviousItemtemp.Enabled = false;
+                }
+                GridViewPageChangeTemp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 下一页按钮(GridView页面跳转时使用)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BnMoveNextItemtemp_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //1)将PageCurrent自增 2)将“首页” “上一页”按钮设置为可用
+                _pageCurrentTemp++;
+                bnMoveFirstItemtemp.Enabled = true;
+                bnMovePreviousItemtemp.Enabled = true;
+                //判断若PageCurrent与“总页数”一致的话,就将“下一页” “末页”按钮设置为不可用
+                if (_pageCurrentTemp == _totalpagecountTemp)
+                {
+                    bnMoveNextItemtemp.Enabled = false;
+                    bnMoveLastItemtemp.Enabled = false;
+                }
+                GridViewPageChangeTemp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 末页按钮(GridView页面跳转使用)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BnMoveLastItemtemp_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //1)将“总页数”赋值给PageCurrent 2)将“下一页” “末页”按钮设置为不可用 并将 “上一页” “首页”按钮设置为可用
+                _pageCurrentTemp = _totalpagecountTemp;
+                bnMoveNextItemtemp.Enabled = false;
+                bnMoveLastItemtemp.Enabled = false;
+
+                bnMovePreviousItemtemp.Enabled = true;
+                bnMoveFirstItemtemp.Enabled = true;
+
+                GridViewPageChangeTemp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 跳转页文本框
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BnPositionItemtemp_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                //判断所输入的跳转数必须为整数
+                if (!Regex.IsMatch(bnPositionItemtemp.Text, @"^-?[1-9]\d*$|^0$")) throw new Exception("请输入整数再继续");
+                //判断所输入的跳转数不能大于总页数
+                if (Convert.ToInt32(bnPositionItemtemp.Text) > _totalpagecountTemp) throw new Exception("所输入的页数不能超出总页数,请修改后继续");
+                //判断若所填跳转数为0时跳出异常
+                if (Convert.ToInt32(bnPositionItemtemp.Text) == 0) throw new Exception("请输入大于0的整数再继续");
+
+                //将所填的跳转页赋值至“当前页”变量内
+                _pageCurrentTemp = Convert.ToInt32(bnPositionItemtemp.Text);
+                //根据所输入的页数动态控制四个方向键是否可用
+                //若为第1页，就将“首页” “上一页”按钮设置为不可用 将“下一页” “末页”设置为可用
+                if (_pageCurrentTemp == 1)
+                {
+                    bnMoveFirstItemtemp.Enabled = false;
+                    bnMovePreviousItemtemp.Enabled = false;
+
+                    bnMoveNextItemtemp.Enabled = true;
+                    bnMoveLastItemtemp.Enabled = true;
+                }
+                //若为末页,就将"下一页" “末页”按钮设置为不可用 将“上一页” “首页”设置为可用
+                else if (_pageCurrentTemp == _totalpagecountTemp)
+                {
+                    bnMoveNextItemtemp.Enabled = false;
+                    bnMoveLastItemtemp.Enabled = false;
+
+                    bnMovePreviousItemtemp.Enabled = true;
+                    bnMoveFirstItemtemp.Enabled = true;
+                }
+                //否则四个按钮都可用
+                else
+                {
+                    bnMoveFirstItemtemp.Enabled = true;
+                    bnMovePreviousItemtemp.Enabled = true;
+                    bnMoveNextItemtemp.Enabled = true;
+                    bnMoveLastItemtemp.Enabled = true;
+                }
+                GridViewPageChangeTemp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                bnPositionItemtemp.Text = Convert.ToString(_pageCurrentTemp);
+            }
+        }
+
+        /// <summary>
+        /// 每页显示行数 下拉框关闭时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmshowrowstemp_DropDownClosed(object sender, EventArgs e)
+        {
+            try
+            {
+                //每次选择新的“每页显示行数”，都要 1)将_pageChange标记设为true(即执行初始化方法) 2)将“当前页”初始化为1
+                _pageChangeTemp = true;
+                _pageCurrentTemp = 1;
+                GridViewPageChangeTemp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// GridView分页功能(暂存页使用)
+        /// </summary>
+        private void GridViewPageChangeTemp()
+        {
+            try
+            {
+                //获取查询的总行数
+                var dtltotalrows = _tempdtl.Rows.Count;
+                //获取“每页显示行数”所选择的行数
+                var pageCount = Convert.ToInt32(tmshowrowstemp.SelectedItem);
+                //计算出总页数
+                _totalpagecountTemp = dtltotalrows % pageCount == 0 ? dtltotalrows / pageCount : dtltotalrows / pageCount + 1;
+                //赋值"总页数"项
+                bnCountItemtemp.Text = $"/ {_totalpagecountTemp} 页";
+
+                //初始化BindingNavigator控件内的各子控件 及 对应初始化信息
+                if (_pageChangeTemp)
+                {
+                    bnPositionItemtemp.Text = Convert.ToString(1);                      //初始化填充跳转页为1
+                    tmshowrowstemp.Enabled = true;                                      //每页显示行数（下拉框）  
+
+                    //初始化时判断;若“总页数”=1，四个按钮不可用；若>1,“下一页” “末页”按钮可用
+                    if (_totalpagecountTemp == 1)
+                    {
+                        bnMoveFirstItemtemp.Enabled = false;                            //'首页'按钮
+                        bnMovePreviousItemtemp.Enabled = false;                         //'上一页'按钮
+                        bnMoveNextItemtemp.Enabled = false;                             //'下一页'按钮
+                        bnMoveLastItemtemp.Enabled = false;                             //'末页'按钮
+                        bnPositionItemtemp.Enabled = false;                             //跳转页文本框
+                    }
+                    else
+                    {
+                        bnMoveNextItemtemp.Enabled = true;
+                        bnMoveLastItemtemp.Enabled = true;
+                        bnPositionItemtemp.Enabled = true;                             //跳转页文本框
+                    }
+                    _pageChangeTemp = false;
+                }
+
+                //显示_dtl的查询总行数
+                tstotalrowtemp.Text = $"共 {_tempdtl.Rows.Count} 行";
+
+                //根据“当前页” 及 “固定行数” 计算出新的行数记录并进行赋值
+                //计算进行循环的起始行
+                var startrow = (_pageCurrentTemp - 1) * pageCount;
+                //计算进行循环的结束行
+                var endrow = _pageCurrentTemp == _totalpagecountTemp ? dtltotalrows : _pageCurrentTemp * pageCount;
+                //复制 查询的DT的列信息（不包括行）至临时表内
+                var tempdt = _tempdtl.Clone();
+                //循环将所需的_dtl的行记录复制至临时表内
+                for (var i = startrow; i < endrow; i++)
+                {
+                    tempdt.ImportRow(_tempdtl.Rows[i]);
+                }
+
+                //最后将刷新的DT重新赋值给GridView
+                gvtempdtl.DataSource = tempdt;
+                //将“当前页”赋值给"跳转页"文本框内
+                bnPositionItemtemp.Text = Convert.ToString(_pageCurrentTemp);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 控制GridView单元格显示方式
+        /// </summary>
+        private void ControlGridViewisShowTemp()
+        {
+            //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
+            if (gvtempdtl.Rows.Count > 0)
+                gvtempdtl.Columns[0].Visible = false;
+        }
+
+        #endregion
 
     }
 }
