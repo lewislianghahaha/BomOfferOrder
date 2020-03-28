@@ -9,7 +9,7 @@ using NPOI.XSSF.UserModel;
 
 namespace BomOfferOrder.Task
 {
-    //提交及导入EXCEL使用
+    //提交数据 及 导入EXCEL使用
     public class ImportDt
     {
         SqlList sqlList=new SqlList();
@@ -374,8 +374,8 @@ namespace BomOfferOrder.Task
             newrow[0] = funState == "C" ? GetFidKey() : sourcerow[0];  //FID 
             newrow[1] = sourcerow[1];                                  //流水号
             newrow[2] = sourcerow[2];                                  //单据状态
-            newrow[3] = sourcerow[4];                                  //创建日期
-            newrow[4] = sourcerow[3];                                  //审核日期
+            newrow[3] = sourcerow[3];                                  //创建日期
+            newrow[4] = sourcerow[4];                                  //审核日期
             newrow[5] = sourcerow[5];                                  //创建人
             newrow[6] = sourcerow[7];                                  //记录当前单据使用标记
             newrow[7] = sourcerow[8];                                  //记录当前单据使用者信息

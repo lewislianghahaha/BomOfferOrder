@@ -564,6 +564,7 @@
 												GROUP BY x.FId
 											)x ON x.FId=a.FId
                                 WHERE a.OAorderno LIKE '%{value}%'
+                                order by A.CreateDt desc
                             ";
                 }
                 //产品名称
@@ -593,6 +594,7 @@
 				                                WHERE a.FId=b.FId
 				                                AND b.ProductName LIKE '%{value}%'
 		                                        )
+                                order by A.CreateDt desc
                             ";
                 }
                 //创建日期
@@ -617,6 +619,7 @@
 												GROUP BY x.FId
 											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                                order by A.CreateDt desc
                             ";
                 }
                 //审核日期
@@ -641,6 +644,7 @@
 												GROUP BY x.FId
 											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                                order by A.CreateDt desc
                             ";
                 }
                 //单据状态
@@ -664,6 +668,7 @@
 												GROUP BY x.FId
 											)x ON x.FId=a.FId
                                 WHERE a.Fstatus='{value}'
+                                order by A.CreateDt desc
                             ";
                 }
             }
@@ -692,6 +697,7 @@
 											)x ON x.FId=a.FId
                                 WHERE a.OAorderno LIKE '%{value}%'
                                 and A.CreateName='{cratename}'
+                                order by A.CreateDt desc
                             ";
                 }
                 //产品名称
@@ -721,6 +727,7 @@
 				                                AND b.ProductName LIKE '%{value}%'
 		                                        )
                                 and A.CreateName='{cratename}'
+                                order by A.CreateDt desc
                             ";
                 }
                 //创建日期
@@ -745,6 +752,7 @@
 											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                                 and A.CreateName='{cratename}'
+                                order by A.CreateDt desc
                             ";
                 }
                 //审核日期
@@ -769,6 +777,7 @@
 											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                                 and A.CreateName='{cratename}'
+                                order by A.CreateDt desc
                             ";
                 }
                 //单据状态
@@ -793,6 +802,7 @@
 											)x ON x.FId=a.FId
                                 WHERE a.Fstatus='{value}'
                                 and A.CreateName='{cratename}'
+                                order by A.CreateDt desc
                             ";
                 }
             }

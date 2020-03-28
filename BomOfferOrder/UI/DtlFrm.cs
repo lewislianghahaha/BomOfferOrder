@@ -592,9 +592,8 @@ namespace BomOfferOrder.UI
                         if (showdetail != null)
                         {
                             var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
-
                             //检测‘配方用量合计’是否小于99,就作出提示(注:只要有一个物料页签不满足条件,就会跳出整出循环)
-                            if (Convert.ToInt32(showdetail.txtpeitotal.Text) < 99)
+                            if (Convert.ToDecimal(showdetail.txtpeitotal.Text) < Convert.ToInt32(99))
                             {
                                 clickMessage = $"检测到产品名称为'{showdetail.txtname.Text}'中的‘配方用量合计’小于99,是否继续?";
                                 if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)

@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="Task\GenerateDt.cs" />
     <Compile Include="Task\ImportDt.cs" />
+    <Compile Include="Task\ImportTempDt.cs" />
     <Compile Include="Task\SearchDt.cs" />
     <Compile Include="Task\TaskLogic.cs" />
     <Compile Include="UI\Admin\AccountDetailFrm.cs">
