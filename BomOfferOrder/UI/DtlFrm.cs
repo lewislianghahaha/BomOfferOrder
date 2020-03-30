@@ -132,12 +132,16 @@ namespace BomOfferOrder.UI
             //单据状态:读取 R
             else
             {
-                //初始化反审核标记为false
-                _backconfirm = false;
-                //根据bomdt判断,若rows[2]=0为:已审核 1:反审核
-                _confirmMarkId = Convert.ToInt32(bomdt.Rows[0][2])==0;
-                //更新_useid及username值
-                UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]),0,"");
+                //判断除‘暂存’功能外才执行
+                if (Convert.ToString(bomdt.Rows[0][2]) == "0" || Convert.ToString(bomdt.Rows[0][2]) == "1")
+                {
+                    //初始化反审核标记为false
+                    _backconfirm = false;
+                    //根据bomdt判断,若rows[2]=0为:已审核 1:反审核
+                    _confirmMarkId = Convert.ToInt32(bomdt.Rows[0][2]) == 0;
+                    //更新_useid及username值
+                    UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]), 0, "");
+                }
                 //执行读取记录
                 ReadDetail(bomdt);
             }
@@ -452,7 +456,45 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                var clickMessage = string.Empty;
+                //检测所审核的TabPages内是否有GridView行没有一行也没有填的情况,若发现,跳出异常
+                if (!CheckTabPagesGridView()) throw new Exception($"检测到单据'{txtbom.Text}'内有物料明细行没有填写,请至少填写一行再进行审核");
 
+                clickMessage = $"您所选择的信息为:\n 单据名称:{txtbom.Text} \n 是否需要暂存? \n 注:暂存后的单据记录可在主窗体内进行查阅";
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    //将TabPage内的记录进行收集
+                    //获取BOM报价单临时表
+                    _bomdt = dbList.GetBomDtlTemp();
+                    //通过循环获取TagePages各页的值并最后整合到bomdt内
+                    for (var i = 0; i < tctotalpage.TabCount; i++)
+                    {
+                        //循环获取TabPages内各页的内容
+                        var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
+
+                        if (showdetail != null)
+                        {
+                            var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
+                            GenerateDt(bomdtldt,showdetail);
+                        }
+                    }
+                }
+                //将收集的记录进行提交(注:提交成功后操作 1)将_confirmMarkId设置为false(窗体关闭时使用) 2)将_bomdt清空内容)
+                task.TaskId = "2.2";
+                task.Importdt = _bomdt;
+
+                new Thread(Start).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
+
+                if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
+                else
+                {
+                    MessageBox.Show($"单据'{txtbom.Text}'暂存成功,可关闭此单据", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _confirmMarkId = false;
+                    _bomdt.Rows.Clear();
+                    _bomdt.Columns.Clear();
+                }
             }
             catch (Exception ex)
             {
@@ -589,7 +631,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                var clickMessage = string.Empty;
+                string clickMessage;
                 //检测所审核的TabPages内是否有GridView行没有一行也没有填的情况,若发现,跳出异常
                 if (!CheckTabPagesGridView()) throw new Exception($"检测到单据'{txtbom.Text}' 内有物料明细行没有填写,请至少填写一行再进行审核");
 
@@ -689,7 +731,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -704,7 +746,7 @@ namespace BomOfferOrder.UI
             foreach (DataRow rows in bomdtldt.Rows)
             {
                 var newrow = _bomdt.NewRow();
-                newrow[0] = _funState == "C" ? 0 : _fid;                                     //Fid
+                newrow[0] = _funState == "C" ? 0 : _fid;                                    //Fid
                 newrow[1] = txtbom.Text;                                                    //流水号
                 newrow[2] = 0;                                                              //单据状态(0:已审核 1:反审核)
                 newrow[3] = _funState == "C" ? DateTime.Now : _createtime;                  //创建日期
@@ -760,7 +802,7 @@ namespace BomOfferOrder.UI
 
             if (e.CloseReason != CloseReason.ApplicationExitCall)
             {
-                var result = MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo,MessageBoxIcon.Information);
+                var result = MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo,MessageBoxIcon.Information);
                 //当点击"OK"按钮时执行以下操作
                 if (result == DialogResult.Yes)
                 {
@@ -909,6 +951,8 @@ namespace BomOfferOrder.UI
                 pbimg.BackgroundImage = Image.FromFile(Application.StartupPath + @"\PIC\1.png");
                 //对相关控件设为不可改或只读
                 txtbom.ReadOnly = true;
+                //将‘暂存’功能按钮设置为不可用
+                tmfresh.Enabled = false;
                 //将‘添加新页’按钮设置为显示但不启用(注:‘空白报价单’功能使用)
                 //将‘复制’按钮设置为显示但不启用(注:‘空白报价单’功能使用)
                 if (_typeid==2)
@@ -949,9 +993,8 @@ namespace BomOfferOrder.UI
                 txtbom.ReadOnly = false;
                 tmsave.Enabled = true;
                 tmConfirm.Enabled = true;
-
-                //当检测到当前功能为‘空白报价单’时,将‘添加新页’按钮设置为显示并启用
-                //当检测到当前功能为‘空白报价单’时,将‘复制’按钮设置为显示并启用
+                tmfresh.Enabled = true;
+                //当检测到当前功能为‘空白报价单’时,将‘添加新页’按钮 ‘复制’按钮 设置为显示并启用
                 if (_typeid == 2)
                 {
                     tmaddpage.Visible = true;

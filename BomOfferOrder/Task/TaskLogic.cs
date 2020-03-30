@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Runtime.InteropServices;
 
 namespace BomOfferOrder.Task
 {
@@ -7,6 +8,7 @@ namespace BomOfferOrder.Task
         SearchDt searchDt=new SearchDt();
         GenerateDt generateDt=new GenerateDt();
         ImportDt importDt=new ImportDt();
+        ImportTempDt importTempDt=new ImportTempDt();
 
         #region 变量定义
         private string _taskid;             //记录中转ID
@@ -218,7 +220,7 @@ namespace BomOfferOrder.Task
                     break;
                 //查询:主窗体-暂存使用
                 case "0.9.5":
-                    SearchTempOrder();
+                    SearchTempOrder(GlobalClasscs.User.StrUsrName);
                     break;
                 //查询:‘暂存’单据明细记录使用
                 case "0.9.6":
@@ -241,6 +243,14 @@ namespace BomOfferOrder.Task
                 //用户权限提交
                 case "2.1":
                     ImportUserPermissionDt(_importdt);
+                    break;
+                //暂存信息提交
+                case "2.2":
+                    ImportTempDt(_importdt);
+                    break;
+                //暂存信息删除
+                case "2.3":
+                    DelTempDt(_searchvalue);
                     break;
                 #endregion
 
@@ -447,9 +457,9 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// '暂存'查询使用
         /// </summary>
-        private void SearchTempOrder()
+        private void SearchTempOrder(string createname)
         {
-            _resultTable = searchDt.SearchTempOrder();
+            _resultTable = searchDt.SearchTempOrder(createname);
         }
 
         /// <summary>
@@ -502,6 +512,20 @@ namespace BomOfferOrder.Task
         private void ImportUserPermissionDt(DataTable sourcedt)
         {
             _resultMark = importDt.ImportUserPermissionDt(sourcedt);
+        }
+
+        /// <summary>
+        /// 暂存功能提交使用
+        /// </summary>
+        /// <param name="sourcedt"></param>
+        private void ImportTempDt(DataTable sourcedt)
+        {
+            _resultMark = importTempDt.ImportTempDtToDb(sourcedt);
+        }
+
+        private void DelTempDt(string searchvalue)
+        {
+            _resultMark = importTempDt.DeleteRecord(searchvalue);
         }
         #endregion
 

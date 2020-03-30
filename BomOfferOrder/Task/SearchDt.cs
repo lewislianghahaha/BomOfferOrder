@@ -272,9 +272,9 @@ namespace BomOfferOrder.Task
         /// '暂存'功能查询
         /// </summary>
         /// <returns></returns>
-        public DataTable SearchTempOrder()
+        public DataTable SearchTempOrder(string createname)
         {
-            _sqlscript = sqlList.SearchTempOrder();
+            _sqlscript = sqlList.SearchTempOrder(createname);
             return UseSqlSearchIntoDt(1,_sqlscript);
         }
 

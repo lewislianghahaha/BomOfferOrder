@@ -353,12 +353,20 @@ namespace BomOfferOrder.Task
         /// </summary>
         private void DeleteRecord(DataTable deldt)
         {
+            var fidlist = string.Empty;
             //根据指定条件循环将记录行删除
             foreach (DataRow rows in deldt.Rows)
             {
-                var sqlscript = sqlList.DelEntry(Convert.ToInt32(rows[0]));
-                searchDt.Generdt(sqlscript);
+                if (string.IsNullOrEmpty(fidlist))
+                {
+                    fidlist = Convert.ToString(rows[0]);
+                }
+                else
+                {
+                    fidlist += "," + Convert.ToString(rows[0]);
+                }
             }
+            searchDt.Generdt(sqlList.DelEntry(fidlist));
         }
 
 

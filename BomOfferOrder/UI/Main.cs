@@ -1347,22 +1347,37 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void Tmdel_Click(object sender, EventArgs e)
         {
+            var fidlist = string.Empty;
             try
             {
                 if (gvtempdtl.SelectedRows.Count == 0) throw new Exception("没有明细记录,不能继续操作");
-                //根据所选择的行获取其fid值
-                var fid = Convert.ToInt32(gvtempdtl.Rows[gvtempdtl.CurrentCell.RowIndex].Cells[0].Value);
+                //根据所选择的行获取其fid值(可多选)
+                foreach (DataGridViewRow row in gvtempdtl.SelectedRows)
+                {
+                    if (string.IsNullOrEmpty(fidlist))
+                    {
+                        fidlist = Convert.ToString(row.Cells[0].Value);
+                    }
+                    else
+                    {
+                        fidlist +=","+Convert.ToString(row.Cells[0].Value);
+                    }
+                }
 
-
+                task.TaskId = "2.3";
+                task.SearchValue = fidlist;
 
                 new Thread(Start).Start();
                 load.StartPosition = FormStartPosition.CenterScreen;
                 load.ShowDialog();
 
-
-
-                //成功删除后进行刷新
-                OnSearchTempDt();
+                if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
+                else
+                {
+                    MessageBox.Show($"单据删除成功", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //成功删除后进行刷新
+                    OnSearchTempDt();
+                }
             }
             catch (Exception ex)
             {

@@ -513,13 +513,39 @@
         /// 删除指定行记录(主要针对T_OfferOrderEntry表)
         /// </summary>
         /// <returns></returns>
-        public string DelEntry(int entryid)
+        public string DelEntry(string entryid)
         {
             _result = $@"
-                            DELETE FROM dbo.T_OfferOrderEntry WHERE Entryid='{entryid}'
+                            DELETE FROM dbo.T_OfferOrderEntry WHERE Entryid IN '{entryid}'
                        ";
             return _result;
         }
+
+        #region 暂存功能使用-(注:使用FID值)
+
+        public string DelTempOrder(string fid)
+        {
+            _result = $@"
+                            DELETE FROM dbo.T_TempOrderEntry
+                            WHERE EXISTS (
+			                                 SELECT * FROM dbo.T_TempOrderHead A
+				                             INNER JOIN dbo.T_TempOrder B ON A.FId=B.FId
+				                             WHERE A.Headid=dbo.T_TempOrderEntry.Headid
+				                             AND B.FId IN('{fid}')
+			                              )
+
+                            DELETE FROM dbo.T_TempOrderHead
+                            WHERE EXISTS (
+                                            SELECT * FROM dbo.T_TempOrder A
+				                            WHERE dbo.T_TempOrderHead.FId=A.FId
+				                            AND A.FId IN('{fid}')
+			                             )
+
+                            DELETE FROM dbo.T_TempOrder WHERE FId IN('{fid}')
+                        ";
+            return _result;
+        }
+        #endregion
 
 
         /////////////////////////////////////查询端使用//////////////////////////////////////////////////////
@@ -1112,10 +1138,10 @@
         }
 
         /// <summary>
-        /// 暂存表相关查询
+        /// 暂存表相关查询(条件:针对当前用户)
         /// </summary>
         /// <returns></returns>
-        public string SearchTempOrder()
+        public string SearchTempOrder(string createname)
         {
             _result = $@"
                             SELECT a.FId,a.OAorderno OA流水号,b.ProductName 产品名称,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
@@ -1126,6 +1152,7 @@
 	                               b.FourQty '40%',b.FourFiveQty '45%',b.FiveQty '50%'
                             FROM dbo.T_TempOrder a
                             INNER JOIN dbo.T_TempOrderHead b ON a.FId=b.FId
+                            WHERE A.CreateName='{createname}'
                             ORDER BY a.CreateDt DESC
                         ";
             return _result;
