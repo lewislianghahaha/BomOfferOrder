@@ -107,10 +107,10 @@ namespace BomOfferOrder.Task
         private void GetDtToDb(string funState,string tablename,DataTable tempdt)
         {
             //若tablename是T_OfferOrder 或 T_OfferOrderHead,其操作中心:若单据状态为C就插入,若为R就更新
-            if (tablename == "T_OfferOrder" /*|| tablename == "T_OfferOrderHead"*/)
+            if (tablename == "T_OfferOrder")
             {
                 //执行插入
-                if (funState == "C")
+                if (funState == "C" || GlobalClasscs.Fun.RfFunctionName=="RF")
                 {
                     ImportDtToDb(tablename, tempdt);
                 }
@@ -169,40 +169,64 @@ namespace BomOfferOrder.Task
                 //创建用于存放EntryId不为空的temp
                 var updatedtltemp = dbList.GetOfferOrderEntryTemp();
 
-                //获取EntryId为空的记录
-                var dtlnullrows = tempdt.Select("Entryid is null");
-                foreach (DataRow t in dtlnullrows)
+                //若GlobalClasscs.Fun.RfFunctionName=="RF",就直接执行插入操作,反之,才执行原来的操作
+                if (GlobalClasscs.Fun.RfFunctionName == "RF")
                 {
-                    var newrow = insertdtltemp.NewRow();
-                    newrow[0] = t[0];             //Headid
-                    newrow[1] = GetEntryidKey();  //Entryid
-                    newrow[2] = t[2];             //物料编码ID
-                    newrow[3] = t[3];             //物料编码
-                    newrow[4] = t[4];             //物料名称
-                    newrow[5] = t[5];             //配方用量
-                    newrow[6] = t[6];             //占比
-                    newrow[7] = t[7];             //物料单价(含税)
-                    newrow[8] = t[8];             //物料成本(含税)
-                    newrow[9] = t[9];             //备注
-                    insertdtltemp.Rows.Add(newrow);
+                    foreach (DataRow rows in tempdt.Rows)
+                    {
+                        var newrow = insertdtltemp.NewRow();
+                        for (var i = 0; i < insertdtltemp.Columns.Count; i++)
+                        {
+                            //当检测到‘EntryID’为空时,就对其获取新ID值
+                            if (i == 1 && string.IsNullOrEmpty(Convert.ToString(rows[1])))
+                            {
+                                newrow[i] = GetEntryidKey();
+                            }
+                            else
+                            {
+                                newrow[i] = rows[i];
+                            }
+                        }
+                        insertdtltemp.Rows.Add(newrow);
+                    }
                 }
-
-                //获取EntryId不为空的记录
-                var dtlnotnullrows = tempdt.Select("Entryid is not null");
-                foreach (DataRow t in dtlnotnullrows)
+                else
                 {
-                    var newrow = updatedtltemp.NewRow();
-                    newrow[0] = t[0];          //Headid
-                    newrow[1] = t[1];          //Entryid
-                    newrow[2] = t[2];          //物料编码ID
-                    newrow[3] = t[3];          //物料编码
-                    newrow[4] = t[4];          //物料名称
-                    newrow[5] = t[5];          //配方用量
-                    newrow[6] = t[6];          //占比
-                    newrow[7] = t[7];          //物料单价(含税)
-                    newrow[8] = t[8];          //物料成本(含税)
-                    newrow[9] = t[9];          //备注
-                    updatedtltemp.Rows.Add(newrow);
+                    //获取EntryId为空的记录
+                    var dtlnullrows = tempdt.Select("Entryid is null");
+                    foreach (DataRow t in dtlnullrows)
+                    {
+                        var newrow = insertdtltemp.NewRow();
+                        newrow[0] = t[0];             //Headid
+                        newrow[1] = GetEntryidKey();  //Entryid
+                        newrow[2] = t[2];             //物料编码ID
+                        newrow[3] = t[3];             //物料编码
+                        newrow[4] = t[4];             //物料名称
+                        newrow[5] = t[5];             //配方用量
+                        newrow[6] = t[6];             //占比
+                        newrow[7] = t[7];             //物料单价(含税)
+                        newrow[8] = t[8];             //物料成本(含税)
+                        newrow[9] = t[9];             //备注
+                        insertdtltemp.Rows.Add(newrow);
+                    }
+
+                    //获取EntryId不为空的记录
+                    var dtlnotnullrows = tempdt.Select("Entryid is not null");
+                    foreach (DataRow t in dtlnotnullrows)
+                    {
+                        var newrow = updatedtltemp.NewRow();
+                        newrow[0] = t[0];          //Headid
+                        newrow[1] = t[1];          //Entryid
+                        newrow[2] = t[2];          //物料编码ID
+                        newrow[3] = t[3];          //物料编码
+                        newrow[4] = t[4];          //物料名称
+                        newrow[5] = t[5];          //配方用量
+                        newrow[6] = t[6];          //占比
+                        newrow[7] = t[7];          //物料单价(含税)
+                        newrow[8] = t[8];          //物料成本(含税)
+                        newrow[9] = t[9];          //备注
+                        updatedtltemp.Rows.Add(newrow);
+                    }
                 }
 
                 //最后将得出的结果进行插入或更新

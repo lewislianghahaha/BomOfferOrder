@@ -523,7 +523,7 @@
 
         #region 暂存功能使用-(注:使用FID值)
 
-        public string DelTempOrder(string fid)
+        public string DelTempOrder(int fid)
         {
             _result = $@"
                             DELETE FROM dbo.T_TempOrderEntry
@@ -531,17 +531,17 @@
 			                                 SELECT * FROM dbo.T_TempOrderHead A
 				                             INNER JOIN dbo.T_TempOrder B ON A.FId=B.FId
 				                             WHERE A.Headid=dbo.T_TempOrderEntry.Headid
-				                             AND B.FId IN('{fid}')
+				                             AND B.FId ='{fid}'
 			                              )
 
                             DELETE FROM dbo.T_TempOrderHead
                             WHERE EXISTS (
                                             SELECT * FROM dbo.T_TempOrder A
 				                            WHERE dbo.T_TempOrderHead.FId=A.FId
-				                            AND A.FId IN('{fid}')
+				                            AND A.FId ='{fid}'
 			                             )
 
-                            DELETE FROM dbo.T_TempOrder WHERE FId IN('{fid}')
+                            DELETE FROM dbo.T_TempOrder WHERE FId ='{fid}'
                         ";
             return _result;
         }
@@ -1166,13 +1166,13 @@
         public string SearchTempOrderDetail(int fid)
         {
             _result = $@"
-                            SELECT a.FId,a.OAorderno,a.CreateDt,a.CreateName,a.Typeid,
-	                        b.Headid,b.ProductName,b.Bao,b.ProductMi,b.MaterialQty,b.BaoQty,
-	                        b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
-	                        b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
+                            SELECT a.FId,a.OAorderno,-1 Fstatus,a.CreateDt,-1 Confirmdt,a.CreateName,a.Typeid,
+	                                b.Headid,b.ProductName,b.Bao,b.ProductMi,b.MaterialQty,b.BaoQty,
+	                                b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
+	                                b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
 
-		                    c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.ratioQty,c.MaterialPrice,c.MaterialAmount,
-		                    c.Remark
+		                            c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.ratioQty,c.MaterialPrice,c.MaterialAmount,
+		                            c.Remark
                             FROM dbo.T_TempOrder a
                             INNER JOIN dbo.T_TempOrderHead b ON a.FId=b.FId
                             INNER JOIN dbo.T_TempOrderEntry c ON b.Headid=c.Headid

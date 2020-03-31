@@ -123,13 +123,9 @@ namespace BomOfferOrder.Task
             var newrow = dt.NewRow();
             newrow[0] = GetFidKey();           //FID 
             newrow[1] = sourcerow[1];          //流水号
-            newrow[2] = sourcerow[2];          //单据状态
-            newrow[3] = sourcerow[3];          //创建日期
-            newrow[4] = sourcerow[4];          //审核日期
-            newrow[5] = sourcerow[5];          //创建人
-            newrow[6] = sourcerow[7];          //记录当前单据使用标记
-            newrow[7] = sourcerow[8];          //记录当前单据使用者信息
-            newrow[8] = sourcerow[6];          //单据类型ID
+            newrow[2] = sourcerow[3];          //创建日期
+            newrow[3] = sourcerow[5];          //创建人
+            newrow[4] = sourcerow[6];          //单据类型ID
             dt.Rows.Add(newrow);
             return dt;
         }
@@ -221,7 +217,7 @@ namespace BomOfferOrder.Task
         /// 删除相关暂存表记录
         /// </summary>
         /// <param name="delvalue"></param>
-        public bool DeleteRecord(string delvalue)
+        public bool DeleteRecord(int delvalue)
         {
             var result = true;
             try

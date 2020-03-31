@@ -467,14 +467,14 @@ namespace BomOfferOrder.UI
                     //此为‘空白报价单’复制功能使用
                     else if (funState == "R" && typeid == 2 && dt != null)
                     {
-                        //若dt.rows[25]为空的话,就执行
+                        //若dt.rows[25](EntryId)为空的话,就执行
                         if (dt.Rows[0][25] == DBNull.Value)
                         {
                             FunStateEmptyOrder(dt);
                         }
                         else
                         {
-                            //若dt.rows[25]不为空的话,就表示为读取数据
+                            //若dt.rows[25](EntryId)不为空的话,就表示为读取数据
                             FunStateRUse(funState,dt);
                         }
                     }

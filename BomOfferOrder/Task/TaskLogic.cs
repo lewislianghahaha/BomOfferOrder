@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Runtime.InteropServices;
 
 namespace BomOfferOrder.Task
 {
@@ -250,7 +249,7 @@ namespace BomOfferOrder.Task
                     break;
                 //暂存信息删除
                 case "2.3":
-                    DelTempDt(_searchvalue);
+                    DelTempDt(_fid);
                     break;
                 #endregion
 
@@ -523,7 +522,7 @@ namespace BomOfferOrder.Task
             _resultMark = importTempDt.ImportTempDtToDb(sourcedt);
         }
 
-        private void DelTempDt(string searchvalue)
+        private void DelTempDt(int searchvalue)
         {
             _resultMark = importTempDt.DeleteRecord(searchvalue);
         }

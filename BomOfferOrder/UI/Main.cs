@@ -143,7 +143,6 @@ namespace BomOfferOrder.UI
             panel10.Visible = false;
             btnrefresh.Click += Btnrefresh_Click;
             tmshowtempdetail.Click += Tmshowtempdetail_Click;
-            tmdel.Click += Tmdel_Click;
         }
 
         /// <summary>
@@ -1341,52 +1340,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 删除单据
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Tmdel_Click(object sender, EventArgs e)
-        {
-            var fidlist = string.Empty;
-            try
-            {
-                if (gvtempdtl.SelectedRows.Count == 0) throw new Exception("没有明细记录,不能继续操作");
-                //根据所选择的行获取其fid值(可多选)
-                foreach (DataGridViewRow row in gvtempdtl.SelectedRows)
-                {
-                    if (string.IsNullOrEmpty(fidlist))
-                    {
-                        fidlist = Convert.ToString(row.Cells[0].Value);
-                    }
-                    else
-                    {
-                        fidlist +=","+Convert.ToString(row.Cells[0].Value);
-                    }
-                }
-
-                task.TaskId = "2.3";
-                task.SearchValue = fidlist;
-
-                new Thread(Start).Start();
-                load.StartPosition = FormStartPosition.CenterScreen;
-                load.ShowDialog();
-
-                if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
-                else
-                {
-                    MessageBox.Show($"单据删除成功", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    //成功删除后进行刷新
-                    OnSearchTempDt();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// 查阅明细
+        /// 查阅明细-(注:暂存单据只能操作一次,当完成后就会将其删除)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1400,6 +1354,7 @@ namespace BomOfferOrder.UI
 
                 task.TaskId = "0.9.6";
                 task.Fid = fid;
+                GlobalClasscs.Fun.RfFunctionName = "RF";   //定义为'暂存'单据
 
                 new Thread(Start).Start();
                 load.StartPosition = FormStartPosition.CenterScreen;

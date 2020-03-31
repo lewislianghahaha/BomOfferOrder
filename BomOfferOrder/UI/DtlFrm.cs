@@ -49,8 +49,6 @@ namespace BomOfferOrder.UI
 
         //定义关闭符号的宽
         const int CloseSize = 11;
-        //定义是否继续审核标记
-        private bool _continuemark = true;
         #endregion
 
         #region Set
@@ -457,6 +455,8 @@ namespace BomOfferOrder.UI
             try
             {
                 var clickMessage = string.Empty;
+                //检测若‘OA流水号’填写就不行
+                if(!string.IsNullOrEmpty(txtbom.Text)) throw new Exception("OA流水号已填写,不能作为暂存记录, \n 请将OA流水号删除后再继续");
                 //检测所审核的TabPages内是否有GridView行没有一行也没有填的情况,若发现,跳出异常
                 if (!CheckTabPagesGridView()) throw new Exception($"检测到单据'{txtbom.Text}'内有物料明细行没有填写,请至少填写一行再进行审核");
 
@@ -478,22 +478,22 @@ namespace BomOfferOrder.UI
                             GenerateDt(bomdtldt,showdetail);
                         }
                     }
-                }
-                //将收集的记录进行提交(注:提交成功后操作 1)将_confirmMarkId设置为false(窗体关闭时使用) 2)将_bomdt清空内容)
-                task.TaskId = "2.2";
-                task.Importdt = _bomdt;
+                    //将收集的记录进行提交(注:提交成功后操作 1)将_confirmMarkId设置为false(窗体关闭时使用) 2)将_bomdt清空内容)
+                    task.TaskId = "2.2";
+                    task.Importdt = _bomdt;
 
-                new Thread(Start).Start();
-                load.StartPosition = FormStartPosition.CenterScreen;
-                load.ShowDialog();
+                    new Thread(Start).Start();
+                    load.StartPosition = FormStartPosition.CenterScreen;
+                    load.ShowDialog();
 
-                if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
-                else
-                {
-                    MessageBox.Show($"单据'{txtbom.Text}'暂存成功,可关闭此单据", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    _confirmMarkId = false;
-                    _bomdt.Rows.Clear();
-                    _bomdt.Columns.Clear();
+                    if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
+                    else
+                    {
+                        MessageBox.Show($"单据'{txtbom.Text}'暂存成功,可关闭此单据", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        _confirmMarkId = false;
+                        _bomdt.Rows.Clear();
+                        _bomdt.Columns.Clear();
+                    }
                 }
             }
             catch (Exception ex)
@@ -631,11 +631,12 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                string clickMessage;
                 //检测所审核的TabPages内是否有GridView行没有一行也没有填的情况,若发现,跳出异常
                 if (!CheckTabPagesGridView()) throw new Exception($"检测到单据'{txtbom.Text}' 内有物料明细行没有填写,请至少填写一行再进行审核");
+                //检测各TabPages内的‘配方用量合计’是否小于99,是,即返回异常信息,否,即返回NULL
+                var checkqty = CheckTabPagesPeiQty();
+                var clickMessage = $"您所选择的信息为:\n 单据名称:{txtbom.Text} \n {checkqty} 是否继续? \n 注:审核后需反审核才能对该单据的记录进行修改, \n 请谨慎处理.";
 
-                clickMessage = $"您所选择的信息为:\n 单据名称:{txtbom.Text} \n 是否继续? \n 注:审核后需反审核才能对该单据的记录进行修改, \n 请谨慎处理.";
                 if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     //获取BOM报价单临时表
@@ -652,45 +653,24 @@ namespace BomOfferOrder.UI
                         if (showdetail != null)
                         {
                             var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
-                            //检测‘配方用量合计’是否小于99,就作出提示(注:只要有一个物料页签不满足条件,就会跳出整出循环)
-                            if (Convert.ToDecimal(showdetail.txtpeitotal.Text) < Convert.ToInt32(99))
-                            {
-                                clickMessage = $"检测到产品名称为'{showdetail.txtname.Text}'中的‘配方用量合计’小于99,是否继续?";
-                                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-                                {
-                                    GenerateDt(bomdtldt,showdetail);
-                                }
-                                else
-                                {
-                                    _continuemark = false;
-                                    break;
-                                }
-                            }
-                            //正常操作
-                            else
-                            {
-                                GenerateDt(bomdtldt, showdetail);
-                            }
+                            GenerateDt(bomdtldt, showdetail);
                         }
                     }
-                    //注:当出现不需要继续审核时使用
-                    if (_continuemark)
+
+                    //获取后进行检测是否填写正确(正常:1)关闭整体窗体不能修改 2)显示审核图标 异常:跳出错误信息) 注:CheckDetail方法只在单据状态为‘创建’时执行
+                    if (!CheckDetail()) throw new Exception($"审核不通过,原因:OA流水号为空或已存在, \n 请检查是否填写正确,再进行审核");
+                    else
                     {
-                        //获取后进行检测是否填写正确(正常:1)关闭整体窗体不能修改 2)显示审核图标 异常:跳出错误信息) 注:CheckDetail方法只在单据状态为‘创建’时执行
-                        if (!CheckDetail()) throw new Exception($"审核不通过,原因:OA流水号为空或已存在, \n 请检查是否填写正确,再进行审核");
-                        else
-                        {
-                            //审核成功后操作 =>1)审核图片显示 2)将控件设为不可修改 3)弹出成功信息窗体 4)将_confirmMarkid标记设为True
-                            MessageBox.Show($"审核成功,请进行提交操作", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            _confirmMarkId = true;
-                            //审核成功后将‘新增页’按钮设置为不可用
-                            tmaddpage.Enabled = false;
-                            //若单据状态为R时,_backconfirm为TRUE
-                            if (_funState == "R")
-                                _backconfirm = true;
-                            //权限控制
-                            PrivilegeControl();
-                        }
+                        //审核成功后操作 =>1)审核图片显示 2)将控件设为不可修改 3)弹出成功信息窗体 4)将_confirmMarkid标记设为True
+                        MessageBox.Show($"审核成功,请进行提交操作", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        _confirmMarkId = true;
+                        //审核成功后将‘新增页’按钮设置为不可用
+                        tmaddpage.Enabled = false;
+                        //若单据状态为R时,_backconfirm为TRUE
+                        if (_funState == "R")
+                            _backconfirm = true;
+                        //权限控制
+                        PrivilegeControl();
                     }
                 }
             }
@@ -702,7 +682,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 提交
+        /// 提交-注:若为‘暂存’单据就需要作出提示
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -713,6 +693,12 @@ namespace BomOfferOrder.UI
                 //判断若没有完成审核,即不能执行
                 if (!_confirmMarkId) throw new Exception("请先点击‘审核’再继续");
 
+                if(GlobalClasscs.Fun.RfFunctionName == "RF")
+                {
+                    var clickMessage = $"检测到此单据从‘暂存’获取,故在提交成功后,\n 会将其对应的暂存记录进行删除,请注意";
+                    MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
                 task.TaskId = "2";
                 task.Importdt = _bomdt;
                 task.FunState = _funState;
@@ -722,17 +708,42 @@ namespace BomOfferOrder.UI
                 load.StartPosition = FormStartPosition.CenterScreen;
                 load.ShowDialog();
 
-                if(!task.ResultMark) throw new Exception("提交异常,请联系管理员");
+                if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
                 else
                 {
                     MessageBox.Show($"单据'{txtbom.Text}'提交成功,可关闭此单据", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tmsave.Enabled = false;
+                    //完成后将GlobalClasscs.Fun.RfFunctionName清空(待下一次使用‘暂存’功能时再对其赋值)
+                    GlobalClasscs.Fun.RfFunctionName = "";
+                    //提交成功后将暂存单据删除
+                    if(!DelTempOrder()) throw new Exception("提交异常,请联系管理员");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// 暂存单据删除
+        /// </summary>
+        /// <returns></returns>
+        private bool DelTempOrder()
+        {
+            var result = true;
+            try
+            {
+                task.TaskId = "2.3";
+                task.Fid = _fid;
+                task.StartTask();
+                result = task.ResultMark;
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
         }
 
         /// <summary>
@@ -919,6 +930,27 @@ namespace BomOfferOrder.UI
 
                     if (bomdtldt.Rows.Count != 0) continue;
                     result = false;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 检测各TabPages内的‘配方用量合计’是否小于99
+        /// </summary>
+        /// <returns></returns>
+        private string CheckTabPagesPeiQty()
+        {
+            var result = string.Empty;
+            for (var i = 0; i < tctotalpage.TabCount; i++)
+            {
+                var showdetail = tctotalpage.TabPages[i].Controls[0] as ShowDetailFrm;
+                //检测各TabPages内的'配方用量合计'是否小于99
+                if (showdetail != null)
+                {
+                    if (Convert.ToDecimal(showdetail.txtpeitotal.Text) > Convert.ToInt32(99)) continue;
+                    result = "检测到‘配方用量合计’小于99";
                     break;
                 }
             }
