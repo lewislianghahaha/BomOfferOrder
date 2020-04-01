@@ -450,7 +450,7 @@ namespace BomOfferOrder.Task
             if (typeid == 0)
             {
                 //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'T','WSX'就获取其对应的‘物料名称’
-                var dtlrows = bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%T%' or 物料编码 like '%WSX%') ");
+                var dtlrows = bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%T%' or 物料编码 like '%WSX%') and 物料名称 not like '%盖%' ");
                 result = dtlrows.Length == 0 ? "" : Convert.ToString(dtlrows[0][4]);
             }
             else
@@ -480,7 +480,7 @@ namespace BomOfferOrder.Task
             //typeid=0 获取罐信息 1 获取包装箱信息
             //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'T','WSX'就获取其对应的‘表体物料ID’
             //以BOMDT的‘表头物料ID’为条件,使用FMATERIALID查询,若查找的‘物料编码’有'ZX','WZX'就获取其对应的‘表体物料ID’
-            var dtlrows = typeid == 0 ? bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%T%' or 物料编码 like '%WSX%') ") : 
+            var dtlrows = typeid == 0 ? bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%T%' or 物料编码 like '%WSX%' and 物料名称 not like '%盖%') ") : 
                                   bomdt.Select("表头物料ID='" + fmaterialid + "' and (物料编码 like '%ZX%' or 物料编码 like '%WZX%') ");
 
             if (dtlrows.Length == 0)
