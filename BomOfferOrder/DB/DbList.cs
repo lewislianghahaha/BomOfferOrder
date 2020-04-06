@@ -1188,7 +1188,7 @@ namespace BomOfferOrder.DB
                     //净重
                     case 5:
                         dc.ColumnName = "净重";
-                        dc.DataType = Type.GetType("System.Decimal");
+                        dc.DataType = Type.GetType("System.Double");
                         break;
                 }
                 dt.Columns.Add(dc);
@@ -1217,7 +1217,7 @@ namespace BomOfferOrder.DB
                     //配方用量
                     case 1:
                         dc.ColumnName = "配方用量";
-                        dc.DataType = Type.GetType("System.Decimal");
+                        dc.DataType = Type.GetType("System.Double");
                         break;
                 }
                 dt.Columns.Add(dc);
