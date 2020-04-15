@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -59,6 +60,7 @@ namespace BomOfferOrder.UI.Admin
             tmAddUse.Click += TmAddUse_Click;
             tmshowdetail.Click += Tmshowdetail_Click;
 
+
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
             bnMoveNextItem.Click += BnMoveNextItem_Click;
@@ -88,7 +90,7 @@ namespace BomOfferOrder.UI.Admin
                     break;
                 //创建日期
                 case 2:
-                    task.SearchValue = Convert.ToString(dtpdt.Value.Date);
+                    task.SearchValue = Convert.ToString(dtpdt.Value.Date, CultureInfo.InvariantCulture);
                     break;
                 //启用状态
                 default:
@@ -194,7 +196,7 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 添加用户权限
+        /// 创建用户功能权限
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -211,9 +213,11 @@ namespace BomOfferOrder.UI.Admin
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
         /// <summary>
         ///  查阅明细
@@ -234,7 +238,7 @@ namespace BomOfferOrder.UI.Admin
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

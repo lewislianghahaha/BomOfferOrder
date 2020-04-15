@@ -85,7 +85,7 @@
             // 
             this.tmAddUse.Name = "tmAddUse";
             this.tmAddUse.Size = new System.Drawing.Size(92, 21);
-            this.tmAddUse.Text = "创建用户权限";
+            this.tmAddUse.Text = "创建功能权限";
             // 
             // panel1
             // 

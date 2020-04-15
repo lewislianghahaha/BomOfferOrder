@@ -139,6 +139,12 @@
     <Compile Include="UI\Admin\AccountDetailFrm.Designer.cs">
       <DependentUpon>AccountDetailFrm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Admin\AccountPerFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Admin\AccountPerFrm.Designer.cs">
+      <DependentUpon>AccountPerFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Admin\GetAccountFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,6 +230,9 @@
     </Compile>
     <EmbeddedResource Include="UI\Admin\AccountDetailFrm.resx">
       <DependentUpon>AccountDetailFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Admin\AccountPerFrm.resx">
+      <DependentUpon>AccountPerFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Admin\GetAccountFrm.resx">
       <DependentUpon>GetAccountFrm.cs</DependentUpon>
