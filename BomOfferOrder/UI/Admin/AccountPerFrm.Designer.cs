@@ -34,28 +34,26 @@
             this.tmSave = new System.Windows.Forms.ToolStripMenuItem();
             this.tmclose = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtusername = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtGroup = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtphone = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.cbapplyid = new System.Windows.Forms.CheckBox();
             this.cbaddid = new System.Windows.Forms.CheckBox();
             this.cbreadid = new System.Windows.Forms.CheckBox();
             this.cbbackconfirm = new System.Windows.Forms.CheckBox();
+            this.cbapplyid = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtphone = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtGroup = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtusername = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.bngat1 = new System.Windows.Forms.BindingNavigator(this.components);
+            this.gvdtl = new System.Windows.Forms.DataGridView();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.bngat = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItemtemp = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel6 = new System.Windows.Forms.ToolStripLabel();
             this.bnPositionItemtemp = new System.Windows.Forms.ToolStripTextBox();
@@ -72,22 +70,24 @@
             this.toolStripLabel9 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel10 = new System.Windows.Forms.ToolStripLabel();
             this.tstotalrowtemp = new System.Windows.Forms.ToolStripLabel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.Main.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bngat1)).BeginInit();
-            this.bngat1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
+            this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
+            this.bngat.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // Main
@@ -125,73 +125,6 @@
             this.panel1.Size = new System.Drawing.Size(1042, 81);
             this.panel1.TabIndex = 2;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.txtphone);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.txtGroup);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.txtusername);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1040, 43);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "用户信息";
-            // 
-            // txtusername
-            // 
-            this.txtusername.Location = new System.Drawing.Point(133, 15);
-            this.txtusername.Name = "txtusername";
-            this.txtusername.ReadOnly = true;
-            this.txtusername.Size = new System.Drawing.Size(213, 21);
-            this.txtusername.TabIndex = 3;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(72, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 12);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "用户姓名:";
-            // 
-            // txtGroup
-            // 
-            this.txtGroup.Location = new System.Drawing.Point(438, 15);
-            this.txtGroup.Name = "txtGroup";
-            this.txtGroup.ReadOnly = true;
-            this.txtGroup.Size = new System.Drawing.Size(213, 21);
-            this.txtGroup.TabIndex = 7;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(377, 19);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 12);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "用户组别:";
-            // 
-            // txtphone
-            // 
-            this.txtphone.Location = new System.Drawing.Point(731, 15);
-            this.txtphone.Name = "txtphone";
-            this.txtphone.ReadOnly = true;
-            this.txtphone.Size = new System.Drawing.Size(213, 21);
-            this.txtphone.TabIndex = 9;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(670, 19);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 12);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "用户手机:";
-            // 
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -206,16 +139,6 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "功能权限";
-            // 
-            // cbapplyid
-            // 
-            this.cbapplyid.AutoSize = true;
-            this.cbapplyid.Location = new System.Drawing.Point(59, 16);
-            this.cbapplyid.Name = "cbapplyid";
-            this.cbapplyid.Size = new System.Drawing.Size(72, 16);
-            this.cbapplyid.TabIndex = 3;
-            this.cbapplyid.Text = "是否启用";
-            this.cbapplyid.UseVisualStyleBackColor = true;
             // 
             // cbaddid
             // 
@@ -247,6 +170,83 @@
             this.cbbackconfirm.Text = "是否可反审核";
             this.cbbackconfirm.UseVisualStyleBackColor = true;
             // 
+            // cbapplyid
+            // 
+            this.cbapplyid.AutoSize = true;
+            this.cbapplyid.Location = new System.Drawing.Point(59, 16);
+            this.cbapplyid.Name = "cbapplyid";
+            this.cbapplyid.Size = new System.Drawing.Size(72, 16);
+            this.cbapplyid.TabIndex = 3;
+            this.cbapplyid.Text = "是否启用";
+            this.cbapplyid.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.txtphone);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.txtGroup);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.txtusername);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1040, 43);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "用户信息";
+            // 
+            // txtphone
+            // 
+            this.txtphone.Location = new System.Drawing.Point(731, 15);
+            this.txtphone.Name = "txtphone";
+            this.txtphone.ReadOnly = true;
+            this.txtphone.Size = new System.Drawing.Size(213, 21);
+            this.txtphone.TabIndex = 9;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(670, 19);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 12);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "用户手机:";
+            // 
+            // txtGroup
+            // 
+            this.txtGroup.Location = new System.Drawing.Point(438, 15);
+            this.txtGroup.Name = "txtGroup";
+            this.txtGroup.ReadOnly = true;
+            this.txtGroup.Size = new System.Drawing.Size(213, 21);
+            this.txtGroup.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(377, 19);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 12);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "用户组别:";
+            // 
+            // txtusername
+            // 
+            this.txtusername.Location = new System.Drawing.Point(133, 15);
+            this.txtusername.Name = "txtusername";
+            this.txtusername.ReadOnly = true;
+            this.txtusername.Size = new System.Drawing.Size(213, 21);
+            this.txtusername.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(72, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 12);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "用户姓名:";
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.groupBox3);
@@ -268,30 +268,10 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "关联用户";
             // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3.Controls.Add(this.checkBox1);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(3, 17);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1036, 22);
-            this.panel3.TabIndex = 0;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(56, 3);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(84, 16);
-            this.checkBox1.TabIndex = 4;
-            this.checkBox1.Text = "不需要关联";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.Location = new System.Drawing.Point(3, 39);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -315,47 +295,47 @@
             this.treeView1.Size = new System.Drawing.Size(184, 438);
             this.treeView1.TabIndex = 0;
             // 
-            // panel4
-            // 
-            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel4.Controls.Add(this.bngat1);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 412);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(848, 26);
-            this.panel4.TabIndex = 0;
-            // 
             // panel5
             // 
             this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel5.Controls.Add(this.dataGridView1);
+            this.panel5.Controls.Add(this.gvdtl);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel5.Location = new System.Drawing.Point(0, 0);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(848, 412);
             this.panel5.TabIndex = 1;
             // 
-            // dataGridView1
+            // gvdtl
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(846, 410);
-            this.dataGridView1.TabIndex = 0;
+            this.gvdtl.AllowUserToAddRows = false;
+            this.gvdtl.AllowUserToDeleteRows = false;
+            this.gvdtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gvdtl.Location = new System.Drawing.Point(0, 0);
+            this.gvdtl.Name = "gvdtl";
+            this.gvdtl.ReadOnly = true;
+            this.gvdtl.RowTemplate.Height = 23;
+            this.gvdtl.Size = new System.Drawing.Size(846, 410);
+            this.gvdtl.TabIndex = 0;
             // 
-            // bngat1
+            // panel4
             // 
-            this.bngat1.AddNewItem = null;
-            this.bngat1.CountItem = this.bnCountItemtemp;
-            this.bngat1.CountItemFormat = "/ {0} 页";
-            this.bngat1.DeleteItem = null;
-            this.bngat1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.bngat1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.bngat);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel4.Location = new System.Drawing.Point(0, 412);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(848, 26);
+            this.panel4.TabIndex = 0;
+            // 
+            // bngat
+            // 
+            this.bngat.AddNewItem = null;
+            this.bngat.CountItem = this.bnCountItemtemp;
+            this.bngat.CountItemFormat = "/ {0} 页";
+            this.bngat.DeleteItem = null;
+            this.bngat.Dock = System.Windows.Forms.DockStyle.Right;
+            this.bngat.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel6,
             this.bnPositionItemtemp,
             this.toolStripLabel7,
@@ -372,29 +352,29 @@
             this.toolStripLabel9,
             this.toolStripLabel10,
             this.tstotalrowtemp});
-            this.bngat1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.bngat1.Location = new System.Drawing.Point(360, 0);
-            this.bngat1.MoveFirstItem = this.bnMoveFirstItemtemp;
-            this.bngat1.MoveLastItem = this.bnMoveLastItemtemp;
-            this.bngat1.MoveNextItem = this.bnMoveNextItemtemp;
-            this.bngat1.MovePreviousItem = this.bnMovePreviousItemtemp;
-            this.bngat1.Name = "bngat1";
-            this.bngat1.PositionItem = this.bnPositionItemtemp;
-            this.bngat1.Size = new System.Drawing.Size(486, 24);
-            this.bngat1.TabIndex = 4;
-            this.bngat1.Text = "bindingNavigator1";
+            this.bngat.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this.bngat.Location = new System.Drawing.Point(329, 0);
+            this.bngat.MoveFirstItem = this.bnMoveFirstItemtemp;
+            this.bngat.MoveLastItem = this.bnMoveLastItemtemp;
+            this.bngat.MoveNextItem = this.bnMoveNextItemtemp;
+            this.bngat.MovePreviousItem = this.bnMovePreviousItemtemp;
+            this.bngat.Name = "bngat";
+            this.bngat.PositionItem = this.bnPositionItemtemp;
+            this.bngat.Size = new System.Drawing.Size(517, 24);
+            this.bngat.TabIndex = 4;
+            this.bngat.Text = "bindingNavigator1";
             // 
             // bnCountItemtemp
             // 
             this.bnCountItemtemp.Name = "bnCountItemtemp";
-            this.bnCountItemtemp.Size = new System.Drawing.Size(75, 17);
+            this.bnCountItemtemp.Size = new System.Drawing.Size(48, 21);
             this.bnCountItemtemp.Text = "/ {0} 页";
             this.bnCountItemtemp.ToolTipText = "总项数";
             // 
             // toolStripLabel6
             // 
             this.toolStripLabel6.Name = "toolStripLabel6";
-            this.toolStripLabel6.Size = new System.Drawing.Size(75, 17);
+            this.toolStripLabel6.Size = new System.Drawing.Size(20, 21);
             this.toolStripLabel6.Text = "第";
             // 
             // bnPositionItemtemp
@@ -409,13 +389,13 @@
             // toolStripLabel7
             // 
             this.toolStripLabel7.Name = "toolStripLabel7";
-            this.toolStripLabel7.Size = new System.Drawing.Size(75, 17);
+            this.toolStripLabel7.Size = new System.Drawing.Size(20, 21);
             this.toolStripLabel7.Text = "页";
             // 
             // bindingNavigatorSeparator3
             // 
             this.bindingNavigatorSeparator3.Name = "bindingNavigatorSeparator3";
-            this.bindingNavigatorSeparator3.Size = new System.Drawing.Size(75, 6);
+            this.bindingNavigatorSeparator3.Size = new System.Drawing.Size(6, 24);
             // 
             // bnMoveFirstItemtemp
             // 
@@ -432,13 +412,13 @@
             this.bnMovePreviousItemtemp.Image = ((System.Drawing.Image)(resources.GetObject("bnMovePreviousItemtemp.Image")));
             this.bnMovePreviousItemtemp.Name = "bnMovePreviousItemtemp";
             this.bnMovePreviousItemtemp.RightToLeftAutoMirrorImage = true;
-            this.bnMovePreviousItemtemp.Size = new System.Drawing.Size(75, 20);
+            this.bnMovePreviousItemtemp.Size = new System.Drawing.Size(23, 21);
             this.bnMovePreviousItemtemp.Text = "移到上一条记录";
             // 
             // bindingNavigatorSeparator4
             // 
             this.bindingNavigatorSeparator4.Name = "bindingNavigatorSeparator4";
-            this.bindingNavigatorSeparator4.Size = new System.Drawing.Size(75, 6);
+            this.bindingNavigatorSeparator4.Size = new System.Drawing.Size(6, 24);
             // 
             // bnMoveNextItemtemp
             // 
@@ -446,7 +426,7 @@
             this.bnMoveNextItemtemp.Image = ((System.Drawing.Image)(resources.GetObject("bnMoveNextItemtemp.Image")));
             this.bnMoveNextItemtemp.Name = "bnMoveNextItemtemp";
             this.bnMoveNextItemtemp.RightToLeftAutoMirrorImage = true;
-            this.bnMoveNextItemtemp.Size = new System.Drawing.Size(75, 20);
+            this.bnMoveNextItemtemp.Size = new System.Drawing.Size(23, 21);
             this.bnMoveNextItemtemp.Text = "移到下一条记录";
             // 
             // bnMoveLastItemtemp
@@ -455,18 +435,18 @@
             this.bnMoveLastItemtemp.Image = ((System.Drawing.Image)(resources.GetObject("bnMoveLastItemtemp.Image")));
             this.bnMoveLastItemtemp.Name = "bnMoveLastItemtemp";
             this.bnMoveLastItemtemp.RightToLeftAutoMirrorImage = true;
-            this.bnMoveLastItemtemp.Size = new System.Drawing.Size(75, 20);
+            this.bnMoveLastItemtemp.Size = new System.Drawing.Size(23, 21);
             this.bnMoveLastItemtemp.Text = "移到最后一条记录";
             // 
             // bindingNavigatorSeparator5
             // 
             this.bindingNavigatorSeparator5.Name = "bindingNavigatorSeparator5";
-            this.bindingNavigatorSeparator5.Size = new System.Drawing.Size(75, 6);
+            this.bindingNavigatorSeparator5.Size = new System.Drawing.Size(6, 24);
             // 
             // toolStripLabel8
             // 
             this.toolStripLabel8.Name = "toolStripLabel8";
-            this.toolStripLabel8.Size = new System.Drawing.Size(75, 17);
+            this.toolStripLabel8.Size = new System.Drawing.Size(59, 21);
             this.toolStripLabel8.Text = "每页显示:";
             // 
             // tmshowrowstemp
@@ -478,25 +458,46 @@
             "100",
             "1000"});
             this.tmshowrowstemp.Name = "tmshowrowstemp";
-            this.tmshowrowstemp.Size = new System.Drawing.Size(73, 25);
+            this.tmshowrowstemp.Size = new System.Drawing.Size(75, 24);
             // 
             // toolStripLabel9
             // 
             this.toolStripLabel9.Name = "toolStripLabel9";
-            this.toolStripLabel9.Size = new System.Drawing.Size(75, 17);
+            this.toolStripLabel9.Size = new System.Drawing.Size(20, 21);
             this.toolStripLabel9.Text = "行";
             // 
             // toolStripLabel10
             // 
             this.toolStripLabel10.Name = "toolStripLabel10";
-            this.toolStripLabel10.Size = new System.Drawing.Size(75, 17);
+            this.toolStripLabel10.Size = new System.Drawing.Size(13, 21);
             this.toolStripLabel10.Text = "/";
             // 
             // tstotalrowtemp
             // 
             this.tstotalrowtemp.Name = "tstotalrowtemp";
-            this.tstotalrowtemp.Size = new System.Drawing.Size(75, 17);
+            this.tstotalrowtemp.Size = new System.Drawing.Size(55, 21);
             this.tstotalrowtemp.Text = "共 {0} 行";
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.checkBox1);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(3, 17);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(1036, 22);
+            this.panel3.TabIndex = 0;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(56, 3);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(84, 16);
+            this.checkBox1.TabIndex = 4;
+            this.checkBox1.Text = "不需要关联";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // AccountPerFrm
             // 
@@ -506,30 +507,31 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Main);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AccountPerFrm";
             this.Text = "用户权限设置";
             this.Main.ResumeLayout(false);
             this.Main.PerformLayout();
             this.panel1.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            this.panel5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bngat1)).EndInit();
-            this.bngat1.ResumeLayout(false);
-            this.bngat1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bngat)).EndInit();
+            this.bngat.ResumeLayout(false);
+            this.bngat.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -560,9 +562,9 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView gvdtl;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.BindingNavigator bngat1;
+        private System.Windows.Forms.BindingNavigator bngat;
         private System.Windows.Forms.ToolStripLabel bnCountItemtemp;
         private System.Windows.Forms.ToolStripLabel toolStripLabel6;
         private System.Windows.Forms.ToolStripTextBox bnPositionItemtemp;
