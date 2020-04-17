@@ -1370,5 +1370,30 @@
             return _result;
         }
 
+        /// <summary>
+        /// 查询基础表‘用户组别’表头信息
+        /// </summary>
+        /// <returns></returns>
+        public string SearchUserGroup()
+        {
+            _result = @"
+                            SELECT * 
+                            FROM dbo.T_BD_UserGroup A
+                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 查询基础表‘用户组别’表体信息
+        /// </summary>
+        /// <returns></returns>
+        public string SearchUserGroupDetail()
+        {
+            _result = @"
+                            SELECT a.Groupid,a.Dtlid,a.UserName 员工名称,a.CreateName 创建名称,a.CreateDt 创建日期
+                            FROM dbo.T_BD_UserGroupDtl a
+                       ";
+            return _result;
+        }
     }
 }

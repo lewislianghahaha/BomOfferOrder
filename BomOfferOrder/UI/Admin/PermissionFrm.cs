@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using BomOfferOrder.DB;
 using BomOfferOrder.Task;
+using BomOfferOrder.UI.Admin.Basic;
 
 namespace BomOfferOrder.UI.Admin
 {
@@ -15,6 +16,7 @@ namespace BomOfferOrder.UI.Admin
         Load load=new Load();
         GetAccountFrm getAccount=new GetAccountFrm();
         AccountDetailFrm accountDetail=new AccountDetailFrm();
+        BdUserGroupFrm bdUserGroup=new BdUserGroupFrm();
         DbList dbList=new DbList();
 
         #region 变量参数
@@ -59,7 +61,7 @@ namespace BomOfferOrder.UI.Admin
             comselectvalue.SelectedIndexChanged += Comselectvalue_SelectedIndexChanged;
             tmAddUse.Click += TmAddUse_Click;
             tmshowdetail.Click += Tmshowdetail_Click;
-
+            tmbdusergroup.Click += Tmbdusergroup_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -217,7 +219,24 @@ namespace BomOfferOrder.UI.Admin
             }
         }
 
-
+        /// <summary>
+        /// 用户组别设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmbdusergroup_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                bdUserGroup.OnInitialize(_k3UserDt);
+                bdUserGroup.StartPosition=FormStartPosition.CenterParent;
+                bdUserGroup.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         /// <summary>
         ///  查阅明细

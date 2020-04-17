@@ -39,6 +39,8 @@
             this.btncreategroup = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.gvdtl = new System.Windows.Forms.DataGridView();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.btnShowUserList = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.bngat = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -65,6 +67,7 @@
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
+            this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
             this.bngat.SuspendLayout();
@@ -98,6 +101,7 @@
             // 
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -109,6 +113,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panel3);
+            this.splitContainer1.Panel2.Controls.Add(this.panel4);
             this.splitContainer1.Panel2.Controls.Add(this.panel2);
             this.splitContainer1.Size = new System.Drawing.Size(824, 474);
             this.splitContainer1.SplitterDistance = 175;
@@ -116,7 +121,6 @@
             // 
             // tvview
             // 
-            this.tvview.CheckBoxes = true;
             this.tvview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvview.Location = new System.Drawing.Point(0, 24);
             this.tvview.Name = "tvview";
@@ -147,10 +151,10 @@
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.gvdtl);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Location = new System.Drawing.Point(0, 24);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(643, 443);
-            this.panel3.TabIndex = 1;
+            this.panel3.Size = new System.Drawing.Size(643, 419);
+            this.panel3.TabIndex = 3;
             // 
             // gvdtl
             // 
@@ -159,8 +163,27 @@
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.RowTemplate.Height = 23;
-            this.gvdtl.Size = new System.Drawing.Size(641, 441);
+            this.gvdtl.Size = new System.Drawing.Size(641, 417);
             this.gvdtl.TabIndex = 0;
+            // 
+            // panel4
+            // 
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.btnShowUserList);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(643, 24);
+            this.panel4.TabIndex = 2;
+            // 
+            // btnShowUserList
+            // 
+            this.btnShowUserList.Location = new System.Drawing.Point(-2, -1);
+            this.btnShowUserList.Name = "btnShowUserList";
+            this.btnShowUserList.Size = new System.Drawing.Size(99, 24);
+            this.btnShowUserList.TabIndex = 0;
+            this.btnShowUserList.Text = "获取员工信息";
+            this.btnShowUserList.UseVisualStyleBackColor = true;
             // 
             // panel2
             // 
@@ -341,6 +364,7 @@
             this.panel1.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
+            this.panel4.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).EndInit();
@@ -359,9 +383,7 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btncreategroup;
-        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.DataGridView gvdtl;
         private System.Windows.Forms.TreeView tvview;
         private System.Windows.Forms.BindingNavigator bngat;
         private System.Windows.Forms.ToolStripLabel bnCountItem;
@@ -380,5 +402,9 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
         private System.Windows.Forms.ToolStripLabel toolStripLabel5;
         private System.Windows.Forms.ToolStripLabel tstotalrow;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Button btnShowUserList;
+        private System.Windows.Forms.DataGridView gvdtl;
     }
 }

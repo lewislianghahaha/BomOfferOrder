@@ -225,6 +225,14 @@ namespace BomOfferOrder.Task
                 case "0.9.6":
                     SearchTempOrderDetail(_fid);
                     break;
+                //查询基础表‘用户组别’表头信息
+                case "0.9.7":
+                    SearchUserGroup();
+                    break;
+                //查询基础表‘用户组别’表体信息
+                case "0.9.8":
+                    SearchUserGroupDetail();
+                    break;
                 #endregion
 
                 #region 运算
@@ -470,6 +478,21 @@ namespace BomOfferOrder.Task
             _resultTable = searchDt.SearchTempOrderDetail(fid);
         }
 
+        /// <summary>
+        /// 查询基础表‘用户组别’表头信息
+        /// </summary>
+        private void SearchUserGroup()
+        {
+            _resultTable = searchDt.SearchUserGroup();
+        }
+
+        /// <summary>
+        /// 查询基础表‘用户组别’表体信息
+        /// </summary>
+        private void SearchUserGroupDetail()
+        {
+            _resultTable = searchDt.SearchUserGroupDetail();
+        }
 
         #endregion
 
