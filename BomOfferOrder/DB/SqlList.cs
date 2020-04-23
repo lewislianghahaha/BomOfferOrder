@@ -505,6 +505,19 @@
                                     WHERE Userid=@Userid
                                 ";
                     break;
+                case "T_BD_UserGroup":
+                    _result = @"
+                                    UPDATE dbo.T_BD_UserGroup SET GroupId=@Groupid, Parentid=@Parentid, GroupName=@GroupName,CreateName=@CreateName,CreateDt=@CreateDt
+                                    WHERE GroupId=@Groupid
+                               ";
+                    break;
+                case "T_BD_UserGroupDtl":
+                    _result = @"
+                                    UPDATE dbo.T_BD_UserGroupDtl SET Groupid=@Groupid,Dtlid=@Dtlid,UserName=@UserName,K3UserGroup=@K3UserGroup,
+                                                                     K3UserPhone=@K3UserGroup,CreateName=@CreateName,CreateDt=@CreateDt
+                                    WHERE Dtlid=@Dtlid
+                               ";
+                    break;
             }
             return _result;
         }
@@ -1310,6 +1323,52 @@
         }
 
         /// <summary>
+        /// 获取GroupID主键值
+        /// </summary>
+        /// <returns></returns>
+        public string GetGroupidKey()
+        {
+            _result = @"
+                            DECLARE
+	                            @id INT;
+                            BEGIN
+	                            INSERT INTO dbo.T_BD_UserGroup_KEY( Column1 )
+	                            VALUES  (1)
+
+	                            SELECT @id=Id FROM dbo.T_BD_UserGroup_KEY
+
+	                            DELETE FROM dbo.T_BD_UserGroup_KEY
+
+	                            SELECT @id
+                            END
+                       ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 获取Dtlid主键值
+        /// </summary>
+        /// <returns></returns>
+        public string GetDtlidKey()
+        {
+            _result = @"
+                            DECLARE
+	                            @id INT;
+                            BEGIN
+	                            INSERT INTO dbo.T_BD_UserGroupDtl_KEY( Column1 )
+	                            VALUES  (1)
+
+	                            SELECT @id=Id FROM dbo.T_BD_UserGroupDtl_KEY
+
+	                            DELETE FROM dbo.T_BD_UserGroupDtl_KEY
+
+	                            SELECT @id
+                            END
+                       ";
+            return _result;
+        }
+
+        /// <summary>
         /// 获取用户权限表记录
         /// </summary>
         /// <returns></returns>
@@ -1390,7 +1449,7 @@
         public string SearchUserGroupDetail()
         {
             _result = @"
-                            SELECT a.Groupid,a.Dtlid,a.UserName 员工名称,a.CreateName 创建名称,a.CreateDt 创建日期
+                            SELECT a.Groupid,a.Dtlid,a.UserName 员工名称,A.K3UserGroup K3用户组别,A.K3UserPhone K3用户手机,a.CreateName 创建人,a.CreateDt 创建日期
                             FROM dbo.T_BD_UserGroupDtl a
                        ";
             return _result;

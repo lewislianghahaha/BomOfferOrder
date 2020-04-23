@@ -207,7 +207,7 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 //初始化K3用户表
-                getAccount.OnInitialize(_k3UserDt);
+                getAccount.OnInitialize(0,_k3UserDt);
                 getAccount.StartPosition = FormStartPosition.CenterParent;
                 getAccount.ShowDialog();
                 //执行查询

@@ -1387,8 +1387,40 @@ namespace BomOfferOrder.DB
             }
             return dt;
         }
+        
+        /// <summary>
+        /// 基础资料-‘用户组别’使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable K3UserDtTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 3; i++)
+            {
+                var dc = new DataColumn();
 
-
+                switch (i)
+                {
+                    //K3用户名称
+                    case 0:
+                        dc.ColumnName = "K3用户名称";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //K3用户组别
+                    case 1:
+                        dc.ColumnName = "K3用户组别";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //K3用户手机
+                    case 2:
+                        dc.ColumnName = "K3用户手机";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
 
     }
 }

@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="Task\GenerateDt.cs" />
     <Compile Include="Task\ImportDt.cs" />
+    <Compile Include="Task\ImportPerDt.cs" />
     <Compile Include="Task\ImportTempDt.cs" />
     <Compile Include="Task\SearchDt.cs" />
     <Compile Include="Task\TaskLogic.cs" />
@@ -144,6 +145,12 @@
     </Compile>
     <Compile Include="UI\Admin\AccountPerFrm.Designer.cs">
       <DependentUpon>AccountPerFrm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Admin\Basic\BDUserGroupAddFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Admin\Basic\BDUserGroupAddFrm.Designer.cs">
+      <DependentUpon>BDUserGroupAddFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Admin\Basic\BDUserGroupFrm.cs">
       <SubType>Form</SubType>
@@ -245,6 +252,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Admin\AccountPerFrm.resx">
       <DependentUpon>AccountPerFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Admin\Basic\BDUserGroupAddFrm.resx">
+      <DependentUpon>BDUserGroupAddFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Admin\Basic\BDUserGroupFrm.resx">
       <DependentUpon>BDUserGroupFrm.cs</DependentUpon>

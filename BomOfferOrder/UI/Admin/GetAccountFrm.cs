@@ -3,6 +3,7 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using BomOfferOrder.DB;
 using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI.Admin
@@ -11,10 +12,13 @@ namespace BomOfferOrder.UI.Admin
     {
         TaskLogic task=new TaskLogic();
         Load load=new Load();
+        DbList dbList=new DbList();
+        AccountPerFrm accountPer=new AccountPerFrm();
         AccountDetailFrm accountDetail=new AccountDetailFrm();
 
         #region 变量参数
-
+        //保存类型;0:新增用户权限使用 1:用户组别使用
+        private int _typeid;
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
@@ -52,10 +56,20 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 初始化GridView 
+        /// 初始化GridView
         /// </summary>
-        public void OnInitialize(DataTable sourcedt)
+        /// <param name="typeid">类型;0:新增用户权限使用 1:用户组别使用</param>
+        /// <param name="sourcedt">K3 USER数据源</param>
+        public void OnInitialize(int typeid,DataTable sourcedt)
         {
+            _typeid = typeid;
+            //若_typeid=1时,将‘获取’按钮设置为隐藏
+            if (_typeid == 1)
+            {
+                tmGet.Visible = false;
+                tmClose.Visible = false;
+                Main.Visible = false;
+            }
             //连接GridView页面跳转功能
             LinkGridViewPageChange(sourcedt);
         }
@@ -103,19 +117,19 @@ namespace BomOfferOrder.UI.Admin
                 var k3Phone = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[2].Value);
 
                 var clickMessage = $"您所选择的K3用户名称为:\n '{k3Name}' \n 是否继续添加该用户权限?";
-                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
-                    //将当前窗体隐藏
-                    this.Visible = false;
                     //初始化信息并读取
-                    accountDetail.OnInitialize("C", k3Name,k3Group,k3Phone,null);
-                    accountDetail.StartPosition=FormStartPosition.CenterParent;
+                    accountDetail.OnInitialize("C", k3Name, k3Group, k3Phone, null);
+                    accountDetail.StartPosition = FormStartPosition.CenterParent;
                     accountDetail.ShowDialog();
                 }
+                //完成后关闭窗体
+                this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -126,7 +140,7 @@ namespace BomOfferOrder.UI.Admin
         /// <param name="e"></param>
         private void TmClose_Click(object sender, EventArgs e)
         {
-              this.Close();
+            this.Close();
         }
 
 

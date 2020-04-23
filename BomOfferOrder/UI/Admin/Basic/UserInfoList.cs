@@ -1,13 +1,25 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using BomOfferOrder.DB;
 
 namespace BomOfferOrder.UI.Admin.Basic
 {
     public partial class UserInfoList : Form
     {
+        DbList dbList=new DbList();
+
         #region 参数
-        
+        //收集从GridView获取的DT
+        private DataTable _resultTable;
+        #endregion
+
+        #region Get
+        /// <summary>
+        /// 返回DT
+        /// </summary>
+        public DataTable ResultTable => _resultTable;
         #endregion
 
         public UserInfoList()
@@ -18,8 +30,9 @@ namespace BomOfferOrder.UI.Admin.Basic
 
         private void OnRegisterEvents()
         {
+            tmGet.Click += TmGet_Click;
+            tmClose.Click += TmClose_Click;
             tctotalpage.DrawItem += Tctotalpage_DrawItem;
-            this.FormClosing += UserInfoList_FormClosing;
         }
 
         /// <summary>
@@ -37,13 +50,11 @@ namespace BomOfferOrder.UI.Admin.Basic
                 Dock = DockStyle.Fill,                 //将子窗体完全停靠new tab page
                 FormBorderStyle = FormBorderStyle.None 
             };
-            getAccount.OnInitialize(dt);               
+            getAccount.OnInitialize(1,dt);               
             getAccount.Show();                         //注:只能使用Show()
             newpage.Controls.Add(getAccount);          //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);         //将新创建的Tab Page添加至TabControl控件内
         }
-
-
 
         private void Tctotalpage_DrawItem(object sender, DrawItemEventArgs e)
         {
@@ -62,26 +73,52 @@ namespace BomOfferOrder.UI.Admin.Basic
         }
 
         /// <summary>
-        /// 关闭窗体
+        /// 获取
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UserInfoList_FormClosing(object sender, FormClosingEventArgs e)
+        private void TmGet_Click(object sender, System.EventArgs e)
         {
-            if (e.CloseReason != CloseReason.ApplicationExitCall)
+            try
             {
-                //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
-                for (var i = tctotalpage.TabCount - 1; i >= 0; i--)
+                //设置临时表
+                _resultTable = dbList.K3UserDtTemp();
+                //循环获取TabPages内各页的内容
+                var showdetail = tctotalpage.TabPages[0].Controls[0] as ShowDetailFrm;
+                if (showdetail != null)
                 {
-                    tctotalpage.TabPages.RemoveAt(i);
+                    var dtldt = (DataGridView)showdetail.gvdtl;
+                    //循环将所选择的行添加至_restultTable内
+                    foreach (DataGridViewRow rows in dtldt.SelectedRows)
+                    {
+                        var newrow = _resultTable.NewRow();
+                        newrow[0] = rows.Cells[0].Value;  //K3用户名称
+                        newrow[1] = rows.Cells[1].Value;  //K3用户组别
+                        newrow[2] = rows.Cells[2].Value;  //K3用户手机
+                        _resultTable.Rows.Add(newrow);
+                    }
                 }
+                //完成后关闭窗体
+                this.Close();
             }
-            else
+            catch (Exception ex)
             {
-                //将Cancel属性设置为 true 可以“阻止”窗体关闭
-                e.Cancel = true;
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        /// <summary>
+        /// 关闭
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmClose_Click(object sender, System.EventArgs e)
+        {
+            //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
+            for (var i = tctotalpage.TabCount - 1; i >= 0; i--)
+            {
+                tctotalpage.TabPages.RemoveAt(i);
+            }
+        }
     }
 }

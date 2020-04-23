@@ -257,6 +257,26 @@ namespace BomOfferOrder.Task
             return searchDt.Generdt(sqlscript);
         }
 
+        /// <summary>
+        /// 获取GroupID主键值
+        /// </summary>
+        /// <returns></returns>
+        public int GetGroupidKey()
+        {
+            var sqlscript = sqlList.GetGroupidKey();
+            return Convert.ToInt32(searchDt.UseSqlSearchIntoDt(1, sqlscript).Rows[0][0]);
+        }
+
+        /// <summary>
+        ///  获取Dtlid主键值
+        /// </summary>
+        /// <returns></returns>
+        public int GetDtlidKey()
+        {
+            var sqlscript = sqlList.GetDtlidKey();
+            return Convert.ToInt32(searchDt.UseSqlSearchIntoDt(1, sqlscript).Rows[0][0]);
+        }
+
         ////////////////////////////////////////////////报表运算部份////////////////////////////////////////////////////////////////
 
         /// <summary>

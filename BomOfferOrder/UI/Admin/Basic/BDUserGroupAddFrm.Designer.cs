@@ -1,6 +1,6 @@
 ﻿namespace BomOfferOrder.UI.Admin.Basic
 {
-    partial class UserInfoList
+    partial class BdUserGroupAddFrm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,11 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserInfoList));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BdUserGroupAddFrm));
             this.Main = new System.Windows.Forms.MenuStrip();
-            this.tmGet = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmSet = new System.Windows.Forms.ToolStripMenuItem();
             this.tmClose = new System.Windows.Forms.ToolStripMenuItem();
-            this.tctotalpage = new System.Windows.Forms.TabControl();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtvalue = new System.Windows.Forms.TextBox();
             this.Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -40,19 +41,19 @@
             // 
             this.Main.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.Main.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmGet,
+            this.tmSet,
             this.tmClose});
             this.Main.Location = new System.Drawing.Point(0, 0);
             this.Main.Name = "Main";
-            this.Main.Size = new System.Drawing.Size(576, 25);
-            this.Main.TabIndex = 5;
+            this.Main.Size = new System.Drawing.Size(284, 25);
+            this.Main.TabIndex = 1;
             this.Main.Text = "menuStrip1";
             // 
-            // tmGet
+            // tmSet
             // 
-            this.tmGet.Name = "tmGet";
-            this.tmGet.Size = new System.Drawing.Size(44, 21);
-            this.tmGet.Text = "获取";
+            this.tmSet.Name = "tmSet";
+            this.tmSet.Size = new System.Drawing.Size(44, 21);
+            this.tmSet.Text = "设置";
             // 
             // tmClose
             // 
@@ -60,27 +61,34 @@
             this.tmClose.Size = new System.Drawing.Size(44, 21);
             this.tmClose.Text = "关闭";
             // 
-            // tctotalpage
+            // label1
             // 
-            this.tctotalpage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tctotalpage.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tctotalpage.Location = new System.Drawing.Point(0, 25);
-            this.tctotalpage.Name = "tctotalpage";
-            this.tctotalpage.SelectedIndex = 0;
-            this.tctotalpage.Size = new System.Drawing.Size(576, 276);
-            this.tctotalpage.TabIndex = 6;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(83, 12);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "用户组别名称:";
             // 
-            // UserInfoList
+            // txtvalue
+            // 
+            this.txtvalue.Location = new System.Drawing.Point(93, 33);
+            this.txtvalue.Name = "txtvalue";
+            this.txtvalue.Size = new System.Drawing.Size(179, 21);
+            this.txtvalue.TabIndex = 3;
+            // 
+            // BdUserGroupAddFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(576, 301);
+            this.ClientSize = new System.Drawing.Size(284, 61);
             this.ControlBox = false;
-            this.Controls.Add(this.tctotalpage);
+            this.Controls.Add(this.txtvalue);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.Main);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "UserInfoList";
-            this.Text = "用户信息列表";
+            this.Name = "BdUserGroupAddFrm";
+            this.Text = "用户组别添加/修改";
             this.Main.ResumeLayout(false);
             this.Main.PerformLayout();
             this.ResumeLayout(false);
@@ -91,8 +99,9 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip Main;
-        private System.Windows.Forms.ToolStripMenuItem tmGet;
+        private System.Windows.Forms.ToolStripMenuItem tmSet;
         private System.Windows.Forms.ToolStripMenuItem tmClose;
-        private System.Windows.Forms.TabControl tctotalpage;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtvalue;
     }
 }

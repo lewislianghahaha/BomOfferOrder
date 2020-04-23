@@ -12,18 +12,22 @@ namespace BomOfferOrder.UI.Admin.Basic
         TaskLogic task = new TaskLogic();
         Load load = new Load();
         UserInfoList userInfo=new UserInfoList();
+        BdUserGroupAddFrm bdUserGroupAdd=new BdUserGroupAddFrm();
 
         #region 变量参数
-        //获取表头信息(树菜单使用)
-        private DataTable _tempdt;
-        //获取表体信息(GridView使用)
-        private DataTable _tempdtldt;
+
+        //保存(树菜单使用)-包括新增及从数据库读取的记录
+        private DataTable _dt;
+        //保存查询出来的GridView记录(注:保存所有明细记录行信息)
+        private DataTable _dtl;
+
+        //存放删除的记录(表头信息)
+        private DataTable _deldt;
+        //存放删除的记录(表体信息)
+        private DataTable _deldtldt;
+
         //获取K3用户信息
         private DataTable _k3Userdt;
-        //
-
-        //保存查询出来的GridView记录
-        private DataTable _dtl;
 
         //记录当前页数(GridView页面跳转使用)
         private int _pageCurrent = 1;
@@ -43,9 +47,12 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             tmSave.Click += TmSave_Click;
             tmclose.Click += Tmclose_Click;
-            btncreategroup.Click += Btncreategroup_Click;
+            btncreate.Click += Btncreate_Click;
+            btnchange.Click += Btnchange_Click;
+            btndel.Click += Btndel_Click;
             tvview.AfterSelect += Tvview_AfterSelect;
             btnShowUserList.Click += BtnShowUserList_Click;
+            tmdel.Click += Tmdel_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -64,31 +71,44 @@ namespace BomOfferOrder.UI.Admin.Basic
             _k3Userdt = k3Userdt;
             //清空树菜单信息
             tvview.Nodes.Clear();
-            //获取相关数据源(包括表头及表体信息)
+            //获取相关数据源(包括表头信息)
             OnSearch();
             //树菜单读取
-            ShowTreeList(_tempdt);
+            ShowTreeList(_dt);
             //展开根节点
             tvview.ExpandAll();
             //连接GridView页面跳转功能
-            LinkGridViewPageChange(_tempdtldt);
+            LinkGridViewPageChange(OnSearchDtl());
             //控制GridView单元格显示方式
             ControlGridViewisShow();
         }
 
         /// <summary>
-        /// 查询及获取表体及表体信息
+        /// 查询及获取表头信息
         /// </summary>
         private void OnSearch()
         {
             //获取表头信息
             task.TaskId = "0.9.7";
             task.StartTask();
-            _tempdt = task.ResultTable;
+            _dt = task.ResultTable;
+            //将表头信息列插入至_deldt内
+            _deldt = _dt.Clone();
+        }
+
+        /// <summary>
+        /// 查询及获取表体信息
+        /// </summary>
+        /// <returns></returns>
+        private DataTable OnSearchDtl()
+        {
             //获取表体信息
             task.TaskId = "0.9.8";
             task.StartTask();
-            _tempdtldt = task.ResultTable;
+            var resuldt = task.ResultTable;
+            //将表体信息列插入至_deldtldt内
+            _deldtldt = resuldt.Clone();
+            return resuldt;
         }
 
         /// <summary>
@@ -107,7 +127,7 @@ namespace BomOfferOrder.UI.Admin.Basic
             else
             {
                 var tree=new TreeNode();
-                tree.Tag = 1;
+                tree.Tag = 0;
                 tree.Text = "ALL";
                 tvview.Nodes.Add(tree);
                 //展开根节点
@@ -160,21 +180,49 @@ namespace BomOfferOrder.UI.Admin.Basic
             //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
             else
             {
+                _dtl = dt;
                 gvdtl.DataSource = dt;
                 panel2.Visible = false;
             }
         }
 
         /// <summary>
-        /// 点击树菜单某个节点时出现
+        /// 点击树菜单某个节点时出现-用于读取记录
+        /// 作用:当点击某个节点时,GridView显示相关的记录
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Tvview_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            //复制表结构
+            var dt = _dtl.Clone();
+
             try
             {
-
+                //若点击"ALL"节点,即在GridView内显示全部信息;而其它节点需使用当前所选的节点.Tag为条件
+                if (Convert.ToInt32(tvview.SelectedNode.Tag) == 0)
+                {
+                    dt = _dtl;
+                }
+                else
+                {
+                    //以Convert.ToInt32(tvview.SelectedNode.Tag)为条件进行对_dtl查询,并将结果插入至dt内
+                    var dtlrows = _dtl.Select("Groupid='"+ Convert.ToInt32(tvview.SelectedNode.Tag) + "'");
+                    if (dtlrows.Length >0)
+                    {
+                        for (var i = 0; i < dtlrows.Length; i++)
+                        {
+                            var newrow = dt.NewRow();
+                            for (var j = 0; j < dt.Columns.Count; j++)
+                            {
+                                newrow[j] = dtlrows[i][j];
+                            }
+                            dt.Rows.Add(newrow);
+                        }
+                    }
+                }
+                //刷新信息
+                LinkGridViewPageChange(dt);
             }
             catch (Exception ex)
             {
@@ -191,11 +239,38 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             try
             {
+                //判断若没有点击任何TreeView节点,会作出异常提示
+                if (tvview.SelectedNode == null) throw new Exception("没有选择任何节点,请选择再继续");
+                //判断除点击“ALL”节点外才可以添加
+                if (tvview.SelectedNode.Text == $"ALL") throw new Exception("请选择除ALL节点外的节点进行添加");
+
                 userInfo.OnInitialize(_k3Userdt);
                 userInfo.StartPosition = FormStartPosition.CenterParent;
                 userInfo.ShowDialog();
 
-
+                //以下为返回相关记录返回本窗体相关处理
+                //判断若返回的DT为空的话,就不需要任何效果
+                if (userInfo.ResultTable == null || userInfo.ResultTable.Rows.Count == 0) return;
+                //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
+                if (userInfo.ResultTable != null || userInfo.ResultTable.Rows.Count > 0)
+                {
+                    var a = userInfo.ResultTable;
+                    //循环将userInfo.ResultTable内的记录插入至_dtl内
+                    foreach (DataRow rows in userInfo.ResultTable.Rows)
+                    {
+                        var newrow = _dtl.NewRow();
+                        newrow[0] = Convert.ToInt32(tvview.SelectedNode.Tag); //GroupID
+                        newrow[1] = GenerateDtlId();                          //Dtlid
+                        newrow[2] = Convert.ToString(rows[0]);                //员工名称
+                        newrow[3] = Convert.ToString(rows[1]);                //K3用户组别
+                        newrow[4] = Convert.ToString(rows[2]);                //K3用户手机
+                        newrow[5] = "Admin";                                  //创建人
+                        newrow[6] = DateTime.Now;                             //创建日期
+                        _dtl.Rows.Add(newrow);
+                    }
+                    //刷新信息
+                    LinkGridViewPageChange(_dtl);
+                }
             }
             catch (Exception ex)
             {
@@ -204,15 +279,287 @@ namespace BomOfferOrder.UI.Admin.Basic
         }
 
         /// <summary>
+        ///  创建新增的DtlId
+        /// </summary>
+        /// <returns></returns>
+        private int GenerateDtlId()
+        {
+            var result = 0;
+            if (_dtl.Rows.Count == 0)
+            {
+                result = -1;
+            }
+            else
+            {
+                result = Convert.ToInt32("-" + (_dtl.Rows.Count + 1));
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 创建用户组别
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Btncreategroup_Click(object sender, EventArgs e)
+        private void Btncreate_Click(object sender, EventArgs e)
         {
             try
             {
+                //判断若没有选择节点 或 选择的节点不为ALL的话,就报异常
+                if (tvview.SelectedNode == null) throw new Exception("没有选择任何节点,请选择再继续");
+                if (tvview.SelectedNode.Text != $"ALL") throw new Exception("请在ALL节点下进行新增用户组别");
 
+                //调用用户分组对话框
+                bdUserGroupAdd.StartPosition=FormStartPosition.CenterParent;
+                bdUserGroupAdd.ShowDialog();
+                
+                var newrow = _dt.NewRow();
+                newrow[0] = GenerateGroupId();          //GroupId=>(注:以-开头+累加的ID值)
+                newrow[1] = tvview.SelectedNode.Tag;    //Parentid=>默认为0
+                newrow[2] = bdUserGroupAdd.ResultValue; //GroupName
+                newrow[3] ="Admin";                     //CreateName
+                newrow[4] = DateTime.Now;               //CreateDt
+                _dt.Rows.Add(newrow);
+
+                //创建完成后将_dt放至ShowTreeList()方法内
+                ShowTreeList(_dt);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 创建新增的GroupId(注:使用_dt.rows[0]进行累加,从-1开始)
+        /// </summary>
+        /// <returns></returns>
+        private int GenerateGroupId()
+        {
+            var result = 0;
+            if (_dt.Rows.Count == 0)
+            {
+                result = -1;
+            }
+            else
+            {
+                result = Convert.ToInt32("-" + (_dt.Rows.Count + 1));
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 修改组别
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btnchange_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //判断若没有选择节点就报异常
+                if (tvview.SelectedNode == null) throw new Exception("没有选择任何节点,请选择再继续");
+                //若点击的当前节点为ALL的时候,就报异常
+                if (tvview.SelectedNode.Text == $"ALL") throw new Exception("不能修改ALL节点");
+                //获取当前节点信息(Tag)
+                var currenttage = Convert.ToInt32(tvview.SelectedNode.Tag);
+
+                //调用bdUserGroupAdd窗体
+                bdUserGroupAdd.StartPosition = FormStartPosition.CenterParent;
+                bdUserGroupAdd.ShowDialog();
+
+                //获取bdUserGroupAdd窗体返回的值并进行对当前节点进行更新
+                UpdateDt(currenttage,bdUserGroupAdd.ResultValue);
+                //更新完成后将新的DT信息放到ShowTreeList()进行刷新
+                ShowTreeList(_dt);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 更新节点dt信息
+        /// </summary>
+        /// <returns></returns>
+        private void UpdateDt(int tag,string value)
+        { 
+            for (var i = 0; i < _dt.Rows.Count; i++)
+            {
+                if(Convert.ToInt32(_dt.Rows[i][0]) != tag) continue;
+                _dt.Rows[i].BeginEdit();
+                _dt.Rows[i][2] = value;
+                _dt.Rows[i].EndEdit();
+            }
+        }
+
+        /// <summary>
+        /// 判断使用_tempdt或_dt的前提条件取决于当前选定的节点是否含有“-”
+        /// 删除组别=>作用:1)对_dt _dtldt进行相关节点记录删除;
+        /// 2)若对应的TAG包含“-”,就将其信息保存至_deldt及_deldtldt(这个用来保存表体信息)内(最后的删除使用)
+        /// 注:此功能执行时,是将用户组别以及对应的明细记录进行都进行删除!!!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btndel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //判断若没有选择节点就报异常
+                if (tvview.SelectedNode == null) throw new Exception("没有选择任何节点,请选择再继续");
+                //判断若点选的当前节点为ALL的话,就报异常
+                if (tvview.SelectedNode.Text == $"ALL") throw new Exception("ALL节点不能删除");
+
+                var clickMessage = $"是否确定删除节点:{tvview.SelectedNode.Text}的相关信息? \n 注:此删除操作是会将关联的明细记录进行删除";
+
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    //针对_dt及 _dtldt进行删除操作(注:若当前所选节点的TAG包含"-",也要将删除信息分别存放至_deldt及_deldtldt内)
+                    DelDt(Convert.ToInt32(tvview.SelectedNode.Tag));
+                    //完成后分别对树菜单 及 GridView进行刷新
+                    ShowTreeList(_dt);
+                    LinkGridViewPageChange(_dtl);
+                } 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 根据节点删除对应的表头及表体记录
+        /// 注:若判断TAG不包含“-”,即将删除记录保存至_deldt 及 _deldtldt内
+        /// </summary>
+        /// <returns></returns>
+        private void DelDt(int tag)
+        {
+            //若不包含“-”,即将记录进行插入至_deldt 及 _deldtldt内
+            if (!Convert.ToString(tag).Contains("-"))
+            {
+                //对_deldt进行插入操作
+                InsertDeldt(tag);
+                //对_deldtldt进行插入操作
+                InsertDelDtldt(tag,0,0);
+            }
+
+            //最后针对_dt及_dtldt进行删除
+            for (var i = _dt.Rows.Count; i > 0; i--)
+            {
+                if (Convert.ToInt32(_dt.Rows[i - 1][0]) == tag)
+                {
+                    _dt.Rows.RemoveAt(i-1);
+                }
+            }
+
+            for (var i = _dtl.Rows.Count; i > 0; i--)
+            {
+                if (Convert.ToInt32(_dtl.Rows[i - 1][0]) == tag)
+                {
+                    _dtl.Rows.RemoveAt(i - 1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 保存需删除的表头记录(注:需不包含“-”)
+        /// </summary>
+        /// <param name="tag"></param>
+        private void InsertDeldt(int tag)
+        {
+            if (!Convert.ToString(tag).Contains("-"))
+            {
+                var newrow = _deldt.NewRow();
+                for (var i = 0; i < _dt.Rows.Count; i++)
+                {
+                    if (Convert.ToInt32(_dt.Rows[i][0]) != tag) continue;
+                    for (var j = 0; j < _dt.Columns.Count; j++)
+                    {
+                        newrow[j] = _dt.Rows[i][j];
+                    }
+                }
+                _deldt.Rows.Add(newrow);
+            }
+        }
+
+        /// <summary>
+        /// 保存需删除的表体记录(注:需不包含“-”)
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="id">0:‘组别删除’使用 1:“明细删除”使用</param>
+        /// <param name="dtlid">“明细删除”使用=>记录所选中的GridView.Dtlid信息</param>
+        private void InsertDelDtldt(int tag,int id,int dtlid)
+        {
+            if (!Convert.ToString(tag).Contains("-"))
+            {
+
+                if (id == 0)
+                {
+                    for (var i = 0; i < _dtl.Rows.Count; i++)
+                    {
+                        if (Convert.ToInt32(_dtl.Rows[i][0]) != tag) continue;
+                        var newrow = _deldtldt.NewRow();
+                        for (var j = 0; j < _dtl.Columns.Count; j++)
+                        {
+                            newrow[j] = _dtl.Rows[i][j];
+                        }
+                        _deldtldt.Rows.Add(newrow);
+                    }
+                }
+                else
+                {
+                    for (var i = 0; i < _dtl.Rows.Count; i++)
+                    {
+                        if (Convert.ToInt32(_dtl.Rows[i][0]) != tag && Convert.ToInt32(_dtl.Rows[i][1]) != dtlid) continue;
+                        var newrow = _deldtldt.NewRow();
+                        for (var j = 0; j < _dtl.Columns.Count; j++)
+                        {
+                            newrow[j] = _dtl.Rows[i][j];
+                        }
+                        _deldtldt.Rows.Add(newrow);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 删除指定明细行=>作用:1)根据当前所选节点判断是否包含“-”,是;只针对_dtldt进行删除;反之,除删除外,将删除记录保存至_deldtldt内
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmdel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //判断若没有选择节点就报异常
+                if (tvview.SelectedNode == null) throw new Exception("没有选择任何节点,请选择再继续");
+                //判断若点选的当前节点为ALL的话,就报异常
+                if (tvview.SelectedNode.Text == $"ALL") throw new Exception("请点击除ALL节点外的节点进行删除明细行记录");
+                if (gvdtl.SelectedRows.Count==0) throw new Exception("没有选择行,不能继续");
+                if (_dtl.Rows.Count==0) throw new Exception("没有明细记录,不能进行删除");
+
+                var clickMessage = $"您所选择需删除的行数为:{gvdtl.SelectedRows.Count}行 \n 是否继续?";
+
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    //若选择的当前节点的TAG不包含“-”就将所选记录保存至_deldtldt内
+                    foreach (DataGridViewRow rows in gvdtl.SelectedRows)
+                    {
+                        InsertDelDtldt(Convert.ToInt32(tvview.SelectedNode.Tag),1,Convert.ToInt32(rows.Cells[1].Value));
+                    }
+                    //最后再执行删除操作
+                    for (var i = _dtl.Rows.Count; i > 0; i++)
+                    {
+                        for (var j = 0; j < gvdtl.SelectedRows.Count; j++)
+                        {
+                            //需要_dtl.Groupid及Dtlid与所选的行相同才执行删除
+                            if (Convert.ToInt32(_dtl.Rows[i - 1][0]) != Convert.ToInt32(tvview.SelectedNode.Tag) && 
+                                Convert.ToInt32(_dtl.Rows[i - 1][1]) != Convert.ToInt32(gvdtl.SelectedRows[j].Cells[1].Value)) continue;
+                                _dtl.Rows.RemoveAt(i-1);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -229,7 +576,21 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             try
             {
+                task.TaskId = "2.4";
+                task.Groupdt = _dt;              //表头信息 _dt
+                task.Groupdtldt = _dtl;          //表体信息 _dtl
+                task.Groupdeldt = _deldt;        //删除表头信息 _deldt
+                task.Groupdeldtldt = _deldtldt;  //删除表体信息 _deldtldt
 
+                new Thread(Start).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
+
+                if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
+                else
+                {
+                    MessageBox.Show($"用户组别保存成功,若需要用户权限创建请关闭此窗体", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception ex)
             {

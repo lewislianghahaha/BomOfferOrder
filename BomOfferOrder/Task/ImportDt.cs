@@ -253,7 +253,7 @@ namespace BomOfferOrder.Task
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="dt"></param>
-        private void ImportDtToDb(string tableName, DataTable dt)
+        public void ImportDtToDb(string tableName, DataTable dt)
         {
             var conn = new Conn();
             var sqlcon = conn.GetConnectionString(1);
@@ -273,7 +273,7 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 根据指定条件对数据表进行更新
         /// </summary>
-        private void UpdateDbFromDt(string tablename,DataTable dt)
+        public void UpdateDbFromDt(string tablename,DataTable dt)
         {
             var sqladpter = new SqlDataAdapter();
             var ds = new DataSet();
@@ -367,6 +367,22 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@CanBackConfirm", SqlDbType.Int, 8, "CanBackConfirm");
                     da.UpdateCommand.Parameters.Add("@Readid", SqlDbType.Int, 8, "Readid");
                     da.UpdateCommand.Parameters.Add("@Addid", SqlDbType.Int, 8, "Addid");
+                    break;
+                case "T_BD_UserGroup":
+                    da.UpdateCommand.Parameters.Add("@GroupId", SqlDbType.Int, 8, "GroupId");
+                    da.UpdateCommand.Parameters.Add("@Parentid", SqlDbType.Int, 8, "Parentid");
+                    da.UpdateCommand.Parameters.Add("@GroupName", SqlDbType.NVarChar, 100, "GroupName");
+                    da.UpdateCommand.Parameters.Add("@CreateName", SqlDbType.NVarChar, 100, "CreateName");
+                    da.UpdateCommand.Parameters.Add("@CreateDt", SqlDbType.DateTime, 10, "CreateDt");
+                    break;
+                case "T_BD_UserGroupDtl":
+                    da.UpdateCommand.Parameters.Add("@GroupId", SqlDbType.Int, 8, "GroupId");
+                    da.UpdateCommand.Parameters.Add("@Dtlid", SqlDbType.Int, 8, "Dtlid");
+                    da.UpdateCommand.Parameters.Add("@UserName", SqlDbType.NVarChar, 100, "UserName");
+                    da.UpdateCommand.Parameters.Add("@K3UserGroup", SqlDbType.NVarChar, 100, "K3UserGroup");
+                    da.UpdateCommand.Parameters.Add("@K3UserPhone", SqlDbType.NVarChar, 100, "K3UserPhone");
+                    da.UpdateCommand.Parameters.Add("@CreateName", SqlDbType.NVarChar, 100, "CreateName");
+                    da.UpdateCommand.Parameters.Add("@CreateDt", SqlDbType.DateTime, 10, "CreateDt");
                     break;
             }
             return da;
@@ -501,63 +517,6 @@ namespace BomOfferOrder.Task
         private int GetEntryidKey()
         {
             return generateDt.GetNewEntryidValue();
-        }
-
-        /// <summary>
-        /// 用户权限提交
-        /// </summary>
-        /// <returns></returns>
-        public bool ImportUserPermissionDt(DataTable sourcedt)
-        {
-            var result = true;
-            try
-            {
-                //获取用户权限临时表
-                var tempdt = dbList.CreateUserPermissionTemp();
-
-                //判断若sourcedt内的Userid为0,即需要插入操作,反之,为更新操作
-                var dtlrows = sourcedt.Select("Userid=0");
-
-                //对临时表进行添加操作
-                var newrow = tempdt.NewRow();
-
-                newrow[0] = dtlrows.Length > 0 ? GetUseridKey() : sourcedt.Rows[0][0]; //UserId       
-                newrow[1] = sourcedt.Rows[0][1];      //用户名称
-                newrow[2] = sourcedt.Rows[0][2];      //用户密码
-                newrow[3] = sourcedt.Rows[0][3];      //创建人
-                newrow[4] = sourcedt.Rows[0][4];      //创建日期
-                newrow[5] = sourcedt.Rows[0][5];      //是否启用
-                newrow[6] = sourcedt.Rows[0][6];      //能否反审核
-                newrow[7] = sourcedt.Rows[0][7];      //能否查阅明细金额
-                newrow[8] = sourcedt.Rows[0][8];      //能否对明细物料操作
-                newrow[9] = sourcedt.Rows[0][9];      //是否占用
-                tempdt.Rows.Add(newrow);
-
-                //执行插入操作
-                if (dtlrows.Length > 0)
-                {
-                    ImportDtToDb("T_AD_User", tempdt);
-                }
-                //执行更新操作
-                else
-                {
-                    UpdateDbFromDt("T_AD_User",tempdt);
-                }
-            }
-            catch (Exception)
-            {
-                result = false;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 获取最新的Userid值
-        /// </summary>
-        /// <returns></returns>
-        private int GetUseridKey()
-        {
-            return generateDt.GetNewUseridValue();
         }
 
         #region Excel模板导入

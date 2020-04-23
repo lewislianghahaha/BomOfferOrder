@@ -8,6 +8,7 @@ namespace BomOfferOrder.Task
         GenerateDt generateDt=new GenerateDt();
         ImportDt importDt=new ImportDt();
         ImportTempDt importTempDt=new ImportTempDt();
+        ImportPerDt importPer=new ImportPerDt();
 
         #region 变量定义
         private string _taskid;             //记录中转ID
@@ -29,6 +30,13 @@ namespace BomOfferOrder.Task
         private DataTable _salespricedt;     //保存销售价目表相关DT
         private DataTable _purchaseinstockdt;//保存采购入库单相关DT-(毛利润报表生成使用)
         private DataTable _rencostdt;        //保存人工制造费用相关DT
+
+        #region 基础资料-用户组别使用
+        private DataTable _groupdt;          //表头信息
+        private DataTable _groupdtldt;       //表体信息
+        private DataTable _groupdeldt;       //删除表头信息
+        private DataTable _groupdeldtldt;    //删除表体信息
+        #endregion
 
         private DataTable _resultTable;          //返回DT类型
         private DataTable _resultbomdt;          //返回BOM DT
@@ -131,6 +139,13 @@ namespace BomOfferOrder.Task
         /// 保存人工制造费用相关DT
         /// </summary>
         public DataTable Rencostdt { set { _rencostdt = value; } }
+
+        #region 基础资料-用户组别使用
+        public DataTable Groupdt { set { _groupdt = value; } }
+        public DataTable Groupdtldt { set { _groupdtldt = value; } }
+        public DataTable Groupdeldt { set { _groupdeldt = value; } }
+        public DataTable Groupdeldtldt { set { _groupdeldtldt = value; } }
+        #endregion
 
         #endregion
 
@@ -258,6 +273,10 @@ namespace BomOfferOrder.Task
                 //暂存信息删除
                 case "2.3":
                     DelTempDt(_fid);
+                    break;
+                //基础资 料-用户组别
+                case "2.4":
+                    ImportBdUserGroup(_groupdt,_groupdtldt,_groupdeldt,_groupdeldtldt);
                     break;
                 #endregion
 
@@ -533,8 +552,10 @@ namespace BomOfferOrder.Task
         /// </summary>
         private void ImportUserPermissionDt(DataTable sourcedt)
         {
-            _resultMark = importDt.ImportUserPermissionDt(sourcedt);
+            _resultMark = importPer.ImportUserPermissionDt(sourcedt);
         }
+
+
 
         /// <summary>
         /// 暂存功能提交使用
@@ -545,10 +566,27 @@ namespace BomOfferOrder.Task
             _resultMark = importTempDt.ImportTempDtToDb(sourcedt);
         }
 
+        /// <summary>
+        /// 暂存功能删除使用
+        /// </summary>
+        /// <param name="searchvalue"></param>
         private void DelTempDt(int searchvalue)
         {
             _resultMark = importTempDt.DeleteRecord(searchvalue);
         }
+
+        /// <summary>
+        /// 基础资料-用户组别提交
+        /// </summary>
+        /// <param name="dt">表头信息</param>
+        /// <param name="dtl">表体信息</param>
+        /// <param name="deldt">删除表头信息</param>
+        /// <param name="deldtldt">删除表体信息</param>
+        private void ImportBdUserGroup(DataTable dt,DataTable dtl,DataTable deldt,DataTable deldtldt)
+        {
+            _resultMark = importPer.ImportBdUserGroup(dt,dtl,deldt,deldtldt);
+        }
+
         #endregion
 
         #region 更新相关方法

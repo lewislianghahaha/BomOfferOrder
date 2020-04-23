@@ -36,9 +36,16 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tvview = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btncreategroup = new System.Windows.Forms.Button();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.btnchange = new System.Windows.Forms.Button();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.btndel = new System.Windows.Forms.Button();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.btncreate = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.gvdtl = new System.Windows.Forms.DataGridView();
+            this.Menu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmdel = new System.Windows.Forms.ToolStripMenuItem();
             this.panel4 = new System.Windows.Forms.Panel();
             this.btnShowUserList = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -65,8 +72,12 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel7.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
+            this.Menu.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
@@ -129,22 +140,71 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btncreategroup);
+            this.panel1.Controls.Add(this.panel7);
+            this.panel1.Controls.Add(this.panel6);
+            this.panel1.Controls.Add(this.panel5);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(173, 24);
             this.panel1.TabIndex = 0;
             // 
-            // btncreategroup
+            // panel7
             // 
-            this.btncreategroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btncreategroup.Location = new System.Drawing.Point(0, 0);
-            this.btncreategroup.Name = "btncreategroup";
-            this.btncreategroup.Size = new System.Drawing.Size(173, 24);
-            this.btncreategroup.TabIndex = 0;
-            this.btncreategroup.Text = "新增用户组别";
-            this.btncreategroup.UseVisualStyleBackColor = true;
+            this.panel7.Controls.Add(this.btnchange);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel7.Location = new System.Drawing.Point(62, 0);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(57, 24);
+            this.panel7.TabIndex = 3;
+            // 
+            // btnchange
+            // 
+            this.btnchange.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnchange.Location = new System.Drawing.Point(0, 0);
+            this.btnchange.Name = "btnchange";
+            this.btnchange.Size = new System.Drawing.Size(57, 24);
+            this.btnchange.TabIndex = 0;
+            this.btnchange.Text = "修改";
+            this.btnchange.UseVisualStyleBackColor = true;
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.btndel);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel6.Location = new System.Drawing.Point(119, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(54, 24);
+            this.panel6.TabIndex = 2;
+            // 
+            // btndel
+            // 
+            this.btndel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btndel.Location = new System.Drawing.Point(0, 0);
+            this.btndel.Name = "btndel";
+            this.btndel.Size = new System.Drawing.Size(54, 24);
+            this.btndel.TabIndex = 0;
+            this.btndel.Text = "删除";
+            this.btndel.UseVisualStyleBackColor = true;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.btncreate);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel5.Location = new System.Drawing.Point(0, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(62, 24);
+            this.panel5.TabIndex = 1;
+            // 
+            // btncreate
+            // 
+            this.btncreate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btncreate.Location = new System.Drawing.Point(0, 0);
+            this.btncreate.Name = "btncreate";
+            this.btncreate.Size = new System.Drawing.Size(62, 24);
+            this.btncreate.TabIndex = 0;
+            this.btncreate.Text = "新增";
+            this.btncreate.UseVisualStyleBackColor = true;
             // 
             // panel3
             // 
@@ -159,12 +219,27 @@
             // gvdtl
             // 
             this.gvdtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
+            this.gvdtl.ReadOnly = true;
             this.gvdtl.RowTemplate.Height = 23;
             this.gvdtl.Size = new System.Drawing.Size(641, 417);
             this.gvdtl.TabIndex = 0;
+            // 
+            // Menu
+            // 
+            this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmdel});
+            this.Menu.Name = "Menu";
+            this.Menu.Size = new System.Drawing.Size(137, 26);
+            // 
+            // tmdel
+            // 
+            this.tmdel.Name = "tmdel";
+            this.tmdel.Size = new System.Drawing.Size(136, 22);
+            this.tmdel.Text = "删除指定行";
             // 
             // panel4
             // 
@@ -362,8 +437,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.panel7.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
+            this.Menu.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -382,7 +461,7 @@
         private System.Windows.Forms.ToolStripMenuItem tmclose;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button btncreategroup;
+        private System.Windows.Forms.Button btncreate;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.TreeView tvview;
         private System.Windows.Forms.BindingNavigator bngat;
@@ -406,5 +485,12 @@
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button btnShowUserList;
         private System.Windows.Forms.DataGridView gvdtl;
+        private System.Windows.Forms.ContextMenuStrip Menu;
+        private System.Windows.Forms.ToolStripMenuItem tmdel;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Button btnchange;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Button btndel;
+        private System.Windows.Forms.Panel panel5;
     }
 }
