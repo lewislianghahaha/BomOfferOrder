@@ -652,7 +652,8 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             try
             {
-                if(_dt.Rows.Count == 0 && _dtl.Rows.Count == 0) throw new Exception("不能保存,原因:只有父节点或没有明细记录");
+                if(_dt.Rows.Count == 0 && _dtl.Rows.Count == 0
+                    && _deldt.Rows.Count==0 && _deldtldt.Rows.Count==0) throw new Exception("不能保存,原因:只有父节点或没有明细记录");
 
                 task.TaskId = "2.4";
                 task.Groupdt = _dt;              //表头信息 _dt
