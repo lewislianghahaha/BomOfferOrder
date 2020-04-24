@@ -10,6 +10,8 @@ namespace BomOfferOrder.Task
         DbList dbList=new DbList();
         GenerateDt generateDt=new GenerateDt();
         ImportDt importDt=new ImportDt();
+        SearchDt searchDt=new SearchDt();
+        SqlList sqlList=new SqlList();
 
         /// <summary>
         /// 基础资料-用户组别提交
@@ -27,11 +29,11 @@ namespace BomOfferOrder.Task
             try
             {
                 GetDtToDb(dt,dtl);
-                //最后若deldt deldtldt有值的话都执行删除方法 todo
-                //if(deldt.Rows.Count>0)
-
-               // if(deldtldt.Rows.Count>0)
-
+               //最后若deldt deldtldt有值的话都执行删除方法
+               if(deldt.Rows.Count>0)
+                    DelRecord(0,deldt);
+               if(deldtldt.Rows.Count>0)
+                    DelRecord(1,deldtldt);
             }
             catch (Exception)
             {
@@ -118,9 +120,9 @@ namespace BomOfferOrder.Task
                 importDt.ImportDtToDb("T_BD_UserGroupDtl", insertgroupdtldt);
 
             if(upgroupdt.Rows.Count>0)
-                importDt.UpdateDbFromDt("T_AD_User", upgroupdt);
+                importDt.UpdateDbFromDt("T_BD_UserGroup", upgroupdt);
             if (upgroupdtldt.Rows.Count>0)
-                importDt.UpdateDbFromDt("T_AD_User", upgroupdtldt);
+                importDt.UpdateDbFromDt("T_BD_UserGroupDtl", upgroupdtldt);
         }
 
         /// <summary>
@@ -215,7 +217,28 @@ namespace BomOfferOrder.Task
             return generateDt.GetDtlidKey();
         }
 
+        /// <summary>
+        /// 删除相关记录-(基础资料:用户组别使用)
+        /// </summary>
+        /// <param name="id">0:表头删除 1:表体删除</param>
+        /// <param name="deldt"></param>
+        private void DelRecord(int id,DataTable deldt)
+        {
+            var fidlist = string.Empty;
 
+            foreach (DataRow rows in deldt.Rows)
+            {
+                if (string.IsNullOrEmpty(fidlist))
+                {
+                    fidlist = Convert.ToString(id == 0 ? rows[0] : rows[1]);
+                }
+                else
+                {
+                    fidlist += id == 0 ? "," + Convert.ToString(rows[0]) : "," + Convert.ToString(rows[1]);
+                }
+            }
+            searchDt.Generdt(sqlList.DelGroupRecord(id, fidlist));
+        }
 
     }
 }

@@ -514,7 +514,7 @@
                 case "T_BD_UserGroupDtl":
                     _result = @"
                                     UPDATE dbo.T_BD_UserGroupDtl SET Groupid=@Groupid,Dtlid=@Dtlid,UserName=@UserName,K3UserGroup=@K3UserGroup,
-                                                                     K3UserPhone=@K3UserGroup,CreateName=@CreateName,CreateDt=@CreateDt
+                                                                     K3UserPhone=@K3UserPhone,CreateName=@CreateName,CreateDt=@CreateDt
                                     WHERE Dtlid=@Dtlid
                                ";
                     break;
@@ -531,6 +531,29 @@
             _result = $@"
                             DELETE FROM dbo.T_OfferOrderEntry WHERE Entryid IN '{entryid}'
                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 删除指定记录-基础资料:用户组别使用
+        /// </summary>
+        /// <param name="id">0:表头删除 1:表体删除</param>
+        /// <param name="fidlist"></param>
+        /// <returns></returns>
+        public string DelGroupRecord(int id,string fidlist)
+        {
+            if (id == 0)
+            {
+                _result = $@"
+                            DELETE FROM dbo.T_BD_UserGroup WHERE Groupid IN '{fidlist}'
+                       ";
+            }
+            else
+            {
+                _result = $@"
+                            DELETE FROM dbo.T_BD_UserGroupDtl WHERE Dtlid IN '{fidlist}'
+                       ";
+            }
             return _result;
         }
 
