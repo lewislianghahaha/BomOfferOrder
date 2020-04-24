@@ -33,7 +33,7 @@ namespace BomOfferOrder.UI
         private DataTable _purchaseinstockdt;
 
         //保存查询出来的GridView记录
-        private DataTable _dtl;
+        public DataTable Dtl;
         //返回所记录的Headid
         private int _headid;
 
@@ -97,7 +97,7 @@ namespace BomOfferOrder.UI
         {
             if (gridViewdt.Rows.Count > 0)
             {
-                _dtl = gridViewdt;
+                Dtl = gridViewdt;
                 panel2.Visible = true;
                 //初始化下拉框所选择的默认值
                 //tmshowrows.SelectedItem = "10"; 
@@ -112,7 +112,7 @@ namespace BomOfferOrder.UI
             //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
             else
             {
-                _dtl = gridViewdt;
+                Dtl = gridViewdt;
                 gvdtl.DataSource = gridViewdt;
                 panel2.Visible = false;
             }
@@ -240,7 +240,7 @@ namespace BomOfferOrder.UI
             try
             {
                 if(gvdtl.SelectedRows.Count==0) throw new Exception("没有选择行,不能继续");
-                if(_dtl.Rows.Count==0)throw new Exception("没有明细记录,不能进行删除");
+                if(Dtl.Rows.Count==0)throw new Exception("没有明细记录,不能进行删除");
                 
                 var clickMessage = $"您所选择需删除的行数为:{gvdtl.SelectedRows.Count}行 \n 是否继续?";
 
@@ -267,13 +267,13 @@ namespace BomOfferOrder.UI
 
                     //先根据GridView所选择的行将_dtl对应的行删除
                     //注:使用‘物料名称’进行循环对比
-                    for (var i = _dtl.Rows.Count; i > 0; i--)
+                    for (var i = Dtl.Rows.Count; i > 0; i--)
                     {
                         for (var j = 0; j < gvdtl.SelectedRows.Count; j++)
                         {
-                            if (Convert.ToString(_dtl.Rows[i - 1][2]) == Convert.ToString(gvdtl.SelectedRows[j].Cells[2].Value))
+                            if (Convert.ToString(Dtl.Rows[i - 1][2]) == Convert.ToString(gvdtl.SelectedRows[j].Cells[2].Value))
                             {
-                                _dtl.Rows.RemoveAt(i - 1);
+                                Dtl.Rows.RemoveAt(i - 1);
                                 break;  //注:此处必加!!!
                             }
                         }
@@ -289,7 +289,7 @@ namespace BomOfferOrder.UI
                     //根据指定值将相关项进行改变指定文本框内的值
                     GenerateValue();
                     //操作完成后进行刷新
-                    OnInitialize(_dtl);
+                    OnInitialize(Dtl);
                 }
             }
             catch (Exception ex)
@@ -531,10 +531,10 @@ namespace BomOfferOrder.UI
                 //将相关记录集放至方法内并进行整理,完成后放至GridView内进行显示
                 //若_dtl原来是有记录的,就判断其内的‘物料名称’是否在dt内存在,若有就更新此行的‘配方用量’;最后将dt内的此行物料记录删除
                 var dt = GetExceldtToBomDetail(_materialdt, _exceldt, resultdt);
-                if (_dtl.Rows.Count > 0)
+                if (Dtl.Rows.Count > 0)
                 {
                     //循环_dtl,并判断其‘物料名称’(3)是否在dt内存在,若存在,即更新‘配方用量’
-                    foreach (DataRow rows in _dtl.Rows)
+                    foreach (DataRow rows in Dtl.Rows)
                     {
                         for (var i = dt.Rows.Count; i >0; i--)
                         {
@@ -542,21 +542,21 @@ namespace BomOfferOrder.UI
                             if (Convert.ToString(dt.Rows[i - 1][3]) == Convert.ToString(rows[3]))
                             {
                                 //更新‘配方用量’及'物料'
-                                _dtl.BeginInit();
+                                Dtl.BeginInit();
                                 rows[4] = dt.Rows[i - 1][4];                           //配方用量
                                 rows[5] = Convert.ToDecimal(dt.Rows[i - 1][5]);        //占比=配方用量*100
                                 rows[6] = Convert.ToDecimal(dt.Rows[i - 1][6]);        //物料单价(含税)
                                 rows[7] = Convert.ToDecimal(dt.Rows[i - 1][7]);        //物料成本(含税)
                                 rows[8] = DBNull.Value;                                //备注
-                                _dtl.EndInit();
+                                Dtl.EndInit();
                                 //删除dt行
                                 dt.Rows.RemoveAt(i-1);
                             }
                         }
                     }
                     //最后将记录整合
-                    _dtl.Merge(dt);
-                    _importdt = _dtl;
+                    Dtl.Merge(dt);
+                    _importdt = Dtl;
                 }
                 else
                 {
@@ -1028,7 +1028,7 @@ namespace BomOfferOrder.UI
             try
             {
                 //获取查询的总行数
-                var dtltotalrows = _dtl.Rows.Count;
+                var dtltotalrows = Dtl.Rows.Count;
                 //获取“每页显示行数”所选择的行数
                 var pageCount = Convert.ToInt32(tmshowrows.SelectedItem);
                 //计算出总页数
@@ -1061,7 +1061,7 @@ namespace BomOfferOrder.UI
                 }
 
                 //显示_dtl的查询总行数
-                tstotalrow.Text = $"共 {_dtl.Rows.Count} 行";
+                tstotalrow.Text = $"共 {Dtl.Rows.Count} 行";
 
                 //根据“当前页” 及 “固定行数” 计算出新的行数记录并进行赋值
                 //计算进行循环的起始行
@@ -1069,11 +1069,11 @@ namespace BomOfferOrder.UI
                 //计算进行循环的结束行
                 var endrow = _pageCurrent == _totalpagecount ? dtltotalrows : _pageCurrent * pageCount;
                 //复制 查询的DT的列信息（不包括行）至临时表内
-                var tempdt = _dtl.Clone();
+                var tempdt = Dtl.Clone();
                 //循环将所需的_dtl的行记录复制至临时表内
                 for (var i = startrow; i < endrow; i++)
                 {
-                    tempdt.ImportRow(_dtl.Rows[i]);
+                    tempdt.ImportRow(Dtl.Rows[i]);
                 }
 
                 //最后将刷新的DT重新赋值给GridView
@@ -1097,7 +1097,7 @@ namespace BomOfferOrder.UI
             try
             {
                 //将GridView内的内容赋值到DT
-                var gridViewdt = _dtl;   //(DataTable)gvdtl.DataSource;
+                var gridViewdt = Dtl;   //(DataTable)gvdtl.DataSource;
 
                 //循环将获取过来的值插入至GridView内
                 foreach (DataRow rows in sourcedt.Rows)
@@ -1137,7 +1137,7 @@ namespace BomOfferOrder.UI
 
                 //循环GridView内的值,当发现ID与条件ID相同,即进入行更新
                 //将GridView内的内容赋值到DT
-                var gridViewdt = _dtl;  //(DataTable)gvdtl.DataSource;
+                var gridViewdt = Dtl;  //(DataTable)gvdtl.DataSource;
                 //判断若sourcedt内的物料ID已在GridView内存在,即跳出异常不能继续替换操作
                 if (gridViewdt.Select("物料编码ID='"+ sourcedt.Rows[0][1] +"'").Length>0)
                         throw new Exception($"获取物料'{sourcedt.Rows[0][2]}'已存在,故不能进行替换,请重新选择其它物料");
@@ -1228,7 +1228,7 @@ namespace BomOfferOrder.UI
                         else
                         {
                             //若不继续就刷新GridView
-                            OnInitialize(_dtl);
+                            OnInitialize(Dtl);
                         }
                     }
                 }
@@ -1248,7 +1248,7 @@ namespace BomOfferOrder.UI
                     //根据指定值将相关项进行改变指定文本框内的值
                     GenerateValue();
                     //操作完成后进行刷新
-                    OnInitialize(_dtl);
+                    OnInitialize(Dtl);
                 }
             }
             catch (Exception ex)
@@ -1273,7 +1273,7 @@ namespace BomOfferOrder.UI
             if (dtlrows.Length == 0)
             {
                 //根据_dtl查询出‘物料编码’为空的Length,然后作为其最新的fmaterialid值
-                var fmaterialid = _dtl.Select("物料编码 is null").Length;
+                var fmaterialid = Dtl.Select("物料编码 is null").Length;
 
                 var newrow = resultTable.NewRow();
                 newrow[1] = fmaterialid;     //物料编码ID
@@ -1348,7 +1348,7 @@ namespace BomOfferOrder.UI
         {
             decimal result = 0;
 
-            foreach (DataRow rows in _dtl.Rows)
+            foreach (DataRow rows in Dtl.Rows)
             {
                 if (rows[7] == DBNull.Value) continue;
                 //累加‘物料成本(含税)’
@@ -1366,7 +1366,7 @@ namespace BomOfferOrder.UI
             var result = string.Empty;
             decimal tempqty = 0;
 
-            foreach (DataRow rows in _dtl.Rows)
+            foreach (DataRow rows in Dtl.Rows)
             {
                 if(rows[4]==DBNull.Value) continue;
                 //累加‘配方用量’
@@ -1448,16 +1448,16 @@ namespace BomOfferOrder.UI
         private void UpdateGridViewValue(decimal materialprice, decimal peiqty, decimal ratio,int fmaterialid,decimal value)
         {
             //针对_dtl循环其内容
-            foreach (DataRow rows in _dtl.Rows)
+            foreach (DataRow rows in Dtl.Rows)
             {
                 if (Convert.ToInt32(rows[1]) == fmaterialid)
                 {
-                    _dtl.BeginInit();
+                    Dtl.BeginInit();
                     rows[4] = peiqty;         //配方用量
                     rows[5] = ratio;          //占比
                     rows[6] = materialprice;  //物料单价
                     rows[7] = value;          //物料成本(含税)
-                    _dtl.EndInit();
+                    Dtl.EndInit();
                 }
             }
         }

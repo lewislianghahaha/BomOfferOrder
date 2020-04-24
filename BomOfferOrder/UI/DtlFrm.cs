@@ -474,7 +474,7 @@ namespace BomOfferOrder.UI
 
                         if (showdetail != null)
                         {
-                            var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
+                            var bomdtldt = showdetail.Dtl;   //(DataTable)showdetail.gvdtl.DataSource;
                             GenerateDt(bomdtldt,showdetail);
                         }
                     }
@@ -652,7 +652,7 @@ namespace BomOfferOrder.UI
 
                         if (showdetail != null)
                         {
-                            var bomdtldt = (DataTable)showdetail.gvdtl.DataSource;
+                            var bomdtldt = showdetail.Dtl;//(DataTable)showdetail.gvdtl.DataSource;
                             GenerateDt(bomdtldt, showdetail);
                         }
                     }
@@ -795,6 +795,7 @@ namespace BomOfferOrder.UI
                 newrow[33] = rows[8];                                                       //备注
                 _bomdt.Rows.Add(newrow);
             }
+
             //将各TabPages内GridView中的需要进行删除的记录合并整理
             if (_funState == "R" && showdetail.Deldt.Rows.Count > 0)
             {
