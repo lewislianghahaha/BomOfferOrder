@@ -274,7 +274,7 @@ namespace BomOfferOrder.UI
                             if (Convert.ToString(_dtl.Rows[i - 1][2]) == Convert.ToString(gvdtl.SelectedRows[j].Cells[2].Value))
                             {
                                 _dtl.Rows.RemoveAt(i - 1);
-                                break;
+                                break;  //注:此处必加!!!
                             }
                         }
                     }

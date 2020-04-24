@@ -26,6 +26,9 @@ namespace BomOfferOrder.UI.Admin.Basic
         //存放删除的记录(表体信息)
         private DataTable _deldtldt;
 
+        //存放节点跳转时的查询信息
+        private DataTable _showdtldt;
+
         //获取K3用户信息
         private DataTable _k3Userdt;
 
@@ -106,8 +109,10 @@ namespace BomOfferOrder.UI.Admin.Basic
             task.TaskId = "0.9.8";
             task.StartTask();
             var resuldt = task.ResultTable;
-            //将表体信息列插入至_deldtldt内
+            //将表体信息结构插入至_deldtldt内(初始化表结构)
             _deldtldt = resuldt.Clone();
+            //将表体信息结构插入至_dtl内(初始化表结构)
+            _dtl = resuldt.Clone();
             return resuldt;
         }
 
@@ -117,23 +122,30 @@ namespace BomOfferOrder.UI.Admin.Basic
         /// <param name="dt"></param>
         private void ShowTreeList(DataTable dt)
         {
-            if (dt.Rows.Count == 1)
+            //清空树菜单信息
+            tvview.Nodes.Clear();
+
+            if (dt.Rows.Count == 0)
             {
                 var tree=new TreeNode();
                 tree.Tag = 0;
-                tree.Text = "ALL";
+                tree.Text = $"ALL";
                 tvview.Nodes.Add(tree);
             }
             else
             {
-                var tree=new TreeNode();
-                tree.Tag = 0;
-                tree.Text = "ALL";
-                tvview.Nodes.Add(tree);
-                //展开根节点
-                tvview.ExpandAll();
+                //若节点总数等于0时就创建ALL节点
+                if (tvview.Nodes.Count == 0)
+                {
+                    var tree = new TreeNode();
+                    tree.Tag = 0;
+                    tree.Text = $"ALL";
+                    tvview.Nodes.Add(tree);
+                }
                 //读取记录并增加至子节点内(从二级节点开始)
                 AddChildNode(tvview,dt);
+                //展开根节点
+                tvview.ExpandAll();
             }
         }
 
@@ -149,9 +161,9 @@ namespace BomOfferOrder.UI.Admin.Basic
             //循环获取子节点信息及进行添加
             foreach (var r in rows)
             {
-                var tn=new TreeNode();
+                var tn = new TreeNode();
                 tn.Tag = Convert.ToInt32(r[0]);     //自身主键ID
-                tn.Text = Convert.ToString(r[1]);   //节点内容
+                tn.Text = Convert.ToString(r[2]);   //节点内容
                 //将二级节点添加至根节点下
                 tnode.Nodes.Add(tn);
             }
@@ -159,16 +171,22 @@ namespace BomOfferOrder.UI.Admin.Basic
 
         /// <summary>
         /// 连接GridView页面跳转
+        /// 注:_dtl是保存所有明细记录的集合DT
         /// </summary>
         /// <param name="dt"></param>
         private void LinkGridViewPageChange(DataTable dt)
         {
             if (dt.Rows.Count > 0)
             {
-                _dtl = dt;
+                //初始化时才将dt赋值给_dtl
+                if (_dtl.Rows.Count == 0)
+                {
+                    _dtl = dt.Copy();
+                    //复制表结构
+                    _showdtldt = dt.Clone();
+                }
                 panel2.Visible = true;
                 //初始化下拉框所选择的默认值
-                //tmshowrows.SelectedItem = "10";
                 tmshowrows.SelectedItem = Convert.ToInt32(tmshowrows.SelectedItem) == 0
                    ? (object)"10"
                    : Convert.ToInt32(tmshowrows.SelectedItem);
@@ -180,7 +198,6 @@ namespace BomOfferOrder.UI.Admin.Basic
             //注:当为空记录时,不显示跳转页;只需将临时表赋值至GridView内
             else
             {
-                _dtl = dt;
                 gvdtl.DataSource = dt;
                 panel2.Visible = false;
             }
@@ -194,35 +211,53 @@ namespace BomOfferOrder.UI.Admin.Basic
         /// <param name="e"></param>
         private void Tvview_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            //复制表结构
-            var dt = _dtl.Clone();
-
             try
             {
+                //跳转显示内容
+                JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 根据tag为条件,跳转显示对应的内容至GridView内
+        /// </summary>
+        /// <param name="tag"></param>
+        private void JustPageShow(int tag)
+        {
+            try
+            {
+                //复制表结构
+                _showdtldt = _dtl.Clone();
+
                 //若点击"ALL"节点,即在GridView内显示全部信息;而其它节点需使用当前所选的节点.Tag为条件
-                if (Convert.ToInt32(tvview.SelectedNode.Tag) == 0)
+                if (tag == 0)
                 {
-                    dt = _dtl;
+                    _showdtldt = _dtl.Copy();
                 }
                 else
                 {
-                    //以Convert.ToInt32(tvview.SelectedNode.Tag)为条件进行对_dtl查询,并将结果插入至dt内
-                    var dtlrows = _dtl.Select("Groupid='"+ Convert.ToInt32(tvview.SelectedNode.Tag) + "'");
-                    if (dtlrows.Length >0)
+                    //以tag为条件进行对_dtl查询,并将结果插入至_showdtldt内
+                    var dtlrows = _dtl.Select("Groupid='" + tag + "'");
+
+                    if (dtlrows.Length > 0)
                     {
                         for (var i = 0; i < dtlrows.Length; i++)
                         {
-                            var newrow = dt.NewRow();
-                            for (var j = 0; j < dt.Columns.Count; j++)
+                            var newrow = _showdtldt.NewRow();
+                            for (var j = 0; j < _showdtldt.Columns.Count; j++)
                             {
                                 newrow[j] = dtlrows[i][j];
                             }
-                            dt.Rows.Add(newrow);
+                            _showdtldt.Rows.Add(newrow);
                         }
                     }
                 }
                 //刷新信息
-                LinkGridViewPageChange(dt);
+                LinkGridViewPageChange(_showdtldt);
             }
             catch (Exception ex)
             {
@@ -251,10 +286,13 @@ namespace BomOfferOrder.UI.Admin.Basic
                 //以下为返回相关记录返回本窗体相关处理
                 //判断若返回的DT为空的话,就不需要任何效果
                 if (userInfo.ResultTable == null || userInfo.ResultTable.Rows.Count == 0) return;
+                //若读取过来的K3用户名称在同一个节点下已存在,即不能继续
+                if(!CheckUserInclud(Convert.ToInt32(tvview.SelectedNode.Tag),userInfo.ResultTable))
+                                    throw new Exception($"检测到节点:{tvview.SelectedNode.Text} 已存在相同的用户名称,故不能继续");
+
                 //将返回的结果赋值至GridView内(注:判断若返回的DT不为空或行数大于0才执行更新效果)
                 if (userInfo.ResultTable != null || userInfo.ResultTable.Rows.Count > 0)
                 {
-                    var a = userInfo.ResultTable;
                     //循环将userInfo.ResultTable内的记录插入至_dtl内
                     foreach (DataRow rows in userInfo.ResultTable.Rows)
                     {
@@ -269,7 +307,7 @@ namespace BomOfferOrder.UI.Admin.Basic
                         _dtl.Rows.Add(newrow);
                     }
                     //刷新信息
-                    LinkGridViewPageChange(_dtl);
+                    JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
                 }
             }
             catch (Exception ex)
@@ -297,6 +335,25 @@ namespace BomOfferOrder.UI.Admin.Basic
         }
 
         /// <summary>
+        /// 检查获取的用户信息是否在同一个节点内存在,若是返回false
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="sourcedt"></param>
+        /// <returns></returns>
+        private bool CheckUserInclud(int tag,DataTable sourcedt)
+        {
+            var result = true;
+            foreach (DataRow rows in sourcedt.Rows)
+            {
+                var count=_dtl.Select("Groupid='" + tag + "' and 员工名称='" + Convert.ToString(rows[0]) + "'").Length;
+                if (count <= 0) continue;
+                result = false;
+                break;
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 创建用户组别
         /// </summary>
         /// <param name="sender"></param>
@@ -312,7 +369,10 @@ namespace BomOfferOrder.UI.Admin.Basic
                 //调用用户分组对话框
                 bdUserGroupAdd.StartPosition=FormStartPosition.CenterParent;
                 bdUserGroupAdd.ShowDialog();
-                
+
+                //判断若返回的value为空的话,就不需要任何效果
+                if (bdUserGroupAdd.ResultValue == "") return;
+
                 var newrow = _dt.NewRow();
                 newrow[0] = GenerateGroupId();          //GroupId=>(注:以-开头+累加的ID值)
                 newrow[1] = tvview.SelectedNode.Tag;    //Parentid=>默认为0
@@ -361,12 +421,16 @@ namespace BomOfferOrder.UI.Admin.Basic
                 if (tvview.SelectedNode == null) throw new Exception("没有选择任何节点,请选择再继续");
                 //若点击的当前节点为ALL的时候,就报异常
                 if (tvview.SelectedNode.Text == $"ALL") throw new Exception("不能修改ALL节点");
+
                 //获取当前节点信息(Tag)
                 var currenttage = Convert.ToInt32(tvview.SelectedNode.Tag);
 
                 //调用bdUserGroupAdd窗体
                 bdUserGroupAdd.StartPosition = FormStartPosition.CenterParent;
                 bdUserGroupAdd.ShowDialog();
+
+                //判断若返回的value为空的话,就不需要任何效果
+                if (bdUserGroupAdd.ResultValue == "") return;
 
                 //获取bdUserGroupAdd窗体返回的值并进行对当前节点进行更新
                 UpdateDt(currenttage,bdUserGroupAdd.ResultValue);
@@ -395,6 +459,7 @@ namespace BomOfferOrder.UI.Admin.Basic
         }
 
         /// <summary>
+        /// 删除组别
         /// 判断使用_tempdt或_dt的前提条件取决于当前选定的节点是否含有“-”
         /// 删除组别=>作用:1)对_dt _dtldt进行相关节点记录删除;
         /// 2)若对应的TAG包含“-”,就将其信息保存至_deldt及_deldtldt(这个用来保存表体信息)内(最后的删除使用)
@@ -419,7 +484,8 @@ namespace BomOfferOrder.UI.Admin.Basic
                     DelDt(Convert.ToInt32(tvview.SelectedNode.Tag));
                     //完成后分别对树菜单 及 GridView进行刷新
                     ShowTreeList(_dt);
-                    LinkGridViewPageChange(_dtl);
+                    //刷新信息:读取所有记录
+                    JustPageShow(0);
                 } 
             }
             catch (Exception ex)
@@ -511,7 +577,7 @@ namespace BomOfferOrder.UI.Admin.Basic
                 {
                     for (var i = 0; i < _dtl.Rows.Count; i++)
                     {
-                        if (Convert.ToInt32(_dtl.Rows[i][0]) != tag && Convert.ToInt32(_dtl.Rows[i][1]) != dtlid) continue;
+                        if (Convert.ToInt32(_dtl.Rows[i][1]) != dtlid) continue;
                         var newrow = _deldtldt.NewRow();
                         for (var j = 0; j < _dtl.Columns.Count; j++)
                         {
@@ -532,6 +598,9 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             try
             {
+                //定义获取当前节点信息变量
+                var tag = 0;
+
                 //判断若没有选择节点就报异常
                 if (tvview.SelectedNode == null) throw new Exception("没有选择任何节点,请选择再继续");
                 //判断若点选的当前节点为ALL的话,就报异常
@@ -543,22 +612,29 @@ namespace BomOfferOrder.UI.Admin.Basic
 
                 if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
+                    //记录当前所选节点信息
+                    tag = Convert.ToInt32(tvview.SelectedNode.Tag);
                     //若选择的当前节点的TAG不包含“-”就将所选记录保存至_deldtldt内
                     foreach (DataGridViewRow rows in gvdtl.SelectedRows)
                     {
                         InsertDelDtldt(Convert.ToInt32(tvview.SelectedNode.Tag),1,Convert.ToInt32(rows.Cells[1].Value));
                     }
                     //最后再执行删除操作
-                    for (var i = _dtl.Rows.Count; i > 0; i++)
+                    for (var i = _dtl.Rows.Count; i > 0; i--)
                     {
                         for (var j = 0; j < gvdtl.SelectedRows.Count; j++)
                         {
                             //需要_dtl.Groupid及Dtlid与所选的行相同才执行删除
-                            if (Convert.ToInt32(_dtl.Rows[i - 1][0]) != Convert.ToInt32(tvview.SelectedNode.Tag) && 
-                                Convert.ToInt32(_dtl.Rows[i - 1][1]) != Convert.ToInt32(gvdtl.SelectedRows[j].Cells[1].Value)) continue;
-                                _dtl.Rows.RemoveAt(i-1);
+                            if (Convert.ToInt32(_dtl.Rows[i - 1][1]) == Convert.ToInt32(gvdtl.SelectedRows[j].Cells[1].Value))
+                            {
+                                _dtl.Rows.RemoveAt(i - 1);
+                                break;   //注:此处必加!!!
+                            }
                         }
                     }
+                    //刷新信息
+                    //若发现tag在_dtl已查找不到记录,即返回0,反之,返回当前节点信息
+                    JustPageShow(_dtl.Select("Groupid='" + tag + "'").Length == 0 ? 0 : tag);
                 }
             }
             catch (Exception ex)
@@ -576,6 +652,8 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             try
             {
+                if(_dt.Rows.Count == 0 && _dtl.Rows.Count == 0) throw new Exception("不能保存,原因:只有父节点或没有明细记录");
+
                 task.TaskId = "2.4";
                 task.Groupdt = _dt;              //表头信息 _dt
                 task.Groupdtldt = _dtl;          //表体信息 _dtl
@@ -589,7 +667,9 @@ namespace BomOfferOrder.UI.Admin.Basic
                 if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
                 else
                 {
-                    MessageBox.Show($"用户组别保存成功,若需要用户权限创建请关闭此窗体", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"用户组别保存成功, \n 若需要用户权限创建请关闭此窗体", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //需重新读取数据库记录进行刷新
+                    OnInitialize(_k3Userdt);
                 }
             }
             catch (Exception ex)
@@ -621,7 +701,7 @@ namespace BomOfferOrder.UI.Admin.Basic
         private void ControlGridViewisShow()
         {
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
-            if (gvdtl.Rows.Count > 0)
+            if (gvdtl.Rows.Count >= 0)
                 gvdtl.Columns[0].Visible = false;
                 gvdtl.Columns[1].Visible = false;
         }
@@ -809,8 +889,11 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             try
             {
+                //判断若_showdtldt有值时就将记录赋给resultdt内,反之使用_dtl
+                var resultdt = _showdtldt.Rows.Count > 0 ? _showdtldt : _dtl;
+
                 //获取查询的总行数
-                var dtltotalrows = _dtl.Rows.Count;
+                var dtltotalrows = resultdt.Rows.Count;//_dtl.Rows.Count;
                 //获取“每页显示行数”所选择的行数
                 var pageCount = Convert.ToInt32(tmshowrows.SelectedItem);
                 //计算出总页数
@@ -843,7 +926,7 @@ namespace BomOfferOrder.UI.Admin.Basic
                 }
 
                 //显示_dtl的查询总行数
-                tstotalrow.Text = $"共 {_dtl.Rows.Count} 行";
+                tstotalrow.Text = $"共 {resultdt.Rows.Count} 行";//$"共 {_dtl.Rows.Count} 行";
 
                 //根据“当前页” 及 “固定行数” 计算出新的行数记录并进行赋值
                 //计算进行循环的起始行
@@ -851,17 +934,24 @@ namespace BomOfferOrder.UI.Admin.Basic
                 //计算进行循环的结束行
                 var endrow = _pageCurrent == _totalpagecount ? dtltotalrows : _pageCurrent * pageCount;
                 //复制 查询的DT的列信息（不包括行）至临时表内
-                var tempdt = _dtl.Clone();
+                var tempdt = resultdt.Clone();//_dtl.Clone();
                 //循环将所需的_dtl的行记录复制至临时表内
                 for (var i = startrow; i < endrow; i++)
                 {
-                    tempdt.ImportRow(_dtl.Rows[i]);
+                    tempdt.ImportRow(resultdt.Rows[i]);
+                    //tempdt.ImportRow(_dtl.Rows[i]);
                 }
 
                 //最后将刷新的DT重新赋值给GridView
                 gvdtl.DataSource = tempdt;
                 //将“当前页”赋值给"跳转页"文本框内
                 bnPositionItem.Text = Convert.ToString(_pageCurrent);
+                //最后将_showdtldt清空
+                if (_showdtldt?.Rows.Count > 0)
+                {
+                    _showdtldt.Rows.Clear();
+                    _showdtldt.Columns.Clear();
+                }
             }
             catch (Exception ex)
             {

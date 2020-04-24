@@ -218,6 +218,8 @@
             // 
             // gvdtl
             // 
+            this.gvdtl.AllowUserToAddRows = false;
+            this.gvdtl.AllowUserToDeleteRows = false;
             this.gvdtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;

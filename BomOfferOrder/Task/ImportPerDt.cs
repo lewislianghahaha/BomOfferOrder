@@ -80,7 +80,7 @@ namespace BomOfferOrder.Task
             foreach (DataRow rows in sourcedtldt.Rows)
             {
                 //若包含“-”就执行插入
-                if (Convert.ToString(rows[0]).Contains("-"))
+                if (Convert.ToString(rows[1]).Contains("-"))
                 {
                     insertgroupdtldt.Merge(ModifyDt(insertgroupdtldt,rows));
                 }
@@ -91,26 +91,43 @@ namespace BomOfferOrder.Task
             }
 
             //循环insertgroupdt 及 insertgroupdtldt对‘插入’的记录新增groupid 及 dtlid
-            for (var i = 0; i < insertgroupdt.Rows.Count; i++)
+            if (insertgroupdt.Rows.Count > 0)
             {
-                //获取原Groupid
-                _oldgroupid = Convert.ToInt32(insertgroupdt.Rows[i][0]);
-                //获取新增的Groupid值
-                _newgroupid = GetGroupidKey();
-                //根据_oldgroupid作为条件查询对应的insertgroupdtldt记录,并进行相应的更新
-                for (var j = 0; j < insertgroupdtldt.Rows.Count; j++)
+                for (var i = 0; i < insertgroupdt.Rows.Count; i++)
                 {
-                    if(Convert.ToInt32(insertgroupdtldt.Rows[i][0]) != _oldgroupid) continue;
-                    insertgroupdtldt.Rows[j].BeginEdit();
-                    insertgroupdtldt.Rows[j][0] = _newgroupid;    //groupid
-                    insertgroupdtldt.Rows[j][1] = GetDtlidKey();  //dtlid
-                    insertgroupdtldt.Rows[j].EndEdit();
-                }
+                    //获取原Groupid
+                    _oldgroupid = Convert.ToInt32(insertgroupdt.Rows[i][0]);
+                    //获取新增的Groupid值
+                    _newgroupid = GetGroupidKey();
 
-                //最后对insertgroupdt进行groupid的更新
-                insertgroupdt.Rows[i].BeginEdit();
-                insertgroupdt.Rows[i][0] = _newgroupid;
-                insertgroupdt.Rows[i].EndEdit();
+                    //根据_oldgroupid作为条件查询对应的insertgroupdtldt记录,并进行相应的更新
+                    for (var j = 0; j < insertgroupdtldt.Rows.Count; j++)
+                    {
+                        if (Convert.ToInt32(insertgroupdtldt.Rows[j][0]) != _oldgroupid) continue;
+                        insertgroupdtldt.Rows[j].BeginEdit();
+                        insertgroupdtldt.Rows[j][0] = _newgroupid;    //groupid
+                        insertgroupdtldt.Rows[j][1] = GetDtlidKey();  //dtlid
+                        insertgroupdtldt.Rows[j].EndEdit();
+                    }
+
+                    //最后对insertgroupdt进行groupid的更新
+                    if (Convert.ToInt32(insertgroupdt.Rows[i][0]) != _oldgroupid) continue;
+                    insertgroupdt.Rows[i].BeginEdit();
+                    insertgroupdt.Rows[i][0] = _newgroupid;
+                    insertgroupdt.Rows[i].EndEdit();
+                }
+            }           
+            //当insertgroupdt表头没有新增记录,而insertgroupdtldt表体有时
+            else
+            {
+                for (var i = 0; i < insertgroupdtldt.Rows.Count; i++)
+                {
+                    //若Dtlid包含“-”时才更新获取新ID值
+                    if (!Convert.ToString(insertgroupdtldt.Rows[i][1]).Contains("-")) continue;
+                    insertgroupdtldt.Rows[i].BeginEdit();
+                    insertgroupdtldt.Rows[i][1] = GetDtlidKey();
+                    insertgroupdtldt.Rows[i].EndEdit();
+                }
             }
 
             //执行插入 及 更新操作
@@ -124,6 +141,8 @@ namespace BomOfferOrder.Task
             if (upgroupdtldt.Rows.Count>0)
                 importDt.UpdateDbFromDt("T_BD_UserGroupDtl", upgroupdtldt);
         }
+
+
 
         /// <summary>
         /// 将数据进行分类;分为插入及更新
@@ -230,13 +249,14 @@ namespace BomOfferOrder.Task
             {
                 if (string.IsNullOrEmpty(fidlist))
                 {
-                    fidlist = Convert.ToString(id == 0 ? rows[0] : rows[1]);
+                    fidlist = "'"+Convert.ToString(id == 0 ? rows[0] : rows[1])+"'";
                 }
                 else
                 {
-                    fidlist += id == 0 ? "," + Convert.ToString(rows[0]) : "," + Convert.ToString(rows[1]);
+                    fidlist += id == 0 ? "," + "'"+Convert.ToString(rows[0])+"'" : "," + "'"+Convert.ToString(rows[1])+"'";
                 }
             }
+
             searchDt.Generdt(sqlList.DelGroupRecord(id, fidlist));
         }
 

@@ -399,11 +399,11 @@ namespace BomOfferOrder.Task
             {
                 if (string.IsNullOrEmpty(fidlist))
                 {
-                    fidlist = Convert.ToString(rows[0]);
+                    fidlist = "'"+Convert.ToString(rows[0])+"'";
                 }
                 else
                 {
-                    fidlist += "," + Convert.ToString(rows[0]);
+                    fidlist += "," + "'"+Convert.ToString(rows[0])+"'";
                 }
             }
             searchDt.Generdt(sqlList.DelEntry(fidlist));

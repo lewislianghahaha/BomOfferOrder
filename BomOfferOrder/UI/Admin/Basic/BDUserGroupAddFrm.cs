@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BomOfferOrder.UI.Admin.Basic
@@ -64,6 +57,8 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             try
             {
+                //关闭前将_value值清空
+                _value = "";
                 //关闭前将文本框清空
                 txtvalue.Text = "";
                 this.Close();

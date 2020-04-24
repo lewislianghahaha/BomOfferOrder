@@ -41,6 +41,13 @@ namespace BomOfferOrder.UI.Admin.Basic
         /// <param name="dt"></param>
         public void OnInitialize(DataTable dt)
         {
+            //将_resultTable初始化(若_resultTable有值时)
+            if (_resultTable?.Rows.Count > 0) 
+            {
+                _resultTable.Rows.Clear();
+                _resultTable.Columns.Clear();
+            }
+
             var newpage = new TabPage { Text = $"K3用户信息列表"};
 
             var getAccount = new GetAccountFrm
@@ -77,14 +84,14 @@ namespace BomOfferOrder.UI.Admin.Basic
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TmGet_Click(object sender, System.EventArgs e)
+        private void TmGet_Click(object sender, EventArgs e)
         {
             try
             {
                 //设置临时表
                 _resultTable = dbList.K3UserDtTemp();
                 //循环获取TabPages内各页的内容
-                var showdetail = tctotalpage.TabPages[0].Controls[0] as ShowDetailFrm;
+                var showdetail = tctotalpage.TabPages[0].Controls[0] as GetAccountFrm;
                 if (showdetail != null)
                 {
                     var dtldt = (DataGridView)showdetail.gvdtl;
@@ -97,6 +104,11 @@ namespace BomOfferOrder.UI.Admin.Basic
                         newrow[2] = rows.Cells[2].Value;  //K3用户手机
                         _resultTable.Rows.Add(newrow);
                     }
+                }
+                //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
+                for (var i = tctotalpage.TabCount - 1; i >= 0; i--)
+                {
+                    tctotalpage.TabPages.RemoveAt(i);
                 }
                 //完成后关闭窗体
                 this.Close();
@@ -112,13 +124,14 @@ namespace BomOfferOrder.UI.Admin.Basic
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TmClose_Click(object sender, System.EventArgs e)
+        private void TmClose_Click(object sender, EventArgs e)
         {
             //在关闭时将TabControl已存在的Tab Pages删除(注:需倒序循环进行删除)
             for (var i = tctotalpage.TabCount - 1; i >= 0; i--)
             {
                 tctotalpage.TabPages.RemoveAt(i);
             }
+            this.Close();
         }
     }
 }

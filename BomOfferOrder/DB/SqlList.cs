@@ -529,7 +529,7 @@
         public string DelEntry(string entryid)
         {
             _result = $@"
-                            DELETE FROM dbo.T_OfferOrderEntry WHERE Entryid IN '{entryid}'
+                            DELETE FROM dbo.T_OfferOrderEntry WHERE Entryid IN ({entryid})
                        ";
             return _result;
         }
@@ -545,14 +545,14 @@
             if (id == 0)
             {
                 _result = $@"
-                            DELETE FROM dbo.T_BD_UserGroup WHERE Groupid IN '{fidlist}'
-                       ";
+                            DELETE FROM dbo.T_BD_UserGroup WHERE Groupid IN ({fidlist})
+                            ";
             }
             else
             {
                 _result = $@"
-                            DELETE FROM dbo.T_BD_UserGroupDtl WHERE Dtlid IN '{fidlist}'
-                       ";
+                            DELETE FROM dbo.T_BD_UserGroupDtl WHERE Dtlid IN ({fidlist})
+                            ";
             }
             return _result;
         }
