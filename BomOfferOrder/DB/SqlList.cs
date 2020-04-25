@@ -1277,7 +1277,7 @@
         }
 
         /// <summary>
-        /// 
+        /// 查询K3用户信息
         /// </summary>
         /// <returns></returns>
         public string SearchK3User(string value)
@@ -1292,11 +1292,11 @@
                                 left JOIN dbo.T_SEC_USERGROUP_L c ON b.FID=c.FID
                                 WHERE a.FFORBIDSTATUS='A' --AND a.FNAME LIKE'%蓝%'
                                 AND a.FNAME NOT IN ('Guest','Administrator','attendance')
-                                AND NOT EXISTS (
+                                /*AND NOT EXISTS (
 					                                SELECT NULL 
 					                                FROM BomOffer.dbo.T_AD_User a1
 					                                WHERE a.FNAME=a1.UserName
-				                                )
+				                                )*/
                                 ORDER BY a.FPWDVALIDDATE
                            ";
             }
@@ -1310,11 +1310,11 @@
                                 left JOIN dbo.T_SEC_USERGROUP_L c ON b.FID=c.FID
                                 WHERE a.FFORBIDSTATUS='A' --AND a.FNAME LIKE'%蓝%'
                                 AND a.FNAME NOT IN ('Guest','Administrator','attendance')
-                                AND NOT EXISTS (
+                                /*AND NOT EXISTS (
 					                                SELECT NULL 
 					                                FROM BomOffer.dbo.T_AD_User a1
 					                                WHERE a.FNAME=a1.UserName
-				                                )
+				                                )*/
                                 and a.FName like '%{value}%'
                                 ORDER BY a.FPWDVALIDDATE
                             ";
