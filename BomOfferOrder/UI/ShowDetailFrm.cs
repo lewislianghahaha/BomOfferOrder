@@ -1182,7 +1182,7 @@ namespace BomOfferOrder.UI
                 {
                     //需将不合法的行删除
                     gvdtl.Rows.RemoveAt(gvdtl.RowCount-2);
-                    throw new Exception($"不能在没有物料编码的前提下填写用量或单价, \n 请删除并通过右键菜单进行添加新物料");
+                    throw new Exception($"不能在没有物料编码的前提下填写用量或单价其它信息, \n 请删除并通过右键菜单进行添加新物料");
                 }
                 //当修改的列是‘物料名称’时,执行以下语句
                 if (colindex == 3)
@@ -1232,8 +1232,8 @@ namespace BomOfferOrder.UI
                         }
                     }
                 }
-                //当修改的列是‘配方用量’或‘物料单价(含税)’时,将以下关联的值作出改变
-                else if (colindex == 4 || colindex == 6)
+                //当修改的列是‘配方用量’或‘物料单价(含税)’或 ‘备注’时,将以下关联的值作出改变
+                else if (colindex == 4 || colindex == 6 || colindex==8)
                 {
                     //获取当前行的配方用量(注:若为空就为0)
                     var peiqty = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[4].Value == DBNull.Value ? 0 : gvdtl.Rows[e.RowIndex].Cells[4].Value);
@@ -1243,8 +1243,10 @@ namespace BomOfferOrder.UI
                     var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[6].Value == DBNull.Value ? 0 : gvdtl.Rows[e.RowIndex].Cells[6].Value);
                     //计算‘物料成本(含税)’项 公式:配方用量/100*物料单价
                     var qtytemp = decimal.Round( peiqty / 100 * materialprice,4);
-                    //根据‘物料编码ID’更新_dtl内的对应的'物料成本(含税)' 目的:更新_dtl
-                    UpdateGridViewValue(materialprice,peiqty,ratio,Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value), qtytemp);
+                    //获取当前行的‘备注’
+                    var remark = Convert.ToString(gvdtl.Rows[e.RowIndex].Cells[8].Value);
+                    //根据‘物料编码ID’更新_dtl内的对应的'物料成本(含税)' 目的:更新Dtl
+                    UpdateGridViewValue(materialprice,peiqty,ratio,Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value), qtytemp,remark);
                     //根据指定值将相关项进行改变指定文本框内的值
                     GenerateValue();
                     //操作完成后进行刷新
@@ -1445,7 +1447,8 @@ namespace BomOfferOrder.UI
         /// <param name="ratio">占比</param>
         /// <param name="fmaterialid">物料ID</param>
         /// <param name="value">物料成本(含税) 中间值</param>
-        private void UpdateGridViewValue(decimal materialprice, decimal peiqty, decimal ratio,int fmaterialid,decimal value)
+        /// <param name="remark">备注</param>
+        private void UpdateGridViewValue(decimal materialprice, decimal peiqty, decimal ratio,int fmaterialid,decimal value,string remark)
         {
             //针对_dtl循环其内容
             foreach (DataRow rows in Dtl.Rows)
@@ -1457,6 +1460,7 @@ namespace BomOfferOrder.UI
                     rows[5] = ratio;          //占比
                     rows[6] = materialprice;  //物料单价
                     rows[7] = value;          //物料成本(含税)
+                    rows[8] = remark;         //‘备注’
                     Dtl.EndInit();
                 }
             }
