@@ -120,9 +120,12 @@ namespace BomOfferOrder.UI.Admin
                 if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     //初始化信息并读取
-                    accountDetail.OnInitialize("C", k3Name, k3Group, k3Phone, null);
-                    accountDetail.StartPosition = FormStartPosition.CenterParent;
-                    accountDetail.ShowDialog();
+                    accountPer.OnInitialize("C", k3Name, k3Group, k3Phone, null);
+                    accountPer.StartPosition = FormStartPosition.CenterParent;
+                    accountPer.ShowDialog();
+                    //accountDetail.OnInitialize("C", k3Name, k3Group, k3Phone, null);
+                    //accountDetail.StartPosition = FormStartPosition.CenterParent;
+                    //accountDetail.ShowDialog();
                 }
                 //完成后关闭窗体
                 this.Close();
