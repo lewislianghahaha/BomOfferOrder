@@ -72,6 +72,8 @@
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.cbnoneed = new System.Windows.Forms.CheckBox();
+            this.Menu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmSet = new System.Windows.Forms.ToolStripMenuItem();
             this.Main.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -88,6 +90,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
             this.bngat.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
             // Main
@@ -311,6 +314,7 @@
             this.gvdtl.AllowUserToAddRows = false;
             this.gvdtl.AllowUserToDeleteRows = false;
             this.gvdtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
@@ -500,6 +504,19 @@
             this.cbnoneed.Text = "不需用户关联";
             this.cbnoneed.UseVisualStyleBackColor = true;
             // 
+            // Menu
+            // 
+            this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmSet});
+            this.Menu.Name = "Menu";
+            this.Menu.Size = new System.Drawing.Size(153, 48);
+            // 
+            // tmSet
+            // 
+            this.tmSet.Name = "tmSet";
+            this.tmSet.Size = new System.Drawing.Size(152, 22);
+            this.tmSet.Text = "设置不启用";
+            // 
             // AccountPerFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -533,6 +550,7 @@
             this.bngat.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.Menu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -582,5 +600,7 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel9;
         private System.Windows.Forms.ToolStripLabel toolStripLabel10;
         private System.Windows.Forms.ToolStripLabel tstotalrow;
+        private System.Windows.Forms.ContextMenuStrip Menu;
+        private System.Windows.Forms.ToolStripMenuItem tmSet;
     }
 }

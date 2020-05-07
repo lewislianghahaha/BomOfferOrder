@@ -3,7 +3,6 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using BomOfferOrder.DB;
 using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI.Admin
@@ -12,18 +11,21 @@ namespace BomOfferOrder.UI.Admin
     {
         TaskLogic task=new TaskLogic();
         Load load=new Load();
-        DbList dbList=new DbList();
         AccountPerFrm accountPer=new AccountPerFrm();
-        AccountDetailFrm accountDetail=new AccountDetailFrm();
+       // AccountDetailFrm accountDetail=new AccountDetailFrm();
 
         #region 变量参数
         //保存类型;0:新增用户权限使用 1:用户组别使用
         private int _typeid;
 
+        //保存用户DT
+        private DataTable _userdt;
+
+        //保存‘用户组别’信息(作用:用于检测是否可创建用户信息,注:若没有‘用户组别’记录信息就不能进行创建)
+        private DataTable _usergroupdt;
+
         //保存查询出来的GridView记录
         private DataTable _dtl;
-        //保存查询出来的角色权限记录
-        private DataTable _userdt;
 
         //记录当前页数(GridView页面跳转使用)
         private int _pageCurrent = 1;
@@ -95,7 +97,7 @@ namespace BomOfferOrder.UI.Admin
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -108,9 +110,30 @@ namespace BomOfferOrder.UI.Admin
         {
             try
             {
-                if(gvdtl.SelectedRows.Count==0)throw new Exception("没有明细记录,不能继续操作");
+                //初始化‘用户组别’表体信息
+                OnInitializeUserGroupDtlDt();
+                //初始化‘用户’信息
+                OnInitializeUserDt();
+
+                if (gvdtl.SelectedRows.Count==0) throw new Exception("没有明细记录,不能继续操作");
+                //若‘用户组别’没有记录,就不能进行创建
+                if(_usergroupdt.Rows.Count==0) throw new Exception("检测到‘用户组别’没有记录,请设置后再继续.");
                 //获取K3用户名称
                 var k3Name = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
+
+                //若所选的K3用户名称已创建过,就不能继续创建
+                if (_userdt.Select("用户='"+ k3Name + "'").Length>0) throw new Exception($"用户'{k3Name}'已创建,不能继续.");
+
+                //获取用户组别表头DT
+                GlobalClasscs.Ad.UserGroupDt = OnInitializeUserGroupDt();
+                //获取用户组别表体DT
+                GlobalClasscs.Ad.UserGroupDtlDt = _usergroupdt;
+                //获取关联用户表头DT
+                GlobalClasscs.Ad.RelUserDt = OnInitializeRelUserDt();
+                //获取关联用户表体DT
+                GlobalClasscs.Ad.RelUserDtlDt = OnInitializeRelUserDtlDt();
+
+             
                 //获取K3用户组别
                 var k3Group = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
                 //获取K3用户手机
@@ -123,9 +146,6 @@ namespace BomOfferOrder.UI.Admin
                     accountPer.OnInitialize("C", k3Name, k3Group, k3Phone, null);
                     accountPer.StartPosition = FormStartPosition.CenterParent;
                     accountPer.ShowDialog();
-                    //accountDetail.OnInitialize("C", k3Name, k3Group, k3Phone, null);
-                    //accountDetail.StartPosition = FormStartPosition.CenterParent;
-                    //accountDetail.ShowDialog();
                 }
                 //完成后关闭窗体
                 this.Close();
@@ -432,6 +452,59 @@ namespace BomOfferOrder.UI.Admin
                 gvdtl.DataSource = dt;
                 panel1.Visible = false;
             }
+        }
+
+        /// <summary>
+        /// 初始化读取‘用户组别’表头DT
+        /// </summary>
+        private DataTable OnInitializeUserGroupDt()
+        {
+            task.TaskId = "0.9.7";
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 获取用户组别表体DT
+        /// </summary>
+        private DataTable OnInitializeUserGroupDtlDt()
+        {
+            task.TaskId = "0.9.8";
+            task.StartTask();
+            _usergroupdt = task.ResultTable;
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 获取关联用户表头DT
+        /// </summary>
+        private DataTable OnInitializeRelUserDt()
+        {
+            task.TaskId = "0.0.0.1";
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 获取关联用户表体DT
+        /// </summary>
+        private DataTable OnInitializeRelUserDtlDt()
+        {
+            task.TaskId = "0.0.0.2";
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 初始化用户DT
+        /// </summary>
+        private void OnInitializeUserDt()
+        {
+            task.TaskId = "0.8";
+            task.SearchId = 3;
+            task.SearchValue = "0";
+            task.StartTask();
+            _userdt = task.ResultTable;
         }
 
     }

@@ -351,5 +351,25 @@ namespace BomOfferOrder.Task
             _sqlscript = sqlList.SearchUserGroupDetail();
             return UseSqlSearchIntoDt(1, _sqlscript);
         }
+
+        /// <summary>
+        ///  查询‘用户关联’表头信息
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchRelUser()
+        {
+            _sqlscript = sqlList.SearchRelUser();
+            return UseSqlSearchIntoDt(1,_sqlscript);
+        }
+
+        /// <summary>
+        /// 查询‘用户关联’表体信息
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchRelUserDtl()
+        {
+            _sqlscript = sqlList.SearchRelUserDtl();
+            return UseSqlSearchIntoDt(1, _sqlscript);
+        }
     }
 }

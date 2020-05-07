@@ -189,6 +189,7 @@ namespace BomOfferOrder.Task
                 newrow[7] = sourcedt.Rows[0][7];      //能否查阅明细金额
                 newrow[8] = sourcedt.Rows[0][8];      //能否对明细物料操作
                 newrow[9] = sourcedt.Rows[0][9];      //是否占用
+                newrow[10] = sourcedt.Rows[0][10];    //是否关联用户
                 tempdt.Rows.Add(newrow);
 
                 //执行插入操作

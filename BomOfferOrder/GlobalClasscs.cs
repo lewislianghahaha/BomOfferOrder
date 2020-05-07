@@ -1,4 +1,6 @@
-﻿namespace BomOfferOrder
+﻿using System.Data;
+
+namespace BomOfferOrder
 {
     public class GlobalClasscs
     {
@@ -20,8 +22,20 @@
             public string RfFunctionName;      //暂存单据使用
         }
 
+        //记录用户权限相关信息
+        public struct Admin
+        {
+            public DataTable UserGroupDt;      //获取用户组别表头DT
+            public DataTable UserGroupDtlDt;   //获取用户组别表体DT
+            public DataTable RelUserDt;        //获取关联用户表头DT
+            public DataTable RelUserDtlDt;     //获取关联用户表体DT
+        }
+
+
         public static Account User;
 
         public static FunName Fun;
+
+        public static Admin Ad;
     }
 }

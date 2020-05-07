@@ -864,7 +864,7 @@ namespace BomOfferOrder.DB
         public DataTable CreateUserPermissionTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 11; i++)
             {
                 var dc = new DataColumn();
 
@@ -909,6 +909,76 @@ namespace BomOfferOrder.DB
                     case 9:
                         dc.ColumnName = "Useid";
                         dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 10:
+                        dc.ColumnName = "UserRelid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// 用户关联表头临时表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable CreateRelUserTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 3; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    case 0:
+                        dc.ColumnName = "Userid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 1:
+                        dc.ColumnName = "Groupid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 2:
+                        dc.ColumnName = "CreateDt";
+                        dc.DataType = Type.GetType("System.DateTime"); 
+                        break;  
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// 用户关联表体临时表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable CreateRelUserDtlTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 4; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    case 0:
+                        dc.ColumnName = "Userid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 1:
+                        dc.ColumnName = "Groupid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 2:
+                        dc.ColumnName = "Dtlid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 3:
+                        dc.ColumnName = "CreateDt";
+                        dc.DataType = Type.GetType("System.DateTime");
                         break;
                 }
                 dt.Columns.Add(dc);

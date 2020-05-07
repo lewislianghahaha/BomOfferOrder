@@ -1233,7 +1233,8 @@
 	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
 	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
 	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
-	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细'
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细',
+                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '不关联用户'
                                 FROM dbo.T_AD_User a
                                 where a.UserName like '%{value}%'
                             ";
@@ -1245,7 +1246,8 @@
 	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
 	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
 	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
-	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细'
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细',
+                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '不关联用户'
                                 FROM dbo.T_AD_User a
                                 where a.CreateName like '%{value}%'
                             ";
@@ -1257,7 +1259,8 @@
 	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
 	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
 	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
-	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细'
+	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细',
+                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '不关联用户'
                                 FROM dbo.T_AD_User a
                                 where CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
@@ -1269,6 +1272,7 @@
 	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
 	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
 	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
+                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '不关联用户'
                                 FROM dbo.T_AD_User a
                                 where a.ApplyId='{value}'
                             ";
@@ -1472,8 +1476,33 @@
         public string SearchUserGroupDetail()
         {
             _result = @"
-                            SELECT a.Groupid,a.Dtlid,a.UserName 员工名称,A.K3UserGroup K3用户组别,A.K3UserPhone K3用户手机,a.CreateName 创建人,a.CreateDt 创建日期
+                            SELECT a.Groupid,a.Dtlid,a.UserName 员工名称,A.K3UserGroup K3用户组别,A.K3UserPhone K3用户手机,a.CreateName 创建人,
+                                   a.CreateDt 创建日期,'' 不启用
                             FROM dbo.T_BD_UserGroupDtl a
+                       ";
+            return _result;
+        }
+
+        /// <summary>
+        ///  查询‘用户关联’表头信息
+        /// </summary>
+        /// <returns></returns>
+        public string SearchRelUser()
+        {
+            _result = @"
+                            SELECT * FROM dbo.T_AD_RelUser
+                       ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 查询‘用户关联’表体信息
+        /// </summary>
+        /// <returns></returns>
+        public string SearchRelUserDtl()
+        {
+            _result = @"
+                          SELECT * FROM dbo.T_AD_RelUserDtl
                        ";
             return _result;
         }

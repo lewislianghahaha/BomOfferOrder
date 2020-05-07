@@ -703,8 +703,11 @@ namespace BomOfferOrder.UI.Admin.Basic
         {
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
             if (gvdtl.Rows.Count >= 0)
+            {
                 gvdtl.Columns[0].Visible = false;
                 gvdtl.Columns[1].Visible = false;
+                gvdtl.Columns[7].Visible = false;
+            }
         }
 
         /// <summary>

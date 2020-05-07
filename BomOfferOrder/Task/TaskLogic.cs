@@ -248,6 +248,15 @@ namespace BomOfferOrder.Task
                 case "0.9.8":
                     SearchUserGroupDetail();
                     break;
+                //查询‘用户关联’表头信息
+                case "0.0.0.1":
+                    SearchRelUser();
+                    break;
+                //查询‘用户关联’表体信息
+                case "0.0.0.2":
+                    SearchRelUserDtl();
+                    break;
+
                 #endregion
 
                 #region 运算
@@ -511,6 +520,22 @@ namespace BomOfferOrder.Task
         private void SearchUserGroupDetail()
         {
             _resultTable = searchDt.SearchUserGroupDetail();
+        }
+
+        /// <summary>
+        /// 查询‘用户关联’表头信息
+        /// </summary>
+        private void SearchRelUser()
+        {
+            _resultTable = searchDt.SearchRelUser();
+        }
+
+        /// <summary>
+        /// 查询‘用户关联’表体信息
+        /// </summary>
+        private void SearchRelUserDtl()
+        {
+            _resultTable = searchDt.SearchRelUserDtl();
         }
 
         #endregion

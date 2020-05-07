@@ -15,7 +15,8 @@ namespace BomOfferOrder.UI.Admin
         TaskLogic task=new TaskLogic();
         Load load=new Load();
         GetAccountFrm getAccount=new GetAccountFrm();
-        AccountDetailFrm accountDetail=new AccountDetailFrm();
+        //AccountDetailFrm accountDetail=new AccountDetailFrm();
+        AccountPerFrm accountPer = new AccountPerFrm();
         BdUserGroupFrm bdUserGroup=new BdUserGroupFrm();
         DbList dbList=new DbList();
 
@@ -27,6 +28,8 @@ namespace BomOfferOrder.UI.Admin
         private DataTable _dtl;
         //保存查询出来的角色权限记录
         private DataTable _userdt;
+        //保存基础-用户组别DT
+        private DataTable _bdusergroupdt;
 
         //记录当前页数(GridView页面跳转使用)
         private int _pageCurrent = 1;
@@ -248,11 +251,21 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有明细记录,不能继续操作");
+
+                //获取用户组别表头DT
+                GlobalClasscs.Ad.UserGroupDt = OnInitializeUserGroupDt();
+                //获取用户组别表体DT
+                GlobalClasscs.Ad.UserGroupDtlDt = OnInitializeUserGroupDtlDt();
+                //获取关联用户表头DT
+                GlobalClasscs.Ad.RelUserDt = OnInitializeRelUserDt();
+                //获取关联用户表体DT
+                GlobalClasscs.Ad.RelUserDtlDt = OnInitializeRelUserDtlDt();
+
                 //初始化信息并读取
-                accountDetail.OnInitialize("R", null, null, null, OnGetSelectRecordTemp());
-                accountDetail.StartPosition = FormStartPosition.CenterParent;
-                accountDetail.ShowDialog();
-                //执行查询
+                accountPer.OnInitialize("R", null, null, null, OnGetSelectRecordTemp());
+                accountPer.StartPosition = FormStartPosition.CenterParent;
+                accountPer.ShowDialog();
+                //刷新
                 OnSearch();
             }
             catch (Exception ex)
@@ -623,13 +636,53 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 初始化获取K3用户信息(注:不包括已添加到T_AD_User表的用户)
+        /// 初始化获取K3用户信息
         /// </summary>
         private void OnInitializeK3UserDt()
         {
             task.TaskId = "0.9";
             task.StartTask();
             _k3UserDt = task.ResultTable;
+        }
+
+        /// <summary>
+        /// 获取用户组别表头DT
+        /// </summary>
+        private DataTable OnInitializeUserGroupDt()
+        {
+            task.TaskId = "0.9.7";
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 获取用户组别表体DT
+        /// </summary>
+        private DataTable OnInitializeUserGroupDtlDt()
+        {
+            task.TaskId = "0.9.8";
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 获取关联用户表头DT
+        /// </summary>
+        private DataTable OnInitializeRelUserDt()
+        {
+            task.TaskId = "0.0.0.1";
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
+        /// 获取关联用户表体DT
+        /// </summary>
+        private DataTable OnInitializeRelUserDtlDt()
+        {
+            task.TaskId = "0.0.0.2";
+            task.StartTask();
+            return task.ResultTable;
         }
 
         /// <summary>
@@ -661,6 +714,7 @@ namespace BomOfferOrder.UI.Admin
             newrow[7] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[6].Value) == "是" ? 0 : 1;     //能否查阅明细金额
             newrow[8] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[7].Value) == "是" ? 0 : 1;     //能否对明细物料操作
             newrow[9] = 1;                                                                                           //是否占用
+            newrow[10] = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[8].Value) == "是" ? 0 : 1;    //是否不关联用户 
             tempdt.Rows.Add(newrow);
             return tempdt;
         }
