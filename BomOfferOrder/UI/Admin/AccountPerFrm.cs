@@ -61,6 +61,7 @@ namespace BomOfferOrder.UI.Admin
             tmclose.Click += Tmclose_Click;
             cbnoneed.Click += Cbnoneed_Click;
             tvview.AfterCheck += Tvview_AfterCheck;
+            tvview.AfterSelect += Tvview_AfterSelect;
             tmSet.Click += TmSet_Click;
             tmreback.Click += Tmreback_Click;
 
@@ -72,8 +73,6 @@ namespace BomOfferOrder.UI.Admin
             tmshowrows.DropDownClosed += Tmshowrows_DropDownClosed;
             panel4.Visible = false;
         }
-
-
 
         /// <summary>
         /// 初始化
@@ -350,6 +349,25 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
+        /// 点击树菜单某个节点时出现-用于读取记录
+        /// 作用:当点击某个节点时,GridView显示相关的记录
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tvview_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            try
+            {
+                //跳转显示内容
+                JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
         /// 根据父节点的‘复选框’是否选中,确定对应的子节点是否选中
         /// 仅适用于点击父节点‘复选框’时
         /// </summary>
@@ -440,13 +458,17 @@ namespace BomOfferOrder.UI.Admin
                 //循环将所选中的行=>将7列设置为"是"(更新_dtl)
                 foreach (DataGridViewRow row in gvdtl.SelectedRows)
                 {
+
                     //获取所选中行中 Groupid Dtlid对应的值
                     for (var i = 0; i < _dtl.Rows.Count; i++)
                     {
-                        if(Convert.ToInt32(_dtl.Rows[i][0]) !=Convert.ToInt32(row.Cells[0]) && Convert.ToInt32(_dtl.Rows[i][1]) !=Convert.ToInt32(row.Cells[1])) continue;
-                        _dtl.Rows[i].BeginEdit();
-                        _dtl.Rows[i][7] = "是";
-                        _dtl.Rows[i].EndEdit();
+                        if (Convert.ToInt32(_dtl.Rows[i][0]) == Convert.ToInt32(row.Cells[0].Value) &&
+                            Convert.ToInt32(_dtl.Rows[i][1]) == Convert.ToInt32(row.Cells[1].Value))
+                        {
+                            _dtl.Rows[i].BeginEdit();
+                            _dtl.Rows[i][7] = "是";
+                            _dtl.Rows[i].EndEdit();
+                        }
                     }
                 }
                 //刷新
@@ -471,7 +493,7 @@ namespace BomOfferOrder.UI.Admin
                 //检测若所选择的行中没有设置“不启用”,会报异常不能继续
                 foreach (DataGridViewRow row in gvdtl.SelectedRows)
                 {
-                    if(!Convert.ToString(row.Cells[7]).Contains("是")) throw new Exception($"检测员工名称'{row.Cells[2]}'没有设置不启用,故不能执行取消操作");
+                    if(!Convert.ToString(row.Cells[7].Value).Contains("是")) throw new Exception($"检测员工名称'{row.Cells[2].Value}'没有设置不启用,故不能执行取消操作");
                     break;
                 }
                 //循环将_dtl.rows[7]取消"是"
@@ -480,10 +502,14 @@ namespace BomOfferOrder.UI.Admin
                     //获取所选中行中 Groupid Dtlid对应的值
                     for (var i = 0; i < _dtl.Rows.Count; i++)
                     {
-                        if (Convert.ToInt32(_dtl.Rows[i][0]) != Convert.ToInt32(row.Cells[0]) && Convert.ToInt32(_dtl.Rows[i][1]) != Convert.ToInt32(row.Cells[1])) continue;
-                        _dtl.Rows[i].BeginEdit();
-                        _dtl.Rows[i][7] = "";
-                        _dtl.Rows[i].EndEdit();
+                        if (Convert.ToInt32(_dtl.Rows[i][0]) == Convert.ToInt32(row.Cells[0].Value) &&
+                            Convert.ToInt32(_dtl.Rows[i][1]) == Convert.ToInt32(row.Cells[1].Value))
+                        {
+                              _dtl.Rows[i].BeginEdit();
+                              _dtl.Rows[i][7] = "";
+                              _dtl.Rows[i].EndEdit();
+                        }
+
                     }
                 }
                 //刷新

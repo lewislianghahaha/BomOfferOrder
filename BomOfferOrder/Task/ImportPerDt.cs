@@ -300,8 +300,8 @@ namespace BomOfferOrder.Task
             else
             {
                 searchDt.Generdt(sqlList.DelRelUser(userid));
+                tb = reluserdt.Copy();
             }
-            var a = tb;
             importDt.ImportDtToDb("T_AD_RelUser", tb);
         }
 
@@ -331,6 +331,7 @@ namespace BomOfferOrder.Task
             else
             {
                 searchDt.Generdt(sqlList.DelRelUserDtl(userid));
+                tb = reluserdtldt.Copy();
             }
             importDt.ImportDtToDb("T_AD_RelUserDtl", tb);
         }
