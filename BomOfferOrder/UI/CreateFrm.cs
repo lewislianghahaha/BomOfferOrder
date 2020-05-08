@@ -296,7 +296,7 @@ namespace BomOfferOrder.UI
             {
                 if (gvdtl.RowCount == 0) throw new Exception("没有明细记录,不能执行运算");
                 var clickMessage = $"您所选择进行生成的物料有:'{gvdtl.RowCount}'行物料记录 \n 是否继续生成?";
-                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     //弹出对应窗体相关设置
                     dtlFrm.FunState = "C";

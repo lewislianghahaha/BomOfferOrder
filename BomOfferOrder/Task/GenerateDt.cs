@@ -658,7 +658,7 @@ namespace BomOfferOrder.Task
         /// <param name="instockdt">初始化入库单DT-计算旧标准单价使用</param>
         /// <param name="priceListdt">初始化价目表DT-计算旧标准单价使用</param>
         /// <returns></returns>
-        private DataTable GenerateReportDtlTemp(int fmaterialid,string productname,DataTable bomdt,DataTable resultdt,
+        public DataTable GenerateReportDtlTemp(int fmaterialid,string productname,DataTable bomdt,DataTable resultdt,
                                                 decimal qty,DataTable instockdt,DataTable priceListdt)
         {
             //‘用量’中转值
@@ -688,8 +688,8 @@ namespace BomOfferOrder.Task
                     newrow[3] = qtytemp;                                                      //用量
                     newrow[4] = dtlrows[i][10];                                               //单价(标准单价使用)
                     newrow[5] = oldprice;                                                     //旧标准单价(旧标准成本单价使用)
-                    newrow[6] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),7); //子项金额=用量*单价 (标准成本单价使用)
-                    newrow[7] = decimal.Round(qtytemp * oldprice,7);                          //旧子项金额=用量*单价 (旧标准成本单价使用)
+                    newrow[6] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),12); //子项金额=用量*单价 (标准成本单价使用)
+                    newrow[7] = decimal.Round(qtytemp * oldprice,12);                          //旧子项金额=用量*单价 (旧标准成本单价使用)
                     resultdt.Rows.Add(newrow);
                 }
                 //递归调用

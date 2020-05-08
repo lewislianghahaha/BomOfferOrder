@@ -315,7 +315,7 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt,_purchaseInstockDt);     
+                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt,_instockdt);     
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }
@@ -444,7 +444,7 @@ namespace BomOfferOrder.UI
                 GlobalClasscs.Fun.EmptyFunctionName = "E";
                 //弹出对应窗体相关设置
                 dtlFrm.FunState = "C";
-                dtlFrm.OnInitialize(null, _pricelistdt,_purchaseInstockDt);     //初始化信息
+                dtlFrm.OnInitialize(null, _pricelistdt,_instockdt);     //初始化信息
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }
@@ -706,7 +706,7 @@ namespace BomOfferOrder.UI
                         GlobalClasscs.Fun.FunctionName = tabtext == "成本BOM报价单-创建" ? "B" : "N";
                         createFrm.Bomdt = _bomdt;
                         createFrm.Pricelistdt = _pricelistdt;
-                        createFrm.PurchaseInstockdt = _purchaseInstockDt;
+                        createFrm.PurchaseInstockdt = _instockdt;
                         createFrm.Show();                                      
                         newpage.Controls.Add(createFrm);    
                         break;
@@ -720,7 +720,7 @@ namespace BomOfferOrder.UI
                             FormBorderStyle = FormBorderStyle.None
                         };
                         searchFrm.Pricelistdt = _pricelistdt;
-                        searchFrm.PurchaseInstockdt = _purchaseInstockDt;
+                        searchFrm.PurchaseInstockdt = _instockdt;
                         searchFrm.Show();                    
                         newpage.Controls.Add(searchFrm); 
                         break;
@@ -1208,6 +1208,7 @@ namespace BomOfferOrder.UI
             task.TaskId = "0.1";
             task.StartTask();
             _bomdt = task.Resultbomdt;
+            GlobalClasscs.Bd.Bomdt = _bomdt;
         }
 
         /// <summary>
@@ -1363,7 +1364,7 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt, _purchaseInstockDt);
+                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt, _instockdt);
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }

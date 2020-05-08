@@ -301,7 +301,8 @@ namespace BomOfferOrder.Task
             {
                 searchDt.Generdt(sqlList.DelRelUser(userid));
             }
-            importDt.ImportDtToDb("T_AD_RelUser", reluserdt);
+            var a = tb;
+            importDt.ImportDtToDb("T_AD_RelUser", tb);
         }
 
         /// <summary>
@@ -331,7 +332,7 @@ namespace BomOfferOrder.Task
             {
                 searchDt.Generdt(sqlList.DelRelUserDtl(userid));
             }
-            importDt.ImportDtToDb("T_AD_RelUserDtl", reluserdtldt);
+            importDt.ImportDtToDb("T_AD_RelUserDtl", tb);
         }
 
         /// <summary>

@@ -15,10 +15,9 @@ namespace BomOfferOrder.UI.Admin
         Load load=new Load();
 
         #region 参数
-        //存放单据状态
         //记录用户权限记录是否保存
         private bool _saveid;
-
+        //存放单据状态
         private string _funState;
 
         //存放节点跳转时的查询信息
@@ -573,13 +572,11 @@ namespace BomOfferOrder.UI.Admin
             //循环树菜单中‘父节点’下的各节点
             foreach (TreeNode childNode in tvview.Nodes[0].Nodes)
             {
+                if (!childNode.Checked) continue;
                 var newrow = tempdt.NewRow();
-                if (childNode.Checked)
-                {
-                    newrow[0] = _funState == "C" ? 0 : _userid; //Userid
-                    newrow[1] = childNode.Tag;                  //GroupID
-                    newrow[2] = DateTime.Now;                   //CreateDt
-                }
+                newrow[0] = _funState == "C" ? 0 : _userid; //Userid
+                newrow[1] = childNode.Tag;                  //GroupID
+                newrow[2] = DateTime.Now;                   //CreateDt
                 tempdt.Rows.Add(newrow);
             }
             return tempdt;
@@ -596,14 +593,12 @@ namespace BomOfferOrder.UI.Admin
             //循环_dtl
             foreach (DataRow rows in _dtl.Rows)
             {
+                if (!Convert.ToString(rows[7]).Contains("是")) continue;
                 var newrow = tempdt.NewRow();
-                if (Convert.ToString(rows[7]).Contains("是"))
-                {
-                    newrow[0] = _funState == "C" ? 0 : _userid; //Userid
-                    newrow[1] = rows[0];                        //Groupid
-                    newrow[2] = rows[1];                        //Dtlid
-                    newrow[3] = DateTime.Now;                   //CreateDt
-                }
+                newrow[0] = _funState == "C" ? 0 : _userid; //Userid
+                newrow[1] = rows[0];                        //Groupid
+                newrow[2] = rows[1];                        //Dtlid
+                newrow[3] = DateTime.Now;                   //CreateDt
                 tempdt.Rows.Add(newrow);
             }
             return tempdt;

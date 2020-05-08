@@ -1135,7 +1135,7 @@
         }
 
         /// <summary>
-        /// 采购入库单(产品成本毛利润报表使用)
+        /// 采购入库单(产品成本毛利润报表专用)
         /// </summary>
         /// <returns></returns>
         public string SearchPurchase()

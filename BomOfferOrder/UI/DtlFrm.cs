@@ -84,7 +84,7 @@ namespace BomOfferOrder.UI
         /// </summary>
         /// <param name="bomdt">BOM DT</param>
         /// <param name="priceListdt">采购价目表DT</param>
-        /// <param name="purchaseInstockdt"></param>
+        /// <param name="purchaseInstockdt">采购入库单DT-BOM物料-物料单价使用</param>
         public void OnInitialize(DataTable bomdt,DataTable priceListdt,DataTable purchaseInstockdt)
         {
             //初始化获取‘原材料’‘原漆半成品’‘原漆’等物料明细信息(注:添加物料明细窗体使用)
@@ -176,7 +176,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -15,6 +15,7 @@ namespace BomOfferOrder.UI
         CustInfoFrm custInfo=new CustInfoFrm();
         TaskLogic task=new TaskLogic();
         Load load=new Load();
+        GenerateDt generateDt=new GenerateDt();
 
         #region 变量参数
         //定义单据状态(C:创建 R:读取)
@@ -31,6 +32,8 @@ namespace BomOfferOrder.UI
         private DataTable _pricelistdt;
         //获取采购入库表DT
         private DataTable _purchaseinstockdt;
+        //
+        private DataTable _bomdt;
 
         //保存查询出来的GridView记录
         public DataTable Dtl;
@@ -430,7 +433,7 @@ namespace BomOfferOrder.UI
             _custinfo = custinfodt;
             //初始化获取采购价目表DT
             _pricelistdt = pricelistdt;
-            //初始化获取采购入库表DT
+            //初始化获取采购入库单DT
             _purchaseinstockdt = purchaseInstockdt;
 
             try
@@ -496,26 +499,41 @@ namespace BomOfferOrder.UI
 
         /// <summary>
         /// 计算BOM物料明细内的‘物料单价’
+        /// 作用:累加出成本BOM内的‘父项金额’
         /// </summary>
-        /// <param name="fmaterialid"></param>
+        /// <param name="fmaterialid">表头物料ID(循环条件)</param>
         /// <returns></returns>
         private decimal GenerateMaterialPrice(int fmaterialid)
         {
             //定义结果变量
             decimal result = 0;
-            //检测若fmaterialid在_pricelistdt内不存在,就继续在_purchaseinstockdt内查找是否存在
-            var dtlrows = _pricelistdt.Select("子项物料内码='" + fmaterialid + "'");
 
-            if (dtlrows.Length > 0)
+            //执行将相关信息插入至tempdt内(使用递归)
+            var tempdt = generateDt.GenerateReportDtlTemp(fmaterialid, "", GlobalClasscs.Bd.Bomdt,
+                dbList.ReportTempdt(), 0, _purchaseinstockdt, _pricelistdt);
+
+            //累加得出‘父项金额’(旧标准成本单价使用)
+            foreach (DataRow row in tempdt.Rows)
             {
-                result = decimal.Round(Convert.ToDecimal(dtlrows[0][1]), 4);
+                result += Convert.ToDecimal(row[7]);
             }
-            //若没有就在_purchaseinstockdt查询,若还是没有就返回0
-            else
-            {
-                var dtlrow = _purchaseinstockdt.Select("FMATERIALID='" + fmaterialid + "'");
-                result = dtlrow.Length == 0 ? 0 : decimal.Round(Convert.ToDecimal(dtlrow[0][1]), 4);
-            }
+
+            #region Hide
+            //检测若fmaterialid在_pricelistdt内不存在,就继续在_purchaseinstockdt内查找是否存在
+            //var dtlrows = _pricelistdt.Select("子项物料内码='" + fmaterialid + "'");
+
+            //if (dtlrows.Length > 0)
+            //{
+            //    result = decimal.Round(Convert.ToDecimal(dtlrows[0][1]), 4);
+            //}
+            ////若没有就在_purchaseinstockdt查询,若还是没有就返回0
+            //else
+            //{
+            //    var dtlrow = _purchaseinstockdt.Select("FMATERIALID='" + fmaterialid + "'");
+            //    result = dtlrow.Length == 0 ? 0 : decimal.Round(Convert.ToDecimal(dtlrow[0][1]), 4);
+            //}
+            #endregion
+
             return result;
         }
 

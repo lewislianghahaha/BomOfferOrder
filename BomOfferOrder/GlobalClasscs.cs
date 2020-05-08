@@ -31,11 +31,21 @@ namespace BomOfferOrder
             public DataTable RelUserDtlDt;     //获取关联用户表体DT
         }
 
+        /// <summary>
+        /// 记录各初始化的数据表
+        /// </summary>
+        public struct Bddt
+        {
+            public DataTable Bomdt;            //初始化BOM明细DT(全部Bom内容)
+        }
+
 
         public static Account User;
 
         public static FunName Fun;
 
         public static Admin Ad;
+
+        public static Bddt Bd;
     }
 }
