@@ -38,6 +38,12 @@ namespace BomOfferOrder.Task
         private DataTable _groupdeldtldt;    //删除表体信息
         #endregion
 
+        #region 用户权限使用
+        private DataTable _userdt;           //用户表
+        private DataTable _reluserdt;        //用户关联表头
+        private DataTable _reluserdtldt;     //用户关联表体
+        #endregion
+
         private DataTable _resultTable;          //返回DT类型
         private DataTable _resultbomdt;          //返回BOM DT
         private bool _resultMark;                //返回是否成功标记
@@ -145,6 +151,12 @@ namespace BomOfferOrder.Task
         public DataTable Groupdtldt { set { _groupdtldt = value; } }
         public DataTable Groupdeldt { set { _groupdeldt = value; } }
         public DataTable Groupdeldtldt { set { _groupdeldtldt = value; } }
+        #endregion
+
+        #region 用户权限使用
+        public DataTable Userdt { set { _userdt = value; } }
+        public DataTable Reluserdt { set { _reluserdt = value; } }
+        public DataTable Reluserdtldt { set { _reluserdtldt = value; } }
         #endregion
 
         #endregion
@@ -273,7 +285,7 @@ namespace BomOfferOrder.Task
                     break;
                 //用户权限提交
                 case "2.1":
-                    ImportUserPermissionDt(_importdt);
+                    ImportUserPermissionDt(_userdt,_reluserdt,_reluserdtldt);
                     break;
                 //暂存信息提交
                 case "2.2":
@@ -575,9 +587,9 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 用户权限提交
         /// </summary>
-        private void ImportUserPermissionDt(DataTable sourcedt)
+        private void ImportUserPermissionDt(DataTable userdt,DataTable reluserdt,DataTable reluserdtldt)
         {
-            _resultMark = importPer.ImportUserPermissionDt(sourcedt);
+            _resultMark = importPer.ImportUserPermissionDt(userdt,reluserdt,reluserdtldt);
         }
 
 

@@ -1506,5 +1506,31 @@
                        ";
             return _result;
         }
+
+        /// <summary>
+        /// 删除T_AD_RelUser(注:在保存用户关联时使用)
+        /// </summary>
+        /// <returns></returns>
+        public string DelRelUser(int userid)
+        {
+            _result = @"
+                           DELETE FROM dbo.T_AD_RelUser WHERE Userid=''
+                       ";
+
+            return _result;
+        }
+
+        /// <summary>
+        /// 删除T_AD_RelUserDtl(注:在保存用户关联时使用)
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public string DelRelUserDtl(int userid)
+        {
+            _result = @"
+                          DELETE FROM dbo.T_AD_RelUserDtl WHERE Userid=''
+                       ";
+            return _result;
+        }
     }
 }

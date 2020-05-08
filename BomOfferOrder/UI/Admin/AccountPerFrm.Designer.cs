@@ -52,6 +52,8 @@
             this.tvview = new System.Windows.Forms.TreeView();
             this.panel5 = new System.Windows.Forms.Panel();
             this.gvdtl = new System.Windows.Forms.DataGridView();
+            this.Menu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tmSet = new System.Windows.Forms.ToolStripMenuItem();
             this.panel4 = new System.Windows.Forms.Panel();
             this.bngat = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -72,8 +74,8 @@
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.cbnoneed = new System.Windows.Forms.CheckBox();
-            this.Menu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tmSet = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmreback = new System.Windows.Forms.ToolStripMenuItem();
             this.Main.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -86,11 +88,11 @@
             this.splitContainer1.SuspendLayout();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).BeginInit();
+            this.Menu.SuspendLayout();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
             this.bngat.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
             // Main
@@ -323,6 +325,21 @@
             this.gvdtl.Size = new System.Drawing.Size(846, 410);
             this.gvdtl.TabIndex = 0;
             // 
+            // Menu
+            // 
+            this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tmSet,
+            this.toolStripSeparator1,
+            this.tmreback});
+            this.Menu.Name = "Menu";
+            this.Menu.Size = new System.Drawing.Size(137, 54);
+            // 
+            // tmSet
+            // 
+            this.tmSet.Name = "tmSet";
+            this.tmSet.Size = new System.Drawing.Size(136, 22);
+            this.tmSet.Text = "设置不启用";
+            // 
             // panel4
             // 
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -504,18 +521,16 @@
             this.cbnoneed.Text = "不需用户关联";
             this.cbnoneed.UseVisualStyleBackColor = true;
             // 
-            // Menu
+            // toolStripSeparator1
             // 
-            this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmSet});
-            this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(153, 48);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(133, 6);
             // 
-            // tmSet
+            // tmreback
             // 
-            this.tmSet.Name = "tmSet";
-            this.tmSet.Size = new System.Drawing.Size(152, 22);
-            this.tmSet.Text = "设置不启用";
+            this.tmreback.Name = "tmreback";
+            this.tmreback.Size = new System.Drawing.Size(136, 22);
+            this.tmreback.Text = "取消不启用";
             // 
             // AccountPerFrm
             // 
@@ -543,6 +558,7 @@
             this.splitContainer1.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvdtl)).EndInit();
+            this.Menu.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).EndInit();
@@ -550,7 +566,6 @@
             this.bngat.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            this.Menu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -602,5 +617,7 @@
         private System.Windows.Forms.ToolStripLabel tstotalrow;
         private System.Windows.Forms.ContextMenuStrip Menu;
         private System.Windows.Forms.ToolStripMenuItem tmSet;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tmreback;
     }
 }

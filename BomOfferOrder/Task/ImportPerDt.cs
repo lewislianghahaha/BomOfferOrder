@@ -142,8 +142,6 @@ namespace BomOfferOrder.Task
                 importDt.UpdateDbFromDt("T_BD_UserGroupDtl", upgroupdtldt);
         }
 
-
-
         /// <summary>
         /// 将数据进行分类;分为插入及更新
         /// </summary>
@@ -159,64 +157,6 @@ namespace BomOfferOrder.Task
             }
             temp.Rows.Add(newrow);
             return temp;
-        }
-
-        /// <summary>
-        /// 用户权限提交
-        /// </summary>
-        /// <returns></returns>
-        public bool ImportUserPermissionDt(DataTable sourcedt)
-        {
-            var result = true;
-            try
-            {
-                //获取用户权限临时表
-                var tempdt = dbList.CreateUserPermissionTemp();
-
-                //判断若sourcedt内的Userid为0,即需要插入操作,反之,为更新操作
-                var dtlrows = sourcedt.Select("Userid=0");
-
-                //对临时表进行添加操作
-                var newrow = tempdt.NewRow();
-
-                newrow[0] = dtlrows.Length > 0 ? GetUseridKey() : sourcedt.Rows[0][0]; //UserId       
-                newrow[1] = sourcedt.Rows[0][1];      //用户名称
-                newrow[2] = sourcedt.Rows[0][2];      //用户密码
-                newrow[3] = sourcedt.Rows[0][3];      //创建人
-                newrow[4] = sourcedt.Rows[0][4];      //创建日期
-                newrow[5] = sourcedt.Rows[0][5];      //是否启用
-                newrow[6] = sourcedt.Rows[0][6];      //能否反审核
-                newrow[7] = sourcedt.Rows[0][7];      //能否查阅明细金额
-                newrow[8] = sourcedt.Rows[0][8];      //能否对明细物料操作
-                newrow[9] = sourcedt.Rows[0][9];      //是否占用
-                newrow[10] = sourcedt.Rows[0][10];    //是否关联用户
-                tempdt.Rows.Add(newrow);
-
-                //执行插入操作
-                if (dtlrows.Length > 0)
-                {
-                    importDt.ImportDtToDb("T_AD_User", tempdt);
-                }
-                //执行更新操作
-                else
-                {
-                    importDt.UpdateDbFromDt("T_AD_User", tempdt);
-                }
-            }
-            catch (Exception)
-            {
-                result = false;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 获取最新的Userid值
-        /// </summary>
-        /// <returns></returns>
-        private int GetUseridKey()
-        {
-            return generateDt.GetNewUseridValue();
         }
 
         /// <summary>
@@ -260,6 +200,150 @@ namespace BomOfferOrder.Task
 
             searchDt.Generdt(sqlList.DelGroupRecord(id, fidlist));
         }
+
+        #region 用户权限提交
+
+        /// <summary>
+        /// 用户权限提交
+        /// 注:在操作reluserdt 及 reluserdtldt时,顺序为:先删除后插入=>注:创建状态除外
+        /// </summary>
+        /// <param name="userdt">用户表</param>
+        /// <param name="reluserdt">用户关联表头</param>
+        /// <param name="reluserdtldt">用户关联表体</param>
+        /// <returns></returns>
+        public bool ImportUserPermissionDt(DataTable userdt,DataTable reluserdt,DataTable reluserdtldt)
+        {
+            var result = true;
+            //设置userid变量
+            var userid = 0;
+            //通过userid是否为0,确定reluserdt 及 reluserdtldt是否需要执行删除操作(0:不需要 1:需要)
+            var markid = 0;
+
+            try
+            {
+                //获取用户权限临时表
+                var tempdt = dbList.CreateUserPermissionTemp();
+
+                //判断若sourcedt内的Userid为0,即需要插入操作,反之,为更新操作
+                var dtlrowsLength = userdt.Select("Userid=0").Length;
+                //根据情况获取userid
+                userid = dtlrowsLength > 0 ? GetUseridKey() : Convert.ToInt32(userdt.Rows[0][0]);
+                //确定reluserdt 及 reluserdtldt是否需要执行删除操作(0:不需要 1:需要)
+                markid = dtlrowsLength > 0 ? 0 : 1;
+
+                //对临时表进行添加操作
+                var newrow = tempdt.NewRow();
+                newrow[0] = userid;                 //UserId       
+                newrow[1] = userdt.Rows[0][1];      //用户名称
+                newrow[2] = userdt.Rows[0][2];      //用户密码
+                newrow[3] = userdt.Rows[0][3];      //创建人
+                newrow[4] = userdt.Rows[0][4];      //创建日期
+                newrow[5] = userdt.Rows[0][5];      //是否启用
+                newrow[6] = userdt.Rows[0][6];      //能否反审核
+                newrow[7] = userdt.Rows[0][7];      //能否查阅明细金额
+                newrow[8] = userdt.Rows[0][8];      //能否对明细物料操作
+                newrow[9] = userdt.Rows[0][9];      //是否占用
+                newrow[10] = userdt.Rows[0][10];    //是否不关联用户
+                tempdt.Rows.Add(newrow);
+
+                //执行插入操作
+                if (dtlrowsLength > 0)
+                {
+                    importDt.ImportDtToDb("T_AD_User", tempdt);
+                }
+                //执行更新操作
+                else
+                {
+                    importDt.UpdateDbFromDt("T_AD_User", tempdt);
+                }
+
+                //执行reluserdt 及 reluserdtldt(注:当表内有值时才执行)
+                if (reluserdt.Rows.Count > 0)
+                {
+                    CreateRelUserIntoDb(markid,userid,reluserdt);
+                }
+
+                if (reluserdtldt.Rows.Count > 0)
+                {
+                    CreateRelUserDtlIntoDb(markid,userid,reluserdtldt);
+                }
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 创建reluser相关记录并插入至对应的数据表内
+        /// </summary>
+        /// <param name="markid">确定reluserdt 及 reluserdtldt是否需要执行删除操作(0:不需要 1:需要)</param>
+        /// <param name="userid"></param>
+        /// <param name="reluserdt"></param>
+        private void CreateRelUserIntoDb(int markid,int userid,DataTable reluserdt)
+        {
+            var tb = reluserdt.Clone();
+
+            if (markid == 0)
+            {
+                foreach (DataRow rows in reluserdt.Rows)
+                {
+                    var newrow = tb.NewRow();
+                    newrow[0] = userid;         //Userid
+                    newrow[1] = rows[1];        //GroupID
+                    newrow[2] = rows[2];        //CreateDt
+                    tb.Rows.Add(newrow);
+                }
+            }
+            //先删除,后插入
+            else
+            {
+                searchDt.Generdt(sqlList.DelRelUser(userid));
+            }
+            importDt.ImportDtToDb("T_AD_RelUser", reluserdt);
+        }
+
+        /// <summary>
+        /// 创建reluserdtldt相关记录并插入至对应的数据表内
+        /// </summary>
+        /// <param name="markid">确定reluserdt 及 reluserdtldt是否需要执行删除操作(0:不需要 1:需要)</param>
+        /// <param name="userid"></param>
+        /// <param name="reluserdtldt"></param>
+        private void CreateRelUserDtlIntoDb(int markid, int userid,DataTable reluserdtldt)
+        {
+            var tb = reluserdtldt.Clone();
+
+            //需将userid重新添加至对应的项内
+            if (markid == 0)
+            {
+                foreach (DataRow rows in reluserdtldt.Rows)
+                {
+                    var newrow = tb.NewRow();
+                    newrow[0] = userid;     //Userid
+                    newrow[1] = rows[1];    //Groupid
+                    newrow[2] = rows[2];    //Dtlid
+                    newrow[3] = rows[3];    //CreateDt
+                }
+            }
+            //先删除,后插入
+            else
+            {
+                searchDt.Generdt(sqlList.DelRelUserDtl(userid));
+            }
+            importDt.ImportDtToDb("T_AD_RelUserDtl", reluserdtldt);
+        }
+
+        /// <summary>
+        /// 获取最新的Userid值
+        /// </summary>
+        /// <returns></returns>
+        private int GetUseridKey()
+        {
+            return generateDt.GetNewUseridValue();
+        }
+
+        #endregion
 
     }
 }

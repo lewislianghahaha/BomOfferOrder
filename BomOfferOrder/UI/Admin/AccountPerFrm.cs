@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using BomOfferOrder.DB;
+using BomOfferOrder.Task;
 
 namespace BomOfferOrder.UI.Admin
 {
     public partial class AccountPerFrm : Form
     {
         DbList dbList=new DbList();
-
+        TaskLogic task=new TaskLogic();
+        Load load=new Load();
 
         #region 参数
         //存放单据状态
+        //记录用户权限记录是否保存
+        private bool _saveid;
+
         private string _funState;
 
         //存放节点跳转时的查询信息
@@ -57,6 +63,7 @@ namespace BomOfferOrder.UI.Admin
             cbnoneed.Click += Cbnoneed_Click;
             tvview.AfterCheck += Tvview_AfterCheck;
             tmSet.Click += TmSet_Click;
+            tmreback.Click += Tmreback_Click;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -66,6 +73,8 @@ namespace BomOfferOrder.UI.Admin
             tmshowrows.DropDownClosed += Tmshowrows_DropDownClosed;
             panel4.Visible = false;
         }
+
+
 
         /// <summary>
         /// 初始化
@@ -126,6 +135,8 @@ namespace BomOfferOrder.UI.Admin
             LinkGridViewPageChange(MarkGridViewRecord(funState,_usergroupdtldt,_reluserdtldt));
             //控制GridView单元格显示方式
             ControlGridViewisShow();
+            //初始化保存标记为FALSE
+            _saveid = false;
         }
 
         /// <summary>
@@ -427,9 +438,55 @@ namespace BomOfferOrder.UI.Admin
             {
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
 
-                //循环将所选中的行的7列设置为0 todo
+                //循环将所选中的行=>将7列设置为"是"(更新_dtl)
+                foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                {
+                    //获取所选中行中 Groupid Dtlid对应的值
+                    for (var i = 0; i < _dtl.Rows.Count; i++)
+                    {
+                        if(Convert.ToInt32(_dtl.Rows[i][0]) !=Convert.ToInt32(row.Cells[0]) && Convert.ToInt32(_dtl.Rows[i][1]) !=Convert.ToInt32(row.Cells[1])) continue;
+                        _dtl.Rows[i].BeginEdit();
+                        _dtl.Rows[i][7] = "是";
+                        _dtl.Rows[i].EndEdit();
+                    }
+                }
+                //刷新
+                LinkGridViewPageChange(_dtl);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-
+        /// <summary>
+        /// 取消不启用
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmreback_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
+                //检测若所选择的行中没有设置“不启用”,会报异常不能继续
+                foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                {
+                    if(!Convert.ToString(row.Cells[7]).Contains("是")) throw new Exception($"检测员工名称'{row.Cells[2]}'没有设置不启用,故不能执行取消操作");
+                    break;
+                }
+                //循环将_dtl.rows[7]取消"是"
+                foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                {
+                    //获取所选中行中 Groupid Dtlid对应的值
+                    for (var i = 0; i < _dtl.Rows.Count; i++)
+                    {
+                        if (Convert.ToInt32(_dtl.Rows[i][0]) != Convert.ToInt32(row.Cells[0]) && Convert.ToInt32(_dtl.Rows[i][1]) != Convert.ToInt32(row.Cells[1])) continue;
+                        _dtl.Rows[i].BeginEdit();
+                        _dtl.Rows[i][7] = "";
+                        _dtl.Rows[i].EndEdit();
+                    }
+                }
                 //刷新
                 LinkGridViewPageChange(_dtl);
             }
@@ -450,16 +507,31 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 //收集‘用户’信息
-
+                var userdt = CreateUserDt();
 
                 //收集‘用户关联’表头信息
-
+                var reluserdt = CreateRelUserDt();
 
                 //收集‘用户关联’表体信息
-
+                var reluserdtldt = CreateRelUserDtlDt();
 
                 //执行提交
+                task.TaskId = "2.1";
+                task.Userdt = userdt;
+                task.Reluserdt = reluserdt;
+                task.Reluserdtldt = reluserdtldt;
 
+                new Thread(Start).Start();
+                load.StartPosition = FormStartPosition.CenterScreen;
+                load.ShowDialog();
+
+                if (!task.ResultMark) throw new Exception("提交异常,请联系管理员");
+                else
+                {
+                    MessageBox.Show($"用户'{txtusername.Text}'权限创建成功,可关闭此权限窗体", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tmSave.Enabled = false;
+                    _saveid = true;
+                }
             }
             catch (Exception ex)
             {
@@ -467,7 +539,75 @@ namespace BomOfferOrder.UI.Admin
             }
         }
 
+        /// <summary>
+        /// 收集‘用户’信息
+        /// </summary>
+        /// <returns></returns>
+        private DataTable CreateUserDt()
+        {
+            var tempdt = _userdt.Clone();
+            var newrow = tempdt.NewRow();
+            newrow[0] = _funState == "C" ? 0 : _userid;                             //Useid
+            newrow[1] = txtusername.Text;                                           //用户名称
+            newrow[2] = _funState == "C" ? "888888" : "";                           //用户密码
+            newrow[3] = _funState == "C" ? GlobalClasscs.User.StrUsrName : "";      //创建人
+            newrow[4] = _funState == "C" ? DateTime.Now : Convert.ToDateTime(null); //创建日期
+            newrow[5] = cbapplyid.Checked ? 0 : 1;                                  //是否启用
+            newrow[6] = cbbackconfirm.Checked ? 0 : 1;                              //能否反审核
+            newrow[7] = cbreadid.Checked ? 0 : 1;                                   //能否查阅明细金额
+            newrow[8] = cbaddid.Checked ? 0 : 1;                                    //能否对明细物料操作
+            newrow[9] = 1;                                                          //是否占用
+            newrow[10] = cbnoneed.Checked ? 0 : 1;                                  //是否不关联用户
+            tempdt.Rows.Add(newrow);
+            return tempdt;
+        }
 
+        /// <summary>
+        /// 收集‘用户关联’表头信息
+        /// 循环树菜单,并记录已选择的节点
+        /// </summary>
+        /// <returns></returns>
+        private DataTable CreateRelUserDt()
+        {
+            var tempdt = _reluserdt.Clone();
+            //循环树菜单中‘父节点’下的各节点
+            foreach (TreeNode childNode in tvview.Nodes[0].Nodes)
+            {
+                var newrow = tempdt.NewRow();
+                if (childNode.Checked)
+                {
+                    newrow[0] = _funState == "C" ? 0 : _userid; //Userid
+                    newrow[1] = childNode.Tag;                  //GroupID
+                    newrow[2] = DateTime.Now;                   //CreateDt
+                }
+                tempdt.Rows.Add(newrow);
+            }
+            return tempdt;
+        }
+
+        /// <summary>
+        /// 收集‘用户关联’表体信息
+        /// 循环_dtl,收集将设置为“是”的记录
+        /// </summary>
+        /// <returns></returns>
+        private DataTable CreateRelUserDtlDt()
+        {
+            var tempdt = _reluserdtldt.Clone();
+            //循环_dtl
+            foreach (DataRow rows in _dtl.Rows)
+            {
+                var newrow = tempdt.NewRow();
+                if (Convert.ToString(rows[7]).Contains("是"))
+                {
+                    newrow[0] = _funState == "C" ? 0 : _userid; //Userid
+                    newrow[1] = rows[0];                        //Groupid
+                    newrow[2] = rows[1];                        //Dtlid
+                    newrow[3] = DateTime.Now;                   //CreateDt
+                }
+                tempdt.Rows.Add(newrow);
+            }
+            return tempdt;
+        }
 
         /// <summary>
         /// 关闭
@@ -478,7 +618,12 @@ namespace BomOfferOrder.UI.Admin
         {
             try
             {
-                this.Close();
+                var clickMessage = !_saveid ? $"是否退出? \n 注:没保存的记录退出后将会消失" : "是否退出?";
+
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    this.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -739,6 +884,20 @@ namespace BomOfferOrder.UI.Admin
             {
                 MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        ///子线程使用(重:用于监视功能调用情况,当完成时进行关闭LoadForm)
+        /// </summary>
+        private void Start()
+        {
+            task.StartTask();
+
+            //当完成后将Form2子窗体关闭
+            this.Invoke((ThreadStart)(() =>
+            {
+                load.Close();
+            }));
         }
 
     }
