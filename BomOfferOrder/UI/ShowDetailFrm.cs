@@ -32,8 +32,6 @@ namespace BomOfferOrder.UI
         private DataTable _pricelistdt;
         //获取采购入库表DT
         private DataTable _purchaseinstockdt;
-        //
-        private DataTable _bomdt;
 
         //保存查询出来的GridView记录
         public DataTable Dtl;
