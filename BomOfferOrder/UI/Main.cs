@@ -1242,7 +1242,7 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 初始化采购入库单DT-(毛利润报表使用)
+        /// 初始化采购入库单DT-(毛利润报表专用)
         /// </summary>
         private void OnInitializePurchaseInstockDt()
         {
