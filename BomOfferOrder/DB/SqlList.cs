@@ -1513,8 +1513,8 @@
         /// <returns></returns>
         public string DelRelUser(int userid)
         {
-            _result = @"
-                           DELETE FROM dbo.T_AD_RelUser WHERE Userid=''
+            _result = $@"
+                           DELETE FROM dbo.T_AD_RelUser WHERE Userid='{userid}'
                        ";
 
             return _result;
@@ -1527,8 +1527,8 @@
         /// <returns></returns>
         public string DelRelUserDtl(int userid)
         {
-            _result = @"
-                          DELETE FROM dbo.T_AD_RelUserDtl WHERE Userid=''
+            _result = $@"
+                          DELETE FROM dbo.T_AD_RelUserDtl WHERE Userid='{userid}'
                        ";
             return _result;
         }
