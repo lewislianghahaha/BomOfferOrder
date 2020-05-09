@@ -595,9 +595,11 @@
             _result = @"SELECT Headid FROM dbo.T_OfferOrderHead";
             return _result;
         }
-        
+
         /// <summary>
         /// Main查询及查询端使用(注:当createname为空时,就表示查询端使用,反之是Main主窗体页使用)
+        /// 当Createname为空时,添加Userid为条件=>主要根据Userid带出与它用户关联的单据记录(结合用户组别等权限表)
+        /// 注:找出除自身外关联的用户单据记录(前提:Createname为空时)
         /// </summary>
         /// <returns></returns>
         public string SearchBomList(int typeid,string value,string cratename)
@@ -609,7 +611,7 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -626,6 +628,24 @@
 												GROUP BY x.FId
 											)x ON x.FId=a.FId
                                 WHERE a.OAorderno LIKE '%{value}%'
+                                --用户权限关联
+                                AND    A.CreateName IN(
+						                                SELECT DISTINCT x3.UserName
+						                                FROM dbo.T_AD_User X
+						                                INNER JOIN dbo.T_AD_RelUser X1 ON X.Userid=X1.Userid
+						                                INNER JOIN dbo.T_BD_UserGroup X2 ON X1.Groupid=X2.GroupId
+						                                INNER JOIN dbo.T_BD_UserGroupDtl X3 ON X2.GroupId=X3.Groupid
+						                                WHERE NOT EXISTS (
+											                                  SELECT NULL
+											                                  FROM dbo.T_AD_RelUserDtl X4
+											                                  WHERE X4.Userid=X.Userid
+											                                  AND X4.Groupid=X3.Groupid
+											                                  AND X4.Dtlid=X3.Dtlid
+									                                      )
+					                                    AND X.UserRelid=1                                    --表示需关联用户
+						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+					                                  )
                                 order by A.CreateDt desc
                             ";
                 }
@@ -634,7 +654,7 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -656,6 +676,24 @@
 				                                WHERE a.FId=b.FId
 				                                AND b.ProductName LIKE '%{value}%'
 		                                        )
+                                --用户权限关联
+                                AND    A.CreateName IN(
+						                                SELECT DISTINCT x3.UserName
+						                                FROM dbo.T_AD_User X
+						                                INNER JOIN dbo.T_AD_RelUser X1 ON X.Userid=X1.Userid
+						                                INNER JOIN dbo.T_BD_UserGroup X2 ON X1.Groupid=X2.GroupId
+						                                INNER JOIN dbo.T_BD_UserGroupDtl X3 ON X2.GroupId=X3.Groupid
+						                                WHERE NOT EXISTS (
+											                                  SELECT NULL
+											                                  FROM dbo.T_AD_RelUserDtl X4
+											                                  WHERE X4.Userid=X.Userid
+											                                  AND X4.Groupid=X3.Groupid
+											                                  AND X4.Dtlid=X3.Dtlid
+									                                      )
+					                                    AND X.UserRelid=1                                    --表示需关联用户
+						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+					                                  )
                                 order by A.CreateDt desc
                             ";
                 }
@@ -664,7 +702,7 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -681,6 +719,24 @@
 												GROUP BY x.FId
 											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                                --用户权限关联
+                                AND    A.CreateName IN(
+						                                SELECT DISTINCT x3.UserName
+						                                FROM dbo.T_AD_User X
+						                                INNER JOIN dbo.T_AD_RelUser X1 ON X.Userid=X1.Userid
+						                                INNER JOIN dbo.T_BD_UserGroup X2 ON X1.Groupid=X2.GroupId
+						                                INNER JOIN dbo.T_BD_UserGroupDtl X3 ON X2.GroupId=X3.Groupid
+						                                WHERE NOT EXISTS (
+											                                  SELECT NULL
+											                                  FROM dbo.T_AD_RelUserDtl X4
+											                                  WHERE X4.Userid=X.Userid
+											                                  AND X4.Groupid=X3.Groupid
+											                                  AND X4.Dtlid=X3.Dtlid
+									                                      )
+					                                    AND X.UserRelid=1                                    --表示需关联用户
+						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+					                                  )
                                 order by A.CreateDt desc
                             ";
                 }
@@ -689,7 +745,7 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -706,6 +762,24 @@
 												GROUP BY x.FId
 											)x ON x.FId=a.FId
                                 WHERE CONVERT(VARCHAR(100),a.ConfirmDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                                --用户权限关联
+                                AND    A.CreateName IN(
+						                                SELECT DISTINCT x3.UserName
+						                                FROM dbo.T_AD_User X
+						                                INNER JOIN dbo.T_AD_RelUser X1 ON X.Userid=X1.Userid
+						                                INNER JOIN dbo.T_BD_UserGroup X2 ON X1.Groupid=X2.GroupId
+						                                INNER JOIN dbo.T_BD_UserGroupDtl X3 ON X2.GroupId=X3.Groupid
+						                                WHERE NOT EXISTS (
+											                                  SELECT NULL
+											                                  FROM dbo.T_AD_RelUserDtl X4
+											                                  WHERE X4.Userid=X.Userid
+											                                  AND X4.Groupid=X3.Groupid
+											                                  AND X4.Dtlid=X3.Dtlid
+									                                      )
+					                                    AND X.UserRelid=1                                    --表示需关联用户
+						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+					                                  )
                                 order by A.CreateDt desc
                             ";
                 }
@@ -714,7 +788,7 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -730,6 +804,24 @@
 												GROUP BY x.FId
 											)x ON x.FId=a.FId
                                 WHERE a.Fstatus='{value}'
+                                --用户权限关联
+                                AND    A.CreateName IN(
+						                                SELECT DISTINCT x3.UserName
+						                                FROM dbo.T_AD_User X
+						                                INNER JOIN dbo.T_AD_RelUser X1 ON X.Userid=X1.Userid
+						                                INNER JOIN dbo.T_BD_UserGroup X2 ON X1.Groupid=X2.GroupId
+						                                INNER JOIN dbo.T_BD_UserGroupDtl X3 ON X2.GroupId=X3.Groupid
+						                                WHERE NOT EXISTS (
+											                                  SELECT NULL
+											                                  FROM dbo.T_AD_RelUserDtl X4
+											                                  WHERE X4.Userid=X.Userid
+											                                  AND X4.Groupid=X3.Groupid
+											                                  AND X4.Dtlid=X3.Dtlid
+									                                      )
+					                                    AND X.UserRelid=1                                    --表示需关联用户
+						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+					                                  )
                                 order by A.CreateDt desc
                             ";
                 }
