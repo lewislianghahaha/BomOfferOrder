@@ -406,7 +406,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                //找出除自身外关联的用户单据记录
+                //显示除登入用户外关联的用户单据记录
                 CreateTabPages("成本BOM报价单-查询");
             }
             catch (Exception ex)

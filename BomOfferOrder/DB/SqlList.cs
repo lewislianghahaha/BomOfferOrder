@@ -599,7 +599,7 @@
         /// <summary>
         /// Main查询及查询端使用(注:当createname为空时,就表示查询端使用,反之是Main主窗体页使用)
         /// 当Createname为空时,添加Userid为条件=>主要根据Userid带出与它用户关联的单据记录(结合用户组别等权限表)
-        /// 注:找出除自身外关联的用户单据记录(前提:Createname为空时)
+        /// 注:找出除登入用户外关联的用户单据记录(前提:Createname为空时)
         /// </summary>
         /// <returns></returns>
         public string SearchBomList(int typeid,string value,string cratename)
@@ -644,7 +644,7 @@
 									                                      )
 					                                    AND X.UserRelid=1                                    --表示需关联用户
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
-						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
                                 order by A.CreateDt desc
                             ";
@@ -692,7 +692,7 @@
 									                                      )
 					                                    AND X.UserRelid=1                                    --表示需关联用户
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
-						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
                                 order by A.CreateDt desc
                             ";
@@ -735,7 +735,7 @@
 									                                      )
 					                                    AND X.UserRelid=1                                    --表示需关联用户
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
-						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
                                 order by A.CreateDt desc
                             ";
@@ -778,7 +778,7 @@
 									                                      )
 					                                    AND X.UserRelid=1                                    --表示需关联用户
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
-						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
                                 order by A.CreateDt desc
                             ";
@@ -820,7 +820,7 @@
 									                                      )
 					                                    AND X.UserRelid=1                                    --表示需关联用户
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
-						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含自身用户名
+						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
                                 order by A.CreateDt desc
                             ";
