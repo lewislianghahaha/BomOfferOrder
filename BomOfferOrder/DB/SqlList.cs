@@ -501,7 +501,7 @@
                     break;
                 case "T_AD_User":
                     _result = @"
-                                    UPDATE dbo.T_AD_User SET ApplyId=@ApplyId,CanBackConfirm=@CanBackConfirm,Readid=@Readid,Addid=@Addid
+                                    UPDATE dbo.T_AD_User SET ApplyId=@ApplyId,CanBackConfirm=@CanBackConfirm,Readid=@Readid,Addid=@Addid,UserRelid=@UserRelid
                                     WHERE Userid=@Userid
                                 ";
                     break;
@@ -1234,7 +1234,7 @@
 	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
 	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
 	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细',
-                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '不关联用户'
+                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '是否不关联用户'
                                 FROM dbo.T_AD_User a
                                 where a.UserName like '%{value}%'
                             ";
@@ -1247,7 +1247,7 @@
 	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
 	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
 	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细',
-                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '不关联用户'
+                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '是否不关联用户'
                                 FROM dbo.T_AD_User a
                                 where a.CreateName like '%{value}%'
                             ";
@@ -1260,7 +1260,7 @@
 	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
 	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
 	                                   CASE a.Addid WHEN 0 THEN '是' ELSE '否' END '可修改物料明细',
-                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '不关联用户'
+                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END 是否不关联用户'
                                 FROM dbo.T_AD_User a
                                 where CONVERT(VARCHAR(100),a.CreateDt,23)>=CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
                             ";
@@ -1272,7 +1272,7 @@
 	                                   CASE a.ApplyId WHEN 0 THEN '已启用' ELSE '未启用' END '启用状态',
 	                                   CASE a.CanBackConfirm WHEN 0 THEN '是' ELSE '否' END '可反审核',
 	                                   CASE a.Readid WHEN 0 THEN '是' ELSE '否' END '可查阅明细金额',
-                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '不关联用户'
+                                       CASE a.UserRelid WHEN 0 THEN '是' ELSE '否' END '是否不关联用户'
                                 FROM dbo.T_AD_User a
                                 where a.ApplyId='{value}'
                             ";

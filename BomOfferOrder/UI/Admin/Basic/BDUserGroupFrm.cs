@@ -214,7 +214,7 @@ namespace BomOfferOrder.UI.Admin.Basic
             try
             {
                 //跳转显示内容
-                JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
+                JustPageShow(Convert.ToInt32(e.Node.Tag));  //tvview.SelectedNode.Tag
             }
             catch (Exception ex)
             {

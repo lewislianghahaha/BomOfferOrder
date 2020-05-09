@@ -338,7 +338,6 @@ namespace BomOfferOrder.UI.Admin
                 {
                     SetChild(e.Node);
                 }
-
                 //跳转显示内容
                 JustPageShow(Convert.ToInt32(e.Node.Tag));
             }
@@ -359,7 +358,7 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 //跳转显示内容
-                JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
+                JustPageShow(Convert.ToInt32(e.Node.Tag));
             }
             catch (Exception ex)
             {
@@ -437,10 +436,30 @@ namespace BomOfferOrder.UI.Admin
             {
                 //若勾选,即令树菜单及GridView设置为不可用;反之,设置为可用
                 splitContainer1.Enabled = !cbnoneed.Checked;
+                //将树菜单去掉勾中=>先将父节点的复选框设置check=false,再调用SetChild()方法,最后执行JustPageShow()跳转
+                tvview.Nodes[0].Checked = false;
+                SetChild(tvview.Nodes[0]);
+                JustPageShow(0);
+                //将_dtl内7项都清空
+                DelGridViewRecord();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 清空_dtl 7项
+        /// </summary>
+        private void DelGridViewRecord()
+        {
+            //获取所选中行中 Groupid Dtlid对应的值
+            for (var i = 0; i < _dtl.Rows.Count; i++)
+            {
+                    _dtl.Rows[i].BeginEdit();
+                    _dtl.Rows[i][7] = "";
+                    _dtl.Rows[i].EndEdit();
             }
         }
 
@@ -454,6 +473,12 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
+                //当前用户不能设置自身“不启用”
+                foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                {
+                    if(Convert.ToString(row.Cells[2].Value) == txtusername.Text)throw new Exception($"用户'{txtusername.Text}'不能设置自身不启用,请重新选择.");
+                    break;
+                }
 
                 //循环将所选中的行=>将7列设置为"是"(更新_dtl)
                 foreach (DataGridViewRow row in gvdtl.SelectedRows)
@@ -471,8 +496,8 @@ namespace BomOfferOrder.UI.Admin
                         }
                     }
                 }
-                //刷新
-                LinkGridViewPageChange(_dtl);
+                //根据当前选择节点进行刷新
+                JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
             }
             catch (Exception ex)
             {
@@ -512,8 +537,8 @@ namespace BomOfferOrder.UI.Admin
 
                     }
                 }
-                //刷新
-                LinkGridViewPageChange(_dtl);
+                //根据当前选择节点进行刷新
+                JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
             }
             catch (Exception ex)
             {
@@ -556,6 +581,10 @@ namespace BomOfferOrder.UI.Admin
                     MessageBox.Show($"用户'{txtusername.Text}'权限创建成功,可关闭此权限窗体", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tmSave.Enabled = false;
                     _saveid = true;
+                    //保存后将所有控件都设置为不能操作
+                    groupBox2.Enabled = false;
+                    panel3.Enabled = false;
+                    splitContainer1.Enabled = false;
                 }
             }
             catch (Exception ex)

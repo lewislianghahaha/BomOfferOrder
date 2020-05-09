@@ -367,6 +367,7 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@CanBackConfirm", SqlDbType.Int, 8, "CanBackConfirm");
                     da.UpdateCommand.Parameters.Add("@Readid", SqlDbType.Int, 8, "Readid");
                     da.UpdateCommand.Parameters.Add("@Addid", SqlDbType.Int, 8, "Addid");
+                    da.UpdateCommand.Parameters.Add("@UserRelid", SqlDbType.Int, 8, "UserRelid");
                     break;
                 case "T_BD_UserGroup":
                     da.UpdateCommand.Parameters.Add("@GroupId", SqlDbType.Int, 8, "GroupId");
