@@ -516,21 +516,22 @@ namespace BomOfferOrder.UI
                 result += Convert.ToDecimal(row[7]);
             }
 
-            #region Hide
             //检测若fmaterialid在_pricelistdt内不存在,就继续在_purchaseinstockdt内查找是否存在
-            //var dtlrows = _pricelistdt.Select("子项物料内码='" + fmaterialid + "'");
+            if (result == 0)
+            {
+                var dtlrows = _pricelistdt.Select("子项物料内码='" + fmaterialid + "'");
 
-            //if (dtlrows.Length > 0)
-            //{
-            //    result = decimal.Round(Convert.ToDecimal(dtlrows[0][1]), 4);
-            //}
-            ////若没有就在_purchaseinstockdt查询,若还是没有就返回0
-            //else
-            //{
-            //    var dtlrow = _purchaseinstockdt.Select("FMATERIALID='" + fmaterialid + "'");
-            //    result = dtlrow.Length == 0 ? 0 : decimal.Round(Convert.ToDecimal(dtlrow[0][1]), 4);
-            //}
-            #endregion
+                if (dtlrows.Length > 0)
+                {
+                    result = decimal.Round(Convert.ToDecimal(dtlrows[0][1]), 4);
+                }
+                //若没有就在_purchaseinstockdt查询,若还是没有就返回0
+                else
+                {
+                    var dtlrow = _purchaseinstockdt.Select("子项物料内码='" + fmaterialid + "'");
+                    result = dtlrow.Length == 0 ? 0 : decimal.Round(Convert.ToDecimal(dtlrow[0][1]), 4);
+                }
+            }
 
             return result;
         }
