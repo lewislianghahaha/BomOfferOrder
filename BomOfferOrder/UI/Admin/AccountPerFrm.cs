@@ -475,9 +475,9 @@ namespace BomOfferOrder.UI.Admin
             //获取所选中行中 Groupid Dtlid对应的值
             for (var i = 0; i < _dtl.Rows.Count; i++)
             {
-                    _dtl.Rows[i].BeginEdit();
-                    _dtl.Rows[i][7] = "";
-                    _dtl.Rows[i].EndEdit();
+                _dtl.Rows[i].BeginEdit();
+                _dtl.Rows[i][7] = "";
+                _dtl.Rows[i].EndEdit();
             }
         }
 
@@ -491,12 +491,14 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
-                //当前用户不能设置自身“不启用”
-                foreach (DataGridViewRow row in gvdtl.SelectedRows)
-                {
-                    if(Convert.ToString(row.Cells[2].Value) == txtusername.Text)throw new Exception($"用户'{txtusername.Text}'不能设置自身不启用,请重新选择.");
-                    break;
-                }
+
+                #region Hide 当前用户不能设置自身“不启用”
+                //foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                //{
+                //    if(Convert.ToString(row.Cells[2].Value) == txtusername.Text)throw new Exception($"用户'{txtusername.Text}'不能设置自身不启用,请重新选择.");
+                //    break;
+                //}
+                #endregion
 
                 //循环将所选中的行=>将7列设置为"是"(更新_dtl)
                 foreach (DataGridViewRow row in gvdtl.SelectedRows)
