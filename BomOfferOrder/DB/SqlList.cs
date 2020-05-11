@@ -611,7 +611,7 @@
                 {
                     _result =
                         $@"
-                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -654,7 +654,7 @@
                 {
                     _result =
                         $@"
-                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -702,7 +702,7 @@
                 {
                     _result =
                         $@"
-                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -745,7 +745,7 @@
                 {
                     _result =
                         $@"
-                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -788,7 +788,7 @@
                 {
                     _result =
                         $@"
-                                SELECT DISTINCT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',

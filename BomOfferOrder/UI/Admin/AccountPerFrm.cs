@@ -189,11 +189,15 @@ namespace BomOfferOrder.UI.Admin
         /// <returns></returns>
         private DataTable MarkGridViewRecord(string funState,DataTable usergroupdtldt,DataTable reluserdtldt)
         {
-            var resultdt=new DataTable();
+            //记录临时表记录
+            var tempdt=new DataTable();
+            //记录最终输出临时表记录
+            var resultdt = new DataTable();
+
             //若为C时,直接将usergroupdtldt返回至resultdt
             if (funState == "C")
             {
-                resultdt = usergroupdtldt.Copy();
+                tempdt = usergroupdtldt.Copy();
             }
             //若为R时,将usergroupdtldt与reluserdtldt合并显示
             //若usergroupdtldt的Groupid 与 Dtlid在reluserdtldt对应的项内存在,即将T_BD_UserGroupDtl最后一项设置为‘是’
@@ -209,8 +213,22 @@ namespace BomOfferOrder.UI.Admin
                         usergroupdtldt.Rows[i].EndEdit();
                     }
                 }
-                resultdt = usergroupdtldt.Copy();
+                tempdt = usergroupdtldt.Copy();
             }
+
+            //将登入用户的记录排除
+            resultdt = tempdt.Clone();
+            foreach (DataRow rows in tempdt.Rows)
+            {
+                if (Convert.ToString(rows[2]) == txtusername.Text) continue;
+                var newrow = resultdt.NewRow();
+                for (var i = 0; i < tempdt.Columns.Count; i++)
+                {
+                    newrow[i] = rows[i];
+                }
+                resultdt.Rows.Add(newrow);
+            }
+
             return resultdt;
         }
 
@@ -564,6 +582,9 @@ namespace BomOfferOrder.UI.Admin
 
                 //收集‘用户关联’表体信息
                 var reluserdtldt = CreateRelUserDtlDt();
+
+                //检测若cbnoneed.checked=false 并且 reluserdt为空,就报异常提示
+                if(!cbnoneed.Checked && reluserdt.Rows.Count==0) throw new Exception("请至少勾选一项组别信息,再继续执行保存操作.");
 
                 //执行提交
                 task.TaskId = "2.1";
