@@ -1052,7 +1052,7 @@ namespace BomOfferOrder.UI
         private void ControlGridViewisShow()
         {
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
-            if (gvdtl.Rows.Count > 0)
+            if (gvdtl?.Rows.Count >= 0)
                 gvdtl.Columns[0].Visible = false;
         }
 
@@ -1642,7 +1642,7 @@ namespace BomOfferOrder.UI
         private void ControlGridViewisShowTemp()
         {
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
-            if (gvtempdtl.Rows.Count > 0)
+            if (gvtempdtl?.Rows.Count >= 0)
                 gvtempdtl.Columns[0].Visible = false;
         }
 

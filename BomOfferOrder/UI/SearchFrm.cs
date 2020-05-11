@@ -556,7 +556,7 @@ namespace BomOfferOrder.UI
         private void ControlGridViewisShow()
         {
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
-            if (gvdtl.RowCount > 0)
+            if (gvdtl?.RowCount >= 0)
                 gvdtl.Columns[0].Visible = false;
         }
 
