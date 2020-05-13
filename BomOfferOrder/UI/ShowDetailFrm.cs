@@ -876,7 +876,7 @@ namespace BomOfferOrder.UI
 
                 var tempdt = GetMaterialTempdt(fmaterialid);
 
-                if(tempdt.Rows.Count==0) continue;
+                if(tempdt.Rows.Count == 0) continue;
 
                 //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
                 foreach (DataRow row in tempdt.Rows)
