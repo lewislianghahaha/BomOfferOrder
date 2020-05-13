@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -507,8 +508,7 @@ namespace BomOfferOrder.UI
             decimal result = 0;
 
             //执行将相关信息插入至tempdt内(使用递归)
-            var tempdt = generateDt.GenerateReportDtlTemp(fmaterialid, "", GlobalClasscs.Bd.Bomdt,
-                dbList.ReportTempdt(), 0, _purchaseinstockdt, _pricelistdt);
+            var tempdt = GetMaterialTempdt(fmaterialid);
 
             //累加得出‘父项金额’(旧标准成本单价使用)
             foreach (DataRow row in tempdt.Rows)
@@ -861,6 +861,55 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 设置GridView行是否改变背景颜色
+        /// 注:创建及读取时使用
+        /// </summary>
+        private void ControlGridViewChangeBgc()
+        {
+            //定义mark标记,若mark=0,即将该行整行显示为红色
+            var mark = -1;
+
+            //循环gvdtl.rows,并获取其对应的fmaterialid进行运算
+            for (var i = 0; i < gvdtl.Rows.Count -1; i++)
+            {
+                var fmaterialid = Convert.ToInt32(gvdtl.Rows[i].Cells[1].Value);
+
+                var tempdt = GetMaterialTempdt(fmaterialid);
+
+                if(tempdt.Rows.Count==0) continue;
+
+                //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
+                foreach (DataRow row in tempdt.Rows)
+                {
+                    //判断若‘物料名称’不为‘拉盖’(且‘损耗’) 并且‘子项金额’为0,就将mark=0 注:若mark为0即跳出循环
+                    if (!Convert.ToString(row[2]).Contains("拉盖") && !Convert.ToString(row[2]).Contains("损耗"))
+                    {
+                        if (Convert.ToDecimal(row[5]) == 0)
+                        {
+                            mark = 0;
+                        }
+                    }
+                    if (mark == 0)
+                        break;
+                }
+
+                if (mark != 0) continue;
+                gvdtl.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+            }
+        }
+
+        /// <summary>
+        /// 针对fmaterialid 返回成本BOM内的明细DT
+        /// </summary>
+        /// <param name="fmaterialid"></param>
+        /// <returns></returns>
+        private DataTable GetMaterialTempdt(int fmaterialid)
+        {
+            return generateDt.GenerateReportDtlTemp(fmaterialid, "", GlobalClasscs.Bd.Bomdt,
+                dbList.ReportTempdt(), 0, _purchaseinstockdt, _pricelistdt);
+        }
+
+        /// <summary>
         /// 首页按钮(GridView页面跳转时使用)
         /// </summary>
         /// <param name="sender"></param>
@@ -1097,6 +1146,8 @@ namespace BomOfferOrder.UI
                 gvdtl.DataSource = tempdt;
                 //将“当前页”赋值给"跳转页"文本框内
                 bnPositionItem.Text = Convert.ToString(_pageCurrent);
+                //设置GridView行是否改变背景颜色
+                ControlGridViewChangeBgc();
             }
             catch (Exception ex)
             {

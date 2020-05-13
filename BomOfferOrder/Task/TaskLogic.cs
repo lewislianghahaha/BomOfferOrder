@@ -188,7 +188,7 @@ namespace BomOfferOrder.Task
             switch (_taskid)
             {
                 #region 查询
-                //查询:查询窗体使用
+                //查询:成本Bom报价单窗体查询使用
                 case "0":
                     Searchdt(_searchid, _searchvalue);
                     break;

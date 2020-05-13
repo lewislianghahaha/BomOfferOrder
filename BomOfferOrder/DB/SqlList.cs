@@ -6,7 +6,7 @@
         private string _result;
 
         /// <summary>
-        /// 查询窗体使用-Bom窗体查询使用
+        /// 查询窗体使用-成本Bom报价单窗体查询使用
         /// </summary>
         /// <param name="searchid">查询ID</param>
         /// <param name="searchvalue">查询值</param>
