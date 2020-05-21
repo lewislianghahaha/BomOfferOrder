@@ -1066,7 +1066,7 @@
                                        CASE c.FDATAVALUE WHEN '产成品' THEN (
 											SELECT x.FCONVERTDENOMINATOR/x.FCONVERTNUMERATOR FROM dbo.T_BD_UNITCONVERTRATE x
 											WHERE a.FMATERIALID=x.FMATERIALID AND x.FCURRENTUNITID='10095'
-											) ELSE 1 END '密度(KG/L)' ,
+											) ELSE 1 END '密度(KG/L)' ,  --来源“物料单位换算列表”功能
                                        --CASE A.F_YTC_DECIMAL7 WHEN 0 THEN a.F_YTC_DECIMAL1 ELSE E.FNETWEIGHT/A.F_YTC_DECIMAL7 END '密度(KG/L)', /*a.F_YTC_DECIMAL1*/
                                        e.FNETWEIGHT '净重',
                                        a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类,
