@@ -54,6 +54,8 @@
             this.gvdtl = new System.Windows.Forms.DataGridView();
             this.Menu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmSet = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmreback = new System.Windows.Forms.ToolStripMenuItem();
             this.panel4 = new System.Windows.Forms.Panel();
             this.bngat = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -74,8 +76,9 @@
             this.tstotalrow = new System.Windows.Forms.ToolStripLabel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.cbnoneed = new System.Windows.Forms.CheckBox();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tmreback = new System.Windows.Forms.ToolStripMenuItem();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.gvdev = new System.Windows.Forms.DataGridView();
             this.Main.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -93,6 +96,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
             this.bngat.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gvdev)).BeginInit();
             this.SuspendLayout();
             // 
             // Main
@@ -103,7 +109,7 @@
             this.tmclose});
             this.Main.Location = new System.Drawing.Point(0, 0);
             this.Main.Name = "Main";
-            this.Main.Size = new System.Drawing.Size(1042, 25);
+            this.Main.Size = new System.Drawing.Size(1282, 25);
             this.Main.TabIndex = 1;
             this.Main.Text = "menuStrip1";
             // 
@@ -127,7 +133,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1042, 81);
+            this.panel1.Size = new System.Drawing.Size(1282, 81);
             this.panel1.TabIndex = 2;
             // 
             // groupBox2
@@ -140,7 +146,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 43);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1040, 37);
+            this.groupBox2.Size = new System.Drawing.Size(1280, 37);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "功能权限";
@@ -196,7 +202,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1040, 43);
+            this.groupBox1.Size = new System.Drawing.Size(1280, 43);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "用户信息";
@@ -258,7 +264,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 106);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1042, 480);
+            this.panel2.Size = new System.Drawing.Size(1282, 480);
             this.panel2.TabIndex = 3;
             // 
             // groupBox3
@@ -268,7 +274,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(1042, 480);
+            this.groupBox3.Size = new System.Drawing.Size(1282, 480);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "关联用户";
@@ -286,9 +292,10 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.panel6);
             this.splitContainer1.Panel2.Controls.Add(this.panel5);
             this.splitContainer1.Panel2.Controls.Add(this.panel4);
-            this.splitContainer1.Size = new System.Drawing.Size(1036, 438);
+            this.splitContainer1.Size = new System.Drawing.Size(1276, 438);
             this.splitContainer1.SplitterDistance = 184;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -305,10 +312,9 @@
             // 
             this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel5.Controls.Add(this.gvdtl);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel5.Location = new System.Drawing.Point(0, 0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(848, 412);
+            this.panel5.Size = new System.Drawing.Size(864, 412);
             this.panel5.TabIndex = 1;
             // 
             // gvdtl
@@ -317,12 +323,11 @@
             this.gvdtl.AllowUserToDeleteRows = false;
             this.gvdtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvdtl.ContextMenuStrip = this.Menu;
-            this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.ReadOnly = true;
             this.gvdtl.RowTemplate.Height = 23;
-            this.gvdtl.Size = new System.Drawing.Size(846, 410);
+            this.gvdtl.Size = new System.Drawing.Size(863, 410);
             this.gvdtl.TabIndex = 0;
             // 
             // Menu
@@ -340,14 +345,24 @@
             this.tmSet.Size = new System.Drawing.Size(136, 22);
             this.tmSet.Text = "设置不启用";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(133, 6);
+            // 
+            // tmreback
+            // 
+            this.tmreback.Name = "tmreback";
+            this.tmreback.Size = new System.Drawing.Size(136, 22);
+            this.tmreback.Text = "取消不启用";
+            // 
             // panel4
             // 
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel4.Controls.Add(this.bngat);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel4.Location = new System.Drawing.Point(0, 412);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(848, 26);
+            this.panel4.Size = new System.Drawing.Size(864, 26);
             this.panel4.TabIndex = 0;
             // 
             // bngat
@@ -375,7 +390,7 @@
             this.toolStripLabel10,
             this.tstotalrow});
             this.bngat.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.bngat.Location = new System.Drawing.Point(360, 0);
+            this.bngat.Location = new System.Drawing.Point(376, 0);
             this.bngat.MoveFirstItem = this.bnMoveFirstItem;
             this.bngat.MoveLastItem = this.bnMoveLastItem;
             this.bngat.MoveNextItem = this.bnMoveNextItem;
@@ -508,7 +523,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(3, 17);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1036, 22);
+            this.panel3.Size = new System.Drawing.Size(1276, 22);
             this.panel3.TabIndex = 0;
             // 
             // cbnoneed
@@ -521,22 +536,45 @@
             this.cbnoneed.Text = "不需用户关联";
             this.cbnoneed.UseVisualStyleBackColor = true;
             // 
-            // toolStripSeparator1
+            // panel6
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(133, 6);
+            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel6.Controls.Add(this.groupBox4);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel6.Location = new System.Drawing.Point(866, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(222, 438);
+            this.panel6.TabIndex = 2;
             // 
-            // tmreback
+            // groupBox4
             // 
-            this.tmreback.Name = "tmreback";
-            this.tmreback.Size = new System.Drawing.Size(136, 22);
-            this.tmreback.Text = "取消不启用";
+            this.groupBox4.Controls.Add(this.gvdev);
+            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Right;
+            this.groupBox4.Location = new System.Drawing.Point(-1, 0);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(221, 436);
+            this.groupBox4.TabIndex = 0;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "研发类别";
+            // 
+            // gvdev
+            // 
+            this.gvdev.AllowUserToAddRows = false;
+            this.gvdev.AllowUserToDeleteRows = false;
+            this.gvdev.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gvdev.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gvdev.Location = new System.Drawing.Point(3, 17);
+            this.gvdev.Name = "gvdev";
+            this.gvdev.ReadOnly = true;
+            this.gvdev.RowTemplate.Height = 23;
+            this.gvdev.Size = new System.Drawing.Size(215, 416);
+            this.gvdev.TabIndex = 0;
             // 
             // AccountPerFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1042, 586);
+            this.ClientSize = new System.Drawing.Size(1282, 586);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Main);
@@ -566,6 +604,9 @@
             this.bngat.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gvdev)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -619,5 +660,8 @@
         private System.Windows.Forms.ToolStripMenuItem tmSet;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem tmreback;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.DataGridView gvdev;
     }
 }

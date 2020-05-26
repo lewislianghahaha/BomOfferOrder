@@ -34,13 +34,15 @@
             this.tmsave = new System.Windows.Forms.ToolStripMenuItem();
             this.tmaddpage = new System.Windows.Forms.ToolStripMenuItem();
             this.tmCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmfresh = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pbimg = new System.Windows.Forms.PictureBox();
             this.txtbom = new System.Windows.Forms.TextBox();
             this.lblmessage = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tctotalpage = new System.Windows.Forms.TabControl();
-            this.tmfresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.label2 = new System.Windows.Forms.Label();
+            this.comdevgroup = new System.Windows.Forms.ComboBox();
             this.MainMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbimg)).BeginInit();
@@ -86,9 +88,17 @@
             this.tmCopy.Text = "复制";
             this.tmCopy.Visible = false;
             // 
+            // tmfresh
+            // 
+            this.tmfresh.Name = "tmfresh";
+            this.tmfresh.Size = new System.Drawing.Size(44, 21);
+            this.tmfresh.Text = "暂存";
+            // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.comdevgroup);
+            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.pbimg);
             this.panel1.Controls.Add(this.txtbom);
             this.panel1.Controls.Add(this.lblmessage);
@@ -143,11 +153,23 @@
             this.tctotalpage.Size = new System.Drawing.Size(854, 497);
             this.tctotalpage.TabIndex = 2;
             // 
-            // tmfresh
+            // label2
             // 
-            this.tmfresh.Name = "tmfresh";
-            this.tmfresh.Size = new System.Drawing.Size(44, 21);
-            this.tmfresh.Text = "暂存";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(434, 8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(59, 12);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "研发类别:";
+            // 
+            // comdevgroup
+            // 
+            this.comdevgroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comdevgroup.FormattingEnabled = true;
+            this.comdevgroup.Location = new System.Drawing.Point(495, 3);
+            this.comdevgroup.Name = "comdevgroup";
+            this.comdevgroup.Size = new System.Drawing.Size(138, 20);
+            this.comdevgroup.TabIndex = 16;
             // 
             // DtlFrm
             // 
@@ -185,5 +207,7 @@
         private System.Windows.Forms.ToolStripMenuItem tmaddpage;
         private System.Windows.Forms.ToolStripMenuItem tmCopy;
         private System.Windows.Forms.ToolStripMenuItem tmfresh;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comdevgroup;
     }
 }

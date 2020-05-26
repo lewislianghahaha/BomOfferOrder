@@ -371,5 +371,15 @@ namespace BomOfferOrder.Task
             _sqlscript = sqlList.SearchRelUserDtl();
             return UseSqlSearchIntoDt(1, _sqlscript);
         }
+
+        /// <summary>
+        /// 初始化‘研发类别’DT
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchDevGroupDtl()
+        {
+            _sqlscript =sqlList.SearchDevGroup();
+            return UseSqlSearchIntoDt(0, _sqlscript);
+        }
     }
 }

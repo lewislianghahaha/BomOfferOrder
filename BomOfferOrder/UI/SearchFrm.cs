@@ -23,7 +23,8 @@ namespace BomOfferOrder.UI
         private DataTable _pricelistdt;
         //保存采购入库单DT
         private DataTable _purchaseInstockdt;
-
+        //保存‘研发类别’DT
+        private DataTable _devgroupdt;
 
         //记录当前页数(GridView页面跳转使用)
         private int _pageCurrent = 1;
@@ -42,6 +43,10 @@ namespace BomOfferOrder.UI
         /// 保存采购入库单DT
         /// </summary>
         public DataTable PurchaseInstockdt { set { _purchaseInstockdt = value; } }
+        /// <summary>
+        /// 保存研发类别DT
+        /// </summary>
+        public DataTable Devgroupdt { set { _devgroupdt = value; } }
         #endregion
 
         public SearchFrm()
@@ -227,7 +232,7 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt,_purchaseInstockdt);
+                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt,_purchaseInstockdt, _devgroupdt);
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }

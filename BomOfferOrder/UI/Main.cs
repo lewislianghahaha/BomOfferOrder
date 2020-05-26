@@ -32,6 +32,8 @@ namespace BomOfferOrder.UI
         private DataTable _purchaseInstockDt;
         //保存人工制造费用DT(毛利润报表使用)
         private DataTable _renCostDt;
+        //保存‘研发类别’DT
+        private DataTable _devgroupdt;
 
         //定义关闭符号的宽
         const int CloseSize = 11;
@@ -100,6 +102,8 @@ namespace BomOfferOrder.UI
             OnInitializePurchaseInstockDt();
             //初始化人工制造费用DT
             OnInitializeRenCostDt();
+            //初始化研发类别DT
+            OnInitializeDevGroup();
             //更新用户占用值 useid
             UpUseridValue(0);
             //权限控制
@@ -315,7 +319,7 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt,_instockdt);     
+                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt,_instockdt,_devgroupdt);     
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }
@@ -445,7 +449,7 @@ namespace BomOfferOrder.UI
                 GlobalClasscs.Fun.EmptyFunctionName = "E";
                 //弹出对应窗体相关设置
                 dtlFrm.FunState = "C";
-                dtlFrm.OnInitialize(null, _pricelistdt,_instockdt);     //初始化信息
+                dtlFrm.OnInitialize(null, _pricelistdt,_instockdt, _devgroupdt);     //初始化信息
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }
@@ -708,6 +712,7 @@ namespace BomOfferOrder.UI
                         createFrm.Bomdt = _bomdt;
                         createFrm.Pricelistdt = _pricelistdt;
                         createFrm.PurchaseInstockdt = _instockdt;
+                        createFrm.Devgroupdt = _devgroupdt;
                         createFrm.Show();                                      
                         newpage.Controls.Add(createFrm);    
                         break;
@@ -722,6 +727,7 @@ namespace BomOfferOrder.UI
                         };
                         searchFrm.Pricelistdt = _pricelistdt;
                         searchFrm.PurchaseInstockdt = _instockdt;
+                        searchFrm.Devgroupdt = _devgroupdt;
                         searchFrm.Show();                    
                         newpage.Controls.Add(searchFrm); 
                         break;
@@ -1263,6 +1269,16 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
+        /// 初始化研发类别DT
+        /// </summary>
+        private void OnInitializeDevGroup()
+        {
+            task.TaskId = "0.0.0.3";
+            task.StartTask();
+            _devgroupdt = task.ResultTable;
+        }
+
+        /// <summary>
         /// 权限控制
         /// </summary>
         private void PrivilegeControl()
@@ -1365,7 +1381,7 @@ namespace BomOfferOrder.UI
                 //弹出对应窗体相关设置
                 //初始化信息
                 dtlFrm.FunState = "R";
-                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt, _instockdt);
+                dtlFrm.OnInitialize(task.ResultTable, _pricelistdt, _instockdt, _devgroupdt);
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
             }

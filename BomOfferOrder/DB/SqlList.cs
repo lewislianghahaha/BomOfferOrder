@@ -611,7 +611,9 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       -- 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -629,23 +631,39 @@
 											)x ON x.FId=a.FId
                                 WHERE a.OAorderno LIKE '%{value}%'
                                 --用户权限关联
-                                AND    A.CreateName IN(
+                                AND  A.CreateName IN(
 						                                SELECT DISTINCT x3.UserName
 						                                FROM dbo.T_AD_User X
 						                                INNER JOIN dbo.T_AD_RelUser X1 ON X.Userid=X1.Userid
 						                                INNER JOIN dbo.T_BD_UserGroup X2 ON X1.Groupid=X2.GroupId
 						                                INNER JOIN dbo.T_BD_UserGroupDtl X3 ON X2.GroupId=X3.Groupid
+                                                        --排除不包含的用户信息
 						                                WHERE NOT EXISTS (
-											                                  SELECT NULL
-											                                  FROM dbo.T_AD_RelUserDtl X4
-											                                  WHERE X4.Userid=X.Userid
-											                                  AND X4.Groupid=X3.Groupid
-											                                  AND X4.Dtlid=X3.Dtlid
-									                                      )
+											                                    SELECT NULL
+											                                    FROM dbo.T_AD_RelUserDtl X4
+											                                    WHERE X4.Userid=X.Userid
+											                                    AND X4.Groupid=X3.Groupid
+											                                    AND X4.Dtlid=X3.Dtlid
+									                                        )                                                        
 					                                    AND X.UserRelid=1                                    --表示需关联用户
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
 						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
-					                                  )
+					                                    )
+                                --1)包含T_OfferOrder.DevGroupid=0的记录 2)排除不包含的‘研发类别’信息
+                                AND EXISTS(
+                                               SELECT DISTINCT z1.DevGroupid
+                                               FROM (
+                                                        SELECT z.DevGroupid 
+                                                        FROM T_OfferOrder z
+                                                        where z.DevGroupid=0
+                                                        
+                                                        UNION ALL
+                                                        
+                                                        SELECT
+                                                        FROM   
+                                                    )z1         
+                                           )AS X ON X.DevGroupid=a.DevGroupid                          
+
                                 order by A.CreateDt desc
                             ";
                 }
@@ -826,7 +844,7 @@
                             ";
                 }
             }
-            //当‘创建人’不为空时,执行以用户名为条件的查询
+            //当‘创建人’不为空时,执行以登入用户为条件的查询
             else
             {
                 //OA流水号
@@ -972,7 +990,7 @@
         public string SearchBomDtl(int fid)
         {
             _result = $@"
-                            SELECT a.FId,a.OAorderno,a.Fstatus,a.CreateDt,a.ConfirmDt,a.CreateName,a.Typeid,
+                            SELECT a.FId,a.OAorderno,a.Fstatus,a.CreateDt,a.ConfirmDt,a.CreateName,a.Typeid,a.DevGroupid,
 
 	                               b.Headid,b.ProductName,b.Bao,b.ProductMi,b.MaterialQty,b.BaoQty,
 	                               b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
@@ -1294,7 +1312,8 @@
         public string SearchTempOrderDetail(int fid)
         {
             _result = $@"
-                            SELECT a.FId,a.OAorderno,-1 Fstatus,a.CreateDt,-1 Confirmdt,a.CreateName,a.Typeid,
+                            SELECT a.FId,a.OAorderno,-1 Fstatus,a.CreateDt,-1 Confirmdt,a.CreateName,a.Typeid,a.DevGroupid,
+
 	                                b.Headid,b.ProductName,b.Bao,b.ProductMi,b.MaterialQty,b.BaoQty,
 	                                b.RenQty,b.KGQty,b.LQty,b.FiveQty,b.FourFiveQty,b.FourQty,
 	                                b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
@@ -1624,5 +1643,42 @@
                        ";
             return _result;
         }
+
+        /// <summary>
+        /// 删除T_AD_RelUser(注:在保存用户关联时使用)
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public string DelRelUserGroup(int userid)
+        {
+            _result = $@"
+                          DELETE T_AD_RelUserGroup WHERE Userid='{userid}'
+                       ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 初始化‘研发类别’DT
+        /// </summary>
+        /// <returns></returns>
+        public string SearchDevGroup()
+        {
+            _result = @"
+                            SELECT x.* FROM 
+                            (
+	                            SELECT 0 Id,'' Name
+
+	                            UNION ALL
+    
+	                            SELECT b.Id,C.Name 
+	                            FROM dbo.T_BAS_ASSISTANTDATA a
+	                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY B ON A.FID=B.FID
+	                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L C ON B.FENTRYID=C.FENTRYID AND C.FLOCALEID=2052
+	                            WHERE a.FID='5dd1e57223d58f'
+                            )x
+                       ";
+            return _result;
+        }
+
     }
 }
