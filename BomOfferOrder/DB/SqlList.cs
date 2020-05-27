@@ -482,7 +482,7 @@
             {
                 case "T_OfferOrder":
                     _result = @"UPDATE dbo.T_OfferOrder SET OAorderno=@OAorderno,Fstatus=@Fstatus,ConfirmDt=@ConfirmDt,CreateDt=@CreateDt,
-                                                            CreateName=@CreateName,Useid=@Useid,UserName=@UserName,Typeid=@Typeid
+                                                            CreateName=@CreateName,Useid=@Useid,UserName=@UserName,Typeid=@Typeid,DevGroupid=@DevGroupid
                                 WHERE FId=@FId";
                     break;
                 case "T_OfferOrderHead":
@@ -1670,7 +1670,7 @@
 
 	                            UNION ALL
     
-	                            SELECT b.Id,C.Name 
+	                            SELECT b.FNUMBER Id,C.FDATAVALUE Name 
 	                            FROM dbo.T_BAS_ASSISTANTDATA a
 	                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY B ON A.FID=B.FID
 	                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L C ON B.FENTRYID=C.FENTRYID AND C.FLOCALEID=2052

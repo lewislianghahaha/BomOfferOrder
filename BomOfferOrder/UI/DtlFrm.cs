@@ -36,7 +36,7 @@ namespace BomOfferOrder.UI
         //(单据类型ID=>0:BOM成本报价单 1:新产品成本报价单及其它单据)
         private int _typeid;
         //所选择的‘研发类别’ID（注:为0时,表示为空）
-        private int _devgroupid;
+        private string _devgroupid;
 
         //获取‘原材料’‘原漆半成品’‘原漆’等物料明细信息(注:添加物料明细窗体使用)
         private DataTable _materialdt;
@@ -75,13 +75,15 @@ namespace BomOfferOrder.UI
             tmConfirm.Click += TmConfirm_Click;
             tmsave.Click += Tmsave_Click;
             this.FormClosing += DtlFrm_FormClosing;
+
             tmaddpage.Click += Tmaddpage_Click;
             tctotalpage.SelectedIndexChanged += Tctotalpage_SelectedIndexChanged;
             tctotalpage.DrawItem += Tctotalpage_DrawItem;
             tctotalpage.MouseDown += Tctotalpage_MouseDown;
+
             tmCopy.Click += TmCopy_Click;
             tmfresh.Click += Tmfresh_Click;
-
+            comdevgroup.SelectedIndexChanged += Comdevgroup_SelectedIndexChanged;
         }
 
         /// <summary>
@@ -272,9 +274,9 @@ namespace BomOfferOrder.UI
                 //过滤得出不相同的‘产品名称’临时表
                 foreach (DataRow rows in sourcedt.Rows)
                 {
-                    if (bomproductorderdt.Select("ProductName='" + rows[8] + "'").Length > 0) continue;
+                    if (bomproductorderdt.Select("ProductName='" + rows[9] + "'").Length > 0) continue;
                     var newrow = bomproductorderdt.NewRow();
-                    newrow[0] = rows[8];
+                    newrow[0] = rows[9];
                     bomproductorderdt.Rows.Add(newrow);
                 }
                 //再根据bomproductorderdt临时表进行循环
@@ -292,7 +294,7 @@ namespace BomOfferOrder.UI
                             _createtime = Convert.ToDateTime(dtlrows[i][3]);    //创建日期
                             _creatname = Convert.ToString(dtlrows[i][5]);       //创建人
                             _typeid = Convert.ToInt32(dtlrows[i][6]);           //单据类型ID=>0:BOM成本报价单 1:新产品成本报价单 2:空白报价单
-                            _devgroupid = Convert.ToInt32(dtlrows[i][7]);       //研发类别ID
+                            _devgroupid = Convert.ToString(dtlrows[i][7]);       //研发类别ID
                         }
                         //将记录赋值给bomdtldt内
                         var newrow = bomdtldt.NewRow();
@@ -324,8 +326,8 @@ namespace BomOfferOrder.UI
                         newrow[34] = dtlrows[i][32];               //备注
                         bomdtldt.Rows.Add(newrow);
                     }
-                    //设置所选择的‘研发类别’下拉列表值 todo
-                    //comdevgroup
+                    //根据_devgroupid设置所选择的‘研发类别’下拉列表值
+                    comdevgroup.SelectedValue = _devgroupid;
 
                     //将其作为数据源生成Tab Page及ShowDetailFrm
                     CreateDetailFrm(tabname, bomdtldt, _materialdt,_historydt,_custinfodt,_pricelistdt, _purchaseInstockdt);
@@ -334,6 +336,8 @@ namespace BomOfferOrder.UI
                 }
                 //最后将‘OA流水号’设置为只读
                 txtbom.ReadOnly = true;
+                //
+
             }
             catch (Exception ex)
             {
@@ -509,6 +513,28 @@ namespace BomOfferOrder.UI
                         _bomdt.Rows.Clear();
                         _bomdt.Columns.Clear();
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// '研发类别'下拉列表改变值时使用
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Comdevgroup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                //检测若单据状态为R 并且登入用户不是单据创建用户,就不能作出修改
+                if (_funState == "R")
+                {
+                    if(GlobalClasscs.User.StrUsrName != _creatname) throw new Exception($@"检测到登入用户:'{GlobalClasscs.User.StrUsrName}'与单据创建人:
+                                                                                         '{_creatname}'不符,故不能修改研发类别");
                 }
             }
             catch (Exception ex)
@@ -782,11 +808,11 @@ namespace BomOfferOrder.UI
                 newrow[4] = DateTime.Now;                                                   //审核日期
                 newrow[5] = _funState == "C" ? GlobalClasscs.User.StrUsrName : _creatname;  //创建人
                 newrow[6] = _typeid;                                                        //单据类型ID(0:BOM成本报价单 1:新产品成本报价单 2:空白报价单)
-                newrow[7] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
-                newrow[8] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
-                newrow[9] = Convert.ToInt32(dvselectlist["Id"]);                            //记录所选择的研发类别信息ID
+                newrow[7] = Convert.ToInt32(dvselectlist["Id"]);                            //记录所选择的研发类别信息ID
+                newrow[8] = 0;                                                              //记录当前单据使用标记(0:正在使用 1:没有使用)
+                newrow[9] = GlobalClasscs.User.StrUsrName;                                  //记录当前单据使用者名称信息
 
-                newrow[10] = _funState == "C" ? 0 : showdetail.Headid;                       //Headid
+                newrow[10] = _funState == "C" ? 0 : showdetail.Headid;                      //Headid
                 newrow[11] = showdetail.txtname.Text;                                       //产品名称(物料名称)
                 newrow[12] = showdetail.txtbao.Text;                                        //包装规格
                 newrow[13] = Convert.ToDecimal(showdetail.txtmi.Text);                      //产品密度(KG/L)
@@ -1005,6 +1031,9 @@ namespace BomOfferOrder.UI
                 txtbom.ReadOnly = true;
                 //将‘暂存’功能按钮设置为不可用
                 tmfresh.Enabled = false;
+                //将‘研发类别’下拉列表设置为不可用
+                comdevgroup.Enabled = false;
+
                 //将‘添加新页’按钮设置为显示但不启用(注:‘空白报价单’功能使用)
                 //将‘复制’按钮设置为显示但不启用(注:‘空白报价单’功能使用)
                 if (_typeid==2)
@@ -1046,6 +1075,8 @@ namespace BomOfferOrder.UI
                 tmsave.Enabled = true;
                 tmConfirm.Enabled = true;
                 tmfresh.Enabled = true;
+                comdevgroup.Enabled = true;
+
                 //当检测到当前功能为‘空白报价单’时,将‘添加新页’按钮 ‘复制’按钮 设置为显示并启用
                 if (_typeid == 2)
                 {
@@ -1174,20 +1205,8 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void OnShowSelectTypeList()
         {
-            var dt = _devgroupdt.Clone();
-
-            //将_devgroupdt内为‘0’的记录排除
-            foreach (DataRow rows in _devgroupdt.Rows)
-            {
-                var dtlrow = _devgroupdt.Select("Id='"+Convert.ToInt32(rows[0])+"'");
-                if(dtlrow.Length>0) continue;
-                var newrow = dt.NewRow();
-                newrow[0] = rows[0];
-                newrow[1] = rows[1];
-                dt.Rows.Add(newrow);
-            }
-
-            comdevgroup.DataSource = dt;
+            var a = _devgroupdt;
+            comdevgroup.DataSource = _devgroupdt;
             comdevgroup.DisplayMember = "Name"; //设置显示值
             comdevgroup.ValueMember = "Id";    //设置默认值内码
         }

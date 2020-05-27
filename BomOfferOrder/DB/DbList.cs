@@ -217,7 +217,7 @@ namespace BomOfferOrder.DB
                         dc.ColumnName = "DevGroupid";
                         dc.DataType=Type.GetType("System.Int32");
                         break;
-                    //记录当前单据使用标记
+                    //记录当前单据使用标记(0:正在使用 1:没有使用)
                     case 8:
                         dc.ColumnName = "Useid";
                         dc.DataType = Type.GetType("System.Int32");
@@ -367,7 +367,7 @@ namespace BomOfferOrder.DB
         public DataTable GetOfferOrderTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 9; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var dc = new DataColumn();
 
@@ -416,6 +416,11 @@ namespace BomOfferOrder.DB
                     //单据类型ID(0:BOM成本报价单 1:新产品成本报价单及其它单据)
                     case 8:
                         dc.ColumnName = "Typeid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //研发类别ID
+                    case 9:
+                        dc.ColumnName = "DevGroupid";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
                 }
