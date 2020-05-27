@@ -23,6 +23,8 @@ namespace BomOfferOrder.UI.Admin
 
         //保存‘用户组别’信息(作用:用于检测是否可创建用户信息,注:若没有‘用户组别’记录信息就不能进行创建)
         private DataTable _usergroupdt;
+        //保存初始化'研发类别'DT
+        private DataTable _devgroupdt;
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
@@ -62,9 +64,11 @@ namespace BomOfferOrder.UI.Admin
         /// </summary>
         /// <param name="typeid">类型;0:新增用户权限使用 1:用户组别使用</param>
         /// <param name="sourcedt">K3 USER数据源</param>
-        public void OnInitialize(int typeid,DataTable sourcedt)
+        /// <param name="devgroupdt">研发类别DT</param>
+        public void OnInitialize(int typeid,DataTable sourcedt,DataTable devgroupdt)
         {
             _typeid = typeid;
+            _devgroupdt = devgroupdt;
             //若_typeid=1时,将‘获取’按钮设置为隐藏
             if (_typeid == 1)
             {
@@ -132,8 +136,7 @@ namespace BomOfferOrder.UI.Admin
                 GlobalClasscs.Ad.RelUserDt = OnInitializeRelUserDt();
                 //获取关联用户表体DT
                 GlobalClasscs.Ad.RelUserDtlDt = OnInitializeRelUserDtlDt();
-
-             
+            
                 //获取K3用户组别
                 var k3Group = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[1].Value);
                 //获取K3用户手机
@@ -143,7 +146,7 @@ namespace BomOfferOrder.UI.Admin
                 if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     //初始化信息并读取
-                    accountPer.OnInitialize("C", k3Name, k3Group, k3Phone, null);
+                    accountPer.OnInitialize("C", k3Name, k3Group, k3Phone, null,_devgroupdt);
                     accountPer.StartPosition = FormStartPosition.CenterParent;
                     accountPer.ShowDialog();
                 }

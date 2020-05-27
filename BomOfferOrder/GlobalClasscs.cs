@@ -29,6 +29,7 @@ namespace BomOfferOrder
             public DataTable UserGroupDtlDt;   //获取用户组别表体DT
             public DataTable RelUserDt;        //获取关联用户表头DT
             public DataTable RelUserDtlDt;     //获取关联用户表体DT
+            public DataTable DevGroupDt;       //获取研发类别DT
         }
 
         /// <summary>

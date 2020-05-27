@@ -35,7 +35,10 @@ namespace BomOfferOrder.UI.Admin
         private DataTable _usergroupdt;
         //接收‘用户组别’表体DT
         private DataTable _usergroupdtldt;
-
+        //作用:注:在保存时提交-关联的'研发类别'记录时使用
+        private DataTable _devgroupdt;
+        //作用:初始化整理‘研发类别’数据时使用
+        private DataTable _devgrouptempdt;
 
         //保存查询出来的GridView记录(用户组别表体信息)
         private DataTable _dtl;
@@ -65,6 +68,7 @@ namespace BomOfferOrder.UI.Admin
             tmSet.Click += TmSet_Click;
             tmreback.Click += Tmreback_Click;
 
+
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
             bnMoveNextItem.Click += BnMoveNextItem_Click;
@@ -82,7 +86,8 @@ namespace BomOfferOrder.UI.Admin
         /// <param name="k3Group">K3用户组别</param>
         /// <param name="k3Phone">K3用户手机</param>
         /// <param name="userdt">用户信息DT(读取时使用)</param>
-        public void OnInitialize(string funState, string k3Name, string k3Group, string k3Phone, DataTable userdt)
+        /// <param name="devgroupdt">研发类别基础资料DT</param>
+        public void OnInitialize(string funState, string k3Name, string k3Group, string k3Phone, DataTable userdt, DataTable devgroupdt)
         {
             //读取单据状态
             _funState = funState;
@@ -95,6 +100,9 @@ namespace BomOfferOrder.UI.Admin
 
             //接收‘用户组别’表体DT
             _usergroupdtldt = GlobalClasscs.Ad.UserGroupDtlDt;
+
+            //将GlobalClasscs.Ad.UserGroupDtlDt 数据 与devgroupdt进行整合并存放至_devgrouptemp内(gvdev Gridview控件使用)
+            MarkDevGroupGridViewRecord(funState, devgroupdt);
 
             //创建
             if (funState == "C")
@@ -121,6 +129,7 @@ namespace BomOfferOrder.UI.Admin
                 //获取‘关联用户’表体DT
                 _reluserdtldt = GlobalClasscs.Ad.RelUserDtlDt.Copy();
             }
+
             //将表体信息结构插入至_dtl内(初始化表结构)
             _dtl = _usergroupdtldt.Clone();
             //读取表头信息至对应的项内
@@ -168,15 +177,57 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 控制GridView单元格显示方式
+        /// 控制GridView单元格显示方式-用户关联表体
         /// </summary>
         private void ControlGridViewisShow()
         {
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
-            if (gvdtl.Rows.Count >= 0)
+            if (gvdtl?.Rows.Count >= 0)
             {
                 gvdtl.Columns[0].Visible = false;
                 gvdtl.Columns[1].Visible = false;
+            }
+        }
+
+        /// <summary>
+        /// 控制GridView单元格显示方式-研发类别
+        /// </summary>
+        private void ControlDevGroupGridViewShow()
+        {
+            //设置'研发类别'Gridview中的Userid Groupid Dtlid DevGroupid设置不可见
+            if (gvdev?.Rows.Count >= 0)
+            {
+                gvdev.Columns[0].Visible = false;  //userid
+                gvdev.Columns[1].Visible = false;  //groupid
+                gvdev.Columns[2].Visible = false;  //dtlid
+                gvdev.Columns[3].Visible = false;  //devgroupid
+            }
+        }
+
+        /// <summary>
+        /// 整合‘研发类别’临时表,最后将结果保存至_devgrouptempdt内
+        /// </summary>
+        /// <param name="funState">单据状态</param>
+        /// <param name="devgroupdt">'研发类别'基础资料DT</param>
+        /// <returns></returns>
+        private void MarkDevGroupGridViewRecord(string funState,DataTable devgroupdt)
+        {
+            //获取‘研发类别’临时表
+            _devgrouptempdt = dbList.DevGroupTemp();
+            //单据状态为C时,将devgroupdt 与 GlobalClasscs.Ad.UserGroupDtlDt 整合便可,注:devgroupdt ID=0的就排除
+            if (funState == "C")
+            {
+                //todo
+                for (var i = 0; i < GlobalClasscs.Ad.UserGroupDtlDt.Rows.Count; i++)
+                {
+                    
+                }
+            }
+            //单据状态为R时,虽将devgroupdt  GlobalClasscs.Ad.UserGroupDtlDt 与 GlobalClasscs.Ad.DevGroupDt 进行整合
+            //注:若devgroupdt的记录在GlobalClasscs.Ad.DevGroupDt不存在,即‘不启用’标记为‘是’
+            else
+            {
+                
             }
         }
 
@@ -200,7 +251,7 @@ namespace BomOfferOrder.UI.Admin
                 tempdt = usergroupdtldt.Copy();
             }
             //若为R时,将usergroupdtldt与reluserdtldt合并显示
-            //若usergroupdtldt的Groupid 与 Dtlid在reluserdtldt对应的项内存在,即将T_BD_UserGroupDtl最后一项设置为‘是’
+            //若usergroupdtldt的Groupid 与 Dtlid在reluserdtldt对应的项内存在,即将T_BD_UserGroupDtl最后一项'不启用'设置为‘是’
             else
             {
                 for (var i = 0; i < usergroupdtldt.Rows.Count; i++)
@@ -458,7 +509,7 @@ namespace BomOfferOrder.UI.Admin
                 tvview.Nodes[0].Checked = false;
                 SetChild(tvview.Nodes[0]);
                 JustPageShow(0);
-                //将_dtl内7项都清空
+                //将_dtl内第7项清空
                 DelGridViewRecord();
             }
             catch (Exception ex)
@@ -468,7 +519,7 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 清空_dtl 7项
+        /// 清空_dtl 7项‘不启用’
         /// </summary>
         private void DelGridViewRecord()
         {
@@ -682,6 +733,9 @@ namespace BomOfferOrder.UI.Admin
             return tempdt;
         }
 
+        //todo:收集‘研发类别’相关信息
+
+
         /// <summary>
         /// 关闭
         /// </summary>
@@ -703,6 +757,8 @@ namespace BomOfferOrder.UI.Admin
                 MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
 
 

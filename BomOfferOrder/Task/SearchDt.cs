@@ -373,13 +373,23 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 初始化‘研发类别’DT
+        /// 初始化基本表-‘研发类别’DT
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchBdDevGroupDtl()
+        {
+            _sqlscript = sqlList.SearchDevGroup();
+            return UseSqlSearchIntoDt(1, _sqlscript);
+        }
+
+        /// <summary>
+        /// 初始化关联‘研发类别’
         /// </summary>
         /// <returns></returns>
         public DataTable SearchDevGroupDtl()
         {
-            _sqlscript =sqlList.SearchDevGroup();
-            return UseSqlSearchIntoDt(0, _sqlscript);
+            _sqlscript = sqlList.SearchRelUserDevGroup();
+            return UseSqlSearchIntoDt(1, _sqlscript);
         }
     }
 }

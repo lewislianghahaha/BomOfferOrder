@@ -23,13 +23,15 @@ namespace BomOfferOrder.UI.Admin
         #region 变量参数
         //获取K3用户信息
         private DataTable _k3UserDt;
+        //保存初始化'研发类别'DT
+        private DataTable _devgroupdt;
 
         //保存查询出来的GridView记录
         private DataTable _dtl;
-        //保存查询出来的角色权限记录
-        private DataTable _userdt;
-        //保存基础-用户组别DT
-        private DataTable _bdusergroupdt;
+        ////保存查询出来的角色权限记录
+        //private DataTable _userdt;
+        ////保存基础-用户组别DT
+        //private DataTable _bdusergroupdt;
 
         //记录当前页数(GridView页面跳转使用)
         private int _pageCurrent = 1;
@@ -56,6 +58,8 @@ namespace BomOfferOrder.UI.Admin
             OnShowSelectTypeList();
             //初始化获取K3用户信息(注:不包括已添加到T_AD_User表的用户)
             OnInitializeK3UserDt();
+            //
+
         }
 
         private void OnRegisterEvents()
@@ -210,7 +214,7 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 //初始化K3用户表
-                getAccount.OnInitialize(0,_k3UserDt);
+                getAccount.OnInitialize(0,_k3UserDt,_devgroupdt);
                 getAccount.StartPosition = FormStartPosition.CenterParent;
                 getAccount.ShowDialog();
                 //执行查询
@@ -258,11 +262,13 @@ namespace BomOfferOrder.UI.Admin
                 GlobalClasscs.Ad.UserGroupDtlDt = OnInitializeUserGroupDtlDt();
                 //获取关联用户表头DT
                 GlobalClasscs.Ad.RelUserDt = OnInitializeRelUserDt();
-                //获取关联用户表体DT
+                //获取关联用户表体DT(主要收集用户‘不关联’的记录)
                 GlobalClasscs.Ad.RelUserDtlDt = OnInitializeRelUserDtlDt();
+                //获取已关联的‘研发类别’DT
+                GlobalClasscs.Ad.DevGroupDt = OnInitializeDevGroupDt();
 
                 //初始化信息并读取
-                accountPer.OnInitialize("R", null, null, null, OnGetSelectRecordTemp());
+                accountPer.OnInitialize("R", null, null, null, OnGetSelectRecordTemp(), _devgroupdt);
                 accountPer.StartPosition = FormStartPosition.CenterParent;
                 accountPer.ShowDialog();
                 //刷新
@@ -646,6 +652,16 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
+        /// 初始化研发类别DT
+        /// </summary>
+        private void OnInitializeDevGroup()
+        {
+            task.TaskId = "0.0.0.3";
+            task.StartTask();
+            _devgroupdt = task.ResultTable;
+        }
+
+        /// <summary>
         /// 获取用户组别表头DT
         /// </summary>
         private DataTable OnInitializeUserGroupDt()
@@ -686,12 +702,22 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
+        /// 获取'研发类别'DT
+        /// </summary>
+        private DataTable OnInitializeDevGroupDt()
+        {
+            task.TaskId = "0.0.0.4";
+            task.StartTask();
+            return task.ResultTable;
+        }
+
+        /// <summary>
         /// 控制GridView单元格显示方式
         /// </summary>
         private void ControlGridViewisShow()
         {
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
-            if (gvdtl.Rows.Count > 0)
+            if (gvdtl?.Rows.Count > 0)
                 gvdtl.Columns[0].Visible = false;
         }
 

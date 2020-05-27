@@ -268,8 +268,12 @@ namespace BomOfferOrder.Task
                 case "0.0.0.2":
                     SearchRelUserDtl();
                     break;
-                //初始化‘研发类别’DT
+                //初始化基本表-‘研发类别’DT
                 case "0.0.0.3":
+                    SearchBdDevGroupDtl();
+                    break;
+                //初始化关联‘研发类别’
+                case "0.0.0.4":
                     SearchDevGroupDtl();
                     break;
                 #endregion
@@ -554,7 +558,15 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 初始化‘研发类别’DT
+        /// 初始化基本表-‘研发类别’DT
+        /// </summary>
+        private void SearchBdDevGroupDtl()
+        {
+            _resultTable = searchDt.SearchBdDevGroupDtl();
+        }
+
+        /// <summary>
+        /// 初始化关联‘研发类别’
         /// </summary>
         private void SearchDevGroupDtl()
         {

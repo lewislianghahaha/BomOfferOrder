@@ -1436,7 +1436,98 @@ namespace BomOfferOrder.DB
             return dt;
         }
 
+        /// <summary>
+        /// '研发类别'DT-用户关联-‘研发类别’整合显示使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable DevGroupTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 6; i++)
+            {
+                var dc = new DataColumn();
 
+                switch (i)
+                {
+                    //Userid
+                    case 0:
+                        dc.ColumnName = "Userid";
+                        dc.DataType = Type.GetType("System.Int32"); 
+                        break;
+                    //Groupid
+                    case 1:
+                        dc.ColumnName = "Groupid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //Dtlid
+                    case 2:
+                        dc.ColumnName = "Dtlid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //DevGroupId
+                    case 3:
+                        dc.ColumnName = "DevGroupId";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //研发类别
+                    case 4:
+                        dc.ColumnName = "研发类别";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //不启用
+                    case 5:
+                        dc.ColumnName = "不启用";
+                        dc.DataType = Type.GetType("System.String"); 
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// '研发类别'DT-用户关联-‘研发类别’提交使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable DevGroupDt()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 5; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    //Userid
+                    case 0:
+                        dc.ColumnName = "Userid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //Groupid
+                    case 1:
+                        dc.ColumnName = "Groupid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //Dtlid
+                    case 2:
+                        dc.ColumnName = "Dtlid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //DevGroupId
+                    case 3:
+                        dc.ColumnName = "DevGroupId";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //CreateDt
+                    case 4:
+                        dc.ColumnName = "CreateDt";
+                        dc.DataType = Type.GetType("System.DateTime"); 
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
 
     }
 }

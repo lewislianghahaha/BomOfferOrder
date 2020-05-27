@@ -1631,6 +1631,7 @@
             return _result;
         }
 
+
         /// <summary>
         /// 删除T_AD_RelUserDtl(注:在保存用户关联时使用)
         /// </summary>
@@ -1645,40 +1646,57 @@
         }
 
         /// <summary>
-        /// 删除T_AD_RelUser(注:在保存用户关联时使用)
+        /// 查询已关联的‘研发类别’信息
         /// </summary>
-        /// <param name="userid"></param>
         /// <returns></returns>
-        public string DelRelUserGroup(int userid)
+        public string SearchRelUserDevGroup()
         {
-            _result = $@"
-                          DELETE T_AD_RelUserGroup WHERE Userid='{userid}'
+            _result = @"
+                          SELECT * FROM dbo.T_AD_RelUserDevGroup
                        ";
             return _result;
         }
 
         /// <summary>
-        /// 初始化‘研发类别’DT
+        /// 删除T_AD_RelUserDevGroup(注:在保存用户关联时使用)
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public string DelRelUserDevGroup(int userid)
+        {
+            _result = $@"
+                          DELETE T_AD_RelUserDevGroup WHERE Userid='{userid}'
+                       ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 初始化基本表-‘研发类别’DT
         /// </summary>
         /// <returns></returns>
         public string SearchDevGroup()
         {
             _result = @"
-                            SELECT x.* FROM 
-                            (
-	                            SELECT 0 Id,'' Name
-
-	                            UNION ALL
-    
-	                            SELECT b.FNUMBER Id,C.FDATAVALUE Name 
-	                            FROM dbo.T_BAS_ASSISTANTDATA a
-	                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY B ON A.FID=B.FID
-	                            INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L C ON B.FENTRYID=C.FENTRYID AND C.FLOCALEID=2052
-	                            WHERE a.FID='5dd1e57223d58f'
-                            )x
+                           SELECT DevGroupid Id,DevGroupName Name FROM dbo.T_BD_DevGroup
                        ";
+            #region Hide
+            /* _result = @"
+                 SELECT x.* FROM 
+                 (
+                     SELECT 0 Id,'' Name
+
+                     UNION ALL
+
+                     SELECT b.FNUMBER Id,C.FDATAVALUE Name 
+                     FROM dbo.T_BAS_ASSISTANTDATA a
+                     INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY B ON A.FID=B.FID
+                     INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY_L C ON B.FENTRYID=C.FENTRYID AND C.FLOCALEID=2052
+                     WHERE a.FID='5dd1e57223d58f'
+                 )x
+            ";*/
+            #endregion
+
             return _result;
         }
-
     }
 }
