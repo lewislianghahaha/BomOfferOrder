@@ -23,7 +23,7 @@ namespace BomOfferOrder.UI.Admin
         #region 变量参数
         //获取K3用户信息
         private DataTable _k3UserDt;
-        //保存初始化'研发类别'DT
+        //保存初始化'研发类别'基础资料DT
         private DataTable _devgroupdt;
 
         //保存查询出来的GridView记录
@@ -58,8 +58,8 @@ namespace BomOfferOrder.UI.Admin
             OnShowSelectTypeList();
             //初始化获取K3用户信息(注:不包括已添加到T_AD_User表的用户)
             OnInitializeK3UserDt();
-            //
-
+            //初始化基本表-‘研发类别’DT
+            OnInitializeDevGroup();
         }
 
         private void OnRegisterEvents()
@@ -142,7 +142,7 @@ namespace BomOfferOrder.UI.Admin
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Btnsearch_Click(object sender, System.EventArgs e)
+        private void Btnsearch_Click(object sender, EventArgs e)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace BomOfferOrder.UI.Admin
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Comselectvalue_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void Comselectvalue_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
@@ -652,7 +652,7 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 初始化研发类别DT
+        /// 初始化基本表-‘研发类别’DT
         /// </summary>
         private void OnInitializeDevGroup()
         {
@@ -702,7 +702,7 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 获取'研发类别'DT
+        /// 初始化已关联‘研发类别’
         /// </summary>
         private DataTable OnInitializeDevGroupDt()
         {

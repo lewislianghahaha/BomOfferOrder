@@ -62,14 +62,14 @@ namespace BomOfferOrder.UI.Admin
         /// <summary>
         /// 初始化GridView
         /// </summary>
-        /// <param name="typeid">类型;0:新增用户权限使用 1:用户组别使用</param>
+        /// <param name="typeid">类型;0:新增用户权限使用 1:用户组别基础资料使用</param>
         /// <param name="sourcedt">K3 USER数据源</param>
-        /// <param name="devgroupdt">研发类别DT</param>
+        /// <param name="devgroupdt">研发类别基础资料DT</param>
         public void OnInitialize(int typeid,DataTable sourcedt,DataTable devgroupdt)
         {
             _typeid = typeid;
             _devgroupdt = devgroupdt;
-            //若_typeid=1时,将‘获取’按钮设置为隐藏
+            //若_typeid=1时,将‘获取’ '关闭'按钮设置为隐藏
             if (_typeid == 1)
             {
                 tmGet.Visible = false;

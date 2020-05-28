@@ -42,6 +42,7 @@ namespace BomOfferOrder.Task
         private DataTable _userdt;           //用户表
         private DataTable _reluserdt;        //用户关联表头
         private DataTable _reluserdtldt;     //用户关联表体
+        private DataTable _devgroupdt;       //关联'研发类别'表
         #endregion
 
         private DataTable _resultTable;          //返回DT类型
@@ -157,6 +158,7 @@ namespace BomOfferOrder.Task
         public DataTable Userdt { set { _userdt = value; } }
         public DataTable Reluserdt { set { _reluserdt = value; } }
         public DataTable Reluserdtldt { set { _reluserdtldt = value; } }
+        public DataTable Devgroupdt { set { _devgroupdt = value; } }
         #endregion
 
         #endregion
@@ -256,9 +258,13 @@ namespace BomOfferOrder.Task
                 case "0.9.7":
                     SearchUserGroup();
                     break;
-                //查询基础表‘用户组别’表体信息
+                //查询基础表‘用户组别’表体信息(包含“不启用”字段)--用户关联功能使用
                 case "0.9.8":
                     SearchUserGroupDetail();
+                    break;
+                //查询基础表‘用户组别’表体信息(不包含“不启用”字段)--基础资料-用户组别设置使用
+                case "0.9.9":
+                    SearchBdGroupDt();
                     break;
                 //查询‘用户关联’表头信息
                 case "0.0.0.1":
@@ -272,7 +278,7 @@ namespace BomOfferOrder.Task
                 case "0.0.0.3":
                     SearchBdDevGroupDtl();
                     break;
-                //初始化关联‘研发类别’
+                //初始化已关联‘研发类别’
                 case "0.0.0.4":
                     SearchDevGroupDtl();
                     break;
@@ -292,7 +298,7 @@ namespace BomOfferOrder.Task
                     break;
                 //用户权限提交
                 case "2.1":
-                    ImportUserPermissionDt(_userdt,_reluserdt,_reluserdtldt);
+                    ImportUserPermissionDt(_userdt,_reluserdt,_reluserdtldt,_devgroupdt);
                     break;
                 //暂存信息提交
                 case "2.2":
@@ -534,11 +540,19 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 查询基础表‘用户组别’表体信息
+        /// 查询基础表‘用户组别’表体信息(包含“不启用”字段)--用户关联功能使用
         /// </summary>
         private void SearchUserGroupDetail()
         {
             _resultTable = searchDt.SearchUserGroupDetail();
+        }
+
+        /// <summary>
+        /// 查询基础表‘用户组别’表体信息(不包含“不启用”字段)--基础资料-用户组别设置使用
+        /// </summary>
+        private void SearchBdGroupDt()
+        {
+            _resultTable = searchDt.SearchBdGroupDt();
         }
 
         /// <summary>
@@ -610,9 +624,9 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 用户权限提交
         /// </summary>
-        private void ImportUserPermissionDt(DataTable userdt,DataTable reluserdt,DataTable reluserdtldt)
+        private void ImportUserPermissionDt(DataTable userdt,DataTable reluserdt,DataTable reluserdtldt,DataTable devgroupdt)
         {
-            _resultMark = importPer.ImportUserPermissionDt(userdt,reluserdt,reluserdtldt);
+            _resultMark = importPer.ImportUserPermissionDt(userdt,reluserdt,reluserdtldt,devgroupdt);
         }
 
 

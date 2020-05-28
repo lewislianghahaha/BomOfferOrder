@@ -23,7 +23,7 @@ namespace BomOfferOrder.UI.Admin
         //存放节点跳转时的查询信息
         private DataTable _showdtldt;
 
-        //保存‘用户’的USERID（读取时使用）
+        //保存‘用户’的Userid（读取时使用）
         private int _userid;
         //保存‘用户’信息DT（作用:1)读取时使用外部传过来的DT 2)收集创建的用户信息,保存时使用）
         private DataTable _userdt;
@@ -35,10 +35,13 @@ namespace BomOfferOrder.UI.Admin
         private DataTable _usergroupdt;
         //接收‘用户组别’表体DT
         private DataTable _usergroupdtldt;
+
         //作用:注:在保存时提交-关联的'研发类别'记录时使用
         private DataTable _devgroupdt;
         //作用:初始化整理‘研发类别’数据时使用
         private DataTable _devgrouptempdt;
+        //跳转临时表 作用:根据所选择行跳转对应的‘研发类别’记录时使用;(注:与_devgrouptempdt关联使用)
+        private DataTable _devtempdt;
 
         //保存查询出来的GridView记录(用户组别表体信息)
         private DataTable _dtl;
@@ -67,6 +70,9 @@ namespace BomOfferOrder.UI.Admin
             tvview.AfterSelect += Tvview_AfterSelect;
             tmSet.Click += TmSet_Click;
             tmreback.Click += Tmreback_Click;
+            gvdtl.CellClick += Gvdtl_CellClick;
+            tmdevSet.Click += TmdevSet_Click;
+            tmDevreback.Click += TmDevreback_Click;
 
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
@@ -101,9 +107,6 @@ namespace BomOfferOrder.UI.Admin
             //接收‘用户组别’表体DT
             _usergroupdtldt = GlobalClasscs.Ad.UserGroupDtlDt;
 
-            //将GlobalClasscs.Ad.UserGroupDtlDt 数据 与devgroupdt进行整合并存放至_devgrouptemp内(gvdev Gridview控件使用)
-            MarkDevGroupGridViewRecord(funState, devgroupdt);
-
             //创建
             if (funState == "C")
             {
@@ -134,6 +137,10 @@ namespace BomOfferOrder.UI.Admin
             _dtl = _usergroupdtldt.Clone();
             //读取表头信息至对应的项内
             OnShow(funState,k3Name,k3Group,k3Phone,userdt);
+
+            //将_usergroupdtldt 数据 与devgroupdt进行整合并存放至_devgrouptemp内('研发类别'gvdev Gridview控件使用)
+            MarkDevGroupGridViewRecord(funState, devgroupdt);
+
             //树菜单读取
             ShowTreeList(funState,_usergroupdt,_reluserdt);
             //展开根节点
@@ -214,21 +221,62 @@ namespace BomOfferOrder.UI.Admin
         {
             //获取‘研发类别’临时表
             _devgrouptempdt = dbList.DevGroupTemp();
-            //单据状态为C时,将devgroupdt 与 GlobalClasscs.Ad.UserGroupDtlDt 整合便可,注:devgroupdt ID=0的就排除
+            //单据状态为C时,将devgroupdt 与 _usergroupdtldt 整合便可,注:devgroupdt ID=0的就排除
+            //注:_devgrouptempdt.不启用 列不用赋值
             if (funState == "C")
             {
-                //todo
-                for (var i = 0; i < GlobalClasscs.Ad.UserGroupDtlDt.Rows.Count; i++)
+                for (var i = 0; i < _usergroupdtldt.Rows.Count; i++)
                 {
-                    
+                    foreach (DataRow rows in devgroupdt.Rows)
+                    {
+                        //注:若检测到devgroupdt.DevGroupid=0,即跳过
+                        if(Convert.ToInt32(rows[0])==0) continue;
+                        var newrow = _devgrouptempdt.NewRow();
+                        newrow[0] = 0;                              //Userid
+                        newrow[1] = _usergroupdtldt.Rows[i][0];     //Groupid
+                        newrow[2] = _usergroupdtldt.Rows[i][1];     //Dtlid
+                        newrow[3] = rows[0];                        //DevGroupid
+                        newrow[4] = rows[1];                        //研发类别
+                        _devgrouptempdt.Rows.Add(newrow);
+                    }
                 }
             }
-            //单据状态为R时,虽将devgroupdt  GlobalClasscs.Ad.UserGroupDtlDt 与 GlobalClasscs.Ad.DevGroupDt 进行整合
+            //单据状态为R时,虽将devgroupdt  _usergroupdtldt 与 GlobalClasscs.Ad.DevGroupDt 进行整合
             //注:若devgroupdt的记录在GlobalClasscs.Ad.DevGroupDt不存在,即‘不启用’标记为‘是’
             else
             {
-                
+                for (var i = 0; i < _usergroupdtldt.Rows.Count; i++)
+                {
+                    foreach (DataRow rows in devgroupdt.Rows)
+                    {
+                        //注:若检测到devgroupdt.DevGroupid=0,即跳过
+                        if (Convert.ToInt32(rows[0]) == 0) continue;
+                        var newrow = _devgrouptempdt.NewRow();
+                        newrow[0] = _userid;                       //Userid
+                        newrow[1] = _usergroupdtldt.Rows[i][0];    //Groupid
+                        newrow[2] = _usergroupdtldt.Rows[i][1];    //Dtlid
+                        newrow[3] = rows[0];                       //DevGroupid
+                        newrow[4] = rows[1];                       //研发类别
+                        _devgrouptempdt.Rows.Add(newrow);
+                    }
+                }
+
+                //整理好_devgrouptempdt表后,再将数据放到GlobalClasscs.Ad.DevGroupDt查询,若'不存在',即‘不启用’为‘是’标记
+                for (var i = 0; i < _devgrouptempdt.Rows.Count; i++)
+                {
+                    var rowslength = GlobalClasscs.Ad.DevGroupDt.Select("Userid='"+_devgrouptempdt.Rows[i][0]+"' " +
+                                                                        "and Groupid='"+_devgrouptempdt.Rows[i][1]+"' and Dtlid='"+_devgrouptempdt.Rows[i][2]+"'" +
+                                                                        "and DevGroupid='"+_devgrouptempdt.Rows[i][3]+"'").Length;
+                    if (rowslength == 0)
+                    {
+                        _devgrouptempdt.Rows[i].BeginEdit();
+                        _devgrouptempdt.Rows[i][5] = "是";
+                        _devgrouptempdt.Rows[i].EndEdit();
+                    }
+                }
             }
+            //初始化跳转临时表
+            _devtempdt = _devgrouptempdt.Clone();
         }
 
         /// <summary>
@@ -393,6 +441,178 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
+        ///  gvdtl当点击某行中的单元格时发生(注:当多行选择时不会执行)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Gvdtl_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                //获取所选行中的Groupid Dtlid值
+                var groupid = Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[0].Value);
+                var dtlid = Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value);
+
+                //将_devtempdt更新至_devgrouptempdt内
+                DevGroupTempIntoDt();
+
+                //根据获取到的groupid dtlid为条件在_devgrouptempdt进行查找,并将结果保存至_devtemp内
+                foreach (DataRow rows in _devgrouptempdt.Rows)
+                {
+                    if (Convert.ToInt32(rows[1]) == groupid && Convert.ToInt32(rows[2]) == dtlid)
+                    {
+                        var newrow = _devtempdt.NewRow();
+                        newrow[0] = rows[0];    //Userid
+                        newrow[1] = rows[1];    //Groupid
+                        newrow[2] = rows[2];    //Dtlid
+                        newrow[3] = rows[3];    //DevGroupid
+                        newrow[4] = rows[4];    //研发类别
+                        newrow[5] = rows[5];    //不启用
+                        _devtempdt.Rows.Add(newrow);
+                    }
+                }
+                //最后将整理好的DT放到gvdev内显示
+                ShowDevGroupGridView(_devtempdt);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 将_devtempdt更新至_devgrouptempdt内
+        /// 注:只针对_devtempdt中‘不启用’为空的值进行插入至_devgrouptempdt内
+        /// </summary>
+        private void DevGroupTempIntoDt()
+        {
+            //若_devtempdt有值,即将‘不启用’为‘是’的值更新至_devgrouptempdt对应的项内
+            if (_devtempdt.Rows.Count > 0)
+            {
+                //先将对应的_devgrouptempdt记录中的'不启用'列清空
+                foreach (DataRow rows in _devtempdt.Rows)
+                {
+                    for (var i = 0; i < _devgrouptempdt.Rows.Count; i++)
+                    {
+                        if (Convert.ToInt32(_devgrouptempdt.Rows[i][0]) == Convert.ToInt32(rows[0]) &&
+                            Convert.ToInt32(_devgrouptempdt.Rows[i][1]) == Convert.ToInt32(rows[1]) &&
+                            Convert.ToInt32(_devgrouptempdt.Rows[i][2]) == Convert.ToInt32(rows[2]) &&
+                            Convert.ToInt32(_devgrouptempdt.Rows[i][3]) == Convert.ToInt32(rows[3]))
+                        {
+                            _devgrouptempdt.Rows[i].BeginEdit();
+                            _devgrouptempdt.Rows[i][5] = "";
+                            _devgrouptempdt.Rows[i].EndEdit();
+                        }
+                    }
+                }
+
+                //然后再针对‘不启用’的值进行更新(获取最新值)
+                for (var i = 0; i < _devgrouptempdt.Rows.Count; i++)
+                {
+                    var rowlength = _devtempdt.Select("Userid='" + _devgrouptempdt.Rows[i][0] + "'" +
+                                                      "and Groupid='" + _devgrouptempdt.Rows[i][1] + "'" +
+                                                      "and Dtlid='" + _devgrouptempdt.Rows[i][2] + "'" +
+                                                      "and DevGroupId='" + _devgrouptempdt.Rows[i][3] + "' and 不启用='是'").Length;
+                    if (rowlength > 0)
+                    {
+                        _devgrouptempdt.Rows[i].BeginEdit();
+                        _devgrouptempdt.Rows[i][5] = "是";
+                        _devgrouptempdt.Rows[i].EndEdit();
+                    }
+                }
+                //最后将_devtempdt的行清空
+                _devtempdt.Rows.Clear();
+            }
+        }
+
+        /// <summary>
+        /// 显示‘研发类别’GridView
+        /// </summary>
+        /// <param name="dt"></param>
+        private void ShowDevGroupGridView(DataTable dt)
+        {
+            gvdev.DataSource = dt;
+            //设置单元格显示方式
+            ControlDevGroupGridViewShow();
+        }
+
+        /// <summary>
+        /// 设置‘研发类别’不启用
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmdevSet_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(gvdev.SelectedRows.Count==0) throw new Exception("没有选中行,请选择后再继续");
+                //循环将选中的行,将_devtempdt ‘不启用’项更新为"是"
+                foreach (DataGridViewRow row in gvdev.SelectedRows)
+                {
+                    for (var i = 0; i < _devtempdt.Rows.Count; i++)
+                    {
+                        if (Convert.ToInt32(row.Cells[0].Value) == Convert.ToInt32(_devgrouptempdt.Rows[i][0]) &&
+                            Convert.ToInt32(row.Cells[1].Value) == Convert.ToInt32(_devtempdt.Rows[i][1]) &&
+                            Convert.ToInt32(row.Cells[2].Value) == Convert.ToInt32(_devtempdt.Rows[i][2]) &&
+                            Convert.ToInt32(row.Cells[3].Value) == Convert.ToInt32(_devtempdt.Rows[i][3]))
+                        {
+                            _devtempdt.Rows[i].BeginEdit();
+                            _devtempdt.Rows[i][5] = "是";
+                            _devtempdt.Rows[i].EndEdit();
+                        }
+                    }
+                }
+                //最后将整理好的DT放到gvdev内显示
+                ShowDevGroupGridView(_devtempdt);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 设置‘研发类别’取消不启用
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TmDevreback_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (gvdev.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
+                //检测若所选择的行中没有设置“不启用”,会报异常不能继续
+                foreach (DataGridViewRow row in gvdev.SelectedRows)
+                {
+                    if (!Convert.ToString(row.Cells[5].Value).Contains("是")) throw new Exception($"研发类别'{row.Cells[4].Value}'没有设置不启用,故不能执行取消操作");
+                    break;
+                }
+                //循环将选中的行,将_devtempdt ‘不启用’项清空
+                foreach (DataGridViewRow row in gvdev.SelectedRows)
+                {
+                    for (var i = 0; i < _devtempdt.Rows.Count; i++)
+                    {
+                        if (Convert.ToInt32(row.Cells[0].Value) == Convert.ToInt32(_devgrouptempdt.Rows[i][0]) &&
+                            Convert.ToInt32(row.Cells[1].Value) == Convert.ToInt32(_devtempdt.Rows[i][1]) &&
+                            Convert.ToInt32(row.Cells[2].Value) == Convert.ToInt32(_devtempdt.Rows[i][2]) &&
+                            Convert.ToInt32(row.Cells[3].Value) == Convert.ToInt32(_devtempdt.Rows[i][3]))
+                        {
+                            _devtempdt.Rows[i].BeginEdit();
+                            _devtempdt.Rows[i][5] = "";
+                            _devtempdt.Rows[i].EndEdit();
+                        }
+                    }
+                }
+                //最后将整理好的DT放到gvdev内显示
+                ShowDevGroupGridView(_devtempdt);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
         /// 点击树菜单复选框后执行
         /// 作用:当点击某个节点时,GridView显示相关的记录
         /// </summary>
@@ -452,7 +672,7 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 根据tag为条件,跳转显示对应的内容至GridView内
+        /// 根据树菜单tag为条件,跳转显示对应的内容至GridView内
         /// </summary>
         /// <param name="tag"></param>
         private void JustPageShow(int tag)
@@ -519,7 +739,7 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 清空_dtl 7项‘不启用’
+        /// 清空_dtl 第7项‘不启用’
         /// </summary>
         private void DelGridViewRecord()
         {
@@ -551,10 +771,9 @@ namespace BomOfferOrder.UI.Admin
                 //}
                 #endregion
 
-                //循环将所选中的行=>将7列设置为"是"(更新_dtl)
+                //循环将所选中的行=>将第7列设置为"是"(更新_dtl)
                 foreach (DataGridViewRow row in gvdtl.SelectedRows)
                 {
-
                     //获取所选中行中 Groupid Dtlid对应的值
                     for (var i = 0; i < _dtl.Rows.Count; i++)
                     {
@@ -567,8 +786,28 @@ namespace BomOfferOrder.UI.Admin
                         }
                     }
                 }
+
+                //'研发类别'根据所选中行中的Groupid Dtlid 将_devgrouptempdt对应的‘不启用’项设置为‘是’
+                foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                {
+                    for (var i = 0; i < _devgrouptempdt.Rows.Count; i++)
+                    {
+                        if (Convert.ToInt32(row.Cells[0].Value) == Convert.ToInt32(_devgrouptempdt.Rows[i][1]) &&
+                            Convert.ToInt32(row.Cells[1].Value) == Convert.ToInt32(_devgrouptempdt.Rows[i][2]))
+                        {
+                            _devgrouptempdt.Rows[i].BeginEdit();
+                            _devgrouptempdt.Rows[i][5] = "是";
+                            _devgrouptempdt.Rows[i].EndEdit();
+                        }
+                    }
+                }
+                var a = _devgrouptempdt;
+
                 //根据当前选择节点进行刷新
                 JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
+                //注:将_devtempdt行清空后进行刷新‘研发类别’GridView
+                _devtempdt.Rows.Clear();
+                ShowDevGroupGridView(_devtempdt);
             }
             catch (Exception ex)
             {
@@ -605,11 +844,29 @@ namespace BomOfferOrder.UI.Admin
                               _dtl.Rows[i][7] = "";
                               _dtl.Rows[i].EndEdit();
                         }
-
                     }
                 }
+
+                //'研发类别'根据所选中行中的Groupid Dtlid 将_devgrouptempdt对应的‘不启用’项清空
+                foreach (DataGridViewRow row in gvdtl.SelectedRows)
+                {
+                    for (var i = 0; i < _devgrouptempdt.Rows.Count; i++)
+                    {
+                        if (Convert.ToInt32(row.Cells[0].Value) == Convert.ToInt32(_devgrouptempdt.Rows[i][1]) &&
+                            Convert.ToInt32(row.Cells[1].Value) == Convert.ToInt32(_devgrouptempdt.Rows[i][2]))
+                        {
+                            _devgrouptempdt.Rows[i].BeginEdit();
+                            _devgrouptempdt.Rows[i][5] = "";
+                            _devgrouptempdt.Rows[i].EndEdit();
+                        }
+                    }
+                }
+
                 //根据当前选择节点进行刷新
                 JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
+                //注:将_devtempdt行清空后进行刷新‘研发类别’GridView
+                _devtempdt.Rows.Clear();
+                ShowDevGroupGridView(_devtempdt);
             }
             catch (Exception ex)
             {
@@ -627,6 +884,9 @@ namespace BomOfferOrder.UI.Admin
         {
             try
             {
+                //将_devtempdt更新至_devgrouptempdt内
+                DevGroupTempIntoDt();
+
                 //收集‘用户’信息
                 var userdt = CreateUserDt();
 
@@ -636,14 +896,18 @@ namespace BomOfferOrder.UI.Admin
                 //收集‘用户关联’表体信息
                 var reluserdtldt = CreateRelUserDtlDt();
 
+                //收集‘研发类别’关联信息
+                CreateDevGroupDt(reluserdt);
+
                 //检测若cbnoneed.checked=false 并且 reluserdt为空,就报异常提示
-                if(!cbnoneed.Checked && reluserdt.Rows.Count==0) throw new Exception("请至少勾选一项组别信息,再继续执行保存操作.");
+                if (!cbnoneed.Checked && reluserdt.Rows.Count==0) throw new Exception("请至少勾选一项组别信息,再继续执行保存操作.");
 
                 //执行提交
                 task.TaskId = "2.1";
                 task.Userdt = userdt;
                 task.Reluserdt = reluserdt;
                 task.Reluserdtldt = reluserdtldt;
+                task.Devgroupdt = _devgroupdt;
 
                 new Thread(Start).Start();
                 load.StartPosition = FormStartPosition.CenterScreen;
@@ -733,8 +997,34 @@ namespace BomOfferOrder.UI.Admin
             return tempdt;
         }
 
-        //todo:收集‘研发类别’相关信息
+        /// <summary>
+        /// 收集‘研发类别’相关信息
+        /// 1)利用整理好的reluserdt.Groupid为条件 将2)将_devgrouptempdt中‘不启用’项为‘是’的排除
+        /// </summary>
+        /// <returns></returns>
+        private void CreateDevGroupDt(DataTable reluserdt)
+        {
+            //设置提交‘研发类别’临时表
+            _devgroupdt = dbList.DevGroupDt();
 
+            foreach (DataRow rows in reluserdt.Rows)
+            {
+                foreach (DataRow row in _devgrouptempdt.Rows)
+                {
+                    if (Convert.ToInt32(rows[1]) == Convert.ToInt32(row[1]) &&
+                        Convert.ToString(row[5]) == "")
+                    {
+                        var newrow = _devgroupdt.NewRow();
+                        newrow[0] = row[0];          //Userid
+                        newrow[1] = row[1];          //Groupid
+                        newrow[2] = row[2];          //Dtlid
+                        newrow[3] = row[3];          //DevGroupid
+                        newrow[4] = DateTime.Now;    //CreateDt
+                        _devgroupdt.Rows.Add(newrow);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// 关闭
@@ -759,7 +1049,7 @@ namespace BomOfferOrder.UI.Admin
         }
 
 
-
+        //todo:窗体关闭
 
 
         /// <summary>

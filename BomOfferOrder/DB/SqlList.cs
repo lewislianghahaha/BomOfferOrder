@@ -1581,7 +1581,7 @@
         }
 
         /// <summary>
-        /// 查询基础表‘用户组别’表体信息
+        /// 查询基础表‘用户组别’表体信息(包含“不启用”字段)--用户关联功能使用
         /// </summary>
         /// <returns></returns>
         public string SearchUserGroupDetail()
@@ -1591,6 +1591,20 @@
                                    a.CreateDt 创建日期,'' 不启用
                             FROM dbo.T_BD_UserGroupDtl a
                        ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 查询基础表‘用户组别’表体信息(不包含“不启用”字段)--基础资料-用户组别设置使用
+        /// </summary>
+        /// <returns></returns>
+        public string SearchBdGroupDt()
+        {
+            _result = @"
+                           SELECT a.Groupid,a.Dtlid,a.UserName 员工名称,A.K3UserGroup K3用户组别,A.K3UserPhone K3用户手机,a.CreateName 创建人,
+                                  a.CreateDt 创建日期 
+                           FROM  T_BD_UserGroupDtl a
+                        ";
             return _result;
         }
 

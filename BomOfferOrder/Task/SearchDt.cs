@@ -343,12 +343,22 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 查询基础表‘用户组别’表体信息
+        /// 查询基础表‘用户组别’表体信息(包含“不启用”字段)--用户关联功能使用
         /// </summary>
         /// <returns></returns>
         public DataTable SearchUserGroupDetail()
         {
             _sqlscript = sqlList.SearchUserGroupDetail();
+            return UseSqlSearchIntoDt(1, _sqlscript);
+        }
+
+        /// <summary>
+        /// 查询基础表‘用户组别’表体信息(不包含“不启用”字段)--基础资料-用户组别设置使用
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchBdGroupDt()
+        {
+            _sqlscript = sqlList.SearchBdGroupDt();
             return UseSqlSearchIntoDt(1, _sqlscript);
         }
 

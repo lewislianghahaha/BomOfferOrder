@@ -57,7 +57,7 @@ namespace BomOfferOrder.UI.Admin.Basic
                 Dock = DockStyle.Fill,                 //将子窗体完全停靠new tab page
                 FormBorderStyle = FormBorderStyle.None 
             };
-            getAccount.OnInitialize(1,dt);               
+            getAccount.OnInitialize(1,dt,null);               
             getAccount.Show();                         //注:只能使用Show()
             newpage.Controls.Add(getAccount);          //将窗体控件加入至新创建的Tab Page内
             tctotalpage.TabPages.Add(newpage);         //将新创建的Tab Page添加至TabControl控件内

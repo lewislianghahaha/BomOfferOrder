@@ -106,7 +106,7 @@ namespace BomOfferOrder.UI.Admin.Basic
         private DataTable OnSearchDtl()
         {
             //获取表体信息
-            task.TaskId = "0.9.8";
+            task.TaskId = "0.9.9";
             task.StartTask();
             var resuldt = task.ResultTable;
             //将表体信息结构插入至_deldtldt内(初始化表结构)
@@ -706,7 +706,7 @@ namespace BomOfferOrder.UI.Admin.Basic
             {
                 gvdtl.Columns[0].Visible = false;
                 gvdtl.Columns[1].Visible = false;
-                gvdtl.Columns[7].Visible = false;
+               // gvdtl.Columns[7].Visible = false;
             }
         }
 

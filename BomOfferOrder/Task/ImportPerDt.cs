@@ -205,18 +205,19 @@ namespace BomOfferOrder.Task
 
         /// <summary>
         /// 用户权限提交
-        /// 注:在操作reluserdt 及 reluserdtldt时,顺序为:先删除后插入=>注:创建状态除外
+        /// 注:在操作reluserdt reluserdtldt 及 devgroupdt时,顺序为:先删除后插入=>注:创建状态除外
         /// </summary>
         /// <param name="userdt">用户表</param>
         /// <param name="reluserdt">用户关联表头</param>
         /// <param name="reluserdtldt">用户关联表体</param>
+        /// <param name="devgroupdt">关联‘研发类别’表</param>
         /// <returns></returns>
-        public bool ImportUserPermissionDt(DataTable userdt,DataTable reluserdt,DataTable reluserdtldt)
+        public bool ImportUserPermissionDt(DataTable userdt,DataTable reluserdt,DataTable reluserdtldt,DataTable devgroupdt)
         {
             var result = true;
             //设置userid变量
             var userid = 0;
-            //通过userid是否为0,确定reluserdt 及 reluserdtldt是否需要执行删除操作(0:不需要 1:需要)
+            //通过userid是否为0,确定reluserdt 及 reluserdtldt devgroupdt 是否需要执行删除操作(0:不需要 1:需要)
             var markid = 0;
 
             try
@@ -228,7 +229,7 @@ namespace BomOfferOrder.Task
                 var dtlrowsLength = userdt.Select("Userid=0").Length;
                 //根据情况获取userid
                 userid = dtlrowsLength > 0 ? GetUseridKey() : Convert.ToInt32(userdt.Rows[0][0]);
-                //确定reluserdt 及 reluserdtldt是否需要执行删除操作(0:不需要 1:需要)
+                //确定reluserdt reluserdtldt 及 devgroupdt 是否需要执行删除操作(0:不需要 1:需要)
                 markid = dtlrowsLength > 0 ? 0 : 1;
 
                 //对临时表进行添加操作
@@ -257,7 +258,8 @@ namespace BomOfferOrder.Task
                     importDt.UpdateDbFromDt("T_AD_User", tempdt);
                 }
 
-                //执行reluserdt 及 reluserdtldt(注:当表内有值时才执行)
+                //执行reluserdt reluserdtldt 及 devgroupdt(注:当表内有值时才执行)
+                //注:先根据userid删除对应记录,后插入
                 if (reluserdt.Rows.Count > 0)
                 {
                     CreateRelUserIntoDb(markid,userid,reluserdt);
@@ -266,6 +268,11 @@ namespace BomOfferOrder.Task
                 if (reluserdtldt.Rows.Count > 0)
                 {
                     CreateRelUserDtlIntoDb(markid,userid,reluserdtldt);
+                }
+
+                if (devgroupdt.Rows.Count > 0)
+                {
+                    CreateRelUserDevGroupIntoDb(markid, userid, devgroupdt);
                 }
             }
             catch (Exception)
@@ -325,6 +332,7 @@ namespace BomOfferOrder.Task
                     newrow[1] = rows[1];    //Groupid
                     newrow[2] = rows[2];    //Dtlid
                     newrow[3] = rows[3];    //CreateDt
+                    tb.Rows.Add(newrow);
                 }
             }
             //先删除,后插入
@@ -334,6 +342,39 @@ namespace BomOfferOrder.Task
                 tb = reluserdtldt.Copy();
             }
             importDt.ImportDtToDb("T_AD_RelUserDtl", tb);
+        }
+
+        /// <summary>
+        /// 创建devgroupdt相关记录并插入至对应的数据表内
+        /// </summary>
+        /// <param name="markid">是否需要执行删除操作(0:不需要 1:需要)</param>
+        /// <param name="userid"></param>
+        /// <param name="devgroupdt"></param>
+        private void CreateRelUserDevGroupIntoDb(int markid,int userid,DataTable devgroupdt)
+        {
+            var tb = devgroupdt.Clone();
+
+            //需将userid重新添加至对应的项内
+            if (markid == 0)
+            {
+                foreach (DataRow rows in devgroupdt.Rows)
+                {
+                    var newrow = tb.NewRow();
+                    newrow[0] = userid;     //Userid
+                    newrow[1] = rows[1];    //Groupid
+                    newrow[2] = rows[2];    //Dtlid
+                    newrow[3] = rows[3];    //DevGroupid
+                    newrow[4] = rows[4];    //CreateDt
+                    tb.Rows.Add(newrow);
+                }
+            }
+            //先删除,后插入
+            else
+            {
+                searchDt.Generdt(sqlList.DelRelUserDevGroup(userid));
+                tb = devgroupdt.Copy();
+            }
+            importDt.ImportDtToDb("T_AD_RelUserDevGroup", tb);
         }
 
         /// <summary>
