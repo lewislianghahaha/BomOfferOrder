@@ -50,6 +50,8 @@ namespace BomOfferOrder.UI
         private DataTable _purchaseInstockdt;
         //研发类别DT
         private DataTable _devgroupdt;
+        //记录删除单据的DT=>(注:只保留T_OfferOrderHead.Headid值)
+        private DateTime _delOfferOrderHeadDt;
 
         //定义关闭符号的宽
         const int CloseSize = 11;
@@ -633,6 +635,8 @@ namespace BomOfferOrder.UI
                     {
                         tctotalpage.SelectedTab = tctotalpage.TabPages[id - 1];
                     }
+                    //todo:记录关闭的页内对应的Headid值
+
                 }
             }
         }

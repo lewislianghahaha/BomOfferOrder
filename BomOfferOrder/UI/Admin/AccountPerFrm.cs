@@ -73,7 +73,7 @@ namespace BomOfferOrder.UI.Admin
             gvdtl.CellClick += Gvdtl_CellClick;
             tmdevSet.Click += TmdevSet_Click;
             tmDevreback.Click += TmDevreback_Click;
-
+            this.FormClosing += AccountPerFrm_FormClosing;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -762,6 +762,8 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
+                //若没有先选中树菜单节点,会提示异常
+                if(tvview.SelectedNode == null) throw new Exception("请点击任意‘用户组别’树菜单节点后再继续.");
 
                 #region Hide 当前用户不能设置自身“不启用”
                 //foreach (DataGridViewRow row in gvdtl.SelectedRows)
@@ -801,7 +803,6 @@ namespace BomOfferOrder.UI.Admin
                         }
                     }
                 }
-                var a = _devgrouptempdt;
 
                 //根据当前选择节点进行刷新
                 JustPageShow(Convert.ToInt32(tvview.SelectedNode.Tag));
@@ -825,6 +826,9 @@ namespace BomOfferOrder.UI.Admin
             try
             {
                 if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
+                //若没有先选中树菜单节点,会提示异常
+                if (tvview.SelectedNode == null) throw new Exception("请点击任意‘用户组别’树菜单节点后再继续.");
+
                 //检测若所选择的行中没有设置“不启用”,会报异常不能继续
                 foreach (DataGridViewRow row in gvdtl.SelectedRows)
                 {
@@ -1027,7 +1031,7 @@ namespace BomOfferOrder.UI.Admin
         }
 
         /// <summary>
-        /// 关闭
+        /// 关闭按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1039,6 +1043,10 @@ namespace BomOfferOrder.UI.Admin
 
                 if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
+                    //退出时将所有控件都设置为可操作,然后再退出
+                    groupBox2.Enabled = true;
+                    panel3.Enabled = true;
+                    splitContainer1.Enabled = true;
                     this.Close();
                 }
             }
@@ -1048,9 +1056,41 @@ namespace BomOfferOrder.UI.Admin
             }
         }
 
-
-        //todo:窗体关闭
-
+        /// <summary>
+        /// 窗体关闭
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AccountPerFrm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                var clickMessage = !_saveid ? $"是否退出? \n 注:没保存的记录退出后将会消失" : "是否退出?";
+                if (e.CloseReason != CloseReason.ApplicationExitCall)
+                {
+                    var result = MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    //当点击"OK"按钮时执行以下操作
+                    if (result == DialogResult.Yes)
+                    {
+                        //退出时将所有控件都设置为可操作,然后再退出
+                        groupBox2.Enabled = true;
+                        panel3.Enabled = true;
+                        splitContainer1.Enabled = true;
+                        //允许窗体关闭
+                        e.Cancel = false;
+                    }
+                    else
+                    {
+                        //将Cancel属性设置为 true 可以"阻止"窗体关闭
+                        e.Cancel = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         /// <summary>
         /// 首页按钮(GridView页面跳转时使用)

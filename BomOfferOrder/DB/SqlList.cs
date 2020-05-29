@@ -612,7 +612,10 @@
                     _result =
                         $@"
                                 SELECT A.FId,A.OAorderno OA流水号,
-                                       -- 研发类别,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
                                        b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
@@ -649,20 +652,22 @@
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
 						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                    )
-                                --1)包含T_OfferOrder.DevGroupid=0的记录 2)排除不包含的‘研发类别’信息
+                                --1)包含T_OfferOrder.DevGroupid=0的记录 2)根据Userid找到其对应的关联‘研发类别’信息
                                 AND EXISTS(
-                                               SELECT DISTINCT z1.DevGroupid
-                                               FROM (
-                                                        SELECT z.DevGroupid 
-                                                        FROM T_OfferOrder z
-                                                        where z.DevGroupid=0
-                                                        
-                                                        UNION ALL
-                                                        
-                                                        SELECT
-                                                        FROM   
-                                                    )z1         
-                                           )AS X ON X.DevGroupid=a.DevGroupid                          
+			                                 SELECT NULL 
+			                                 FROM (
+			                                         SELECT X1.UserName,0 DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+
+					                                 UNION
+
+					                                 SELECT x1.UserName,x2.DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+					                                 INNER JOIN T_AD_RelUserDevGroup X2 ON X1.Groupid=X2.Groupid AND x1.Dtlid=x2.Dtlid  
+                                                                                                                 AND x2.Userid='{GlobalClasscs.User.UserId}'
+			                                      )X 
+			                                 WHERE A.CreateName=X.UserName AND A.DevGroupid=X.DevGroupid
+                                          )                      
 
                                 order by A.CreateDt desc
                             ";
@@ -672,7 +677,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -712,6 +722,23 @@
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
 						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
+                                --1)包含T_OfferOrder.DevGroupid=0的记录 2)根据Userid找到其对应的关联‘研发类别’信息
+                                AND EXISTS(
+			                                 SELECT NULL 
+			                                 FROM (
+			                                         SELECT X1.UserName,0 DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+
+					                                 UNION
+
+					                                 SELECT x1.UserName,x2.DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+					                                 INNER JOIN T_AD_RelUserDevGroup X2 ON X1.Groupid=X2.Groupid AND x1.Dtlid=x2.Dtlid  
+                                                                                                                 AND x2.Userid='{GlobalClasscs.User.UserId}'
+			                                      )X 
+			                                 WHERE A.CreateName=X.UserName AND A.DevGroupid=X.DevGroupid
+                                          ) 
+
                                 order by A.CreateDt desc
                             ";
                 }
@@ -720,7 +747,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -755,6 +787,22 @@
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
 						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
+                                --1)包含T_OfferOrder.DevGroupid=0的记录 2)根据Userid找到其对应的关联‘研发类别’信息
+                                AND EXISTS(
+			                                 SELECT NULL 
+			                                 FROM (
+			                                         SELECT X1.UserName,0 DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+
+					                                 UNION
+
+					                                 SELECT x1.UserName,x2.DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+					                                 INNER JOIN T_AD_RelUserDevGroup X2 ON X1.Groupid=X2.Groupid AND x1.Dtlid=x2.Dtlid  
+                                                                                                                 AND x2.Userid='{GlobalClasscs.User.UserId}'
+			                                      )X 
+			                                 WHERE A.CreateName=X.UserName AND A.DevGroupid=X.DevGroupid
+                                          ) 
                                 order by A.CreateDt desc
                             ";
                 }
@@ -763,7 +811,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -798,6 +851,22 @@
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
 						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
+                                --1)包含T_OfferOrder.DevGroupid=0的记录 2)根据Userid找到其对应的关联‘研发类别’信息
+                                AND EXISTS(
+			                                 SELECT NULL 
+			                                 FROM (
+			                                         SELECT X1.UserName,0 DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+
+					                                 UNION
+
+					                                 SELECT x1.UserName,x2.DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+					                                 INNER JOIN T_AD_RelUserDevGroup X2 ON X1.Groupid=X2.Groupid AND x1.Dtlid=x2.Dtlid  
+                                                                                                                 AND x2.Userid='{GlobalClasscs.User.UserId}'
+			                                      )X 
+			                                 WHERE A.CreateName=X.UserName AND A.DevGroupid=X.DevGroupid
+                                          ) 
                                 order by A.CreateDt desc
                             ";
                 }
@@ -806,7 +875,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -840,11 +914,27 @@
 						                                AND X.Userid='{GlobalClasscs.User.UserId}'           --以登录用户ID作为条件   
 						                                AND X3.UserName<>'{GlobalClasscs.User.StrUsrName}'   --不包含登入用户名
 					                                  )
+                                --1)包含T_OfferOrder.DevGroupid=0的记录 2)根据Userid找到其对应的关联‘研发类别’信息
+                                AND EXISTS(
+			                                 SELECT NULL 
+			                                 FROM (
+			                                         SELECT X1.UserName,0 DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+
+					                                 UNION
+
+					                                 SELECT x1.UserName,x2.DevGroupid
+					                                 FROM dbo.T_BD_UserGroupDtl X1
+					                                 INNER JOIN T_AD_RelUserDevGroup X2 ON X1.Groupid=X2.Groupid AND x1.Dtlid=x2.Dtlid  
+                                                                                                                 AND x2.Userid='{GlobalClasscs.User.UserId}'
+			                                      )X 
+			                                 WHERE A.CreateName=X.UserName AND A.DevGroupid=X.DevGroupid
+                                          ) 
                                 order by A.CreateDt desc
                             ";
                 }
             }
-            //当‘创建人’不为空时,执行以登入用户为条件的查询
+            //当‘创建人’不为空时,执行以登入用户为条件的查询,注:此为‘主窗体’查询使用
             else
             {
                 //OA流水号
@@ -852,7 +942,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -877,7 +972,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -907,7 +1007,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -932,7 +1037,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
@@ -957,7 +1067,12 @@
                 {
                     _result =
                         $@"
-                                SELECT A.FId,A.OAorderno OA流水号,b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                SELECT A.FId,A.OAorderno OA流水号,
+                                       CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                 WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                             WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                 ELSE '' END 研发类别,
+                                       b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                        CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
                                        CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
                                        x.物料成本和 '产品成本含税小计',b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
