@@ -48,7 +48,7 @@ namespace BomOfferOrder.UI
         private DataTable _pricelistdt;
         //保存采购入库单表DT(BOM明细中各物料的‘物料单价’使用)
         private DataTable _purchaseInstockdt;
-        //研发类别DT
+        //研发类别基础资料DT
         private DataTable _devgroupdt;
         //记录删除单据的DT=>(注:只保留T_OfferOrderHead.Headid值)
         private DataTable _delOfferOrderHeadDt;
@@ -86,7 +86,7 @@ namespace BomOfferOrder.UI
             tmCopy.Click += TmCopy_Click;
             tmfresh.Click += Tmfresh_Click;
          //   comdevgroup.SelectedIndexChanged += Comdevgroup_SelectedIndexChanged;
-            comdevgroup.SelectedValueChanged += Comdevgroup_SelectedValueChanged;
+          //  comdevgroup.SelectedValueChanged += Comdevgroup_SelectedValueChanged;
            
         }
 
@@ -301,7 +301,7 @@ namespace BomOfferOrder.UI
                             _createtime = Convert.ToDateTime(dtlrows[i][3]);    //创建日期
                             _creatname = Convert.ToString(dtlrows[i][5]);       //创建人
                             _typeid = Convert.ToInt32(dtlrows[i][6]);           //单据类型ID=>0:BOM成本报价单 1:新产品成本报价单 2:空白报价单
-                            _devgroupid = Convert.ToString(dtlrows[i][7]);       //研发类别ID
+                            _devgroupid = Convert.ToString(dtlrows[i][7]);      //研发类别ID
                         }
                         //将记录赋值给bomdtldt内
                         var newrow = bomdtldt.NewRow();
@@ -768,6 +768,18 @@ namespace BomOfferOrder.UI
             {
                 //判断若没有完成审核,即不能执行
                 if (!_confirmMarkId) throw new Exception("请先点击‘审核’再继续");
+
+                //获取‘研发类别’下拉列表所选中的值
+                var dvselectlist = (DataRowView)comdevgroup.Items[comdevgroup.SelectedIndex];
+
+                //检测若单据状态为R  登入用户不是单据创建用户 且 ‘研发类别’所选的内容与‘从数据库读取的不一致’,即返回原选择的‘研发类别’记录
+                if (_funState == "R")
+                {
+                    if (GlobalClasscs.User.StrUsrName != _creatname && Convert.ToInt32(dvselectlist["Id"]) != Convert.ToInt32(_devgroupid))
+                        //根据_devgroupid设置所选择的‘研发类别’下拉列表值
+                        comdevgroup.SelectedValue = _devgroupid;
+                   // throw new Exception($@"检测到登入用户:'{GlobalClasscs.User.StrUsrName}'与单据创建人:'{_creatname}'不符,故不能修改研发类别");
+                }
 
                 if(GlobalClasscs.Fun.RfFunctionName == "RF")
                 {

@@ -544,7 +544,7 @@
             _result = $@"
                            DELETE FROM dbo.T_OfferOrderHead WHERE Headid IN ({headid})
 
-                           DELETE FROM dbo.T_OfferOrderEntry WHERE Headid IN({headid})
+                           DELETE FROM dbo.T_OfferOrderEntry WHERE Headid IN ({headid})
                         ";
             return _result;
         }

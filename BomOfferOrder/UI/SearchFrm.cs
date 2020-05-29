@@ -18,7 +18,7 @@ namespace BomOfferOrder.UI
         //保存查询出来的GridView记录
         private DataTable _dtl;
         //保存查询出来的角色权限记录
-        private DataTable _userdt;
+        //private DataTable _userdt;
         //保存采购价目表DT
         private DataTable _pricelistdt;
         //保存采购入库单DT
@@ -258,7 +258,7 @@ namespace BomOfferOrder.UI
                 //根据所选择的行获取其fid值
                 var fid = Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
                 //根据所选择的行获取其单据状态
-                var orderstatus = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[3].Value);
+                var orderstatus = Convert.ToString(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[4].Value);
 
                 //判断若所选的行中的‘单据状态’不为已审核,即跳出异常
                 if (orderstatus != "已审核") throw new Exception($"单据'{oaorder}'的单据状态不为已审核,不能进行反审核操作");
@@ -273,7 +273,7 @@ namespace BomOfferOrder.UI
                     throw new Exception($"所选单据'{oaorder}'不能进入, \n 原因:已被用户'{Convert.ToString(usedt.Rows[0][1])}'占用,需用户'{Convert.ToString(usedt.Rows[0][1])}'退出才能继续操作");
 
                 var clickMessage = $"您所选择的单据为:\n '{oaorder}' \n 是否进行反审核?";
-                if (MessageBox.Show(clickMessage, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     task.TaskId = "3";
                     task.Fid = fid;
