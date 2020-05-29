@@ -1529,7 +1529,30 @@ namespace BomOfferOrder.DB
             return dt;
         }
 
+        /// <summary>
+        /// 记录需要删除的单据明细中的Headid值
+        /// 注:只需记录
+        /// </summary>
+        /// <returns></returns>
+        public DataTable DelOfferOrderHeadDt()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 1; i++)
+            {
+                var dc = new DataColumn();
 
+                switch (i)
+                {
+                    //Headid
+                    case 0:
+                        dc.ColumnName = "Headid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
 
     }
 }

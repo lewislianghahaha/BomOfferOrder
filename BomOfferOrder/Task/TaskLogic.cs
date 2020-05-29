@@ -11,25 +11,26 @@ namespace BomOfferOrder.Task
         ImportPerDt importPer=new ImportPerDt();
 
         #region 变量定义
-        private string _taskid;             //记录中转ID
-        private int _searchid;              //记录查询列表ID值(查询时使用)
-        private string _searchvalue;        //查询值(查询时使用)
-        private DataTable _dt;              //保存需要进行生成明细记录的DT
-        private DataTable _bomdt;           //保存BOM明细DT(生成时使用)
-        private string _oaorder;            //获取OA流水号
-        private DataTable _importdt;        //获取准备提交的DT(提交时使用)
-        private string _funState;           //记录单据状态(C:创建 R:读取) 
-        private DataTable _deldt;           //记录从GridView内需要删除的DT记录(单据状态为R时使用)
-        private int _fid;                   //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
-        private int _type;                  //记录占用情况类型(更新单据占用情况时使用)
-        private string _newpwd;             //记录用户新密码
-        private string _fileAddress;        //导入地址
-        private DataTable _instockdt;       //保存采购入库单相关DT(报表-旧标准成本单价功能使用)
-        private DataTable _pricelistdt;     //保存采购价目表DT(报表功能使用)
-        private string _reporttype;         //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用 2:)
-        private DataTable _salespricedt;     //保存销售价目表相关DT
-        private DataTable _purchaseinstockdt;//保存采购入库单相关DT-(毛利润报表生成使用)
-        private DataTable _rencostdt;        //保存人工制造费用相关DT
+        private string _taskid;                //记录中转ID
+        private int _searchid;                 //记录查询列表ID值(查询时使用)
+        private string _searchvalue;           //查询值(查询时使用)
+        private DataTable _dt;                 //保存需要进行生成明细记录的DT
+        private DataTable _bomdt;              //保存BOM明细DT(生成时使用)
+        private string _oaorder;               //获取OA流水号
+        private DataTable _importdt;           //获取准备提交的DT(提交时使用)
+        private string _funState;              //记录单据状态(C:创建 R:读取) 
+        private DataTable _deldt;               //记录从GridView内需要删除的DT记录(单据状态为R时使用)
+        private DataTable _delOfferOrderHeadDt; //记录删除 T_OfferOrderHead 以及 T_OfferOrderEntry的DT (注:主要收集T_OfferOrderHead.Headid)
+        private int _fid;                       //记录从BOM报价单查询出来获取的FID值(查询明细时使用)
+        private int _type;                      //记录占用情况类型(更新单据占用情况时使用)
+        private string _newpwd;                 //记录用户新密码
+        private string _fileAddress;            //导入地址
+        private DataTable _instockdt;           //保存采购入库单相关DT(报表-旧标准成本单价功能使用)
+        private DataTable _pricelistdt;         //保存采购价目表DT(报表功能使用)
+        private string _reporttype;             //导入EXCEL时的类型(0:报表功能使用  1:BOM物料明细使用 2:)
+        private DataTable _salespricedt;        //保存销售价目表相关DT
+        private DataTable _purchaseinstockdt;   //保存采购入库单相关DT-(毛利润报表生成使用)
+        private DataTable _rencostdt;           //保存人工制造费用相关DT
 
         #region 基础资料-用户组别使用
         private DataTable _groupdt;          //表头信息
@@ -96,6 +97,11 @@ namespace BomOfferOrder.Task
         /// 记录从GridView内需要删除的DT记录(单据状态为R时使用)
         /// </summary>
         public DataTable Deldt { set { _deldt = value; } }
+
+        /// <summary>
+        /// 记录删除 T_OfferOrderHead 以及 T_OfferOrderEntry的DT (注:主要收集T_OfferOrderHead.Headid)
+        /// </summary>
+        public DataTable DelOfferOrderHeadDt { set { _delOfferOrderHeadDt = value; } }
 
         /// <summary>
         /// 记录从BOM报价单查询出来获取的FID值(查询明细时使用)
@@ -294,7 +300,7 @@ namespace BomOfferOrder.Task
                 #region 提交
                 //提交
                 case "2":
-                    ImportDt(_funState,_importdt,_deldt);
+                    ImportDt(_funState,_importdt,_deldt, _delOfferOrderHeadDt);
                     break;
                 //用户权限提交
                 case "2.1":
@@ -610,15 +616,17 @@ namespace BomOfferOrder.Task
         #endregion
 
         #region 提交相关方法
+
         /// <summary>
         /// 提交
         /// </summary>
         /// <param name="funState">单据状态</param>
         /// <param name="souredt">Tab Pages收集过来的DT</param>
         /// <param name="deldt">需要删除的记录DT(单据状态为R时使用)</param>
-        private void ImportDt(string funState, DataTable souredt, DataTable deldt)
+        /// <param name="delOfferOrderHeadDt">记录T_OfferOrderHead.Headid,作用:针对整单据‘热签’删除操作</param>
+        private void ImportDt(string funState, DataTable souredt, DataTable deldt,DataTable delOfferOrderHeadDt)
         {
-            _resultMark = importDt.ImportDtToDb(funState, souredt, deldt);
+            _resultMark = importDt.ImportDtToDb(funState, souredt, deldt, delOfferOrderHeadDt);
         }
 
         /// <summary>

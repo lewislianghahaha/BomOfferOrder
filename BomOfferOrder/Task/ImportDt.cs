@@ -23,8 +23,9 @@ namespace BomOfferOrder.Task
         /// <param name="funState">单据状态 R:读取 C:创建</param>
         /// <param name="souredt">Tab Pages收集过来的DT</param>
         /// <param name="deldt">需要删除的记录DT(单据状态为R时使用)</param>
+        /// <param name="delOfferOrderHeadDt">记录T_OfferOrderHead.Headid,作用:针对整单据‘热签’删除操作</param>
         /// <returns></returns>
-        public bool ImportDtToDb(string funState, DataTable souredt,DataTable deldt)
+        public bool ImportDtToDb(string funState, DataTable souredt,DataTable deldt,DataTable delOfferOrderHeadDt)
         {
             var result = true;
             var tableName = string.Empty;
@@ -90,6 +91,9 @@ namespace BomOfferOrder.Task
                 //最后若deldt有值的话都执行删除方法
                 if(deldt.Rows.Count>0)
                     DeleteRecord(deldt);
+                //若delOfferOrderHeadDt有值的话就循环以Headid为条件 对T_OfferOrderHead 以及 T_OfferOrderEntry 对应的记录删除
+                if (delOfferOrderHeadDt.Rows.Count > 0)
+                    DeleteOfferOrderHead(delOfferOrderHeadDt);
             }
             catch (Exception)
             {
@@ -411,6 +415,27 @@ namespace BomOfferOrder.Task
             searchDt.Generdt(sqlList.DelEntry(fidlist));
         }
 
+        /// <summary>
+        /// 以Headid为条件 对T_OfferOrderHead 以及 T_OfferOrderEntry 对应的记录删除
+        /// </summary>
+        /// <param name="delOfferOrderHeadDt"></param>
+        private void DeleteOfferOrderHead(DataTable delOfferOrderHeadDt)
+        {
+            var fidlist = string.Empty;
+            //根据指定条件循环将记录行删除
+            foreach (DataRow rows in delOfferOrderHeadDt.Rows)
+            {
+                if (string.IsNullOrEmpty(fidlist))
+                {
+                    fidlist = "'" + Convert.ToString(rows[0]) + "'";
+                }
+                else
+                {
+                    fidlist += "," + "'" + Convert.ToString(rows[0]) + "'";
+                }
+            }
+            searchDt.Generdt(sqlList.DelOrderHeadAndEntry(fidlist));
+        }
 
         /// <summary>
         /// 根据条件将sourerow的数据插入至offerOrderDt临时表内

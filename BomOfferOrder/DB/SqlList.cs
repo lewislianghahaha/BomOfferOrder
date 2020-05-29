@@ -535,6 +535,21 @@
         }
 
         /// <summary>
+        /// (根据Headid为条件 T_OfferOrderHead 以及 T_OfferOrderEntry 对应的记录)
+        /// </summary>
+        /// <param name="headid"></param>
+        /// <returns></returns>
+        public string DelOrderHeadAndEntry(string headid)
+        {
+            _result = $@"
+                           DELETE FROM dbo.T_OfferOrderHead WHERE Headid IN ({headid})
+
+                           DELETE FROM dbo.T_OfferOrderEntry WHERE Headid IN({headid})
+                        ";
+            return _result;
+        }
+
+        /// <summary>
         /// 删除指定记录-基础资料:用户组别使用
         /// </summary>
         /// <param name="id">0:表头删除 1:表体删除</param>
@@ -1824,7 +1839,6 @@
                  )x
             ";*/
             #endregion
-
             return _result;
         }
     }

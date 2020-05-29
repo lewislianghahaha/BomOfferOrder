@@ -51,7 +51,7 @@ namespace BomOfferOrder.UI
         //研发类别DT
         private DataTable _devgroupdt;
         //记录删除单据的DT=>(注:只保留T_OfferOrderHead.Headid值)
-        private DateTime _delOfferOrderHeadDt;
+        private DataTable _delOfferOrderHeadDt;
 
         //定义关闭符号的宽
         const int CloseSize = 11;
@@ -85,7 +85,9 @@ namespace BomOfferOrder.UI
 
             tmCopy.Click += TmCopy_Click;
             tmfresh.Click += Tmfresh_Click;
-            comdevgroup.SelectedIndexChanged += Comdevgroup_SelectedIndexChanged;
+         //   comdevgroup.SelectedIndexChanged += Comdevgroup_SelectedIndexChanged;
+            comdevgroup.SelectedValueChanged += Comdevgroup_SelectedValueChanged;
+           
         }
 
         /// <summary>
@@ -112,6 +114,9 @@ namespace BomOfferOrder.UI
 
             //初始化'研发类别'下拉列表
             OnShowSelectTypeList();
+
+            //初始化‘删除单据明细’临时表
+            _delOfferOrderHeadDt = dbList.DelOfferOrderHeadDt();
 
             //单据状态:创建 C
             if (_funState=="C")
@@ -338,8 +343,6 @@ namespace BomOfferOrder.UI
                 }
                 //最后将‘OA流水号’设置为只读
                 txtbom.ReadOnly = true;
-                //
-
             }
             catch (Exception ex)
             {
@@ -530,13 +533,19 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void Comdevgroup_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void Comdevgroup_SelectedValueChanged(object sender, EventArgs e)
+        {
             try
             {
-                //检测若单据状态为R 并且登入用户不是单据创建用户,就不能作出修改
-                if (_funState == "R")
+                
+                //检测若单据状态为R 并且 为反审核状态 若登入用户不是单据创建用户,就不能作出修改
+                if (_funState == "R" && !_confirmMarkId)
                 {
-                    if(GlobalClasscs.User.StrUsrName != _creatname) throw new Exception($@"检测到登入用户:'{GlobalClasscs.User.StrUsrName}'与单据创建人:
-                                                                                         '{_creatname}'不符,故不能修改研发类别");
+                    if (GlobalClasscs.User.StrUsrName != _creatname)
+                        throw new Exception($@"检测到登入用户:'{GlobalClasscs.User.StrUsrName}'与单据创建人:'{_creatname}'不符,故不能修改研发类别");
                 }
             }
             catch (Exception ex)
@@ -628,15 +637,37 @@ namespace BomOfferOrder.UI
 
                 if (isClose)
                 {
+                    //获取当前所选的TabPage索引
                     var id = tctotalpage.SelectedIndex;
+                    //记录关闭的页内对应的Headid值(为最后的删除单据使用) 注:单据状态：R时使用
+                    GetDetlOrderHeadid(id);
+
+                    //执行删除选择的TabPage页
                     this.tctotalpage.TabPages.Remove(this.tctotalpage.SelectedTab);
                     //当完成‘关闭’后,将当前页设置为'关闭'页的‘前一页’(注:若不这样设置,当关闭后会返回当前页为'首页',当id>0时才执行)
                     if (id > 0)
                     {
                         tctotalpage.SelectedTab = tctotalpage.TabPages[id - 1];
                     }
-                    //todo:记录关闭的页内对应的Headid值
+                }
+            }
+        }
 
+        /// <summary>
+        /// 收集需要删除的单据中的Headid值
+        /// 注:单据状态：R时使用
+        /// </summary>
+        /// <param name="tabindexid"></param>
+        private void GetDetlOrderHeadid(int tabindexid)
+        {
+            if (_funState == "R")
+            {
+                var showdetail = tctotalpage.TabPages[tabindexid].Controls[0] as ShowDetailFrm;
+                if (showdetail != null)
+                {
+                    var newrow = _delOfferOrderHeadDt.NewRow();
+                    newrow[0] = showdetail.Headid;
+                    _delOfferOrderHeadDt.Rows.Add(newrow);
                 }
             }
         }
@@ -748,6 +779,7 @@ namespace BomOfferOrder.UI
                 task.Importdt = _bomdt;
                 task.FunState = _funState;
                 task.Deldt = _deldt;
+                task.DelOfferOrderHeadDt = _delOfferOrderHeadDt;
 
                 new Thread(Start).Start();
                 load.StartPosition = FormStartPosition.CenterScreen;
@@ -1209,7 +1241,6 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void OnShowSelectTypeList()
         {
-            var a = _devgroupdt;
             comdevgroup.DataSource = _devgroupdt;
             comdevgroup.DisplayMember = "Name"; //设置显示值
             comdevgroup.ValueMember = "Id";    //设置默认值内码
