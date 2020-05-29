@@ -322,6 +322,9 @@ namespace BomOfferOrder.UI
                 dtlFrm.OnInitialize(task.ResultTable, _pricelistdt,_instockdt,_devgroupdt);     
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
+
+                //根据所选的选择条件刷新GridView
+                OnSearch();
             }
             catch (Exception ex)
             {
