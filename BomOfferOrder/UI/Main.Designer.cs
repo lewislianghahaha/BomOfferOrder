@@ -515,7 +515,7 @@
             this.comstatus.FormattingEnabled = true;
             this.comstatus.Location = new System.Drawing.Point(150, 3);
             this.comstatus.Name = "comstatus";
-            this.comstatus.Size = new System.Drawing.Size(121, 20);
+            this.comstatus.Size = new System.Drawing.Size(172, 20);
             this.comstatus.TabIndex = 12;
             // 
             // dtpdt

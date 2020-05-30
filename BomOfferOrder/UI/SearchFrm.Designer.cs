@@ -104,7 +104,7 @@
             this.comstatus.FormattingEnabled = true;
             this.comstatus.Location = new System.Drawing.Point(154, 3);
             this.comstatus.Name = "comstatus";
-            this.comstatus.Size = new System.Drawing.Size(121, 20);
+            this.comstatus.Size = new System.Drawing.Size(173, 20);
             this.comstatus.TabIndex = 22;
             // 
             // btnsearch

@@ -23,7 +23,7 @@ namespace BomOfferOrder.UI
         private DataTable _pricelistdt;
         //保存采购入库单DT
         private DataTable _purchaseInstockdt;
-        //保存‘研发类别’DT
+        //保存‘研发类别‘基础资料DT
         private DataTable _devgroupdt;
 
         //记录当前页数(GridView页面跳转使用)
@@ -169,7 +169,8 @@ namespace BomOfferOrder.UI
                         comstatus.Visible = false;
                         txtvalue.Visible = false;
                         break;
-                    default:
+                    //单据状态
+                    case 4:
                         comstatus.Visible = true;
                         //将日期 以及 文本框控件隐藏
                         dtpdt.Visible = false;
@@ -177,6 +178,25 @@ namespace BomOfferOrder.UI
                         //初始化单据状态下拉列表
                         OnShowStatusList();
                         break;
+                    //研发类别
+                    case 5:
+                        comstatus.Visible = true;
+                        //将日期 以及 文本框控件隐藏
+                        dtpdt.Visible = false;
+                        txtvalue.Visible = false;
+                        //初始化研发类别下拉列表
+                        OnShowDevGroupList();
+                        break;
+                        #region 其它项:单据状态 研发类别
+                        //default:
+                        //    comstatus.Visible = true;
+                        //    //将日期 以及 文本框控件隐藏
+                        //    dtpdt.Visible = false;
+                        //    txtvalue.Visible = false;
+                        //    //初始化单据状态下拉列表
+                        //    OnShowStatusList();
+                        //    break;
+                        #endregion
                 }
             }
             catch (Exception ex)
@@ -199,7 +219,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex) 
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -241,7 +261,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -592,7 +612,7 @@ namespace BomOfferOrder.UI
             }
 
             //创建行内容
-            for (var j = 0; j < 5; j++)
+            for (var j = 0; j < 6; j++)
             {
                 var dr = dt.NewRow();
 
@@ -618,6 +638,10 @@ namespace BomOfferOrder.UI
                         dr[0] = "4";
                         dr[1] = "单据状态";
                         break;
+                    case 5:
+                        dr[0] = "5";
+                        dr[1] = "研发类别";
+                        break;
                 }
                 dt.Rows.Add(dr);
             }
@@ -634,6 +658,16 @@ namespace BomOfferOrder.UI
         {
             var dt = new DataTable();
 
+            //若comvaluedt内有值即先清空,后再插入
+            var comvaluedt = (DataTable)comstatus.DataSource;
+
+            if (comvaluedt?.Rows.Count > 0)
+            {
+                comvaluedt.Rows.Clear();
+                comvaluedt.Columns.Clear();
+            }
+
+            #region 创建表头 表体
             //创建表头
             for (var i = 0; i < 2; i++)
             {
@@ -668,10 +702,30 @@ namespace BomOfferOrder.UI
                 }
                 dt.Rows.Add(dr);
             }
+            #endregion
 
-            comstatus.DataSource = dt;
+            comstatus.DataSource = dt.Copy();
             comstatus.DisplayMember = "Name"; //设置显示值
             comstatus.ValueMember = "Id";    //设置默认值内码
+        }
+
+        /// <summary>
+        /// 初始化‘研发类别’下拉列表
+        /// </summary>
+        private void OnShowDevGroupList()
+        {
+            //若comvaluedt内有值即先清空,后再插入
+            var comvaluedt = (DataTable)comstatus.DataSource;
+
+            if (comvaluedt?.Rows.Count > 0)
+            {
+                comvaluedt.Rows.Clear();
+                comvaluedt.Columns.Clear();
+            }
+
+            comstatus.DataSource = _devgroupdt.Copy();
+            comstatus.DisplayMember = "Name";  //设置显示值
+            comstatus.ValueMember = "Id";      //设置默认值内码
         }
 
         /// <summary>

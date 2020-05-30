@@ -147,11 +147,10 @@ namespace BomOfferOrder.UI
             //单据状态:读取 R
             else
             {
-                var a = _confirmMarkId;
                 //判断若bomdt为空,即不用读取
                 if (bomdt.Rows.Count > 0)
                 {
-                    //根据'单据状态'判断除‘暂存’功能外才执行
+                    //根据'单据状态' 判断除‘暂存’功能外才执行 (因‘暂存’功能没有单据状态)
                     if (Convert.ToString(bomdt.Rows[0][2]) == "0" || Convert.ToString(bomdt.Rows[0][2]) == "1")
                     {
                         //初始化反审核标记为false
