@@ -141,7 +141,7 @@ namespace BomOfferOrder.Task
         private DataTable GetDataToTempOrderHeadDt(int fid,DataTable dt, DataRow sourcerow)
         {
             //必须‘产成品名称’不在dt内,才将数据插入
-            if (dt.Select("ProductName='" + sourcerow[10] + "'").Length == 0)
+            if (dt.Select("ProductName='" + sourcerow[11] + "'").Length == 0)
             {
                 var newrow = dt.NewRow();
                 newrow[0] = fid;                                               //FID
