@@ -607,7 +607,7 @@ namespace BomOfferOrder.DB
         public DataTable GetTempOrderTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 6; i++)
             {
                 var dc = new DataColumn();
 
@@ -636,6 +636,11 @@ namespace BomOfferOrder.DB
                     //单据类型ID(0:BOM成本报价单 1:新产品成本报价单及其它单据 2:空白报价单)
                     case 4:
                         dc.ColumnName = "Typeid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //研发类别ID
+                    case 5:
+                        dc.ColumnName = "DevGroupid";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
                 }

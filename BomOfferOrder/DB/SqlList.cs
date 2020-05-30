@@ -1730,6 +1730,10 @@
         {
             _result = $@"
                             SELECT a.FId,a.OAorderno OA流水号,b.ProductName 产品名称,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
+                                   CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
+		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰'
+		                                ELSE '' END 研发类别,
 	                               a.CreateName 创建人,
 	                               CASE a.Typeid WHEN 0 THEN 'BOM成本报价单' WHEN 1 THEN '新产品成本报价单' WHEN 2 THEN '空白报价单' END 单据类型,
 	                               b.Bao '包装规格',b.BaoQty '包装成本',b.RenQty '人工制造费用',
