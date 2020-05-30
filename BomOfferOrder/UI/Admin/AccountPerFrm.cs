@@ -1047,6 +1047,7 @@ namespace BomOfferOrder.UI.Admin
                     groupBox2.Enabled = true;
                     panel3.Enabled = true;
                     splitContainer1.Enabled = true;
+                    tmSave.Enabled = true;
                     this.Close();
                 }
             }
@@ -1076,6 +1077,7 @@ namespace BomOfferOrder.UI.Admin
                         groupBox2.Enabled = true;
                         panel3.Enabled = true;
                         splitContainer1.Enabled = true;
+                        tmSave.Enabled = true;
                         //允许窗体关闭
                         e.Cancel = false;
                     }
