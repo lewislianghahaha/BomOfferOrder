@@ -85,9 +85,6 @@ namespace BomOfferOrder.UI
 
             tmCopy.Click += TmCopy_Click;
             tmfresh.Click += Tmfresh_Click;
-         //   comdevgroup.SelectedIndexChanged += Comdevgroup_SelectedIndexChanged;
-          //  comdevgroup.SelectedValueChanged += Comdevgroup_SelectedValueChanged;
-           
         }
 
         /// <summary>
@@ -150,18 +147,22 @@ namespace BomOfferOrder.UI
             //单据状态:读取 R
             else
             {
-                //判断除‘暂存’功能外才执行
-                if (Convert.ToString(bomdt.Rows[0][2]) == "0" || Convert.ToString(bomdt.Rows[0][2]) == "1")
+                //判断若bomdt为空,即不用读取
+                if (bomdt.Rows.Count > 0)
                 {
-                    //初始化反审核标记为false
-                    _backconfirm = false;
-                    //根据bomdt判断,若rows[2]=0为:已审核 1:反审核
-                    _confirmMarkId = Convert.ToInt32(bomdt.Rows[0][2]) == 0;
-                    //更新_useid及username值
-                    UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]), 0, "");
+                    //判断除‘暂存’功能外才执行
+                    if (Convert.ToString(bomdt.Rows[0][2]) == "0" || Convert.ToString(bomdt.Rows[0][2]) == "1")
+                    {
+                        //初始化反审核标记为false
+                        _backconfirm = false;
+                        //根据bomdt判断,若rows[2]=0为:已审核 1:反审核
+                        _confirmMarkId = Convert.ToInt32(bomdt.Rows[0][2]) == 0;
+                        //更新_useid及username值
+                        UpdateUseValue(Convert.ToInt32(bomdt.Rows[0][0]), 0, "");
+                    }
+                    //执行读取记录
+                    ReadDetail(bomdt);
                 }
-                //执行读取记录
-                ReadDetail(bomdt);
             }
             //权限控制
             PrivilegeControl();
@@ -527,34 +528,6 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// '研发类别'下拉列表改变值时使用
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Comdevgroup_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Comdevgroup_SelectedValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                
-                //检测若单据状态为R 并且 为反审核状态 若登入用户不是单据创建用户,就不能作出修改
-                if (_funState == "R" && !_confirmMarkId)
-                {
-                    if (GlobalClasscs.User.StrUsrName != _creatname)
-                        throw new Exception($@"检测到登入用户:'{GlobalClasscs.User.StrUsrName}'与单据创建人:'{_creatname}'不符,故不能修改研发类别");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
         /// 对TABPAGE页画‘关闭’按钮(注:当TabControl需要绘制它的每一个选项卡时发生,直至跳出整个应用程序)
         /// 注:只有在‘空白报价单’功能时执行
         /// </summary>
@@ -621,35 +594,45 @@ namespace BomOfferOrder.UI
         /// <param name="e"></param>
         private void Tctotalpage_MouseDown(object sender, MouseEventArgs e)
         {
-            //当使用Mouse左键点击 及只有在‘空白报价单’功能时执行(注:在‘审核’后也不能操作)
-            if (e.Button == MouseButtons.Left && /*GlobalClasscs.Fun.EmptyFunctionName == "E"*/ _typeid==2 && !_confirmMarkId)
+            try
             {
-                int x = e.X, y = e.Y;
-                //计算关闭区域
-                Rectangle mytab = this.tctotalpage.GetTabRect(this.tctotalpage.SelectedIndex);
-
-                mytab.Offset(mytab.Width - (CloseSize + 3), 2);
-                mytab.Width = CloseSize;
-                mytab.Height = CloseSize;
-
-                //如果Mouse在区域内就关闭选项卡
-                var isClose = x > mytab.X && x < mytab.Right && y > mytab.Y && y < mytab.Bottom;
-
-                if (isClose)
+                //当使用Mouse左键点击 及只有在‘空白报价单’功能时执行(注:在‘审核’后也不能操作)
+                if (e.Button == MouseButtons.Left && /*GlobalClasscs.Fun.EmptyFunctionName == "E"*/ _typeid == 2 && !_confirmMarkId)
                 {
-                    //获取当前所选的TabPage索引
-                    var id = tctotalpage.SelectedIndex;
-                    //记录关闭的页内对应的Headid值(为最后的删除单据使用) 注:单据状态：R时使用
-                    GetDetlOrderHeadid(id);
+                    int x = e.X, y = e.Y;
+                    //计算关闭区域
+                    Rectangle mytab = this.tctotalpage.GetTabRect(this.tctotalpage.SelectedIndex);
 
-                    //执行删除选择的TabPage页
-                    this.tctotalpage.TabPages.Remove(this.tctotalpage.SelectedTab);
-                    //当完成‘关闭’后,将当前页设置为'关闭'页的‘前一页’(注:若不这样设置,当关闭后会返回当前页为'首页',当id>0时才执行)
-                    if (id > 0)
+                    mytab.Offset(mytab.Width - (CloseSize + 3), 2);
+                    mytab.Width = CloseSize;
+                    mytab.Height = CloseSize;
+
+                    //如果Mouse在区域内就关闭选项卡
+                    var isClose = x > mytab.X && x < mytab.Right && y > mytab.Y && y < mytab.Bottom;
+
+                    if (isClose)
                     {
-                        tctotalpage.SelectedTab = tctotalpage.TabPages[id - 1];
+                        //获取当前所选的TabPage索引
+                        var id = tctotalpage.SelectedIndex;
+                        //当单据只有一页时,不能进行删除
+                        if(tctotalpage.TabCount==1) throw new Exception($"不能删除,原因:当前单据:{txtbom.Text} 只有一页产品名称明细内容.");
+
+                        //记录关闭的页内对应的Headid值(为最后的删除单据使用) 注:单据状态：R时使用
+                        GetDetlOrderHeadid(id);
+
+                        //执行删除选择的TabPage页
+                        this.tctotalpage.TabPages.Remove(this.tctotalpage.SelectedTab);
+                        //当完成‘关闭’后,将当前页设置为'关闭'页的‘前一页’(注:若不这样设置,当关闭后会返回当前页为'首页',当id>0时才执行)
+                        if (id > 0)
+                        {
+                            tctotalpage.SelectedTab = tctotalpage.TabPages[id - 1];
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
