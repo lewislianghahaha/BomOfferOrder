@@ -523,7 +523,8 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var exmessage = ex.Message.Contains("输入字符串的格式不正确") ? $"请检查'人工及制造费用'及'配方用量'是否已填写正确的数值,请重新填写后再继续" : ex.Message;
+                MessageBox.Show(exmessage, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
