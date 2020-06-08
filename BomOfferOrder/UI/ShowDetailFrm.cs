@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using BomOfferOrder.DB;
 using BomOfferOrder.Task;
+using NPOI.OpenXmlFormats.Dml.Chart;
 
 namespace BomOfferOrder.UI
 {
@@ -82,6 +83,7 @@ namespace BomOfferOrder.UI
             llcust.Click += Llcust_Click;
             tmimportexcel.Click += Tmimportexcel_Click;
             txtmi.Leave += Txtmi_Leave;
+            gvdtl.RowPrePaint += Gvdtl_RowPrePaint;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -91,6 +93,7 @@ namespace BomOfferOrder.UI
             tmshowrows.DropDownClosed += Tmshowrows_DropDownClosed;
             panel2.Visible = false;
         }
+
 
         /// <summary>
         ///  当GridView控件值有变化时使用
@@ -190,8 +193,62 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// 绘制设置单元行的背景色(注:在初始化单元格时执行)
+        /// 设置GridView行是否改变背景颜色
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Gvdtl_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            try
+            {
+                var gvdtldt = (DataTable)gvdtl.DataSource;
+
+                //需要判断类型，避免死循环(e.RowIndex必须<=gvdtldt的行数(因从0开始,故需要在gvdtldt.Rows.Count总行数-1))
+                if (Dtl.Rows.Count > 0 && e.RowIndex <= gvdtldt.Rows.Count - 1)
+                {
+                    //设置若mark = 0时,就将该行设置为红色背景色
+                    if (CheckRowsChangeBgc(Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[1].Value)) == 0) 
+                        gvdtl.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 根据fmaterialid是否将对应的行填充为红色 (注:mark=0时填充)
+        /// </summary>
+        /// <param name="fmaterialid"></param>
+        private int CheckRowsChangeBgc(int fmaterialid)
+        {
+            //定义mark标记,若mark=0,即将该行整行显示为红色
+            var mark = -1;
+            //根据fmaterialid获取对应的BOM明细记录DT
+            var tempdt = GetMaterialTempdt(fmaterialid);
+
+            //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
+            foreach (DataRow row in tempdt.Rows)
+            {
+                //判断若‘物料名称’不为‘拉盖’(且‘损耗’) 并且‘旧标准单价’为0,就将mark=0 注:若mark为0即跳出循环
+                if (!Convert.ToString(row[2]).Contains("拉盖") && !Convert.ToString(row[2]).Contains("损耗"))
+                {
+                    if (Convert.ToDecimal(row[5]) == 0)
+                    {
+                        mark = 0;
+                    }
+                }
+                if (mark == 0)
+                    break;
+            }
+            return mark;
         }
 
         /// <summary>
@@ -861,44 +918,6 @@ namespace BomOfferOrder.UI
         }
 
         /// <summary>
-        /// 设置GridView行是否改变背景颜色
-        /// 注:创建及读取时使用
-        /// </summary>
-        private void ControlGridViewChangeBgc()
-        {
-            //定义mark标记,若mark=0,即将该行整行显示为红色
-            var mark = -1;
-
-            //循环gvdtl.rows,并获取其对应的fmaterialid进行运算
-            for (var i = 0; i < gvdtl.Rows.Count -1; i++)
-            {
-                var fmaterialid = Convert.ToInt32(gvdtl.Rows[i].Cells[1].Value);
-
-                var tempdt = GetMaterialTempdt(fmaterialid);
-
-                if(tempdt.Rows.Count == 0) continue;
-
-                //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
-                foreach (DataRow row in tempdt.Rows)
-                {
-                    //判断若‘物料名称’不为‘拉盖’(且‘损耗’) 并且‘子项金额’为0,就将mark=0 注:若mark为0即跳出循环
-                    if (!Convert.ToString(row[2]).Contains("拉盖") && !Convert.ToString(row[2]).Contains("损耗"))
-                    {
-                        if (Convert.ToDecimal(row[5]) == 0)
-                        {
-                            mark = 0;
-                        }
-                    }
-                    if (mark == 0)
-                        break;
-                }
-
-                if (mark != 0) continue;
-                gvdtl.Rows[i].DefaultCellStyle.BackColor = Color.Red;
-            }
-        }
-
-        /// <summary>
         /// 针对fmaterialid 返回成本BOM内的明细DT
         /// </summary>
         /// <param name="fmaterialid"></param>
@@ -1146,8 +1165,6 @@ namespace BomOfferOrder.UI
                 gvdtl.DataSource = tempdt;
                 //将“当前页”赋值给"跳转页"文本框内
                 bnPositionItem.Text = Convert.ToString(_pageCurrent);
-                //设置GridView行是否改变背景颜色
-                ControlGridViewChangeBgc();
             }
             catch (Exception ex)
             {

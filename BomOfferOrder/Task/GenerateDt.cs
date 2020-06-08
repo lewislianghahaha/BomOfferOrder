@@ -601,7 +601,7 @@ namespace BomOfferOrder.Task
                     //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
                     foreach (DataRow row in tempdt.Rows)
                     {
-                        //判断若‘物料名称’不为‘拉盖’(且‘损耗’) 并且‘子项金额’为0,就将mark=0,反之为1 注:若mark为0即跳出循环
+                        //判断若‘物料名称’不为‘拉盖’(且‘损耗’) 并且‘旧标准单价’为0,就将mark=0,反之为1 注:若mark为0即跳出循环
                         if (!Convert.ToString(row[2]).Contains("拉盖") && !Convert.ToString(row[2]).Contains("损耗"))
                         {
                             if (Convert.ToDecimal(row[5]) == 0)
@@ -682,12 +682,12 @@ namespace BomOfferOrder.Task
                     oldprice = GetOldPrice(Convert.ToInt32(dtlrows[i][2]),instockdt,priceListdt);
 
                     var newrow = resultdt.NewRow();
-                    newrow[0] = productname;                                                  //表头物料名称
-                    newrow[1] = dtlrows[i][2];                                                //FMATERIALID(表体物料ID)
-                    newrow[2] = dtlrows[i][4];                                                //物料名称
-                    newrow[3] = qtytemp;                                                      //用量
-                    newrow[4] = dtlrows[i][10];                                               //单价(标准单价使用)
-                    newrow[5] = oldprice;                                                     //旧标准单价(旧标准成本单价使用)
+                    newrow[0] = productname;                                                   //表头物料名称
+                    newrow[1] = dtlrows[i][2];                                                 //FMATERIALID(表体物料ID)
+                    newrow[2] = dtlrows[i][4];                                                 //物料名称
+                    newrow[3] = qtytemp;                                                       //用量
+                    newrow[4] = dtlrows[i][10];                                                //单价(标准单价使用)
+                    newrow[5] = oldprice;                                                      //旧标准单价(旧标准成本单价使用)
                     newrow[6] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),12); //子项金额=用量*单价 (标准成本单价使用)
                     newrow[7] = decimal.Round(qtytemp * oldprice,12);                          //旧子项金额=用量*单价 (旧标准成本单价使用)
                     resultdt.Rows.Add(newrow);

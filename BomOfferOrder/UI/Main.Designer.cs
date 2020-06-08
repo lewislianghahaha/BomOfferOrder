@@ -296,6 +296,7 @@
             this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
+            this.gvdtl.MultiSelect = false;
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.ReadOnly = true;
             this.gvdtl.RowTemplate.Height = 23;
@@ -563,6 +564,7 @@
             this.gvtempdtl.ContextMenuStrip = this.TempMenu;
             this.gvtempdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvtempdtl.Location = new System.Drawing.Point(3, 31);
+            this.gvtempdtl.MultiSelect = false;
             this.gvtempdtl.Name = "gvtempdtl";
             this.gvtempdtl.ReadOnly = true;
             this.gvtempdtl.RowTemplate.Height = 23;

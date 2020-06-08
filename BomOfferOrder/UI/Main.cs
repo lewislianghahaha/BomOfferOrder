@@ -424,6 +424,8 @@ namespace BomOfferOrder.UI
             try
             {
                 CreateTabPages("成本BOM报价单-创建");
+                //根据所选的选择条件刷新GridView
+                OnSearch();
             }
             catch (Exception ex)
             {
@@ -458,7 +460,7 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                CreateTabPages("新产品成本报价单-创建");  
+                CreateTabPages("新产品成本报价单-创建");
             }
             catch (Exception ex)
             {
@@ -482,6 +484,9 @@ namespace BomOfferOrder.UI
                 dtlFrm.OnInitialize(null, _pricelistdt,_instockdt, _devgroupdt);     //初始化信息
                 dtlFrm.StartPosition = FormStartPosition.CenterParent;
                 dtlFrm.ShowDialog();
+
+                //根据所选的选择条件刷新GridView
+                OnSearch();
             }
             catch (Exception ex)
             {
