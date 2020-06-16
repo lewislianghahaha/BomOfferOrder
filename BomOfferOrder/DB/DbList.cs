@@ -115,7 +115,7 @@ namespace BomOfferOrder.DB
         public DataTable MakeGridViewTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 9; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var dc = new DataColumn();
 
@@ -157,6 +157,11 @@ namespace BomOfferOrder.DB
                     case 8:
                         dc.ColumnName = "备注";
                         dc.DataType = Type.GetType("System.String");
+                        break;
+                     //用于记录新增行时的行ID,更新明细行信息时使用(注:临时值,不与数据库关联)
+                    case 9:
+                        dc.ColumnName = "TempRowid";
+                        dc.DataType = Type.GetType("System.Int32");
                         break;
                 }
                 dt.Columns.Add(dc);
