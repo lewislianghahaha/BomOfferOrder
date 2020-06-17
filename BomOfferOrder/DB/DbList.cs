@@ -545,7 +545,7 @@ namespace BomOfferOrder.DB
         public DataTable GetOfferOrderEntryTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 12; i++)
             {
                 var dc = new DataColumn();
 
@@ -600,6 +600,16 @@ namespace BomOfferOrder.DB
                     case 9:
                         dc.ColumnName = "Remark";
                         dc.DataType=Type.GetType("System.String");
+                        break;
+                    //最新修改人
+                    case 10:
+                        dc.ColumnName = "LastChangeUser";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    //最新修改日期
+                    case 11:
+                        dc.ColumnName = "LastChanageDt";
+                        dc.DataType = Type.GetType("System.DateTime");
                         break;
                 }
                 dt.Columns.Add(dc);

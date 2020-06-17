@@ -495,7 +495,7 @@
                 case "T_OfferOrderEntry":
                     _result = @"UPDATE dbo.T_OfferOrderEntry SET MaterialID=@MaterialID,MaterialCode=@MaterialCode,MaterialName=@MaterialName,
                                                                  PeiQty=@PeiQty,ratioQty=@ratioQty,MaterialPrice=@MaterialPrice,MaterialAmount=@MaterialAmount,
-                                                                 Remark=@Remark
+                                                                 Remark=@Remark,LastChangeUser=@LastChangeUser,LastChanageDt=@LastChanageDt
                                 WHERE Entryid=@Entryid
                                ";
                     break;

@@ -173,7 +173,7 @@ namespace BomOfferOrder.Task
                 //创建用于存放EntryId不为空的temp
                 var updatedtltemp = dbList.GetOfferOrderEntryTemp();
 
-                //若GlobalClasscs.Fun.RfFunctionName=="RF",就直接执行插入操作,反之,才执行原来的操作
+                //若GlobalClasscs.Fun.RfFunctionName=="RF"(暂存),就直接执行插入操作,反之,才执行原来的操作
                 if (GlobalClasscs.Fun.RfFunctionName == "RF")
                 {
                     foreach (DataRow rows in tempdt.Rows)
@@ -201,16 +201,18 @@ namespace BomOfferOrder.Task
                     foreach (DataRow t in dtlnullrows)
                     {
                         var newrow = insertdtltemp.NewRow();
-                        newrow[0] = t[0];             //Headid
-                        newrow[1] = GetEntryidKey();  //Entryid
-                        newrow[2] = t[2];             //物料编码ID
-                        newrow[3] = t[3];             //物料编码
-                        newrow[4] = t[4];             //物料名称
-                        newrow[5] = t[5];             //配方用量
-                        newrow[6] = t[6];             //占比
-                        newrow[7] = t[7];             //物料单价(含税)
-                        newrow[8] = t[8];             //物料成本(含税)
-                        newrow[9] = t[9];             //备注
+                        newrow[0] = t[0];                    //Headid
+                        newrow[1] = GetEntryidKey();         //Entryid
+                        newrow[2] = t[2];                    //物料编码ID
+                        newrow[3] = t[3];                    //物料编码
+                        newrow[4] = t[4];                    //物料名称
+                        newrow[5] = t[5];                    //配方用量
+                        newrow[6] = t[6];                    //占比
+                        newrow[7] = t[7];                    //物料单价(含税)
+                        newrow[8] = t[8];                    //物料成本(含税)
+                        newrow[9] = t[9];                    //备注
+                        newrow[10] = t[10];                  //最新修改人
+                        newrow[11] = t[11];                  //最新修改日期
                         insertdtltemp.Rows.Add(newrow);
                     }
 
@@ -219,16 +221,18 @@ namespace BomOfferOrder.Task
                     foreach (DataRow t in dtlnotnullrows)
                     {
                         var newrow = updatedtltemp.NewRow();
-                        newrow[0] = t[0];          //Headid
-                        newrow[1] = t[1];          //Entryid
-                        newrow[2] = t[2];          //物料编码ID
-                        newrow[3] = t[3];          //物料编码
-                        newrow[4] = t[4];          //物料名称
-                        newrow[5] = t[5];          //配方用量
-                        newrow[6] = t[6];          //占比
-                        newrow[7] = t[7];          //物料单价(含税)
-                        newrow[8] = t[8];          //物料成本(含税)
-                        newrow[9] = t[9];          //备注
+                        newrow[0] = t[0];                    //Headid
+                        newrow[1] = t[1];                    //Entryid
+                        newrow[2] = t[2];                    //物料编码ID
+                        newrow[3] = t[3];                    //物料编码
+                        newrow[4] = t[4];                    //物料名称
+                        newrow[5] = t[5];                    //配方用量
+                        newrow[6] = t[6];                    //占比
+                        newrow[7] = t[7];                    //物料单价(含税)
+                        newrow[8] = t[8];                    //物料成本(含税)
+                        newrow[9] = t[9];                    //备注
+                        newrow[10] = t[10];                  //最新修改人
+                        newrow[11] = t[11];                  //最新修改日期
                         updatedtltemp.Rows.Add(newrow);
                     }
                 }
@@ -365,6 +369,8 @@ namespace BomOfferOrder.Task
                     da.UpdateCommand.Parameters.Add("@MaterialPrice", SqlDbType.Decimal, 4, "MaterialPrice");
                     da.UpdateCommand.Parameters.Add("@MaterialAmount", SqlDbType.Decimal, 4, "MaterialAmount");
                     da.UpdateCommand.Parameters.Add("@Remark", SqlDbType.VarChar,500,"Remark");
+                    da.UpdateCommand.Parameters.Add("@LastChangeUser", SqlDbType.VarChar, 500, "LastChangeUser");
+                    da.UpdateCommand.Parameters.Add("@LastChanageDt", SqlDbType.DateTime, 10, "LastChanageDt");
                     break;
                 case "T_AD_User":
                     da.UpdateCommand.Parameters.Add("@Userid", SqlDbType.Int, 8, "Userid");
@@ -506,16 +512,18 @@ namespace BomOfferOrder.Task
         private DataTable GetDataToOfferOrderEntryDt(int headid,DataTable dt,DataRow sourcerow)
         {
             var newrow = dt.NewRow();
-            newrow[0] = headid;             //Headid
-            newrow[1] = sourcerow[26];      //Entryid
-            newrow[2] = sourcerow[27];      //物料编码ID
-            newrow[3] = sourcerow[28];      //物料编码
-            newrow[4] = sourcerow[29];      //物料名称
-            newrow[5] = sourcerow[30];      //配方用量
-            newrow[6] = sourcerow[31];      //占比
-            newrow[7] = sourcerow[32];      //物料单价(含税)
-            newrow[8] = sourcerow[33];      //物料成本(含税)
-            newrow[9] = sourcerow[34];      //备注
+            newrow[0] = headid;                         //Headid
+            newrow[1] = sourcerow[26];                  //Entryid
+            newrow[2] = sourcerow[27];                  //物料编码ID
+            newrow[3] = sourcerow[28];                  //物料编码
+            newrow[4] = sourcerow[29];                  //物料名称
+            newrow[5] = sourcerow[30];                  //配方用量
+            newrow[6] = sourcerow[31];                  //占比
+            newrow[7] = sourcerow[32];                  //物料单价(含税)
+            newrow[8] = sourcerow[33];                  //物料成本(含税)
+            newrow[9] = sourcerow[34];                  //备注
+            newrow[10] = GlobalClasscs.User.StrUsrName; //最新修改人
+            newrow[11] = DateTime.Now;                  //最新修改日期
             dt.Rows.Add(newrow);
             return dt;
         }

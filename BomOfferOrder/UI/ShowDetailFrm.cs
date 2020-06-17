@@ -296,6 +296,7 @@ namespace BomOfferOrder.UI
 
         /// <summary>
         /// 删除明细行
+        /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -305,7 +306,7 @@ namespace BomOfferOrder.UI
             {
                 if(gvdtl.SelectedRows.Count==0) throw new Exception("没有选择行,不能继续");
                 if(Dtl.Rows.Count==0)throw new Exception("没有明细记录,不能进行删除");
-                var a1 = Dtl;
+
                 var clickMessage = $"您所选择需删除的行数为:{gvdtl.SelectedRows.Count}行 \n 是否继续?";
 
                 if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
@@ -318,7 +319,7 @@ namespace BomOfferOrder.UI
                         foreach (DataGridViewRow rows in gvdtl.SelectedRows)
                         {
                             //判断若Entryid不为空,才执行插入
-                            if(rows.Cells[0].Value == DBNull.Value)continue;
+                            if(rows.Cells[0].Value == DBNull.Value) continue;
 
                             var newrow = _deldt.NewRow();
                             for (var i = 0; i < _deldt.Columns.Count; i++)
@@ -330,19 +331,33 @@ namespace BomOfferOrder.UI
                     }
 
                     //先根据GridView所选择的行将_dtl对应的行删除
-                    //注:使用‘物料名称’进行循环对比
+                    //注:使用‘物料编码ID’ 与 entryid 或 temprowid进行循环对比
                     for (var i = Dtl.Rows.Count; i > 0; i--)
                     {
                         for (var j = 0; j < gvdtl.SelectedRows.Count; j++)
                         {
-                            if (Convert.ToString(Dtl.Rows[i - 1][2]) == Convert.ToString(gvdtl.SelectedRows[j].Cells[2].Value))
+                            //获取所选中行的materialid
+                            var materialid = Convert.ToInt32(gvdtl.SelectedRows[j].Cells[1].Value);
+                            //获取entryid值
+                            var entryid = gvdtl.SelectedRows[j].Cells[0].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.SelectedRows[j].Cells[0].Value);
+                            //获取temprowid值
+                            var temprowid = gvdtl.SelectedRows[j].Cells[9].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.SelectedRows[j].Cells[9].Value);
+
+                            //根据entryid temprowid定义checkid值
+                            var checkid = entryid != 0 ? entryid : temprowid;
+                            //根据entryid temprowid定义colid值
+                            var colid = entryid != 0 ? 0 : 9;
+
+                            // 若该行的colid没有值,即跳过(重)
+                            if (Dtl.Rows[i - 1][colid] == DBNull.Value) continue;
+                            //循环比较并进行删除
+                            if (Convert.ToInt32(Dtl.Rows[i - 1][1]) == materialid && Convert.ToInt32(Dtl.Rows[i - 1][colid]) == checkid)
                             {
                                 Dtl.Rows.RemoveAt(i - 1);
                                 break;  //注:此处必加!!!
                             }
                         }
                     }
-                    var a = Dtl;
                     #region 完成后将GridView内的指定行进行删除(目前已不需要,只需将_dtl相关的记录删除即可)
                     //for (var i = gvdtl.SelectedRows.Count; i > 0; i--)
                     //{
@@ -397,11 +412,11 @@ namespace BomOfferOrder.UI
                 //R状态更新时使用
                 var entryid = gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.Rows[gvdtl.CurrentCell.RowIndex].Cells[0].Value);
 
-                UpdateRecordToGridView(temprowid, entryid,materialId, null,"HU");
+                UpdateRecordToGridView(temprowid, entryid,materialId, "HU", null);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -428,7 +443,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -926,10 +941,11 @@ namespace BomOfferOrder.UI
         private void ControlGridViewisShow()
         {
             gvdtl.Columns[0].Visible = false;      //EntryID
-            gvdtl.Columns[1].Visible = false;     //物料ID
-            gvdtl.Columns[2].ReadOnly = true;    //物料编码
-            gvdtl.Columns[5].Visible = false;   //占比(不显示)
-            gvdtl.Columns[7].ReadOnly = true;  //物料成本(含税)
+            gvdtl.Columns[1].Visible = false;      //物料ID
+            gvdtl.Columns[2].ReadOnly = true;      //物料编码
+            gvdtl.Columns[5].Visible = false;      //占比(不显示)
+            gvdtl.Columns[7].ReadOnly = true;      //物料成本(含税)
+            gvdtl.Columns[9].Visible = false;      //Temprowid
         }
 
         /// <summary>
@@ -1204,7 +1220,7 @@ namespace BomOfferOrder.UI
                 //循环将获取过来的值插入至GridView内
                 foreach (DataRow rows in sourcedt.Rows)
                 {
-                    //判断若获取过来的物料ID已在GridView内存在,即跳过不作添加 change date:2020-0616 将此限制取消(即相同的物料ID可在同一个GridView内存在多个)
+                    //判断若获取过来的物料ID已在GridView内存在,即跳过不作添加 change date:20200616 将此限制取消(即相同的物料ID可在同一个GridView内存在多个)
                     //if(gridViewdt.Select("物料编码ID='" + rows[1] + "'").Length>0) continue;
                     
                     var newrow = gridViewdt.NewRow();
@@ -1240,6 +1256,11 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                //根据entryid 及 rowid 情况赋值给checkid
+                var checkid = entryid != 0 ? entryid : rowid;
+                //根据entryid 及 rowid 情况赋值给id(行下标ID)
+                var colid = entryid != 0 ? 0 : 9;
+
                 //循环GridView内的值,当发现ID与条件ID相同,即进入行更新
                 //将GridView内的内容赋值到DT
                 var gridViewdt = Dtl.Copy();  //(DataTable)gvdtl.DataSource;
@@ -1250,45 +1271,24 @@ namespace BomOfferOrder.UI
 
                 //循环将rowid entryid 与 fmaterialid作为条件进行对应,若相同,才进行更新(替换)
                 //判断若entryid有值,就使用entryid materialid作为条件,反之,使用rowid materialid作为更新条件
-                if (entryid != 0)
+                foreach (DataRow rows in gridViewdt.Rows)
                 {
-                    foreach (DataRow rows in gridViewdt.Rows)
+                    // 若该行的colid没有值,即跳过
+                    if (rows[colid] == DBNull.Value) continue;
+                    if (Convert.ToInt32(rows[colid]) == checkid && Convert.ToInt32(rows[1]) == materialId)
                     {
-                        if (Convert.ToInt32(rows[0]) == entryid && Convert.ToInt32(rows[1]) == materialId)
-                        {
-                            gridViewdt.BeginInit();
-                            rows[1] = sourcedt.Rows[0][1];  //物料编码ID
-                            rows[2] = sourcedt.Rows[0][2];  //物料编码
-                            rows[3] = sourcedt.Rows[0][3];  //物料名称
-                            rows[4] = DBNull.Value;         //配方用量(清空)
-                            rows[5] = DBNull.Value;         //占比(清空)
-                            rows[6] = GenerateMaterialPrice(Convert.ToInt32(sourcedt.Rows[0][1])); //物料单价 sourcedt.Rows[0][5];
-                            rows[7] = 0;                    //物料成本(设置为0)
-                            rows[8] = DBNull.Value;         //备注
-                            gridViewdt.EndInit();
-                        }
+                        gridViewdt.BeginInit();
+                        rows[1] = sourcedt.Rows[0][1];                                         //物料编码ID
+                        rows[2] = sourcedt.Rows[0][2];                                         //物料编码
+                        rows[3] = sourcedt.Rows[0][3];                                         //物料名称
+                        rows[4] = DBNull.Value;                                                //配方用量(清空)
+                        rows[5] = DBNull.Value;                                                //占比(清空)
+                        rows[6] = GenerateMaterialPrice(Convert.ToInt32(sourcedt.Rows[0][1])); //物料单价 sourcedt.Rows[0][5];
+                        rows[7] = 0;                                                           //物料成本(设置为0)
+                        rows[8] = DBNull.Value;                                                //备注
+                        gridViewdt.EndInit();
                     }
                 }
-                else
-                {
-                    foreach (DataRow rows in gridViewdt.Rows)
-                    {
-                        if (Convert.ToInt32(rows[9]) == rowid && Convert.ToInt32(rows[1]) == materialId)
-                        {
-                            gridViewdt.BeginInit();
-                            rows[1] = sourcedt.Rows[0][1];  //物料编码ID
-                            rows[2] = sourcedt.Rows[0][2];  //物料编码
-                            rows[3] = sourcedt.Rows[0][3];  //物料名称
-                            rows[4] = DBNull.Value;         //配方用量(清空)
-                            rows[5] = DBNull.Value;         //占比(清空)
-                            rows[6] = GenerateMaterialPrice(Convert.ToInt32(sourcedt.Rows[0][1])); //物料单价 sourcedt.Rows[0][5];
-                            rows[7] = 0;                    //物料成本(设置为0)
-                            rows[8] = DBNull.Value;         //备注
-                            gridViewdt.EndInit();
-                        }
-                    }
-                }
-                var a = Dtl;
                 //操作完成后进行刷新
                 OnInitialize(gridViewdt);
             }
@@ -1598,40 +1598,26 @@ namespace BomOfferOrder.UI
         /// <param name="remark">备注</param>
         private void UpdateGridViewValue(int rowid,int entryid,decimal materialprice, decimal peiqty, decimal ratio,int fmaterialid,decimal value,string remark)
         {
-            //针对_dtl循环其内容
-            if (entryid != 0)
+            //根据entryid 及 rowid 情况赋值给checkid
+            var checkid = entryid != 0 ? entryid : rowid;
+            //根据entryid 及 rowid 情况赋值给id(行下标ID)
+            var colid = entryid != 0 ? 0 : 9;
+
+            foreach (DataRow rows in Dtl.Rows)
             {
-                foreach (DataRow rows in Dtl.Rows)
+                //若该行的colid没有值,即跳过
+                if(rows[colid] == DBNull.Value) continue;
+                if (Convert.ToInt32(rows[colid]) == checkid && Convert.ToInt32(rows[1]) == fmaterialid)
                 {
-                    if (Convert.ToInt32(rows[0]) == entryid && Convert.ToInt32(rows[1]) == fmaterialid)
-                    {
-                        Dtl.BeginInit();
-                        rows[4] = peiqty;         //配方用量
-                        rows[5] = ratio;          //占比
-                        rows[6] = materialprice;  //物料单价
-                        rows[7] = value;          //物料成本(含税)
-                        rows[8] = remark;         //‘备注’
-                        Dtl.EndInit();
-                    }
+                    Dtl.BeginInit();
+                    rows[4] = peiqty;         //配方用量
+                    rows[5] = ratio;          //占比
+                    rows[6] = materialprice;  //物料单价
+                    rows[7] = value;          //物料成本(含税)
+                    rows[8] = remark;         //‘备注’
+                    Dtl.EndInit();
                 }
             }
-            else
-            {
-                foreach (DataRow rows in Dtl.Rows)
-                {
-                    if (Convert.ToInt32(rows[9]) == rowid && Convert.ToInt32(rows[1]) == fmaterialid)
-                    {
-                        Dtl.BeginInit();
-                        rows[4] = peiqty;         //配方用量
-                        rows[5] = ratio;          //占比
-                        rows[6] = materialprice;  //物料单价
-                        rows[7] = value;          //物料成本(含税)
-                        rows[8] = remark;         //‘备注’
-                        Dtl.EndInit();
-                    }
-                }
-            }
-            var a = Dtl;
         }
 
         /// <summary>
