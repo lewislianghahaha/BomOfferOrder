@@ -1388,7 +1388,7 @@
 	                               b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
 
 	                               c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.ratioQty,c.MaterialPrice,c.MaterialAmount,
-                                   c.Remark
+                                   c.Remark,c.LastChangeUser,c.LastChanageDt
 	    
                             FROM dbo.T_OfferOrder a
                             INNER JOIN dbo.T_OfferOrderHead b ON a.FId=b.FId
@@ -1715,7 +1715,7 @@
 	                                b.Fremark,b.FBomOrder,b.FPrice,b.CustName,
 
 		                            c.Entryid,c.MaterialID,c.MaterialCode,c.MaterialName,c.PeiQty,c.ratioQty,c.MaterialPrice,c.MaterialAmount,
-		                            c.Remark
+		                            c.Remark,c.LastChangeUser,c.LastChanageDt
                             FROM dbo.T_TempOrder a
                             INNER JOIN dbo.T_TempOrderHead b ON a.FId=b.FId
                             INNER JOIN dbo.T_TempOrderEntry c ON b.Headid=c.Headid

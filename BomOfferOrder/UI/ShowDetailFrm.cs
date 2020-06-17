@@ -933,6 +933,8 @@ namespace BomOfferOrder.UI
                         newrow[6] = rows[32];       //物料单价(含税)
                         newrow[7] = rows[33];       //物料成本(含税)
                         newrow[8] = rows[34];       //备注
+                        newrow[10] = rows[35];      //最新修改人
+                        newrow[11] = rows[36];      //最新修改日期
                         resultdt.Rows.Add(newrow);
                     }
                 }

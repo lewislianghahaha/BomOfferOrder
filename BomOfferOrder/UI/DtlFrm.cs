@@ -332,6 +332,8 @@ namespace BomOfferOrder.UI
                         newrow[32] = dtlrows[i][30];               //物料单价(含税)
                         newrow[33] = dtlrows[i][31];               //物料成本(含税)
                         newrow[34] = dtlrows[i][32];               //备注
+                        newrow[35] = dtlrows[i][33];               //最新修改人
+                        newrow[36] = dtlrows[i][34];               //最新修改日期
                         bomdtldt.Rows.Add(newrow);
                     }
                     //根据_devgroupid设置所选择的‘研发类别’下拉列表值
