@@ -741,7 +741,9 @@ namespace BomOfferOrder.UI
                     newrow[5] = Convert.ToDecimal(peiqty) * 100;        //占比=配方用量*100
                     newrow[6] = price;                                  //物料单价(含税)
                     newrow[7] = decimal.Round(peiqty / 100 * price,4);  //物料成本(含税) 公式:配方用量/100*物料单价
-                    newrow[9] = temprowid; //用于记录新增行时的行ID,更新明细行信息时使用(注:临时值,不与数据库关联)
+                    newrow[9] = temprowid;                              //用于记录新增行时的行ID,更新明细行信息时使用(注:临时值,不与数据库关联)
+                    newrow[10] = GlobalClasscs.User.StrUsrName;         //最新修改人
+                    newrow[11] = DateTime.Now;                          //最新修改日期
                     resultdt.Rows.Add(newrow);
                     //插入完将此变量进行自增
                     temprowid += 1;
@@ -889,9 +891,12 @@ namespace BomOfferOrder.UI
         {
             try
             {
-                //‘创建’状态
+                //‘创建’状态-“生成成本BOM报价单”使用
                 if (funState == "C")
                 {
+                    //用于记录新增行时的行ID,更新明细行信息时使用
+                    var temprowid = Dtl.Rows.Count;
+
                     //循环获取值赋给对应的控件内
                     foreach (DataRow rows in sourcedt.Rows)
                     {
@@ -905,7 +910,12 @@ namespace BomOfferOrder.UI
                         newrow[6] = rows[10];                       //物料单价(含税)
                         newrow[7] = decimal.Round(Convert.ToDecimal(rows[8]) /100  * Convert.ToDecimal(rows[10]), 4);  //物料成本(含税) 公式:配方用量/100*物料单价 todo:建议将/100 改成/"配方用量合计"这一项 20200615
                         newrow[8] = DBNull.Value;                   //备注
+                        newrow[9] = temprowid;                      //用于记录新增行时的行ID,更新明细行信息时使用(注:临时值,不与数据库关联)
+                        newrow[10] = GlobalClasscs.User.StrUsrName; //最新修改人
+                        newrow[11] = DateTime.Now;                  //最新修改日期
                         resultdt.Rows.Add(newrow);
+                        //插入完将此变量进行自增
+                        temprowid += 1;
                     }
                 }
                 //‘读取’状态
@@ -946,6 +956,8 @@ namespace BomOfferOrder.UI
             gvdtl.Columns[5].Visible = false;      //占比(不显示)
             gvdtl.Columns[7].ReadOnly = true;      //物料成本(含税)
             gvdtl.Columns[9].Visible = false;      //Temprowid
+            gvdtl.Columns[10].Visible = false;     //最新修改人
+            gvdtl.Columns[11].Visible = false;     //最新修改日期
         }
 
         /// <summary>
@@ -1231,6 +1243,8 @@ namespace BomOfferOrder.UI
                     newrow[7] = 0;                                                //物料成本(设置为0)
                     newrow[8] = DBNull.Value;                                     //备注
                     newrow[9] = temprowid;                                        //用于记录新增行时的行ID,更新明细行信息时使用(注:临时值,不与数据库关联)
+                    newrow[10] = GlobalClasscs.User.StrUsrName;                   //最新修改人
+                    newrow[11] = DateTime.Now;                                    //最新修改日期
                     gridViewdt.Rows.Add(newrow);
                     //插入完将此变量进行自增
                     temprowid += 1;
@@ -1286,6 +1300,8 @@ namespace BomOfferOrder.UI
                         rows[6] = GenerateMaterialPrice(Convert.ToInt32(sourcedt.Rows[0][1])); //物料单价 sourcedt.Rows[0][5];
                         rows[7] = 0;                                                           //物料成本(设置为0)
                         rows[8] = DBNull.Value;                                                //备注
+                        rows[10] = GlobalClasscs.User.StrUsrName;                              //最新修改人
+                        rows[11] = DateTime.Now;                                               //最新修改日期
                         gridViewdt.EndInit();
                     }
                 }
@@ -1378,7 +1394,7 @@ namespace BomOfferOrder.UI
                     var ratio = peiqty*100;
                     //获取当前行的物料单价
                     var materialprice = Convert.ToDecimal(gvdtl.Rows[e.RowIndex].Cells[6].Value == DBNull.Value ? 0 : gvdtl.Rows[e.RowIndex].Cells[6].Value);
-                    //计算‘物料成本(含税)’项 公式:配方用量/100*物料单价
+                    //计算‘物料成本(含税)’项 公式:配方用量/100*物料单价 todo:建议将/100 改成/"配方用量合计"这一项 20200615
                     var qtytemp = decimal.Round( peiqty / 100 * materialprice,4);
                     //获取当前行的‘备注’
                     var remark = Convert.ToString(gvdtl.Rows[e.RowIndex].Cells[8].Value);
@@ -1610,11 +1626,13 @@ namespace BomOfferOrder.UI
                 if (Convert.ToInt32(rows[colid]) == checkid && Convert.ToInt32(rows[1]) == fmaterialid)
                 {
                     Dtl.BeginInit();
-                    rows[4] = peiqty;         //配方用量
-                    rows[5] = ratio;          //占比
-                    rows[6] = materialprice;  //物料单价
-                    rows[7] = value;          //物料成本(含税)
-                    rows[8] = remark;         //‘备注’
+                    rows[4] = peiqty;                           //配方用量
+                    rows[5] = ratio;                            //占比
+                    rows[6] = materialprice;                    //物料单价
+                    rows[7] = value;                            //物料成本(含税)
+                    rows[8] = remark;                           //‘备注’
+                    rows[10] = GlobalClasscs.User.StrUsrName;   //最新修改人
+                    rows[11] = DateTime.Now;                    //最新修改日期
                     Dtl.EndInit();
                 }
             }
