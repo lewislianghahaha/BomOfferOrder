@@ -952,14 +952,17 @@ namespace BomOfferOrder.UI
         /// </summary>
         private void ControlGridViewisShow()
         {
-            gvdtl.Columns[0].Visible = false;      //EntryID
-            gvdtl.Columns[1].Visible = false;      //物料ID
-            gvdtl.Columns[2].ReadOnly = true;      //物料编码
-            gvdtl.Columns[5].Visible = false;      //占比(不显示)
-            gvdtl.Columns[7].ReadOnly = true;      //物料成本(含税)
-            gvdtl.Columns[9].Visible = false;      //Temprowid
-            gvdtl.Columns[10].Visible = false;     //最新修改人
-            gvdtl.Columns[11].Visible = false;     //最新修改日期
+            if (gvdtl?.Rows.Count >= 0)
+            {
+                gvdtl.Columns[0].Visible = false;      //EntryID
+                gvdtl.Columns[1].Visible = false;      //物料ID
+                gvdtl.Columns[2].ReadOnly = true;      //物料编码
+                gvdtl.Columns[5].Visible = false;      //占比(不显示)
+                gvdtl.Columns[7].ReadOnly = true;      //物料成本(含税)
+                gvdtl.Columns[9].Visible = false;      //Temprowid
+                gvdtl.Columns[10].Visible = false;     //最新修改人
+                gvdtl.Columns[11].Visible = false;     //最新修改日期
+            }
         }
 
         /// <summary>
