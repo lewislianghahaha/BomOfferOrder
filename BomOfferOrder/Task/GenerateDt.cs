@@ -601,10 +601,10 @@ namespace BomOfferOrder.Task
                     //获取明细行后将tempdt循环-作用:获取‘父项金额’及定义‘MarkId’值
                     foreach (DataRow row in tempdt.Rows)
                     {
-                        //判断若‘物料名称’不为‘拉盖’(且‘损耗’) 并且‘旧标准单价’为0,就将mark=0,反之为1 注:若mark为0即跳出循环
+                        //判断若‘物料名称’不为‘拉盖’(且不为‘损耗’) 并且‘标准单价’为0,就将mark=0,反之为1 注:若mark为0即跳出循环
                         if (!Convert.ToString(row[2]).Contains("拉盖") && !Convert.ToString(row[2]).Contains("损耗"))
                         {
-                            if (Convert.ToDecimal(row[5]) == 0)
+                            if (Convert.ToDecimal(row[4]) == 0)
                             {
                                 mark = 0;
                             }
