@@ -1500,7 +1500,7 @@
 
                                 WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
-                                AND a.FFORBIDSTATUS='A' --物料禁用状态:否
+                                --AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
                                 AND z2.FLOCALEID=2052
                                 AND D.FNAME LIKE '%{searchvalue}%'
@@ -1547,7 +1547,7 @@
 
                                 WHERE c.FDATAVALUE IN('产成品','原漆半成品','原漆')
                                 AND a.FDOCUMENTSTATUS='C'
-                                AND a.FFORBIDSTATUS='A' --物料禁用状态:否
+                                --AND a.FFORBIDSTATUS='A' --物料禁用状态:否
                                 AND d.FLOCALEID=2052
 								AND z2.FLOCALEID=2052
                                 AND a.FNUMBER LIKE '%{searchvalue}%'
