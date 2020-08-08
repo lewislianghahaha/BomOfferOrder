@@ -1329,6 +1329,9 @@ namespace BomOfferOrder.UI
             try
             {
                 var colindex = e.ColumnIndex;
+                //保存物料名称
+                var matname = string.Empty;
+
                 //判断若所选中的行中的Materialid没有值(注:并且所填的项不为‘物料名称’),即不能执行运算
                 if (gvdtl.Rows[e.RowIndex].Cells[1].Value == DBNull.Value && colindex != 3)
                 {
@@ -1350,6 +1353,9 @@ namespace BomOfferOrder.UI
                     var entryid = gvdtl.Rows[e.RowIndex].Cells[0].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[0].Value);
 
                     //根据‘物料名称’放到_materialdt进行查询
+                    matname = materialname;
+                    //检测到若materialname内包含%，即将%删除再进行查询
+                    materialname = matname.Contains("%") ? matname.Replace("%","") : matname;
                     var dtlrows = _materialdt.Select("物料名称 like '%" + materialname + "%'");
 
                     //若没有记录的话,就执行如下

@@ -123,6 +123,7 @@ namespace BomOfferOrder.UI
             btnCreateNew.Click += BtnCreateNew_Click;
             btngenemptynew.Click += Btngenemptynew_Click;
             btnreport.Click += Btnreport_Click;
+            tmorderdel.Click += Tmorderdel_Click; ;
 
             bnMoveFirstItem.Click += BnMoveFirstItem_Click;
             bnMovePreviousItem.Click += BnMovePreviousItem_Click;
@@ -147,6 +148,7 @@ namespace BomOfferOrder.UI
             panel10.Visible = false;
             btnrefresh.Click += Btnrefresh_Click;
             tmshowtempdetail.Click += Tmshowtempdetail_Click;
+            tmtempdel.Click += Tmtempdel_Click;
         }
 
         /// <summary>
@@ -1390,6 +1392,23 @@ namespace BomOfferOrder.UI
             return result;
         }
 
+        /// <summary>
+        /// 单据删除
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmorderdel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         #region 暂存功能模块
 
         /// <summary>
@@ -1733,6 +1752,23 @@ namespace BomOfferOrder.UI
             //注:当没有值时,若还设置某一行Row不显示的话,就会出现异常
             if (gvtempdtl?.Rows.Count >= 0)
                 gvtempdtl.Columns[0].Visible = false;
+        }
+
+        /// <summary>
+        /// 暂存单据删除
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tmtempdel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         #endregion

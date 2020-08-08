@@ -105,6 +105,10 @@
             this.btnCreateNew = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmtempdel = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmorderdel = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
@@ -308,25 +312,27 @@
             this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tmshowdetail,
             this.toolStripSeparator1,
-            this.tmbackconfirm});
+            this.tmbackconfirm,
+            this.toolStripSeparator3,
+            this.tmorderdel});
             this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(125, 54);
+            this.Menu.Size = new System.Drawing.Size(153, 104);
             // 
             // tmshowdetail
             // 
             this.tmshowdetail.Name = "tmshowdetail";
-            this.tmshowdetail.Size = new System.Drawing.Size(124, 22);
+            this.tmshowdetail.Size = new System.Drawing.Size(152, 22);
             this.tmshowdetail.Text = "查询明细";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(121, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // tmbackconfirm
             // 
             this.tmbackconfirm.Name = "tmbackconfirm";
-            this.tmbackconfirm.Size = new System.Drawing.Size(124, 22);
+            this.tmbackconfirm.Size = new System.Drawing.Size(152, 22);
             this.tmbackconfirm.Text = "反审核";
             // 
             // panel8
@@ -574,9 +580,11 @@
             // TempMenu
             // 
             this.TempMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmshowtempdetail});
+            this.tmshowtempdetail,
+            this.toolStripSeparator2,
+            this.tmtempdel});
             this.TempMenu.Name = "Menu";
-            this.TempMenu.Size = new System.Drawing.Size(125, 26);
+            this.TempMenu.Size = new System.Drawing.Size(125, 54);
             // 
             // tmshowtempdetail
             // 
@@ -828,6 +836,28 @@
             this.btnSearch.TabIndex = 0;
             this.btnSearch.UseVisualStyleBackColor = false;
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(121, 6);
+            // 
+            // tmtempdel
+            // 
+            this.tmtempdel.Name = "tmtempdel";
+            this.tmtempdel.Size = new System.Drawing.Size(124, 22);
+            this.tmtempdel.Text = "删除单据";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            // 
+            // tmorderdel
+            // 
+            this.tmorderdel.Name = "tmorderdel";
+            this.tmorderdel.Size = new System.Drawing.Size(152, 22);
+            this.tmorderdel.Text = "删除单据";
+            // 
             // Main
             // 
             this.AcceptButton = this.btnusersearch;
@@ -951,5 +981,9 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel9;
         private System.Windows.Forms.ToolStripLabel toolStripLabel10;
         private System.Windows.Forms.ToolStripLabel tstotalrowtemp;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem tmorderdel;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem tmtempdel;
     }
 }

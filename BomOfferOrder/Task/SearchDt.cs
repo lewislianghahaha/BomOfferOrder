@@ -159,7 +159,7 @@ namespace BomOfferOrder.Task
 
         /// <summary>
         /// 报表-物料明细查询
-        /// </summary>
+        /// </summary>                               
         /// <param name="searchid"></param>
         /// <param name="searchvalue"></param>
         /// <returns></returns>
