@@ -51,6 +51,8 @@
             this.tmshowdetail = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tmbackconfirm = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmorderdel = new System.Windows.Forms.ToolStripMenuItem();
             this.panel8 = new System.Windows.Forms.Panel();
             this.bngat = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -79,6 +81,8 @@
             this.gvtempdtl = new System.Windows.Forms.DataGridView();
             this.TempMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmshowtempdetail = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tmtempdel = new System.Windows.Forms.ToolStripMenuItem();
             this.panel10 = new System.Windows.Forms.Panel();
             this.bngat1 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bnCountItemtemp = new System.Windows.Forms.ToolStripLabel();
@@ -105,10 +109,6 @@
             this.btnCreateNew = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tmtempdel = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.tmorderdel = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
@@ -300,7 +300,6 @@
             this.gvdtl.ContextMenuStrip = this.Menu;
             this.gvdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvdtl.Location = new System.Drawing.Point(0, 0);
-            this.gvdtl.MultiSelect = false;
             this.gvdtl.Name = "gvdtl";
             this.gvdtl.ReadOnly = true;
             this.gvdtl.RowTemplate.Height = 23;
@@ -316,24 +315,35 @@
             this.toolStripSeparator3,
             this.tmorderdel});
             this.Menu.Name = "Menu";
-            this.Menu.Size = new System.Drawing.Size(153, 104);
+            this.Menu.Size = new System.Drawing.Size(125, 82);
             // 
             // tmshowdetail
             // 
             this.tmshowdetail.Name = "tmshowdetail";
-            this.tmshowdetail.Size = new System.Drawing.Size(152, 22);
+            this.tmshowdetail.Size = new System.Drawing.Size(124, 22);
             this.tmshowdetail.Text = "查询明细";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(121, 6);
             // 
             // tmbackconfirm
             // 
             this.tmbackconfirm.Name = "tmbackconfirm";
-            this.tmbackconfirm.Size = new System.Drawing.Size(152, 22);
+            this.tmbackconfirm.Size = new System.Drawing.Size(124, 22);
             this.tmbackconfirm.Text = "反审核";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(121, 6);
+            // 
+            // tmorderdel
+            // 
+            this.tmorderdel.Name = "tmorderdel";
+            this.tmorderdel.Size = new System.Drawing.Size(124, 22);
+            this.tmorderdel.Text = "删除单据";
             // 
             // panel8
             // 
@@ -570,7 +580,6 @@
             this.gvtempdtl.ContextMenuStrip = this.TempMenu;
             this.gvtempdtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvtempdtl.Location = new System.Drawing.Point(3, 31);
-            this.gvtempdtl.MultiSelect = false;
             this.gvtempdtl.Name = "gvtempdtl";
             this.gvtempdtl.ReadOnly = true;
             this.gvtempdtl.RowTemplate.Height = 23;
@@ -591,6 +600,17 @@
             this.tmshowtempdetail.Name = "tmshowtempdetail";
             this.tmshowtempdetail.Size = new System.Drawing.Size(124, 22);
             this.tmshowtempdetail.Text = "查询明细";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(121, 6);
+            // 
+            // tmtempdel
+            // 
+            this.tmtempdel.Name = "tmtempdel";
+            this.tmtempdel.Size = new System.Drawing.Size(124, 22);
+            this.tmtempdel.Text = "删除单据";
             // 
             // panel10
             // 
@@ -835,28 +855,6 @@
             this.btnSearch.Size = new System.Drawing.Size(99, 122);
             this.btnSearch.TabIndex = 0;
             this.btnSearch.UseVisualStyleBackColor = false;
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(121, 6);
-            // 
-            // tmtempdel
-            // 
-            this.tmtempdel.Name = "tmtempdel";
-            this.tmtempdel.Size = new System.Drawing.Size(124, 22);
-            this.tmtempdel.Text = "删除单据";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
-            // 
-            // tmorderdel
-            // 
-            this.tmorderdel.Name = "tmorderdel";
-            this.tmorderdel.Size = new System.Drawing.Size(152, 22);
-            this.tmorderdel.Text = "删除单据";
             // 
             // Main
             // 

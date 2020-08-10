@@ -9,6 +9,7 @@ namespace BomOfferOrder.Task
         ImportDt importDt=new ImportDt();
         ImportTempDt importTempDt=new ImportTempDt();
         ImportPerDt importPer=new ImportPerDt();
+        DeletDt deletDt=new DeletDt();
 
         #region 变量定义
         private string _taskid;                //记录中转ID
@@ -31,6 +32,7 @@ namespace BomOfferOrder.Task
         private DataTable _salespricedt;        //保存销售价目表相关DT
         private DataTable _purchaseinstockdt;   //保存采购入库单相关DT-(毛利润报表生成使用)
         private DataTable _rencostdt;           //保存人工制造费用相关DT
+        private string _fidlist;                //记录删除单据的FID
 
         #region 基础资料-用户组别使用
         private DataTable _groupdt;          //表头信息
@@ -152,6 +154,11 @@ namespace BomOfferOrder.Task
         /// 保存人工制造费用相关DT
         /// </summary>
         public DataTable Rencostdt { set { _rencostdt = value; } }
+
+        /// <summary>
+        /// 删除单据使用
+        /// </summary>
+        public string Fidlist { set { _fidlist = value; } }
 
         #region 基础资料-用户组别使用
         public DataTable Groupdt { set { _groupdt = value; } }
@@ -390,6 +397,17 @@ namespace BomOfferOrder.Task
                     ImportExcelToProfitDt(_reporttype,_fileAddress);
                     break;
                 #endregion
+
+                #region 删除
+                //删除单据记录
+                case "6.2":
+                    DeleteOrderRecord(_fidlist);
+                    break;
+                //删除暂存单据记录
+                case "6.3":
+                    DeleteTempOrderRecord(_fidlist);
+                    break;
+               #endregion
             }
         }
 
@@ -847,6 +865,27 @@ namespace BomOfferOrder.Task
             _importExceldtTable = importDt.ImportExcelToDt(reporttype, fileAddress);
         }
 
+        #endregion
+
+        #region 删除
+
+        /// <summary>
+        /// 删除单据记录
+        /// </summary>
+        /// <param name="fidlist"></param>
+        private void DeleteOrderRecord(string fidlist)
+        {
+            _resultMark = deletDt.DeleteOrderRecord(fidlist);
+        }
+
+        /// <summary>
+        /// 删除暂存单据记录
+        /// </summary>
+        /// <param name="fidlist"></param>
+        private void DeleteTempOrderRecord(string fidlist)
+        {
+            _resultMark = deletDt.DeleteTempOrderRecord(fidlist);
+        }
         #endregion
     }
 }

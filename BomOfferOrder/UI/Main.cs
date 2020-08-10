@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using BomOfferOrder.DB;
 using BomOfferOrder.Task;
 using BomOfferOrder.UI.ReportFrm;
 using Stimulsoft.Report;
@@ -18,6 +19,7 @@ namespace BomOfferOrder.UI
         ChangeAccount changeAccount=new ChangeAccount();
         MaterialReportFrm materialReportFrm=new MaterialReportFrm();
         DtlFrm dtlFrm=new DtlFrm();
+        DbList dbList=new DbList();
 
         #region 变量参数
         //保存BOM明细DT(生成时使用;注:当打开录入界面时初始化执行)
@@ -1366,8 +1368,9 @@ namespace BomOfferOrder.UI
         /// 获取报表所选取的FMATERIALID列表,如:11234,12345
         /// </summary>
         /// <param name="sourcedt"></param>
+        /// <param name="rowid"></param>
         /// <returns></returns>
-        private string GetSearchList(DataTable sourcedt)
+        private string GetSearchList(DataTable sourcedt,int rowid)
         {
             //FMATERIALID列表结果
             var result = string.Empty;
@@ -1379,14 +1382,14 @@ namespace BomOfferOrder.UI
                 //第一行(初始化)时,将第一行的相关值赋给对应的变量内
                 if (temp == "")
                 {
-                    temp = Convert.ToString(rows[0]);
-                    result= "'" + Convert.ToString(rows[0]) + "'";
+                    temp = Convert.ToString(rows[rowid]);
+                    result= "'" + Convert.ToString(rows[rowid]) + "'";
                 }
                 //从第二行开始判断是否一致
-                else if (temp != Convert.ToString(rows[0]))
+                else if (temp != Convert.ToString(rows[rowid]))
                 {
-                    temp = Convert.ToString(rows[0]);
-                    result+= ',' + "'" + Convert.ToString(rows[0]) + "'";
+                    temp = Convert.ToString(rows[rowid]);
+                    result+= ',' + "'" + Convert.ToString(rows[rowid]) + "'";
                 }
             }
             return result;
@@ -1401,7 +1404,37 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                if (gvdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
+                //获取删除临时表
+                var tempdt = dbList.DelOrderDt();
+                //循将将所选择的行插入至tempdt内
+                foreach (DataGridViewRow rows in gvdtl.SelectedRows)
+                {
+                    if (Convert.ToString(rows.Cells[4].Value) == "已审核") throw new Exception("不能执行删除,原因:所选的单据为已审核状态.");
+                    var newrow = tempdt.NewRow();
+                    newrow[0] = rows.Cells[0].Value; //fid
+                    newrow[1] = rows.Cells[1].Value; //orderno
+                    tempdt.Rows.Add(newrow);
+                }
+                //分别获取不重复的FID及ORDERNO
+                var fidlist = GetSearchList(tempdt, 0);
+                var ordernolist = GetSearchList(tempdt, 1);
+                //显示及决定是否删除
+                var clickMessage =  $"您所选择需要删除的单据为:\n {ordernolist} \n 是否继续? \n 注:删除后不能恢复, \n 请谨慎处理.";
 
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    task.TaskId = "6.2";
+                    task.Fidlist = fidlist;
+                    task.StartTask();
+                    if(!task.ResultMark) throw new Exception("删除不成功,请联系管理员.");
+                    else
+                    {
+                        MessageBox.Show($"删除成功", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //刷新Gridview
+                        OnSearch();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -1763,7 +1796,35 @@ namespace BomOfferOrder.UI
         {
             try
             {
+                if (gvtempdtl.SelectedRows.Count == 0) throw new Exception("没有选中行,请选择后再继续");
+                //获取删除临时表
+                var tempdt = dbList.DelOrderDt();
+                //循将将所选择的行插入至tempdt内
+                foreach (DataGridViewRow rows in gvtempdtl.SelectedRows)
+                {
+                    var newrow = tempdt.NewRow();
+                    newrow[0] = rows.Cells[0].Value; //fid
+                    tempdt.Rows.Add(newrow);
+                }
+                //分别获取不重复的FID及ORDERNO
+                var fidlist = GetSearchList(tempdt, 0);
+                //显示及决定是否删除
+                var clickMessage = $"是否继续进行删除操作? \n 注:删除后不能恢复, \n 请谨慎处理.";
 
+                if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) ==
+                    DialogResult.Yes)
+                {
+                    task.TaskId = "6.3";
+                    task.Fidlist = fidlist;
+                    task.StartTask();
+                    if (!task.ResultMark) throw new Exception("删除不成功,请联系管理员.");
+                    else
+                    {
+                        MessageBox.Show($"删除成功", $"提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //最后执行刷新
+                        OnSearchTempDt();
+                    }
+                }
             }
             catch (Exception ex)
             {

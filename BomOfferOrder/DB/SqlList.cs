@@ -2117,6 +2117,58 @@
             return _result;
         }
 
+        /// <summary>
+        /// 单据删除
+        /// </summary>
+        /// <returns></returns>
+        public string Delorder(string fidlist)
+        {
+            _result = $@"
+                            DELETE FROM dbo.T_OfferOrderEntry
+                            WHERE EXISTS (
+				                            SELECT * FROM dbo.T_OfferOrderHead a
+				                            INNER JOIN dbo.T_OfferOrder b ON a.FId=b.FId
+				                            WHERE a.Headid=dbo.T_OfferOrderEntry.Headid
+				                            AND b.FId IN({fidlist})
+			                            )
 
+                            DELETE FROM dbo.T_OfferOrderHead 
+                            WHERE EXISTS (
+				                            SELECT * FROM dbo.T_OfferOrder a
+				                            WHERE dbo.T_OfferOrderHead.FId=a.FId
+				                            AND a.FId IN({fidlist})
+			                            )
+
+                            DELETE FROM dbo.T_OfferOrder WHERE fid IN({fidlist})
+                       ";
+            return _result;
+        }
+
+        /// <summary>
+        /// 暂存单据删除
+        /// </summary>
+        /// <returns></returns>
+        public string Deltemporder(string fidlist)
+        {
+            _result = $@"
+                            DELETE FROM dbo.T_TempOrderEntry
+                            WHERE EXISTS (
+			                                    SELECT * FROM dbo.T_TempOrderHead A
+				                                INNER JOIN dbo.T_TempOrder B ON A.FId=B.FId
+				                                WHERE A.Headid=dbo.T_TempOrderEntry.Headid
+				                                AND B.FId IN({fidlist})
+			                                )
+
+                            DELETE FROM dbo.T_TempOrderHead
+                            WHERE EXISTS (
+                                            SELECT * FROM dbo.T_TempOrder A
+				                            WHERE dbo.T_TempOrderHead.FId=A.FId
+				                            AND A.FId IN({fidlist})
+			                             )
+
+                            DELETE FROM dbo.T_TempOrder WHERE FId IN({fidlist})
+                       ";
+            return _result;
+        }
     }
 }

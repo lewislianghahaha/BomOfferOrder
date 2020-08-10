@@ -1593,6 +1593,34 @@ namespace BomOfferOrder.DB
             }
             return dt;
         }
+        
+        /// <summary>
+        /// 主窗体删除单据使用(包含暂存单据)
+        /// </summary>
+        /// <returns></returns>
+        public DataTable DelOrderDt()
+        {
+            var dt=new DataTable();
+            for (int i = 0; i < 2; i++)
+            {
+                var dc=new DataColumn();
+                switch (i)
+                {
+                    //Fid
+                    case 0:
+                        dc.ColumnName = "Fid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //orderno
+                    case 1:
+                        dc.ColumnName = "Orderno";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
 
     }
 }
