@@ -1353,16 +1353,17 @@ namespace BomOfferOrder.UI
                     var entryid = gvdtl.Rows[e.RowIndex].Cells[0].Value == DBNull.Value ? 0 : Convert.ToInt32(gvdtl.Rows[e.RowIndex].Cells[0].Value);
 
                     //根据‘物料名称’放到_materialdt进行查询
+                    //将所填的物料名称赋给matname内,用于显示在‘物料名称’项内
                     matname = materialname;
                     //检测到若materialname内包含%，即将%删除再进行查询
-                    materialname = matname.Contains("%") ? matname.Replace("%","") : matname;
-                    var dtlrows = _materialdt.Select("物料名称 like '%" + materialname + "%'");
+                    materialname = materialname.Contains("%") ? materialname.Replace("%","") : materialname;
+                    var dtlrows = _materialdt.Select("物料名称1 like '%" + materialname + "%'");
 
                     //若没有记录的话,就执行如下
                     //->change date:20191214:当发现所输入的物料名称没有在_materialdt存在时,不作异常提示,而是可正常输入,但FMATERIALID从0开始,并且‘物料名称’为空
                     if (dtlrows.Length == 0)
                     {
-                        GetMaterialDeatail(temprowid,entryid,materialid , materialname , dtlrows);
+                        GetMaterialDeatail(temprowid,entryid,materialid , matname, dtlrows);
                         #region Hide
                         //if (_dtl.Rows.Count == 0)
                         //{
@@ -1379,15 +1380,15 @@ namespace BomOfferOrder.UI
                     //若只有一行的话,就执行以下语句
                     if (dtlrows.Length == 1)
                     {
-                        GetMaterialDeatail(temprowid, entryid, materialid, materialname, dtlrows);
+                        GetMaterialDeatail(temprowid, entryid, materialid, matname, dtlrows);
                     }
                     //当发现有多行的话,就作出提示并执行以下语句
                     else if (dtlrows.Length > 1)
                     {
-                        var clickMessage = $"检测到所输入的物料名称'{materialname}'有多条可选择的记录, \n 是否继续?";
+                        var clickMessage = $"检测到所输入的物料名称'{matname}'有多条可选择的记录, \n 是否继续?";
                         if (MessageBox.Show(clickMessage, $"提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                         {
-                            GetMaterialDeatail(temprowid, entryid,materialid,materialname,dtlrows);
+                            GetMaterialDeatail(temprowid, entryid,materialid, matname, dtlrows);
                         }
                         else
                         {
@@ -1477,7 +1478,7 @@ namespace BomOfferOrder.UI
                 var newrow = resultTable.NewRow();
                 newrow[1] = dtlrows[0][0];   //物料编码ID
                 newrow[2] = dtlrows[0][1];   //物料编码
-                newrow[3] = dtlrows[0][2];   //物料名称
+                newrow[3] = dtlrows[0][2];   //物料名称 
                 newrow[6] = dtlrows[0][6];   //物料单价 
                 resultTable.Rows.Add(newrow);
 
@@ -1727,8 +1728,10 @@ namespace BomOfferOrder.UI
         private DataTable GetMaterialDetailDt(string materialname)
         {
             var dt = _materialdt.Clone();
+            //检测到若materialname内包含%，即将%删除再进行查询
+            materialname = materialname.Contains("%") ? materialname.Replace("%", "") : materialname;
             //根据materialname在_materialdt内查询并将结果插入至dt内
-            var dtlrows = _materialdt.Select("物料名称 like '%"+ materialname +"%'");
+            var dtlrows = _materialdt.Select("物料名称1 like '%"+ materialname +"%'");
 
             for (var i = 0; i < dtlrows.Length; i++)
             {

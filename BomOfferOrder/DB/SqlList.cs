@@ -195,10 +195,10 @@
             {
                 _result = $@"
                             SELECT a.FMATERIALID,a.FNUMBER 物料编码,
-                                   CASE CHARINDEX('%',d.FNAME) WHEN 0 THEN d.FNAME ELSE REPLACE(D.FNAME,'%','') END 物料名称,
-                                   --d.FNAME 物料名称,
+                                   d.FNAME 物料名称,
                                    c.FDATAVALUE 物料分组,
-                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格,
+                                   CASE CHARINDEX('%',d.FNAME) WHEN 0 THEN d.FNAME ELSE REPLACE(D.FNAME,'%','') END 物料名称1
 
                             FROM dbo.T_BD_MATERIAL a
                             INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -224,10 +224,10 @@
                 {
                     _result = $@"
                             SELECT a.FMATERIALID,a.FNUMBER 物料编码,
-                                   CASE CHARINDEX('%',d.FNAME) WHEN 0 THEN d.FNAME ELSE REPLACE(D.FNAME,'%','') END 物料名称,
-                                   --d.FNAME 物料名称,
+                                   d.FNAME 物料名称,
                                    c.FDATAVALUE 物料分组,
-                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格,
+                                   CASE CHARINDEX('%',d.FNAME) WHEN 0 THEN d.FNAME ELSE REPLACE(D.FNAME,'%','') END 物料名称1
 
                             FROM dbo.T_BD_MATERIAL a
                             INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -252,10 +252,10 @@
                 {
                     _result = $@"
                             SELECT a.FMATERIALID,a.FNUMBER 物料编码,
-                                    CASE CHARINDEX('%',d.FNAME) WHEN 0 THEN d.FNAME ELSE REPLACE(D.FNAME,'%','') END 物料名称,
-                                   --d.FNAME 物料名称,
+                                   d.FNAME 物料名称,
                                    c.FDATAVALUE 物料分组,
-                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格
+                                   d.FSPECIFICATION '规格型号',g.FNAME '基本单位',a.F_YTC_DECIMAL8 最新采购价格,
+                                   CASE CHARINDEX('%',d.FNAME) WHEN 0 THEN d.FNAME ELSE REPLACE(D.FNAME,'%','') END 物料名称1
 
                             FROM dbo.T_BD_MATERIAL a
                             INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
