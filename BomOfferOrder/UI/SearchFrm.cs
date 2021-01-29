@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using BomOfferOrder.Task;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace BomOfferOrder.UI
 {
@@ -472,7 +473,7 @@ namespace BomOfferOrder.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 bnPositionItem.Text = Convert.ToString(_pageCurrent);
             }
         }
@@ -489,11 +490,14 @@ namespace BomOfferOrder.UI
                 //每次选择新的“每页显示行数”，都要 1)将_pageChange标记设为true(即执行初始化方法) 2)将“当前页”初始化为1
                 _pageChange = true;
                 _pageCurrent = 1;
+                //将“上一页” “首页”设置为不可用
+                bnMovePreviousItem.Enabled = false;
+                bnMoveFirstItem.Enabled = false;
                 GridViewPageChange();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, $"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
