@@ -1109,7 +1109,7 @@ namespace BomOfferOrder.UI
             var dt = new DataTable();
 
             //创建表头
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 2; i++)
             {
                 var dc = new DataColumn();
                 switch (i)
