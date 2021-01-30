@@ -649,7 +649,7 @@ namespace BomOfferOrder.Task
                         }
                     }
 
-                    if (result == true)
+                    if (result)
                     {
                         //把每行增加到DataTable
                         dt.Rows.Add(dr);
