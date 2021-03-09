@@ -141,12 +141,12 @@ namespace BomOfferOrder.UI
             tctotalpage.Padding = new Point(CloseSize, CloseSize - 8);   //初始化时添加Tab Control控件各Page选项卡的额外宽与高(重)
 
             /////////暂存功能页///////////
-            bnMoveFirstItemtemp.Click += BnMoveFirstItemtemp_Click; ;
-            bnMovePreviousItemtemp.Click += BnMovePreviousItemtemp_Click; ;
-            bnMoveNextItemtemp.Click += BnMoveNextItemtemp_Click; ;
-            bnMoveLastItemtemp.Click += BnMoveLastItemtemp_Click; ;
-            bnPositionItemtemp.Leave += BnPositionItemtemp_Leave; ;
-            tmshowrowstemp.DropDownClosed += Tmshowrowstemp_DropDownClosed; ;
+            bnMoveFirstItemtemp.Click += BnMoveFirstItemtemp_Click;
+            bnMovePreviousItemtemp.Click += BnMovePreviousItemtemp_Click;
+            bnMoveNextItemtemp.Click += BnMoveNextItemtemp_Click;
+            bnMoveLastItemtemp.Click += BnMoveLastItemtemp_Click;
+            bnPositionItemtemp.Leave += BnPositionItemtemp_Leave;
+            tmshowrowstemp.DropDownClosed += Tmshowrowstemp_DropDownClosed;
             panel10.Visible = false;
             btnrefresh.Click += Btnrefresh_Click;
             tmshowtempdetail.Click += Tmshowtempdetail_Click;
