@@ -293,7 +293,7 @@ namespace BomOfferOrder.Task
                                       DataTable salespricedt, DataTable purchaseinstockdt, DataTable rencostdt)
         {
             var resultdt = new DataTable();
-
+            //var bb = string.Empty;
             try
             {
                 //定义结果临时表
@@ -327,7 +327,8 @@ namespace BomOfferOrder.Task
                 decimal pricekg = 0;
                 //定义‘每公斤材料成本单价’
                 decimal materialprice = 0;
-
+                //定义'净重'中间变量
+                decimal kg = 0;
 
                 //调用GenerateReportDt()用于获取‘标准成本单价’以及‘旧标准成本单价’
                 var tempdt = GenerateReportDt(sourcedt,bomdt,instockdt,priceListdt);
@@ -335,6 +336,7 @@ namespace BomOfferOrder.Task
                 //循环sourcedt
                 foreach (DataRow rows in sourcedt.Rows)
                 {
+                    //bb = Convert.ToString(rows[1]);
                     //计算‘销售价目表售价’
                     salesprice = GetSalesPrice(Convert.ToInt32(rows[0]),salespricedt);
 
@@ -359,7 +361,12 @@ namespace BomOfferOrder.Task
                     totalamount = Convert.ToDecimal(dtlrows[0][6]);     //标准成本单价
 
                     //计算‘每公斤材料成本单价’=('旧标准成本单价'/'重量')
-                    materialprice = rows[5] == DBNull.Value ? 0 : Convert.ToDecimal(decimal.Round(decimal.Round(oldtotalamount, 4) / decimal.Round(Convert.ToDecimal(rows[5]), 4), 4));
+                    if (rows[5] == DBNull.Value || Convert.ToDecimal(rows[5]) == 0)
+                    {
+                        kg = 0;
+                    }
+
+                    materialprice = kg == 0 ? 0 : Convert.ToDecimal(decimal.Round(decimal.Round(oldtotalamount, 4) / decimal.Round(Convert.ToDecimal(rows[5]), 4), 4));
 
                     //计算‘每公斤含税成本小计’=('每公斤材料成本单价'+'人工及制造费用')
                     kgtotal = decimal.Round(materialprice + rencost,4);
@@ -421,8 +428,9 @@ namespace BomOfferOrder.Task
                     resultdt.Rows.Add(newrow);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                //var a = bb+"_"+ex.Message;
                 resultdt.Rows.Clear();
                 resultdt.Columns.Clear();
             }
