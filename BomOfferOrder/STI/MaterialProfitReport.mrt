@@ -237,7 +237,7 @@
               <Name>Text9</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
-              <Text>旧标准
+              <Text>Bom
 成本单价</Text>
               <TextBrush>White</TextBrush>
               <Type>Expression</Type>
@@ -256,7 +256,7 @@
               <Name>Text11</Name>
               <Page isRef="3" />
               <Parent isRef="11" />
-              <Text>标准
+              <Text>基础资料值
 成本单价</Text>
               <TextBrush>White</TextBrush>
               <Type>Expression</Type>
@@ -2195,10 +2195,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>3/13/2020 2:44:52 PM</ReportChanged>
+  <ReportChanged>3/16/2021 11:32:49 AM</ReportChanged>
   <ReportCreated>2/13/2020 1:56:13 PM</ReportCreated>
   <ReportFile>D:\Project\K3Cloud_成本BOM报价单相关修改_20190828\Files\STI\MaterialProfitReport.mrt</ReportFile>
-  <ReportGuid>ed0a37254b794257bb5dd8678473edf7</ReportGuid>
+  <ReportGuid>ba673560cb8440c299bb9b4d27094ca4</ReportGuid>
   <ReportImage isNull="true" />
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
