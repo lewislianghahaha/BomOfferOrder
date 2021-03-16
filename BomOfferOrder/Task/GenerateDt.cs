@@ -327,8 +327,6 @@ namespace BomOfferOrder.Task
                 decimal pricekg = 0;
                 //定义‘每公斤材料成本单价’
                 decimal materialprice = 0;
-                //定义'净重'中间变量
-                decimal kg = 0;
 
                 //调用GenerateReportDt()用于获取‘标准成本单价’以及‘旧标准成本单价’
                 var tempdt = GenerateReportDt(sourcedt,bomdt,instockdt,priceListdt);
@@ -361,12 +359,11 @@ namespace BomOfferOrder.Task
                     totalamount = Convert.ToDecimal(dtlrows[0][6]);     //标准成本单价
 
                     //计算‘每公斤材料成本单价’=('旧标准成本单价'/'重量')
-                    if (rows[5] == DBNull.Value || Convert.ToDecimal(rows[5]) == 0)
-                    {
-                        kg = 0;
-                    }
-
-                    materialprice = kg == 0 ? 0 : Convert.ToDecimal(decimal.Round(decimal.Round(oldtotalamount, 4) / decimal.Round(Convert.ToDecimal(rows[5]), 4), 4));
+                    materialprice = rows[5] == DBNull.Value || Convert.ToDecimal(rows[5]) == 0
+                        ? 0
+                        : Convert.ToDecimal(
+                            decimal.Round(
+                                decimal.Round(oldtotalamount, 4)/decimal.Round(Convert.ToDecimal(rows[5]), 4), 4));
 
                     //计算‘每公斤含税成本小计’=('每公斤材料成本单价'+'人工及制造费用')
                     kgtotal = decimal.Round(materialprice + rencost,4);
