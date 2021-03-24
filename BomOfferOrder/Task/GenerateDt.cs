@@ -335,8 +335,8 @@ namespace BomOfferOrder.Task
                 foreach (DataRow rows in sourcedt.Rows)
                 {
                     //bb = Convert.ToString(rows[1]);
-                    //计算‘销售价目表售价’
-                    salesprice = GetSalesPrice(Convert.ToInt32(rows[0]),salespricedt);
+                    //计算‘销售价目表售价’='销售价目表单价'*'U订货计价规格' change date:20210324
+                    salesprice = GetSalesPrice(Convert.ToInt32(rows[0]),salespricedt) * Convert.ToDecimal(rows[10]);
 
                     //计算‘包装罐’
                     guan = GuanBoxName(0,Convert.ToInt32(rows[0]),bomdt);
@@ -435,7 +435,7 @@ namespace BomOfferOrder.Task
         }
 
         /// <summary>
-        /// 计算销售价目表售价
+        /// 计算销售价目表售价  公式‘销售价目表售价’='销售价目表单价'*'U订货计价规格'
         /// 根据FMATERIALID查找出销售价目表‘价格’ 保留四位小数
         /// </summary>
         /// <param name="fmaterialid"></param>

@@ -579,6 +579,7 @@ namespace BomOfferOrder.UI
                             newrow[7] = rows[7];         //分类
                             newrow[8] = rows[8];         //品类
                             newrow[9] = rows[9];         //销售计价单位
+                            newrow[10] = rows[10];       //U订货计价规格
                             materialdt.Rows.Add(newrow);
                         }
                     }

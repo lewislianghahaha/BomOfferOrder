@@ -1468,7 +1468,7 @@
         }
 
         /// <summary>
-        /// 批量成本查询-报表使用
+        /// 批量成本查询及产品成本毛利润表-报表使用
         /// </summary>
         /// <param name="searchid"></param>
         /// <param name="searchvalue"></param>
@@ -1488,7 +1488,8 @@
                                        --CASE A.F_YTC_DECIMAL7 WHEN 0 THEN a.F_YTC_DECIMAL1 ELSE E.FNETWEIGHT/A.F_YTC_DECIMAL7 END '密度(KG/L)', /*a.F_YTC_DECIMAL1*/
                                        e.FNETWEIGHT '净重',
                                        a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类,
-                                       z2.FNAME 销售计价单位
+                                       z2.FNAME 销售计价单位,
+                                       a.F_YTC_DECIMAL7 U订货计价规格
 
                                 FROM dbo.T_BD_MATERIAL a
                                 INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID
@@ -1535,7 +1536,8 @@
 										--CASE A.F_YTC_DECIMAL7 WHEN 0 THEN a.F_YTC_DECIMAL1 ELSE E.FNETWEIGHT/A.F_YTC_DECIMAL7 END '密度(KG/L)', /*a.F_YTC_DECIMAL1*/
                                         e.FNETWEIGHT '净重',
                                         a.F_YTC_DECIMAL '罐/箱',x1.FDATAVALUE 分类,y1.FDATAVALUE 品类,
-                                        z2.FNAME 销售计价单位
+                                        z2.FNAME 销售计价单位,
+                                        a.F_YTC_DECIMAL7 U订货计价规格
 
                                 FROM dbo.T_BD_MATERIAL a
                                 INNER JOIN dbo.T_BAS_ASSISTANTDATAENTRY b ON a.F_YTC_ASSISTANT5=b.FENTRYID

@@ -216,6 +216,7 @@ namespace BomOfferOrder.UI.ReportFrm
                     newrow[7] = dtlrow[0][7];   //分类
                     newrow[8] = dtlrow[0][8];   //品类
                     newrow[9] = dtlrow[0][9];   //销售计价单位
+                    newrow[10] = dtlrow[0][10]; //U订货计价规格
                     _resultTable.Rows.Add(newrow);
                 }
 

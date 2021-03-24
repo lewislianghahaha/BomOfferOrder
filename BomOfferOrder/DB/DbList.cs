@@ -1001,7 +1001,7 @@ namespace BomOfferOrder.DB
         public DataTable MarkMaterialReportTemp()
         {
             var dt=new DataTable();
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 11; i++)
             {
                 var dc = new DataColumn();
 
@@ -1056,6 +1056,11 @@ namespace BomOfferOrder.DB
                     case 9:
                         dc.ColumnName = "销售计价单位";
                         dc.DataType = Type.GetType("System.String");
+                        break;
+                    //U订货计价规格
+                    case 10:
+                        dc.ColumnName = "U订货计价规格";
+                        dc.DataType = Type.GetType("System.Decimal");
                         break;
                 }
                 dt.Columns.Add(dc);
