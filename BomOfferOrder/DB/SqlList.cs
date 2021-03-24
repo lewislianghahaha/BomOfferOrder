@@ -1630,14 +1630,14 @@
 				                             INNER JOIN dbo.T_BD_CUSTOMER_L x2 ON x1.FCUSTID=x2.FCUSTID
 				                             WHERE A.FID=X.FID
 				                             AND x2.FLOCALEID=2052
-				                             AND (X1.FNUMBER LIKE 'INT-%' OR x2.FNAME LIKE '%晶创%') --将晶创国内及海外的客户排除
+				                             AND (/*X1.FNUMBER LIKE 'INT-%' OR*/ x2.FNAME LIKE '%晶创%') --将晶创国内及晶创海外的客户排除
 			                              ) 
-                            AND NOT EXISTS (
+                           /* AND NOT EXISTS (
 				                              SELECT NULL FROM (
                                                 SELECT COUNT(*) NUM FROM dbo.T_SAL_APPLYCUSTOMER Y
 					                            WHERE A.FID=Y.FID)Z
 				                              WHERE Z.NUM=1
-                                           )   --当‘适用客户’记录行数只有一行时排除
+                                           )*/   --当‘适用客户’记录行数只有一行时排除
                             --AND B.FMATERIALID='124439'--'420210'--'830727'--'126340'--'123816'--'126340'
                             ORDER BY a.FID DESC
                         ";
