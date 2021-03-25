@@ -1619,9 +1619,12 @@
         public string SearchSalesInstock()
         {
             _result = @"
-                            SELECT a.FID,B.FMATERIALID,B.FPRICE
+                            SELECT a.FID,B.FMATERIALID,B.FPRICE,D.FNAME
                             FROM dbo.T_SAL_PRICELIST A
                             INNER JOIN dbo.T_SAL_PRICELISTENTRY B ON A.FID=B.FID
+                            INNER JOIN T_BD_CURRENCY C ON A.FCURRENCYID=C.FCURRENCYID
+                            INNER JOIN dbo.T_BD_CURRENCY_L D ON C.FCURRENCYID=D.FCURRENCYID AND D.FLOCALEID=2052
+
                             WHERE A.FDOCUMENTSTATUS='C'  --'已审核' 
                             AND a.FFORBIDSTATUS='A'      --末失效
                             AND (a.FNUMBER NOT LIKE '%Z%' and a.FNUMBER NOT LIKE '%z%')  --编号不能包含Z
