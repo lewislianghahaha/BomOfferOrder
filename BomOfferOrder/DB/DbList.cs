@@ -1075,7 +1075,7 @@ namespace BomOfferOrder.DB
         public DataTable ReportPrintTempdt()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 12; i++)
+            for (var i = 0; i < 13; i++)
             {
                 var dc = new DataColumn();
 
@@ -1140,6 +1140,11 @@ namespace BomOfferOrder.DB
                     case 11:
                         dc.ColumnName = "Markid";
                         dc.DataType = Type.GetType("System.Int32"); 
+                        break;
+                    //colChangeColId(用于标记‘毛利润报表’是否为红色显示 0:是 1:否)
+                    case 12:
+                        dc.ColumnName = "colChangeColId";
+                        dc.DataType = Type.GetType("System.Int32");
                         break;
                 }
                 dt.Columns.Add(dc);
@@ -1320,7 +1325,7 @@ namespace BomOfferOrder.DB
         public DataTable PrintProfitReportTempdt()
         {
             var dt=new DataTable();
-            for (var i = 0; i < 24; i++)
+            for (var i = 0; i < 25; i++)
             {
                 var dc = new DataColumn();
 
@@ -1445,6 +1450,11 @@ namespace BomOfferOrder.DB
                     case 23:
                         dc.ColumnName = "品类";
                         dc.DataType = Type.GetType("System.String");
+                        break;
+                    //colChangeColId
+                    case 24:
+                        dc.ColumnName = "colChangeColId";
+                        dc.DataType = Type.GetType("System.Int32"); 
                         break;
                 }
                 dt.Columns.Add(dc);

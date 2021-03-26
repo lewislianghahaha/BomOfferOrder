@@ -6,7 +6,7 @@
     <DataSources isList="true" count="1">
       <MaterialProfit Ref="2" type="DataTableSource" isKey="true">
         <Alias>MaterialProfit</Alias>
-        <Columns isList="true" count="24">
+        <Columns isList="true" count="25">
           <value>物料编码,System.String</value>
           <value>物料名称,System.String</value>
           <value>规格型号,System.String</value>
@@ -31,6 +31,7 @@
           <value>分类,System.String</value>
           <value>品类,System.String</value>
           <value>币别,System.String</value>
+          <value>ColChangeColId,System.Int32</value>
         </Columns>
         <Dictionary isRef="1" />
         <Name>MaterialProfit</Name>
@@ -777,6 +778,16 @@
           <ClientRectangle>0,4,40,0.6</ClientRectangle>
           <Components isList="true" count="70">
             <Text2 Ref="60" type="Text" isKey="true">
+              <BeforePrintEvent>if(MaterialProfit.ColChangeColId==System.Convert.ToDecimal(0))
+{
+   Text2.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);
+   Text4.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);	
+}
+else if(MaterialProfit.ColChangeColId==System.Convert.ToDecimal(1))
+{
+   Text2.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Black);
+   Text4.TextBrush=new Stimulsoft.Base.Drawing.StiSolidBrush(System.Drawing.Color.Red);
+}</BeforePrintEvent>
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,0,2.2,0.6</ClientRectangle>
@@ -2286,10 +2297,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>3/24/2021 3:05:47 PM</ReportChanged>
+  <ReportChanged>3/26/2021 7:53:01 AM</ReportChanged>
   <ReportCreated>2/13/2020 1:56:13 PM</ReportCreated>
   <ReportFile>D:\Project\K3Cloud_成本BOM报价单相关修改_20190828\Files\STI\MaterialProfitReport.mrt</ReportFile>
-  <ReportGuid>c5442da19e2040728ba1c5d3865e44df</ReportGuid>
+  <ReportGuid>a328bbf538914ae3bc22c41760041700</ReportGuid>
   <ReportImage isNull="true" />
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>

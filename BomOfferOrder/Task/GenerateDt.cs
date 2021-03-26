@@ -299,11 +299,13 @@ namespace BomOfferOrder.Task
                                       DataTable salespricedt, DataTable purchaseinstockdt, DataTable rencostdt)
         {
             var resultdt = new DataTable();
-            //var bb = string.Empty;
+
             try
             {
                 //定义结果临时表
                 resultdt = dbList.PrintProfitReportTempdt();
+
+                #region 参数变量
                 //定义‘销售价目表售价’
                 decimal salesprice = 0;
                 //定义‘包装罐’
@@ -333,6 +335,9 @@ namespace BomOfferOrder.Task
                 decimal pricekg = 0;
                 //定义‘每公斤材料成本单价’
                 decimal materialprice = 0;
+                //定义‘毛利润报表’行是否标红(0:是 1:否)
+                var colChangeColId = 1;
+                #endregion
 
                 //调用GenerateReportDt()用于获取‘标准成本单价’以及‘旧标准成本单价’
                 var tempdt = GenerateReportDt(sourcedt,bomdt,instockdt,priceListdt);
@@ -340,7 +345,6 @@ namespace BomOfferOrder.Task
                 //循环sourcedt
                 foreach (DataRow rows in sourcedt.Rows)
                 {
-                    //bb = Convert.ToString(rows[1]);
                     //计算‘销售价目表售价’
                     salesprice = GetSalesPrice(Convert.ToInt32(rows[0]), salespricedt);//* Convert.ToDecimal(rows[10]);
 
@@ -363,6 +367,7 @@ namespace BomOfferOrder.Task
                     var dtlrows = tempdt.Select("物料编码='" + rows[1] + "'");
                     oldtotalamount = Convert.ToDecimal(dtlrows[0][5]);  //旧标准成本单价
                     totalamount = Convert.ToDecimal(dtlrows[0][6]);     //标准成本单价
+                    colChangeColId = Convert.ToInt32(dtlrows[0][12]);   //定义‘毛利润报表’行是否标红(0:是 1:否) 注:当‘单价’为0时,就标红
 
                     //计算‘每公斤材料成本单价’=('旧标准成本单价'/'重量')
                     materialprice = rows[5] == DBNull.Value || Convert.ToDecimal(rows[5]) == 0
@@ -375,7 +380,6 @@ namespace BomOfferOrder.Task
                     kgtotal = decimal.Round(materialprice + rencost,4);
 
                     //计算‘计价单位单位成本(千克)’=(若计价单位为KG,使用‘人工及制造费用’;反之为空)
-                    //
                     pricekg = Convert.ToString(rows[9]) == "千克" ? rencost : Convert.ToDecimal(null);
 
                     //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空,反之,使用‘换算率’*‘每公斤含税成本小计’)
@@ -430,12 +434,12 @@ namespace BomOfferOrder.Task
                     newrow[21] = decimal.Round(Convert.ToDecimal(boxprice), 4);                               //纸箱单价
                     newrow[22] = rows[7];                                                                     //分类
                     newrow[23] = rows[8];                                                                     //品类
+                    newrow[24] = colChangeColId;                                                              //定义‘毛利润报表’行是否标红(0:是 1:否) 注:当‘单价’为0时,就标红
                     resultdt.Rows.Add(newrow);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //var a = bb+"_"+ex.Message;
                 resultdt.Rows.Clear();
                 resultdt.Columns.Clear();
             }
@@ -582,11 +586,13 @@ namespace BomOfferOrder.Task
                 //定义结果临时表
                 resultdt = dbList.ReportPrintTempdt();
                 //定义Mark bool值
-                var mark=1;
+                var mark = 1;
                 //定义‘父项金额’(标准成本单价使用)
                 decimal totalamount = 0;
                 //定义‘父项金额’(旧标准成本单价使用)
                 decimal oldtotalamount = 0;
+                //定义‘毛利润报表’行是否标红(0:是 1:否)
+                var colChangeColId = 1;
 
                 //循环sourcedt
                 foreach (DataRow rows in sourcedt.Rows)
@@ -626,10 +632,17 @@ namespace BomOfferOrder.Task
                         {
                             mark = 1;
                         }
-                       // mark = !Convert.ToString(row[2]).Contains("拉盖") || !Convert.ToString(row[2]).Contains("损耗") && Convert.ToDecimal(row[5]) == 0 ? 0 : 1;
                         if (mark == 0)
                            break;
                     }
+
+                    //定义‘毛利润报表’行是否标红(0:是 1:否) 注:当‘单价’为0时,就标红
+                    foreach (DataRow row in tempdt.Rows)
+                    {
+                        colChangeColId = Convert.ToDecimal(row[4]) == 0 ? 0 : 1;
+                        if (colChangeColId == 0) break;
+                    }
+
                     //累加得出‘父项金额’(标准成本单价使用)
                     foreach (DataRow row in tempdt.Rows)
                     {
@@ -643,13 +656,14 @@ namespace BomOfferOrder.Task
 
                     //将相关内容插入至resultdt内
                     resultdt.Merge(MarkRecordToReportDt(fmaterialCode,productname,spec,mi,weight,unitname,mark,
-                                                        oldtotalamount,totalamount,resultdt));
+                                                        oldtotalamount,totalamount,resultdt,colChangeColId));
 
                     //最后将tempdt行清空以及相中间变量清空,待下一次循环使用
                     tempdt.Rows.Clear();
                     totalamount = 0;
                     oldtotalamount = 0;
                     mark = 1;
+                    colChangeColId = 1;
                 }
             }
             catch (Exception)
@@ -699,8 +713,8 @@ namespace BomOfferOrder.Task
                     newrow[1] = dtlrows[i][2];                                                 //FMATERIALID(表体物料ID)
                     newrow[2] = dtlrows[i][4];                                                 //物料名称
                     newrow[3] = qtytemp;                                                       //用量
-                    newrow[4] = dtlrows[i][10];                                                //单价(标准单价使用)
-                    newrow[5] = oldprice;                                                      //旧标准单价(旧标准成本单价使用)
+                    newrow[4] = dtlrows[i][10];                                                //单价 (标准单价使用)
+                    newrow[5] = oldprice;                                                      //旧标准单价 (旧标准成本单价使用)
                     newrow[6] = decimal.Round(qtytemp * Convert.ToDecimal(dtlrows[i][10]),12); //子项金额=用量*单价 (标准成本单价使用)
                     newrow[7] = decimal.Round(qtytemp * oldprice,12);                          //旧子项金额=用量*单价 (旧标准成本单价使用)
                     resultdt.Rows.Add(newrow);
@@ -731,9 +745,10 @@ namespace BomOfferOrder.Task
         /// <param name="oldtotalamount">父项金额-旧标准成本单价使用</param>
         /// <param name="totalamount">父项金额-标准成本单价使用</param>
         /// <param name="resultdt">整理后的临时表</param>
+        /// <param name="colChangeColId">是否标红标记(毛利润报表)</param>
         /// <returns></returns>
         private DataTable MarkRecordToReportDt(string fmaterialCode, string productname,string spec,decimal mi,decimal weight,
-                                               string unitname,int mark,decimal oldtotalamount,decimal totalamount,DataTable resultdt)
+                                               string unitname,int mark,decimal oldtotalamount,decimal totalamount,DataTable resultdt,int colChangeColId)
         {
             var newrow = resultdt.NewRow();
             newrow[0] = fmaterialCode;                                                          //物料编码
@@ -748,6 +763,7 @@ namespace BomOfferOrder.Task
             newrow[9] = weight == 0 ? totalamount : decimal.Round(totalamount/weight, 6);       //重量成本单价=标准成本单价/重量
             newrow[10] = DBNull.Value;                                                          //人工用制造费用
             newrow[11] = mark;                                                                  //Markid
+            newrow[12] = colChangeColId;                                                        //ColChangeColId
             resultdt.Rows.Add(newrow);
             return resultdt;
         }

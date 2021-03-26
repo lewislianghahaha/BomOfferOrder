@@ -296,7 +296,6 @@ namespace BomOfferOrder.UI
 
         /// <summary>
         /// 删除明细行
-        /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -894,8 +893,8 @@ namespace BomOfferOrder.UI
                 //‘创建’状态-“生成成本BOM报价单”使用
                 if (funState == "C")
                 {
-                    //用于记录新增行时的行ID,更新明细行信息时使用
-                    var temprowid = Dtl.Rows.Count;
+                    //用于记录新增行时的行ID,更新明细行信息时使用(注:若DTL为NULL,即将temprowid=0)
+                    var temprowid = Dtl?.Rows.Count ?? 0;
 
                     //循环获取值赋给对应的控件内
                     foreach (DataRow rows in sourcedt.Rows)
