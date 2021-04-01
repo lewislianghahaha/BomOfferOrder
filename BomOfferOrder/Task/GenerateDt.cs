@@ -386,7 +386,7 @@ namespace BomOfferOrder.Task
                     //price = Convert.ToString(rows[9]) == "千克"
                     //? 0 : decimal.Round(rows[4]==DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4) * kgtotal, 4);
 
-                    //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空(0),若为‘罐’使用Bom成本单价+(人工制造费用*重量/换算率) 反之,使用‘换算率’*‘每公斤含税成本小计’)
+                    //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空(0),若为‘罐’使用Bom成本单价+(人工制造费用*重量) 反之,使用‘换算率’*‘每公斤含税成本小计’)
                     //change date:20210401
                     switch (Convert.ToString(rows[9]))
                     {
@@ -395,8 +395,7 @@ namespace BomOfferOrder.Task
                             break;
                         case "罐":
                             var nkg = rows[5] == DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[5]), 4);
-                            var tran = rows[4] == DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4);
-                            price = oldtotalamount+(decimal.Round(rencost, 4)* nkg / tran);
+                            price = oldtotalamount+(decimal.Round(rencost, 4)* nkg);
                             break;
                         default:
                             price = decimal.Round(rows[4] == DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4)*kgtotal, 4);
