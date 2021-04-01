@@ -383,8 +383,25 @@ namespace BomOfferOrder.Task
                     pricekg = Convert.ToString(rows[9]) == "千克" ? rencost : Convert.ToDecimal(null);
 
                     //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空,反之,使用‘换算率’*‘每公斤含税成本小计’)
-                    price = Convert.ToString(rows[9]) == "千克"
-                    ? 0 : decimal.Round(rows[4]==DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4) * kgtotal, 4);
+                    //price = Convert.ToString(rows[9]) == "千克"
+                    //? 0 : decimal.Round(rows[4]==DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4) * kgtotal, 4);
+
+                    //计算‘计价单位单位成本(套/升/罐/桶)’=(若计价单位为KG,即为空(0),若为‘罐’使用Bom成本单价+(人工制造费用*重量/换算率) 反之,使用‘换算率’*‘每公斤含税成本小计’)
+                    //change date:20210401
+                    switch (Convert.ToString(rows[9]))
+                    {
+                        case "千克":
+                            price = 0;
+                            break;
+                        case "罐":
+                            var nkg = rows[5] == DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[5]), 4);
+                            var tran = rows[4] == DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4);
+                            price = oldtotalamount+(decimal.Round(rencost, 4)* nkg / tran);
+                            break;
+                        default:
+                            price = decimal.Round(rows[4] == DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4)*kgtotal, 4);
+                            break;
+                    }
 
                     //计算‘计价成本’=(若计价单位为KG,就取‘每公斤含税成本小计’值;反之,取'计价单位单位成本(套/升/罐/桶)'值)
                     //change date:若计价单位为套,公式为:净重*每公斤含税成本小计
@@ -397,7 +414,7 @@ namespace BomOfferOrder.Task
                             zichenbin = kgtotal * decimal.Round(Convert.ToDecimal(rows[5]), 4);
                             break;
                         default:
-                            zichenbin = price;
+                            zichenbin = decimal.Round(price,4);
                             break;
                     }
 
@@ -413,14 +430,14 @@ namespace BomOfferOrder.Task
                     newrow[1] = rows[2];                                                                      //产品名称
                     newrow[2] = rows[3];                                                                      //规格型号
                     newrow[3] = rows[6] == DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[6]), 4);   //罐箱
-                    newrow[4] = oldtotalamount;                                                               //旧标准成本单价
-                    newrow[5] = totalamount;                                                                  //标准成本单价
+                    newrow[4] = oldtotalamount;                                                               //旧标准成本单价(Bom成本单价)
+                    newrow[5] = totalamount;                                                                  //标准成本单价(基础资料值成本单价)
                     newrow[6] = rows[9];                                                                      //销售计价单位
                     newrow[7] = decimal.Round(salesprice, 4);                                                 //销售价目表售价
                     newrow[8] = _currencyname;                                                                //币别
                     newrow[9] = mao;                                                                          //毛利润率
                     newrow[10] = zichenbin;                                                                   //计价成本
-                    newrow[11] = price;                                                                       //计价单位单位成本(套/升/罐/桶)
+                    newrow[11] = decimal.Round(price,4);                                                      //计价单位单位成本(套/升/罐/桶)
                     newrow[12] = decimal.Round(pricekg, 4);                                                   //计价单位单位成本(千克)
 
                     newrow[13] = rows[4] == DBNull.Value ? 0 : decimal.Round(Convert.ToDecimal(rows[4]), 4);  //换算率
