@@ -1253,7 +1253,8 @@
 	                            )x ON x.FId=a.FId
                             )Y
                             WHERE Y.创建人='{cratename}'
-                            and Y.创建日期 >= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                            and Y.创建日期 >= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{dpstart}'),23)
+                            AND Y.创建日期 <= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{dpend}'),23)
                             order by Y.创建日期 desc  
                             ";
                 }
@@ -1293,7 +1294,8 @@
 	                            )x ON x.FId=a.FId
                             )Y
                             WHERE Y.创建人='{cratename}'
-                            and Y.审核日期 >= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                            and Y.审核日期 >= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{dpstart}'),23)
+                            and Y.审核日期 <= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{dpend}'),23)
                             order by Y.创建日期 desc  
                             ";
                 }
