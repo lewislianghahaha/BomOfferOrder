@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SearchFrm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.txtvalue = new System.Windows.Forms.TextBox();
-            this.dtpdt = new System.Windows.Forms.DateTimePicker();
+            this.dpstart = new System.Windows.Forms.DateTimePicker();
             this.comstatus = new System.Windows.Forms.ComboBox();
             this.btnsearch = new System.Windows.Forms.Button();
             this.comselectvalue = new System.Windows.Forms.ComboBox();
@@ -60,6 +60,8 @@
             this.tmshowdetail = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tmbackconfirm = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
+            this.dpend = new System.Windows.Forms.DateTimePicker();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bngat)).BeginInit();
@@ -73,8 +75,10 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.dpend);
+            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.txtvalue);
-            this.panel1.Controls.Add(this.dtpdt);
+            this.panel1.Controls.Add(this.dpstart);
             this.panel1.Controls.Add(this.comstatus);
             this.panel1.Controls.Add(this.btnsearch);
             this.panel1.Controls.Add(this.comselectvalue);
@@ -91,12 +95,12 @@
             this.txtvalue.Size = new System.Drawing.Size(172, 21);
             this.txtvalue.TabIndex = 12;
             // 
-            // dtpdt
+            // dpstart
             // 
-            this.dtpdt.Location = new System.Drawing.Point(155, 3);
-            this.dtpdt.Name = "dtpdt";
-            this.dtpdt.Size = new System.Drawing.Size(172, 21);
-            this.dtpdt.TabIndex = 20;
+            this.dpstart.Location = new System.Drawing.Point(155, 3);
+            this.dpstart.Name = "dpstart";
+            this.dpstart.Size = new System.Drawing.Size(172, 21);
+            this.dpstart.TabIndex = 20;
             // 
             // comstatus
             // 
@@ -109,9 +113,10 @@
             // 
             // btnsearch
             // 
-            this.btnsearch.Location = new System.Drawing.Point(339, 2);
+            this.btnsearch.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnsearch.Location = new System.Drawing.Point(852, 0);
             this.btnsearch.Name = "btnsearch";
-            this.btnsearch.Size = new System.Drawing.Size(75, 23);
+            this.btnsearch.Size = new System.Drawing.Size(75, 27);
             this.btnsearch.TabIndex = 21;
             this.btnsearch.Text = "查询";
             this.btnsearch.UseVisualStyleBackColor = true;
@@ -335,6 +340,22 @@
             this.tmbackconfirm.Size = new System.Drawing.Size(124, 22);
             this.tmbackconfirm.Text = "反审核";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(334, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(11, 12);
+            this.label1.TabIndex = 23;
+            this.label1.Text = "-";
+            // 
+            // dpend
+            // 
+            this.dpend.Location = new System.Drawing.Point(352, 3);
+            this.dpend.Name = "dpend";
+            this.dpend.Size = new System.Drawing.Size(172, 21);
+            this.dpend.TabIndex = 24;
+            // 
             // SearchFrm
             // 
             this.AcceptButton = this.btnsearch;
@@ -365,7 +386,7 @@
 
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnsearch;
-        private System.Windows.Forms.DateTimePicker dtpdt;
+        private System.Windows.Forms.DateTimePicker dpstart;
         private System.Windows.Forms.ComboBox comselectvalue;
         private System.Windows.Forms.TextBox txtvalue;
         private System.Windows.Forms.Panel panel2;
@@ -393,5 +414,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem tmbackconfirm;
         private System.Windows.Forms.ComboBox comstatus;
+        private System.Windows.Forms.DateTimePicker dpend;
+        private System.Windows.Forms.Label label1;
     }
 }

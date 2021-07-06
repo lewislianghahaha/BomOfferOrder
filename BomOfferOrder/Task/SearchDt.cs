@@ -226,10 +226,12 @@ namespace BomOfferOrder.Task
         /// </summary>
         /// <param name="typeid"></param>
         /// <param name="value"></param>
+        /// <param name="dpstart">查询日期-开始日期</param>
+        /// <param name="dpend">查询日期-结束日期</param>
         /// <returns></returns>
-        public DataTable SearchBomOrder(int typeid, string value)
+        public DataTable SearchBomOrder(int typeid, string value, string dpstart, string dpend)
         {
-            _sqlscript = sqlList.SearchBomList(typeid, value,"");
+            _sqlscript = sqlList.SearchBomList(typeid, value,"",dpstart,dpend);
             return UseSqlSearchIntoDt(1,_sqlscript);
         }
 
@@ -239,10 +241,12 @@ namespace BomOfferOrder.Task
         /// <param name="typeid"></param>
         /// <param name="value"></param>
         /// <param name="createname"></param>
+        /// <param name="dpstart"></param>
+        /// <param name="dpend"></param>
         /// <returns></returns>
-        public DataTable SearchMainBomOrder(int typeid, string value, string createname)
+        public DataTable SearchMainBomOrder(int typeid, string value, string createname,string dpstart,string dpend)
         {
-            _sqlscript = sqlList.SearchBomList(typeid, value, createname);
+            _sqlscript = sqlList.SearchBomList(typeid, value, createname,dpstart,dpend);
             return UseSqlSearchIntoDt(1, _sqlscript);
         }
 

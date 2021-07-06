@@ -626,7 +626,7 @@
         /// 注:找出除登入用户外关联的用户单据记录(前提:Createname为空时)
         /// </summary>
         /// <returns></returns>
-        public string SearchBomList(int typeid,string value,string cratename)
+        public string SearchBomList(int typeid,string value,string cratename,string dpstart,string dpend)
         {
             if (cratename == "")
             {
@@ -876,7 +876,8 @@
                                           )            
 
                                 )Y
-                                WHERE Y.创建日期 >= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                                WHERE Y.创建日期 >= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{dpstart}'),23)
+                                AND Y.创建日期 <= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{dpend}'),23)
                                 ORDER BY Y.创建日期 DESC
                             ";
                 }
@@ -952,7 +953,8 @@
                                           )            
 
                                 )Y
-                                WHERE Y.审核日期 >= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{value}'),23)
+                                WHERE Y.审核日期 >= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{dpstart}'),23)
+                                AND Y.审核日期 <= CONVERT(VARCHAR(100),CONVERT(DATETIME,'{dpend}'),23)
                                 ORDER BY Y.创建日期 DESC
                             ";
                 }

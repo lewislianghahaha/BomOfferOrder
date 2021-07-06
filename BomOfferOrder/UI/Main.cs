@@ -66,8 +66,8 @@ namespace BomOfferOrder.UI
         public Main()
         {
             InitializeComponent();
-            OnInitialize();
             OnRegisterEvents();
+            OnInitialize();
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace BomOfferOrder.UI
             tmshowrows.DropDownClosed += Tmshowrows_DropDownClosed;
             panel8.Visible = false;
 
-            dtpdt.Enabled = false;
+            dpstart.Enabled = false;
             tctotalpage.DrawItem += Tctotalpage_DrawItem;
             tctotalpage.MouseDown += Tctotalpage_MouseDown;
             tctotalpage.Padding = new Point(CloseSize, CloseSize - 8);   //初始化时添加Tab Control控件各Page选项卡的额外宽与高(重)
@@ -167,15 +167,17 @@ namespace BomOfferOrder.UI
 
             switch (typeId)
             {
-                case 0:
-                case 1:
+                case 0:   //OA流水号
+                case 1:   //产品名称
                     task.SearchValue = txtvalue.Text;
                     break;
-                case 2:
-                case 3:
-                    task.SearchValue = Convert.ToString(dtpdt.Value.Date, CultureInfo.InvariantCulture);
+                case 2:   //创建日期
+                case 3:   //审核日期
+                    //task.SearchValue = Convert.ToString(dpstart.Value.Date, CultureInfo.InvariantCulture);
+                    task.Dpstart = Convert.ToString(dpstart.Value.Date);
+                    task.Dpend = Convert.ToString(dpend.Value.Date);
                     break;
-                default:
+                default:  //单据状态  研发类别
                     var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
                     var id = Convert.ToInt32(statuslist["Id"]);
                     task.SearchValue = Convert.ToString(id);
@@ -251,15 +253,21 @@ namespace BomOfferOrder.UI
                         txtvalue.Text = "";
                         txtvalue.Visible = true;
                         comstatus.Visible = false;
-                        dtpdt.Visible = false;
+
+                        dpstart.Visible = false;
+                        dpend.Visible = false;
+                        label2.Visible = false;
                         break;
                     //创建日期
                     case 2:
                     //审核日期
                     case 3:
-                        dtpdt.Value = DateTime.Today;
-                        dtpdt.Visible = true;
-                        dtpdt.Enabled = true;
+                       // dpstart.Value = DateTime.Today;
+                        dpstart.Visible = true;
+                        dpstart.Enabled = true;
+                        dpend.Visible = true;
+                        dpend.Enabled = true;
+                        label2.Visible = true;
                         //将单据状态 及 文本框控件隐藏
                         comstatus.Visible = false;
                         txtvalue.Visible = false;
@@ -268,7 +276,10 @@ namespace BomOfferOrder.UI
                     case 4:
                         comstatus.Visible = true;
                         //将日期 以及 文本框控件隐藏
-                        dtpdt.Visible = false;
+                        dpstart.Visible = false;
+                        dpend.Visible = false;
+                        label2.Visible = false;
+
                         txtvalue.Visible = false;
                         //初始化单据状态下拉列表
                         OnShowStatusList();
@@ -277,7 +288,10 @@ namespace BomOfferOrder.UI
                     case 5:
                         comstatus.Visible = true;
                         //将日期 以及 文本框控件隐藏
-                        dtpdt.Visible = false;
+                        dpstart.Visible = false;
+                        dpend.Visible = false;
+                        label2.Visible = false;
+
                         txtvalue.Visible = false;
                         //初始化研发类别下拉列表
                         OnShowDevGroupList();

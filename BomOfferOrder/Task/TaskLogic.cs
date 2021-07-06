@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Stimulsoft.Base.Indicator;
 
 namespace BomOfferOrder.Task
 {
@@ -15,6 +16,8 @@ namespace BomOfferOrder.Task
         private string _taskid;                //记录中转ID
         private int _searchid;                 //记录查询列表ID值(查询时使用)
         private string _searchvalue;           //查询值(查询时使用)
+        private string _dpstart;               //查询值(查询时开始日期使用)
+        private string _dpend;                 //查询值(查询时结束日期使用)
         private DataTable _dt;                 //保存需要进行生成明细记录的DT
         private DataTable _bomdt;              //保存BOM明细DT(生成时使用)
         private string _oaorder;               //获取OA流水号
@@ -64,6 +67,16 @@ namespace BomOfferOrder.Task
         ///查询值(查询时使用)
         /// </summary>
         public string SearchValue { set { _searchvalue = value; } }
+
+        /// <summary>
+        /// 查询值(查询时开始日期使用)
+        /// </summary>
+        public string Dpstart { set { _dpstart = value; } }
+
+        /// <summary>
+        /// 查询值(查询时结束日期使用)
+        /// </summary>
+        public string Dpend { set { _dpend = value; } }
 
         /// <summary>
         /// 记录查询列表ID值(查询时使用)
@@ -221,7 +234,7 @@ namespace BomOfferOrder.Task
                     break;
                 //单据查询-查询端使用
                 case "0.4":
-                    SearchBomOrder(_searchid, _searchvalue);
+                    SearchBomOrder(_searchid, _searchvalue, _dpstart,_dpend);
                     break;
                 //单据查询-查询明细记录使用
                 case "0.5":
@@ -233,7 +246,7 @@ namespace BomOfferOrder.Task
                     break;
                 //单据查询-主窗体使用
                 case "0.7":
-                    SearchMainBomOrder(_searchid, _searchvalue, GlobalClasscs.User.StrUsrName);
+                    SearchMainBomOrder(_searchid, _searchvalue, GlobalClasscs.User.StrUsrName,_dpstart,_dpend);
                     break;
                 //权限查询-用户权限主窗体使用
                 case "0.8":
@@ -450,9 +463,9 @@ namespace BomOfferOrder.Task
         /// <summary>
         /// 查询端窗体使用
         /// </summary>
-        private void SearchBomOrder(int typeid, string value)
+        private void SearchBomOrder(int typeid, string value,string dpstart,string dpend)
         {
-            _resultTable = searchDt.SearchBomOrder(typeid, value);
+            _resultTable = searchDt.SearchBomOrder(typeid, value,dpstart,dpend);
         }
 
         /// <summary>
@@ -461,9 +474,11 @@ namespace BomOfferOrder.Task
         /// <param name="typeid"></param>
         /// <param name="value"></param>
         /// <param name="createname">创建人</param>
-        private void SearchMainBomOrder(int typeid, string value, string createname)
+        /// <param name="dpstart"></param>
+        /// <param name="dpend"></param>
+        private void SearchMainBomOrder(int typeid, string value, string createname,string dpstart,string dpend)
         {
-            _resultTable = searchDt.SearchMainBomOrder(typeid, value, createname);
+            _resultTable = searchDt.SearchMainBomOrder(typeid, value, createname,dpstart,dpend);
         }
 
         /// <summary>

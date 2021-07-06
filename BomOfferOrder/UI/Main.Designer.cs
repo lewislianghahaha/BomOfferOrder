@@ -74,7 +74,7 @@
             this.panel7 = new System.Windows.Forms.Panel();
             this.txtvalue = new System.Windows.Forms.TextBox();
             this.comstatus = new System.Windows.Forms.ComboBox();
-            this.dtpdt = new System.Windows.Forms.DateTimePicker();
+            this.dpstart = new System.Windows.Forms.DateTimePicker();
             this.btnusersearch = new System.Windows.Forms.Button();
             this.comselectvalue = new System.Windows.Forms.ComboBox();
             this.tc2 = new System.Windows.Forms.TabPage();
@@ -109,6 +109,8 @@
             this.btnCreateNew = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
+            this.dpend = new System.Windows.Forms.DateTimePicker();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.AccountMenu.SuspendLayout();
@@ -508,9 +510,11 @@
             // panel7
             // 
             this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel7.Controls.Add(this.dpend);
+            this.panel7.Controls.Add(this.label2);
             this.panel7.Controls.Add(this.txtvalue);
             this.panel7.Controls.Add(this.comstatus);
-            this.panel7.Controls.Add(this.dtpdt);
+            this.panel7.Controls.Add(this.dpstart);
             this.panel7.Controls.Add(this.btnusersearch);
             this.panel7.Controls.Add(this.comselectvalue);
             this.panel7.Dock = System.Windows.Forms.DockStyle.Top;
@@ -535,18 +539,19 @@
             this.comstatus.Size = new System.Drawing.Size(172, 20);
             this.comstatus.TabIndex = 12;
             // 
-            // dtpdt
+            // dpstart
             // 
-            this.dtpdt.Location = new System.Drawing.Point(150, 2);
-            this.dtpdt.Name = "dtpdt";
-            this.dtpdt.Size = new System.Drawing.Size(172, 21);
-            this.dtpdt.TabIndex = 10;
+            this.dpstart.Location = new System.Drawing.Point(150, 2);
+            this.dpstart.Name = "dpstart";
+            this.dpstart.Size = new System.Drawing.Size(172, 21);
+            this.dpstart.TabIndex = 10;
             // 
             // btnusersearch
             // 
-            this.btnusersearch.Location = new System.Drawing.Point(338, 1);
+            this.btnusersearch.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnusersearch.Location = new System.Drawing.Point(865, 0);
             this.btnusersearch.Name = "btnusersearch";
-            this.btnusersearch.Size = new System.Drawing.Size(75, 23);
+            this.btnusersearch.Size = new System.Drawing.Size(75, 26);
             this.btnusersearch.TabIndex = 8;
             this.btnusersearch.Text = "查询";
             this.btnusersearch.UseVisualStyleBackColor = true;
@@ -856,6 +861,22 @@
             this.btnSearch.TabIndex = 0;
             this.btnSearch.UseVisualStyleBackColor = false;
             // 
+            // dpend
+            // 
+            this.dpend.Location = new System.Drawing.Point(345, 2);
+            this.dpend.Name = "dpend";
+            this.dpend.Size = new System.Drawing.Size(172, 21);
+            this.dpend.TabIndex = 26;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(327, 8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(11, 12);
+            this.label2.TabIndex = 25;
+            this.label2.Text = "-";
+            // 
             // Main
             // 
             this.AcceptButton = this.btnusersearch;
@@ -939,7 +960,7 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
         private System.Windows.Forms.ToolStripLabel toolStripLabel5;
         private System.Windows.Forms.ToolStripLabel tstotalrow;
-        private System.Windows.Forms.DateTimePicker dtpdt;
+        private System.Windows.Forms.DateTimePicker dpstart;
         private System.Windows.Forms.ContextMenuStrip Menu;
         private System.Windows.Forms.ToolStripMenuItem tmshowdetail;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -983,5 +1004,7 @@
         private System.Windows.Forms.ToolStripMenuItem tmorderdel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem tmtempdel;
+        private System.Windows.Forms.DateTimePicker dpend;
+        private System.Windows.Forms.Label label2;
     }
 }
