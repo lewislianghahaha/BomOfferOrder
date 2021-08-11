@@ -2105,7 +2105,7 @@
         public string SearchDevGroup()
         {
             _result = @"
-                           SELECT DevGroupid Id,DevGroupName Name FROM dbo.T_BD_DevGroup
+                           SELECT DevGroupid Id,DevGroupName Name FROM dbo.T_BD_DevGroup ORDER BY DevGroupid
                        ";
             #region Hide
             /* _result = @"
