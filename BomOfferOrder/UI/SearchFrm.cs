@@ -107,7 +107,8 @@ namespace BomOfferOrder.UI
                     task.Dpend = Convert.ToString(dpend.Value.Date);
                     break;
                 default: //单据状态  //研发类别
-                    var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
+                    // var statuslist = (DataRowView)comselectvalue.Items[comstatus.SelectedIndex];
+                    var statuslist = (DataRowView)comstatus.Items[comstatus.SelectedIndex];
                     var id = Convert.ToInt32(statuslist["Id"]);
                     task.SearchValue = Convert.ToString(id);
                     break;
