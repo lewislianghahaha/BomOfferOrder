@@ -651,7 +651,7 @@
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰' 
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                ELSE '' END 研发类别,
                                         null 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                         CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -674,7 +674,7 @@
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                ELSE '' END 研发类别,
                                         b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                         CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -754,7 +754,7 @@
 			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                              WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                              WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                             WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                             WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                ELSE '' END 研发类别,
                                         b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                         CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -833,7 +833,7 @@
 			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                              WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                              WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                             WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                             WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                ELSE '' END 研发类别,
                                         b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                         CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -913,7 +913,7 @@
 			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                              WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                              WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                             WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                             WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                ELSE '' END 研发类别,
                                         b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                         CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -993,7 +993,7 @@
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                ELSE '' END 研发类别,
                                         b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                         CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1071,7 +1071,7 @@
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                ELSE '' END 研发类别,
                                         b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                                         CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1131,7 +1131,7 @@
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                        ELSE '' END
                                 ORDER BY Y.创建日期 DESC
                         ";
@@ -1161,7 +1161,7 @@
 		                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                     WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                     WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                    WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                    WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
                             ELSE '' END 研发类别,
                             null 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                             CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1184,7 +1184,7 @@
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 	                            ELSE '' END 研发类别,
                             b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                             CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1227,7 +1227,7 @@
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 	                            ELSE '' END 研发类别,
                             b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                             CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1270,7 +1270,7 @@
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 	                            ELSE '' END 研发类别,
                             b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                             CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1314,7 +1314,7 @@
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 	                            ELSE '' END 研发类别,
                             b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                             CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1358,7 +1358,7 @@
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 	                            ELSE '' END 研发类别,
                             b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                             CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1400,7 +1400,7 @@
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 	                            ELSE '' END 研发类别,
                             b.ProductName 产品名称,CASE A.Fstatus WHEN 0 THEN '已审核' ELSE '反审核' END 单据状态,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
                             CONVERT(VARCHAR(100),A.ConfirmDt,23) 审核日期,A.CreateName 创建人,
@@ -1424,7 +1424,7 @@
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                                WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                        ELSE '' END
                             order by Y.创建日期 desc  
                         ";
@@ -1753,7 +1753,7 @@
 			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                              WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                              WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
-                                             WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械' WHEN 27 THEN '油性工程机械'
+                                             WHEN 24 THEN '水性保险杠' WHEN 25 THEN '油性头盔' WHEN 26 THEN '油性工程机械'
 		                                ELSE '' END 研发类别,
                                    b.ProductName 产品名称,CONVERT(varchar(100), A.CreateDt, 23)  创建日期,
 	                               a.CreateName 创建人,
