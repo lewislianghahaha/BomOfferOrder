@@ -563,23 +563,33 @@ namespace BomOfferOrder.Task
             //以‘品类’及‘分类’为条件并使用人工及制造费用DT进行查询
             //注:判断顺序=>1)将‘品类’以及‘分类’进行合并判断 2)若第一点没有的话再使用‘品类’进行判断 3)若第二点没有的话再用‘分类’进行判断,没有就为0显示
             //注:若出现多行,取第一行值
-            var dtlrows = rencostdt.Select("品类='" + classtype + "' and 分类='" + sorttype + "'");
-            if (dtlrows.Length == 0)
+            //todo:change date:20230306 添加条件,先判断'分类'是否为‘套装’,若是即取对应数值;反之,执行原来的逻辑语句
+            var dtlrow = rencostdt.Select("分类='" + sorttype + "'");
+            if (dtlrow.Length > 0 && sorttype == "套装")
             {
-                var dtclassrows = rencostdt.Select("品类='" + classtype + "'");
-                if (dtclassrows.Length == 0)
-                {
-                    var dtfenrows = rencostdt.Select("分类='" + sorttype + "'");
-                    result = dtfenrows.Length == 0 ? 0 : Convert.ToDecimal(dtfenrows[0][2]);
-                }
-                else
-                {
-                    result = Convert.ToDecimal(dtclassrows[0][2]);
-                }
+                result = Convert.ToDecimal(dtlrow[0][2]);
             }
             else
             {
-                result = Convert.ToDecimal(dtlrows[0][2]);
+                var dtlrows = rencostdt.Select("品类='" + classtype + "' and 分类='" + sorttype + "'");
+                if (dtlrows.Length == 0)
+                {
+                    var dtclassrows = rencostdt.Select("品类='" + classtype + "'");
+                    if (dtclassrows.Length == 0)
+                    {
+                        var dtfenrows = rencostdt.Select("分类='" + sorttype + "'");
+                        result = dtfenrows.Length == 0 ? 0 : Convert.ToDecimal(dtfenrows[0][2]);
+                    }
+                    else
+                    {
+                        result = Convert.ToDecimal(dtclassrows[0][2]);
+                    }
+                }
+
+                else
+                {
+                    result = Convert.ToDecimal(dtlrows[0][2]);
+                }
             }
             return result;
         }
