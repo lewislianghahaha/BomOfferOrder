@@ -647,7 +647,7 @@
                                 --查询只有表头信息的记录
                                 /*SELECT A.FId,A.OAorderno OA流水号,
                                         CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰' 
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -671,7 +671,7 @@
 
                                 SELECT A.FId,A.OAorderno OA流水号,
                                         CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -752,7 +752,7 @@
                                 FROM (
                                 SELECT A.FId,A.OAorderno OA流水号,
                                         CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                              WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                              WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -832,7 +832,7 @@
                                 FROM (
                                 SELECT A.FId,A.OAorderno OA流水号,
                                         CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                              WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                              WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -913,7 +913,7 @@
                                 FROM (
                                 SELECT A.FId,A.OAorderno OA流水号,
                                         CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                              WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                              WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -994,7 +994,7 @@
                                 FROM (
                                 SELECT A.FId,A.OAorderno OA流水号,
                                         CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1073,7 +1073,7 @@
                                 FROM (
                                 SELECT A.FId,A.OAorderno OA流水号,
                                         CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1134,7 +1134,7 @@
 
                                 )Y
                                 WHERE Y.研发类别 = CASE '{value}' WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1165,7 +1165,7 @@
                                     --查询只有表头信息的记录
                             /*SELECT A.FId,A.OAorderno OA流水号,
                             CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 		                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                     WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                     WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1189,7 +1189,7 @@
 
                             SELECT A.FId,A.OAorderno OA流水号,
                             CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1233,7 +1233,7 @@
                             FROM (
                             SELECT A.FId,A.OAorderno OA流水号,
                             CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1277,7 +1277,7 @@
                             FROM (
                             SELECT A.FId,A.OAorderno OA流水号,
                             CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1322,7 +1322,7 @@
                             FROM (
                             SELECT A.FId,A.OAorderno OA流水号,
                             CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1367,7 +1367,7 @@
                             FROM (
                             SELECT A.FId,A.OAorderno OA流水号,
                             CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1410,7 +1410,7 @@
                             FROM (
                             SELECT A.FId,A.OAorderno OA流水号,
                             CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+	                            WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 	                            WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1435,7 +1435,7 @@
                             )Y
                             WHERE Y.创建人='{cratename}'
                             and Y.研发类别 = CASE '{value}' WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                        WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                    WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                                 WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰1' WHEN 19 THEN '油性大巴'
                                                 WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
@@ -1765,7 +1765,7 @@
             _result = $@"
                             SELECT a.FId,a.OAorderno OA流水号,
                                    CASE A.DevGroupid WHEN 1 THEN '地坪漆' WHEN 2 THEN '高温漆' WHEN 3 THEN '水性大巴轨交' WHEN 4 THEN '水性工程机械' WHEN 5 THEN '水性头盔' 
-		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标识标牌' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
+		                                     WHEN 6 THEN '水性小工业' WHEN 7 THEN '水性修补' WHEN 8 THEN '油性保险杠' WHEN 9 THEN '油性标牌标识' WHEN 10 THEN '油性大巴轨交' WHEN 11 THEN '油性汽车配件'
 			                                 WHEN 12 THEN '油性小工业' WHEN 13 THEN '油性修补' WHEN 14 THEN '原子灰' WHEN 15 THEN '油性汽车内外饰'
                                              WHEN 16 THEN '油性洛奇' WHEN 17 THEN '油性汽车内饰' WHEN 18 THEN '油性汽车外饰' WHEN 19 THEN '油性大巴'
                                              WHEN 20 THEN '油性轨交' WHEN 21 THEN '水性大巴' WHEN 22 THEN '水性轨交' WHEN 23 THEN '水性洛奇'
